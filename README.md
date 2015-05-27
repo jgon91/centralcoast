@@ -8,11 +8,12 @@ The following section brings information about the pre-configuration necessary t
 
 ### Windows and Mac OS
 
-Please download the Source Tree using the link and follow the instructions to download the program: https://www.sourcetreeapp.com/ . You can use your prefered app to manage git operations and it will have the same effect.
+Please download the Source Tree using the link and follow the instructions to download the program: https://www.sourcetreeapp.com/. You can use your prefered app to manage git operations and it will have the same effect.
 
 ### Linux
 
-    In your command line execute the following commands or equivalent ones for your distribution. The distributions used in this example was Ubuntu 15.04.
+In your command line execute the following commands or equivalent ones for your distribution. The distributions used in this example was Ubuntu 15.04.
+
 * git config --global user.name "You full name here"
 * git config --global user.email you@yourdomain.example.com
 * git config --global color.diff auto
@@ -43,22 +44,22 @@ The following steps will help you to configure the development environment that 
 * Make sure you have installed any version of Python 2.7.X in your system. You can get the last build for the version 2.7.X in the following address https://www.python.org/downloads/
 * Install the PKG or TAR file in your system.
 * Check if Python was successfully installed in your system by executing the following commands:
-    ** $PATH | grep "python” (MAC only)d that the default configure settings work fine for Ubuntu 10.04 and there's no real need to specify extra --with flags.- You should expect to see the path to the place where Python was installed 
-    ** python --version - You should expect to see the version that you just installed in your system
+    * $PATH | grep "python” (MAC only)d that the default configure settings work fine for Ubuntu 10.04 and there's no real need to specify extra --with flags.- You should expect to see the path to the place where Python was installed 
+    * python --version - You should expect to see the version that you just installed in your system
 * You now will install the setuptools package in your system. Go to https://pypi.python.org/pypi/setuptools and download the setuptools.
 * Extract the content of the setuptools to a folder of your preference.
 * Throught command line access the folder that you have extracted the file.
 *  Run the following command:
-    ** python setup.py install
-    ** easy_install virtualenv
+    * python setup.py install
+    * easy_install virtualenv
 * Create a folder in your home directory called Developer with the following command: mkdir ~/Developer
 * Go to this folder: cd ~/Developer
 * Clone the Heavy Connect project from github to this folder
 * Inside of the folder of the project execute the following commands.
-    ** virtualenv venv --distribute
-    ** source venv/bin/activate
-    ** pip install -r requirements.txt
-    ** pip freeze
-    ** Go to the heavyconnect folder.
-    ** python manage.py syncdb (create a super user with the following name heavy and password 123)
-    ** python manage.py migrate
+    * virtualenv venv --distribute
+    * source venv/bin/activate
+    * pip install -r requirements.txt
+    * pip freeze
+    * Go to the heavyconnect folder.
+    * python manage.py syncdb (create a super user with the following name heavy and password 123)
+    * python manage.py migrate
