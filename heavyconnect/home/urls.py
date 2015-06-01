@@ -2,5 +2,8 @@ from django.conf.urls import include, url, patterns
 from home.views import *
 
 urlpatterns = patterns('',
-    url(r'^hello/$', hello),
+	url(r'^$', home, name='home'),
+    url(r'^login/$', login, name='login'),
+    url(r'^logout/$', logout, name='logout'),
+    url(r'^driver/$', driver, name='driver'),
 )

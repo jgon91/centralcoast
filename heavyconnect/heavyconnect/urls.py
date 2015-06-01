@@ -17,9 +17,10 @@ from django.conf.urls import include, url, patterns
 from django.contrib import admin
 
 urlpatterns = patterns('',
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls), name='admin'),
     url(r'^$', include(admin.site.urls)),
 )
+
 
 urlpatterns += patterns('',
     #home app links
