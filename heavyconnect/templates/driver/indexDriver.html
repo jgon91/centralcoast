@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{% load staticfiles %}
+		<script src="{% static 'js/jquery.js' %}"></script>
+		<script>
+			$(document).ready(function() {
+			
+				$("#head").load("{% url 'header' %}");
+			});
+		</script>
+	</head>
+
+	<body>
+		<div id="wrapper">
+			<header id="head"></header>
+			
+			<div class="row" style="margin: auto; margin-top:80px; margin-bottom: 160px; width: 65%; min-width: 280px;border:2px solid #999; background-color: white; padding-top: 30px; padding-bottom: 30px; border-radius: 40px 40px 40px 40px;">
+				
+				<div class="col-xs-12 col-md-4">
+					<input type="button" class="btnMain" id="btnEquipment" />
+				</div>
+				<div class="col-xs-12 col-md-4">
+					<a href="{% url 'task_flow'%}">
+						<input type="button" class="btnMain" id="btnTaskflow" />
+					</a>
+				</div>			
+				<div class="col-xs-12 col-md-4">
+					<a href="{% url 'time_keeper'%}">
+						<input type="button" class="btnMain" id="btnTimerkeeper" />
+					</a>
+				</div>
+		
+			</div>
+			
+			<footer id="foot" style="background-image: url('{% static 'img/backgroundFooter.png' %}); background-size: 100% 180px; height: 180px"></footer>
+
+		</div>
+	</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
+		<script>
+			$(document).ready(function() {
+				$("#foot").load("{% url 'footer'%}");
+				$("#head").load("{% url 'header'%}");
+				
+				 //ajaxTime.php is called every second to get time from server
+ 				  var refreshId = setInterval(function()
+				   {
+				     $('#timeval').load("{% url 'updated_date'%}");
+				   }, 1000);
+				
+				   //stop the clock when this button is clicked
+				   $("#stop").click(function()
+				   {
+				     clearInterval(refreshId);
+				   });
+			});
+		</script>
+	</head>
+	<body onload="display_ct();">
+		<!-- Different background -->
+		<div id="wrapper">
+		<header id="head"></header>
+
+			<div class="row">
+				<div class="col-xs-12 col-md-12">
+					<img id="logo" src="{% static 'img/logo.png'%}" />
+				</div>
+			</div>
+
+			<h3>HC Task Flow</h3>
+			<br />
+			<table>
+				<div class="container">
+					<div class="row">
+						<div class="col-xs-12 col-md-12">
+							<tr>
+								<td>Tractor:</td>
+								<td>
+								<input type="text" />
+								</td>
+								<td><img />img</td>
+							</tr>
+							<tr>
+								<td>Implement:</td>
+								<td>
+								<input type="text" />
+								</td>
+								<td><img />img</td>
+							</tr>
+							<tr>
+								<td>Field:</td>
+								<td>
+								<input type="text" />
+								</td>
+								<td><img />img</td>
+							</tr>
+							<tr>
+								<td>Task:</td>
+								<td>
+								<input type="text" />
+								</td>
+								<td><img />img</td>
+							</tr>
+						</div>
+					</div>
+				</div>
+			</table>
+			<br />
+			<br />
+			<br />
+			<div class="row">
+				<div class="col-xs-12 col-md-12">
+					<tr>
+						<td><a href="#"><img />Icon Previous</a></td>
+						<td><a href="{%url 'driver'%}"><img />Icon Home</a></td>
+						<td><a href="#"><img />Icon Next</a></td>
+					</tr>
+				</div>
+			</div>
+			<span id='ct' ></span>
+			<footer id="foot"></footer>
+		</div>
+	</body>
+</html>

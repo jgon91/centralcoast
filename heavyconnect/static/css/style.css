@@ -1,0 +1,221 @@
+body { 
+  	/*background: url(../img/background.jpg) no-repeat center center fixed; 
+  	-webkit-background-size: cover;
+  	-moz-background-size: cover;
+  	-o-background-size: cover;
+  	background-size: cover;*/
+  	height: 100%;
+  	width: 100%;
+  	margin: 0px;
+  	padding: 0px;
+  	font-family: Helvetica, arial;
+}
+
+#top{
+	background-color: #1F3801;
+	height: 100px;
+	width: 100%;
+	text-align: left;
+}
+
+#wrapper{	
+	text-align: center;
+	padding-bottom: 40px;
+	color: white;
+}
+
+footer{
+	text-align: center;
+	position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 40px; 
+	font-size: 120%;
+	color: white;
+}
+
+#logoHead
+{
+	background: url('../img/Logo_negative.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 180px;
+	height: 80px;
+
+}
+
+#headLeft{
+	float: left;
+	width: 300px;
+}
+#headCenter{
+	float: right;
+	width: 200px;
+	right: 50%;
+	margin-right: calc(50% - 330px);
+	padding-top: 40px;
+}
+#headRight{
+	float: right;
+	width: 230px;
+	padding-top: 10px;
+}
+
+input[type=text] {
+	padding: 7px; 
+	border: 0px solid #333; 
+	border-radius: 10px;
+	font-weight: bold;
+	color: black;
+	font-weight: bold;	
+	font-size: 110%;
+	box-shadow: 4px 4px 7px -1px black;
+}
+input[type=password] {
+	padding: 7px; 
+	border: 0px solid #333; 
+	border-radius: 10px;
+	font-weight: bold;
+	color: black;
+	font-weight: bold;	
+	font-size: 110%;
+	box-shadow: 4px 4px 7px -1px black;
+}
+#login{
+	/*color: black;
+	font-weight: bold;
+	font-size: 110%;
+	width: 900px;
+	height: 260px;
+	margin: auto;
+	background-color: rgba(255, 255, 255, 0.5);
+	*/
+	margin-top: 40px;
+}
+#loginLogo{
+	margin-top: 75px;
+}
+#loginTable{
+	margin: auto;
+}
+
+.input_login{
+	width: 350px;
+	box-shadow: 2px 3px 2px -1px black;
+	width: 355px;
+	height: 55px;
+}
+#home{
+	color: white;
+	font-weight: bold;
+	text-decoration: none;
+}
+#home:hover{
+	color: black;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+/*BUTTONS*/
+
+input[type="button"]
+{
+	border-style: none;
+}
+
+.btnDefault{
+	width: 200px;
+	height: 55px; 
+	background: #769C74;
+	border: 0 none;
+	cursor: pointer;
+	-webkit-border-radius: 5px;
+	border-radius: 5px; 
+	color: white;
+	font-size: 110%;
+	text-decoration: none;
+	font-weight: bold;
+	margin: 0px 20px 20px 20px;
+}
+.btnDefault:hover {
+	width: 200px;
+	height: 55px;  
+	background: #65935F; 
+	border: 0 none;
+	cursor: pointer;
+	-webkit-border-radius: 5px;
+	border-radius: 5px; 
+	color: black;
+	font-size: 110%
+	font-weight: bold;
+}
+#userImg
+{
+	background: url('../img/userPicture.jpg') no-repeat top left;
+	background-size: 100% 100%;
+	width: 115px;
+	height: 100px;
+	margin-left: 55px;
+}
+#logOff
+{
+	background: url('../img/logOff.jpg') no-repeat top left;
+	background-size: 100% 100%;
+	width: 60px;
+	height: 100px;
+	margin-left: -4px;
+}
+
+
+/* Buttons of indexDriver.html */
+.btnMain{
+	width: 200px;
+	height: 190px;
+}
+#btnEquipment{
+	background: url('../img/equipment.jpg') no-repeat top left;
+}
+#btnEquipment:hover{
+	background: url('../img/equipmentHover.jpg') no-repeat top left;
+}
+#btnTaskflow{
+	background: url('../img/taskflow.jpg') no-repeat top left;
+}
+#btnTaskflow:hover{
+	background: url('../img/taskflowHover.jpg') no-repeat top left;
+}
+#btnTimerkeeper{
+	background: url('../img/timekeeper.jpg') no-repeat top left;
+}
+#btnTimerkeeper:hover{
+	background: url('../img/timekeeperHover.jpg') no-repeat top left;
+}
+/*Buttons login*/
+#btn_login{
+	background: url('../img/loginBtn.png') no-repeat top left;
+	width: 415px;
+	height: 55px;
+	margin: 0px
+}
+#btn_login:hover{
+	background: url('../img/loginBtnHover.png') no-repeat top left;
+}
+/*BUTTONS*/
+table{
+	margin: auto;
+}
+
+.colLeft
+{
+	text-align: right;
+}
+.colRight
+{
+	text-align: left;
+}
+
+.colName
+{
+	width: 10px;
+	background: black;
+}
+

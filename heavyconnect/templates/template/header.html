@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{% load staticfiles %}
+		<meta charset="utf-8">
+		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+		Remove this if you use the .htaccess -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+		<title>Heavy Connect</title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width; initial-scale=1.0">
+		<!--IMPORTS-->
+		<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
+		<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap/css/bootstrap.min.css' %}">
+		<!--IMPORTS-->
+		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+		<link rel="shortcut icon" href="/favicon.ico">
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+	</head>
+
+	<body onload="startTime()">
+		<div id="top">
+			<div id="headLeft">
+				<a href="#">
+				<input type="button" id="userImg" />
+				</a>
+				<a href="{% url 'logout' %}">
+				<input type="button" id="logOff" />
+				</a>
+			</div>
+			
+			
+			<div id="headRight">
+				<input type="button" id="logoHead" />
+			</div>
+			
+			
+			<div id="headCenter">
+				<span id="clock"></span>
+			</div>
+			
+		</div>
+		<div id="wrapper">
+			<script>
+				var refreshId = setInterval(function() {
+					$('#clock').load("{% url 'updated_date'%}");
+				}, 1000);
+
+				//stop the clock when this button is clicked
+				$("#stop").click(function() {
+					clearInterval(refreshId);
+				});
+			</script>
+		</div>
+	</body>
+</html>

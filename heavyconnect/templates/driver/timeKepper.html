@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<script src="../js/jquery-1.11.2.min.js"></script>
+		<script>
+			$(document).ready(function() {
+				$("#foot").load("../template/footer.html");
+				$("#head").load("../template/header.html");
+			});
+		</script>
+	</head>
+	
+	<body>
+		<div id="wrapper">
+			<header id="head"></header>
+			
+			<img src="../img/logo.png" style="height: 100px; width: 100px;"/>
+			<div class="row">
+				HC TimeKepper
+				<div class="col-xs-12 col-md-12">
+					<input type="button" value="START SHIFT" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-5 col-md-5 colLeft">
+					<input type="button" value="START1" />
+				</div>
+				<div class="col-xs-2 col-md-2 colName">
+					AM Break
+				</div>
+				<div class="col-xs-5 col-md-5 colRight">
+					<input type="button" value="STOP1" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-md-4 colLeft">
+					LUNCH
+				</div>
+				<div class="col-xs-6 col-md-4 colLeft">
+					<input type="button" value="START2" />
+				</div>
+				<div class="col-xs-6 col-md-4 colRight">
+					<input type="button" value="STOP2" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-md-4 colLeft">
+					PM Break
+				</div>
+				<div class="col-xs-6 col-md-4 colLeft">
+					<input type="button" value="START3" />
+				</div>
+				<div class="col-xs-6 col-md-4 colRight">
+					<input type="button" value="STOP3" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-md-12">
+					<input type="button" value="END SHIFT" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-md-12">
+
+				</div>
+			</div>
+			<footer id="foot"></footer>
+		</div>
+	</body>
+</html>
