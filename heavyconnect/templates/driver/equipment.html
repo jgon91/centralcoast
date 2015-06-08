@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{% load staticfiles %}
+		<link rel="stylesheet" type="text/css" href="{%static 'css/equipStyle.css'%}">
+		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
+		<script>
+			$(document).ready(function() {
+				$("#foot").load("{%url 'footer'%}");
+				$("#menuLeft").load("{%url 'menu_left'%}");
+				$("#head").load("{%url 'header'%}");
+			});
+		</script>
+	</head>
+
+	<body>
+		<header id="head"></header>
+		<div id="wrapper">	
+			
+			<div id="menuLeft"></div>
+
+			<div id="content">
+				<div id="namePage">
+					PROFILES
+				</div>
+				<div id="images">
+					<img src="{% static 'img/tractor-1.jpg'%}" class="imgs"/>
+					<img src="{% static 'img/tractor-2.jpg'%}" class="imgs"/>
+					<img src="{% static 'img/tractor-3.jpg'%}" class="imgs"/>
+				</div>
+
+				<div class="rowEquip">
+					<div class="col-xs-3 col-md-3" style="padding: 0px; line-height: 18px; padding-top: 5px;">
+						QR Sticker: 00123
+						</br>Reiter Asset: RAC4556
+						</br>Manufacturer: John Deere
+						</br>Model: 9460RT
+						</br>SN: 1RW9460RTDAC900011
+						</br>Hours: 2.017
+						</br></br><strong>LOCATION:</strong>
+					</div>
+					<div class="col-xs-3 col-md-3" style="padding: 0px; line-height: 18px; padding-top: 5px;">
+						Horse Power: 460
+						</br>Lift Capacity: 15.300 Ibs
+						</br>Hitch Size: 4N/3
+						</br>Drawbar Size: CAT 4
+						</br>Date Acquired: 07/01/2007
+						</br>Service Provider: RD0 Equip.
+						</br>Owner Company: Aptos Berry Co.
+					</div>
+					<div class="col-xs-2 col-md-2" id="boxRight1">
+						<div style="padding-top: 5px;">
+							<strong>Implement:</strong>
+							</br>20' disk
+						</div>
+						<div style="padding-top: 10px;">
+							<strong>Operator:</strong>
+							</br>Leonel Junior
+						</div>
+						<div style="padding-top: 10px;">
+							<strong>Task:</strong>
+							</br>Disking
+						</div>
+					</div>
+					<div class="col-xs-4 col-md-4" id="boxRight2">
+						<div>
+							<a href="#" style="text-decoration: none;">
+								<input type="button" id="btnUpdate" value="Update Status"/>
+							</a>
+						</div>
+						<div>
+							<a href="#" style="text-decoration: none;">
+								<input type="button" id="btnNewTask" value="Start a New Task"/>
+							</a>
+						</div>
+						<div>
+							<a href="#" style="text-decoration: none;">
+								<input type="button" id="btnChecklist" value="Checklist">
+							</a>
+						</div>
+					</div>
+				</div>
+				
+				<div class="mapNotes">
+					<div class="col-xs-6 col-md-6" style="padding: 0px;">
+						<iframe id="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31680418.788977094!2d-53.18050175!3d-14.23929765!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9c59c7ebcc28cf%3A0x295a1506f2293e63!2sBrazil!5e0!3m2!1sen!2sus!4v1433280635778"></iframe>
+					</div>
+					<div class="col-xs-3 col-md-3" id="colStatus">
+						STATUS:
+						<div id="btnStatus1" class="pStatus">OK! Read to work</div>
+						<div id="btnStatus2" class="pStatus">SERVICE Needed</div>
+						<div id="btnStatus3" class="pStatus">BROKEN! Do not use</div>
+					</div>
+					<div class="col-xs-3 col-md-3" id="colStatus">
+						NOTES:
+						<textarea rows="6" cols="20" form="notesSubmit" id="notes"></textarea>
+					</div>
+				</div>
+				
+			</div>
+			<div id="clearBoth"></div>
+		</div>
+		<footer id="foot"></footer>
+	</body>
+
+</html>

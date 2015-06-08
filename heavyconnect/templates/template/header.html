@@ -23,27 +23,35 @@
 	<body onload="startTime()">
 		<div id="top">
 			<div id="headLeft">
-				<a href="#">
-				<input type="button" id="userImg" />
-				</a>
-				<a href="{% url 'logout' %}">
+
+				<ul class="menu">
+					<li>
+						<a href="#"><input type="button" id="userImg"></a>
+						<ul>
+							<li><a href="#" style="background: #E4E5AC">Leonel Junior</a></li>
+							<li><a href="#" style="background: #829E23">Employee</a></li>
+							<li><a href="#" style="background: #4F731B">10325</a></li>
+						</ul>
+					</li>
+				</ul>
+
+				<a href="{%url 'logout'%}">
 				<input type="button" id="logOff" />
 				</a>
 			</div>
-			
-			
+
 			<div id="headRight">
-				<input type="button" id="logoHead" />
+				<input type="button" id="logoHead"/>
 			</div>
-			
-			
+
 			<div id="headCenter">
 				<span id="clock"></span>
 			</div>
-			
+
 		</div>
-		<div id="wrapper">
+		<div>
 			<script>
+				//clock
 				var refreshId = setInterval(function() {
 					$('#clock').load("{% url 'updated_date'%}");
 				}, 1000);
@@ -51,6 +59,10 @@
 				//stop the clock when this button is clicked
 				$("#stop").click(function() {
 					clearInterval(refreshId);
+				});
+				
+				$(".menu ul").mouseenter(function(){
+					
 				});
 			</script>
 		</div>

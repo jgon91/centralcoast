@@ -1,66 +1,149 @@
-body { 
-  	/*background: url(../img/background.jpg) no-repeat center center fixed; 
-  	-webkit-background-size: cover;
-  	-moz-background-size: cover;
-  	-o-background-size: cover;
-  	background-size: cover;*/
+body
+{ 
   	height: 100%;
   	width: 100%;
   	margin: 0px;
   	padding: 0px;
   	font-family: Helvetica, arial;
 }
-
-#top{
+#top
+{
 	background-color: #1F3801;
 	height: 100px;
 	width: 100%;
+	min-width: 1300px;
+	text-align: left;
+	color: white;
+}
+.menu
+{
+	list-style: none;
+	float: left;
+	margin: 0 auto;
+	padding: 0px;
 	text-align: left;
 }
-
-#wrapper{	
-	text-align: center;
-	padding-bottom: 40px;
-	color: white;
+.menu li
+{
+	position: relative;
 }
-
-footer{
+.menu li a
+{
+	text-decoration: none;
+	display: block;
+	margin-left: 30px;
+	color: black;
+}
+.menu li a:hover
+{
+	/*fazer algo quando passar mouse na foto no usuário*/
+}
+.menu li ul
+{
+	margin-left: 30px;
+	padding: 0px;
+	display: none;
+	position: absolute;
+	width: 115px;
+}
+.menu li ul li
+{
+	display: block;
+	padding: 0px;
+	margin: 0px;
+}
+.menu li ul li a
+{
+	padding: 0px;
+	margin: 0px;
+}
+.menu li:hover ul, .menu li.over ul
+{
+	display: block;
 	text-align: center;
-	position: fixed;
+}
+.menu li ul li a:hover
+{
+	color: white;
+	background: #434343 !important;
+}
+.menuLeft
+{
+	margin: 0px;
+	padding: 0px;
+	text-align: center;
+	background: #434343;
+	list-style: none;
+	width: 174px;
+	height: 680px;
+	padding-bottom: 11.8%;
+	float: left;
+	
+}
+#wrapper
+{	
+	text-align: center;
+	color: white;
+	width: 100%;
+	min-width: 1300px;
+	height: 100%;
+	min-height: 630px;
+}
+#content
+{	
+	/*width: calc(90% - 120px);*/
+	width: 80%;
+	min-width: 800px;
+	float: left;
+	/*margin-left: 174px;*/
+}
+footer
+{
+	padding: 0px;
+	margin: 0px;
+}
+#foot
+{
+	text-align: center;
+	margin: 0px;
+	clear: both;
     bottom: 0;
     width: 100%;
-    height: 40px; 
+    min-width: 1300px;
 	font-size: 120%;
 	color: white;
+	padding: 5px;
+	font-size: 95%;
+	background-color: #434343;
 }
-
 #logoHead
 {
 	background: url('../img/Logo_negative.png') no-repeat top left;
 	background-size: 100% 100%;
 	width: 180px;
 	height: 80px;
-
 }
-
-#headLeft{
+#headLeft
+{
 	float: left;
 	width: 300px;
 }
-#headCenter{
+#headCenter
+{
 	float: right;
 	width: 200px;
 	right: 50%;
 	margin-right: calc(50% - 330px);
 	padding-top: 40px;
 }
-#headRight{
+#headRight
+{
 	float: right;
 	width: 230px;
 	padding-top: 10px;
 }
-
-input[type=text] {
+input[type=text]
+{
 	padding: 7px; 
 	border: 0px solid #333; 
 	border-radius: 10px;
@@ -70,7 +153,8 @@ input[type=text] {
 	font-size: 110%;
 	box-shadow: 4px 4px 7px -1px black;
 }
-input[type=password] {
+input[type=password]
+{
 	padding: 7px; 
 	border: 0px solid #333; 
 	border-radius: 10px;
@@ -80,49 +164,45 @@ input[type=password] {
 	font-size: 110%;
 	box-shadow: 4px 4px 7px -1px black;
 }
-#login{
-	/*color: black;
-	font-weight: bold;
-	font-size: 110%;
-	width: 900px;
-	height: 260px;
-	margin: auto;
-	background-color: rgba(255, 255, 255, 0.5);
-	*/
+#login
+{
 	margin-top: 40px;
 }
-#loginLogo{
+#loginLogo
+{
 	margin-top: 75px;
 }
-#loginTable{
+#loginTable
+{
 	margin: auto;
 }
-
-.input_login{
+.input_login
+{
 	width: 350px;
 	box-shadow: 2px 3px 2px -1px black;
 	width: 355px;
 	height: 55px;
 }
-#home{
+#home
+{
 	color: white;
 	font-weight: bold;
 	text-decoration: none;
 }
-#home:hover{
+#home:hover
+{
 	color: black;
 	font-weight: bold;
 	text-decoration: none;
 }
-
 /*BUTTONS*/
 
 input[type="button"]
 {
 	border-style: none;
 }
-
-.btnDefault{
+.btnDefault
+{
 	width: 200px;
 	height: 55px; 
 	background: #769C74;
@@ -136,7 +216,8 @@ input[type="button"]
 	font-weight: bold;
 	margin: 0px 20px 20px 20px;
 }
-.btnDefault:hover {
+.btnDefault:hover
+{
 	width: 200px;
 	height: 55px;  
 	background: #65935F; 
@@ -150,72 +231,258 @@ input[type="button"]
 }
 #userImg
 {
-	background: url('../img/userPicture.jpg') no-repeat top left;
+	background: url('../img/userPicture.png') no-repeat top left;
 	background-size: 100% 100%;
 	width: 115px;
 	height: 100px;
-	margin-left: 55px;
 }
 #logOff
 {
-	background: url('../img/logOff.jpg') no-repeat top left;
+	background: url('../img/logOffHover.jpg') no-repeat top left;
 	background-size: 100% 100%;
 	width: 60px;
 	height: 100px;
-	margin-left: -4px;
+	margin-left: 0px;
+	position: absolute;
 }
-
-
+#logOff:hover
+{
+	background: url('../img/logOff.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
 /* Buttons of indexDriver.html */
-.btnMain{
+.btnMain
+{
 	width: 200px;
 	height: 190px;
 }
-#btnEquipment{
+.btnLeft
+{
+	width: 115px;
+	height: 100px;
+	margin-top: 30px;
+}
+#btnEquipment
+{
 	background: url('../img/equipment.jpg') no-repeat top left;
+	background-size: 100% 100%;
 }
-#btnEquipment:hover{
+#btnEquipment:hover
+{
 	background: url('../img/equipmentHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
 }
-#btnTaskflow{
+#btnEquipment:active
+{
+	background-size: 95% 95%;
+	background-position: center;
+	border: 5px solid black;
+}
+#btnTaskflow
+{
 	background: url('../img/taskflow.jpg') no-repeat top left;
+	background-size: 100% 100%;
 }
-#btnTaskflow:hover{
+#btnTaskflow:hover
+{
 	background: url('../img/taskflowHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
 }
-#btnTimerkeeper{
+#btnTimerkeeper
+{
 	background: url('../img/timekeeper.jpg') no-repeat top left;
+	background-size: 100% 100%;
 }
-#btnTimerkeeper:hover{
+#btnTimerkeeper:hover
+{
 	background: url('../img/timekeeperHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnHomeLeft
+{
+	background: url('../img/homeLeft.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnHomeLeft:hover
+{
+	background: url('../img/homeHoverLeft.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnEquipmentLeft
+{
+	background: url('../img/equipmentLeft.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnEquipmentLeft:hover
+{
+	background: url('../img/equipmentHoverLeft.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTaskflowLeft
+{
+	background: url('../img/taskflowLeft.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTaskflowLeft:hover
+{
+	background: url('../img/taskflowHoverLeft.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTimerkeeperLeft
+{
+	background: url('../img/timekepperLeft.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTimerkeeperLeft:hover
+{
+	background: url('../img/timekepperHoverLeft.jpg') no-repeat top left;
+	background-size: 100% 100%;
 }
 /*Buttons login*/
-#btn_login{
+#btn_login
+{
 	background: url('../img/loginBtn.png') no-repeat top left;
 	width: 415px;
 	height: 55px;
-	margin: 0px
+	margin: 0px;
+	border: none;
 }
-#btn_login:hover{
+#btn_login:hover
+{
 	background: url('../img/loginBtnHover.png') no-repeat top left;
 }
-/*BUTTONS*/
-table{
-	margin: auto;
+
+/* Time Keeper Buttons */
+.btnGreen
+{
+	background-color: #809B21;
+	height: 60px;
+	width: 274px;
+	margin-top: 10px;
+}
+.btnRed
+{
+	background-color: #BB341A;
+	height: 60px;
+	width: 274px;
+	margin-top: 10px;
+}
+.btnGreen
+{
+	background-color: #809B21;
+	height: 60px;
+	width: 274px;
+	margin-top: 10px;
+}
+.btnRed
+{
+	background-color: #BB341A;
+	height: 60px;
+	width: 274px;
+	margin-top: 10px;
 }
 
-.colLeft
+/* Update Status Buttons */
+#updateStatusForm
+ {
+	background-color: #E4E5AC;
+	width: 80%;
+	margin-top: -12%;
+	margin-right: 10%;
+	margin-bottom: 0%;
+	margin-left: 10%;
+}
+#updateStatusSubmit
+{
+	background: url('../img/arrowUpdate.jpg') no-repeat top left;
+	background-size: 100% 100%;
+	width: 185px;
+	height: 68px;
+	position: relative;
+	left: 35.5%
+}
+#updateStatusSubmit:hover 
+{
+	background: url('../img/arrowUpdateHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
+	width: 185px;
+	height: 68px;
+	position: relative;
+	left: 35.5%
+}
+#updateStatusBack 
+{
+	background: url('../img/arrow.jpg') no-repeat top left;
+	background-size: 100% 100%;
+	width: 68px;
+	height: 68px;
+	position: relative;
+	right: 35.5%
+}
+#updateStatusBack:hover 
+{
+	background: url('../img/arrowHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
+	width: 68px;
+	height: 68px;
+	position: relative;
+	right: 35.5%
+}
+
+/*END BUTTONS*/
+#driverMenu
+{
+	margin: auto; 
+	margin-top:80px; 
+	margin-bottom: 160px; 
+	width: 65%; 
+	min-width: 280px;
+	border:2px 
+	solid #999; 
+	background-color: white; 
+	padding-top: 30px; 
+	padding-bottom: 30px; 
+	border-radius: 40px 40px 40px 40px;
+}
+.alignright
 {
 	text-align: right;
 }
-.colRight
+.alignLeft
 {
 	text-align: left;
 }
-
 .colName
 {
 	width: 10px;
 	background: black;
 }
 
+/*update status page*/
+div.notes 
+{
+	width: 80%;
+	color: #000000;
+	background-color: #434343;
+	border: 1px solid #ebebeb;
+	padding-left: 10%;
+	padding: 1.2%;
+	border-radius: 4px;
+	line-height: 1.15em;
+	word-wrap: break-word;
+	margin: 12% auto;
+}
+.notes h4 
+{
+	color: white;
+	padding-top: 0px;
+	text-align: left;
+}
+.notes textarea 
+{
+	border-radius: 10px;
+}
+#clearBoth
+{
+	clear: both;
+}

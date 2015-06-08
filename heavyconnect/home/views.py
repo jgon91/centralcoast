@@ -23,22 +23,6 @@ def updatedDate(request):
 	result = df.format('D, F j Y - g:i A')
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-@login_required
-def driver(request):
-	return render(request, 'driver/indexDriver.html')
-
-@login_required
-def header(request):
-	return render(request, 'template/header.html')
-
-@login_required
-def taskFlow(request):
-	return render(request, 'template/taskFlow.html')
-
-@login_required
-def timeKepper(request):
-	return render(request, 'template/timeKepper.html')
-
 def login(request):
 	#validating the received form
 	form = loginForm(request.POST)
@@ -71,3 +55,35 @@ def login(request):
 def logout(request):
 	auth_logout(request)
 	return redirect('home')
+
+@login_required
+def driver(request):
+	return render(request, 'driver/indexDriver.html')
+
+@login_required
+def header(request):
+	return render(request, 'template/header.html')
+
+@login_required
+def footer(request):
+	return render(request, 'template/footer.html')
+
+@login_required
+def menu_left(request):
+	return render(request, 'template/menuLeft.html')
+
+@login_required
+def task_flow(request):
+	return render(request, 'driver/taskFlow.html')
+
+@login_required
+def timeKepper(request):
+	return render(request, 'template/timeKepper.html')
+
+@login_required
+def equipament(request):
+	return render(request, 'driver/equipment.html')
+
+@login_required
+def time_keeper(request):
+	return render(request, 'driver/timeKepper.html')

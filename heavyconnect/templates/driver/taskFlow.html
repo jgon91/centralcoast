@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
+		{% load staticfiles %}
 		<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
 		<script>
 			$(document).ready(function() {
@@ -23,9 +24,8 @@
 	</head>
 	<body onload="display_ct();">
 		<!-- Different background -->
-		<div id="wrapper">
 		<header id="head"></header>
-
+		<div id="wrapper">
 			<div class="row">
 				<div class="col-xs-12 col-md-12">
 					<img id="logo" src="{% static 'img/logo.png'%}" />
@@ -83,7 +83,7 @@
 				</div>
 			</div>
 			<span id='ct' ></span>
-			<footer id="foot"></footer>
 		</div>
+		<footer id="foot"></footer>
 	</body>
 </html>

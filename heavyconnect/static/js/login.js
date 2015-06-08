@@ -1,4 +1,4 @@
-function login (token) {
+function process_login() {
 	console.log("function called")
 	$.ajax({
 		method: "POST",

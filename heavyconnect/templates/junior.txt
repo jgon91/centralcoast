@@ -1,0 +1,20 @@
+Dr. Dr.
+
+var home = "footer.html"  
+  
+$(function(){  
+    navegar(home);  
+    atribuir();  
+})  
+  
+atribuir = function() {  
+    $("ul#menu li footer").click(function(){  
+        navegar($(this).attr("href"));  
+  
+        return false;  
+    })  
+}  
+  
+navegar = function(pagina) {  
+    $("#conteudo").load( pagina );        
+} 
