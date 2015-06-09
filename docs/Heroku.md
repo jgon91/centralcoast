@@ -15,3 +15,5 @@ According to the Heroku tutorial, after setting everything up you run
 and you'd be good to go, but our process is a little bit different.
 
 We decided to deploy directly from Github, which means that all the code on the branch master should be good for production. If you have any code that is not ready yet to go on production you should keep it out of the master branch.
+
+P.S.: Deploying directly from Heroku means that we don't have a CI process defined yet, but we're working on it.
