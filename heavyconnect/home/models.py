@@ -288,25 +288,4 @@ class ImplementService(models.Model):
 	expected_date = models.DateTimeField()
 	done = models.BooleanField()
 	price =models.FloatField()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#jajaja
