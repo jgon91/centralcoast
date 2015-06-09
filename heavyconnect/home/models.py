@@ -2,10 +2,10 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Manufacturer(models.Model):
-	man_name = models.CharField(max_length = 20)
+	name = models.CharField(max_length = 20)
 
 	def __unicode__(self):
-		return self.man_name
+		return self.name
 
 class ManufacturerModel(models.Model):
 	manufacturer_id = models.IntegerField
@@ -38,7 +38,7 @@ class Machine(models.Model):
 		(4, u'4N'),
 		(5, u'4'),
 		(6, u'5'),
-		)
+	)
 	DRAWBAR_CHOICES = (
 		(1, '1'),
 		(2, '2'),
@@ -47,7 +47,7 @@ class Machine(models.Model):
 		(5, '4WS'),
 		(6, '5'),
 		(7, '5WS'),
-		)
+	)
 	manufacturer_model_id = models.ForeignKey(ManufacturerModel)
 	repair_shop_id = models.ForeignKey(RepairShop)
 	shop_id = models.ForeignKey(Shop)
@@ -60,7 +60,7 @@ class Machine(models.Model):
 	drawbar_category = models.IntegerField(choices = DRAWBAR_CHOICES)
 	speed_range_min = models.FloatField()
 	speed_range_max = models.FloatField()
-	year_purchased = models.DateField()
+	year_purchased = models.IntegerField()
 	engine_hours = models.IntegerField()
 	service_interval = models.IntegerField()
 	base_cost = models.FloatField()
@@ -69,7 +69,7 @@ class Machine(models.Model):
 	rear_tires = models.CharField(max_length = 20)
 	steering = (('Manual', 'M'), ('GPS', 'G'))
 	operator_station = (('Cab', 'C'), ('Open', 'O'))
-	Machine_status = (('Ok', 1), ('Attention', 2), ('Broken', 3), ('Quarantine', 4))
+	status = (('Ok', 1), ('Attention', 2), ('Broken', 3), ('Quarantine', 4))
 	hour_cost = models.FloatField()
 	photo = models.URLField(max_length=200)
 
@@ -82,14 +82,14 @@ class Implement(models.Model):
 	shop_id = models.ForeignKey(Shop)
 	qr_code = models.CharField(max_length = 10)
 	asset_number = models.CharField(max_length = 15)
-	serial_number = models.CharField(max_length = 25, null = True)
+	serial_number = models.CharField(max_length = 25)
 	horse_power_req = models.IntegerField()
 	hitch_capacity_req = models.IntegerField()
 	hitch_category = models.IntegerField(choices = Machine.HITCH_CHOICES)
 	drawbar_category = models.IntegerField(choices = Machine.DRAWBAR_CHOICES)
 	speed_range_min = models.FloatField()
 	speed_range_max = models.FloatField()
-	year_purchased = models.DateField()
+	year_purchased = models.IntegerField()
 	implement_hours = models.IntegerField()
 	service_interval = models.IntegerField()
 	base_cost = models.FloatField()
@@ -106,7 +106,7 @@ class Employee(models.Model):
 	qr_code = models.CharField(max_length = 10)
 	start_date = models.DateField()
 	hour_cost = models.FloatField()
-	permission_level = models.IntegerField()
+	permission_level = (('Driver', 1), ('Manager', 2))
 	photo = models.URLField(max_length=200)
 
 	def __unicode__(self):
@@ -115,10 +115,15 @@ class Employee(models.Model):
 
 class EmployeeAttendance(models.Model):
 	employee_id = models.ForeignKey(Employee)
-	e_date = models.DateField()
+	date = models.DateField()
 	hour_started = models.TimeField()
 	hour_ended = models.TimeField()
-	break_tome =models.TimeField()
+	morning_break = models.TimeField()
+	morning_break_end = models.TimeField()
+	afternoon_break = models.TimeField()
+	afternoon_break_end = models.TimeField()
+	evening_break = models.TimeField()
+	evening_break_end = models.TimeField()
 
 	def __unicode__(self):
 		return self.e_date
@@ -136,7 +141,7 @@ class Certification(models.Model):
 class EmployeeQualifications(models.Model):
 	employee_id =  models.ForeignKey(Employee)
 	qualification_id =  models.ForeignKey(Qualification)
-	q_level = models.IntegerField()
+	level = (('Low', 1), ('Medium', 2), ('High', 3))
 
 	def __unicode__(self):
 		return self.employee_id + qualification_id + q_level
@@ -149,7 +154,7 @@ class EmployeeCertifications(models.Model):
 		return self.employee_id + certification_id
 
 class MachineQualification(models.Model):
-	Machine_id = models.ForeignKey(Machine)
+	machine_id = models.ForeignKey(Machine)
 	qualification_id = models.ForeignKey(Qualification)
 	qualification_required = models.IntegerField()
 
@@ -157,7 +162,7 @@ class MachineQualification(models.Model):
 		return self.Machine_id + self.qualification_id + qualification_required
 
 class MachineCertification(models.Model):
-	Machine_id =  models.ForeignKey(Machine)
+	machine_id =  models.ForeignKey(Machine)
 	certification_id = models.ForeignKey(Certification)
 
 	def __unicode__(self):
@@ -216,7 +221,7 @@ class Task(models.Model):
 	hours_prediction = models.FloatField()
 	description =  models.CharField(max_length = 500)
 	passes = models.IntegerField()
-	t_date = models.DateTimeField()
+	date = models.DateTimeField()
 	accomplished = models.BooleanField()
 	approval = models.BooleanField()
 
@@ -228,20 +233,21 @@ class EmployeeTask(models.Model):
 	task_id = models.IntegerField()
 	task_init = models.DateField()
 	hours_sepnt = models.FloatField()
+	substitution = models.BooleanField()
 
 	def __unicode__(self):
 		return self.employee_id + self.task_init + self.hours_sepnt
 
 class TaskImplementMachine(models.Model):
 	task_id = models.IntegerField()
-	Machine_id = models.IntegerField()
+	machine_id = models.IntegerField()
 	implement_id = models.IntegerField()
+	machine = models.BooleanField()
 
 	def __unicode__(self):
 		return self.task_id + self.Machine_id + self.implement_id
 
 class Appendix(models.Model):
-	a_id = models.IntegerField()
 	a_type =  models.CharField(max_length = 20)
 
 	def __unicode__(self):
@@ -264,14 +270,14 @@ class ServiceCategory(models.Model):
 
 class Service(models.Model):
 	category_id = models.IntegerField()
-	s_date = models.DateTimeField()
+	date = models.DateTimeField()
 	done = models.BooleanField()
 
 	def __unicode__(self):
 		return self.category_id + self.s_date + self.done
 
 class MachineService(models.Model):
-	Machine_id = models.ForeignKey(Machine)
+	machine_id = models.ForeignKey(Machine)
 	service_id = models.ForeignKey(Service)
 	description = models.CharField(max_length = 200)
 	done = models.BooleanField()
@@ -287,5 +293,4 @@ class ImplementService(models.Model):
 	description = models.CharField(max_length = 200)
 	expected_date = models.DateTimeField()
 	done = models.BooleanField()
-	price =models.FloatField()
-#jajaja
+	price = models.FloatField()
