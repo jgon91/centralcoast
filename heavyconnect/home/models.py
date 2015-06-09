@@ -156,7 +156,7 @@ class EmployeeCertifications(models.Model):
 class MachineQualification(models.Model):
 	machine_id = models.ForeignKey(Machine)
 	qualification_id = models.ForeignKey(Qualification)
-	qualification_required = models.IntegerField()
+	qualification_required = (('Low', 1), ('Medium', 2), ('High', 3))
 
 	def __unicode__(self):
 		return self.Machine_id + self.qualification_id + qualification_required
@@ -171,7 +171,7 @@ class MachineCertification(models.Model):
 class ImplementQualification(models.Model):
 	implement_id = models.ForeignKey(Implement)
 	qualification_id = models.ForeignKey(Qualification)
-	qualification_required = models.IntegerField()
+	qualification_required = (('Low', 1), ('Medium', 2), ('High', 3))
 
 	def __unicode__(self):
 		return self.implement_id + self.qualification_id + qualification_required
@@ -229,19 +229,19 @@ class Task(models.Model):
 		return self.field_id + self.rate_cost + self.description
 
 class EmployeeTask(models.Model):
-	employee_id = models.IntegerField()
-	task_id = models.IntegerField()
+	employee_id = models.ForeignKey(Employee)
+	task_id = models.ForeignKey(Task)
 	task_init = models.DateField()
-	hours_sepnt = models.FloatField()
+	hours_spent = models.FloatField()
 	substitution = models.BooleanField()
 
 	def __unicode__(self):
 		return self.employee_id + self.task_init + self.hours_sepnt
 
 class TaskImplementMachine(models.Model):
-	task_id = models.IntegerField()
-	machine_id = models.IntegerField()
-	implement_id = models.IntegerField()
+	task_id = models.ForeignKey(Task)
+	machine_id = models.ForeignKey(Machine)
+	implement_id = models.IntegerField(Implement)
 	machine = models.BooleanField()
 
 	def __unicode__(self):

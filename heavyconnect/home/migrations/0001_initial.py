@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 from django.conf import settings
+import home.models
 
 
 class Migration(migrations.Migration):
@@ -16,7 +17,6 @@ class Migration(migrations.Migration):
             name='Appendix',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('a_id', models.IntegerField()),
                 ('a_type', models.CharField(max_length=20)),
             ],
         ),
@@ -45,7 +45,6 @@ class Migration(migrations.Migration):
                 ('qr_code', models.CharField(max_length=10)),
                 ('start_date', models.DateField()),
                 ('hour_cost', models.FloatField()),
-                ('permission_level', models.IntegerField()),
                 ('photo', models.URLField()),
                 ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
@@ -54,10 +53,15 @@ class Migration(migrations.Migration):
             name='EmployeeAttendance',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('e_date', models.DateField()),
+                ('date', models.DateField()),
                 ('hour_started', models.TimeField()),
                 ('hour_ended', models.TimeField()),
-                ('break_tome', models.TimeField()),
+                ('morning_break', models.TimeField()),
+                ('morning_break_end', models.TimeField()),
+                ('afternoon_break', models.TimeField()),
+                ('afternoon_break_end', models.TimeField()),
+                ('evening_break', models.TimeField()),
+                ('evening_break_end', models.TimeField()),
                 ('employee_id', models.ForeignKey(to='home.Employee')),
             ],
         ),
@@ -81,7 +85,6 @@ class Migration(migrations.Migration):
             name='EmployeeQualifications',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('q_level', models.IntegerField()),
                 ('employee_id', models.ForeignKey(to='home.Employee')),
             ],
         ),
@@ -89,10 +92,10 @@ class Migration(migrations.Migration):
             name='EmployeeTask',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('employee_id', models.IntegerField()),
-                ('task_id', models.IntegerField()),
                 ('task_init', models.DateField()),
-                ('hours_sepnt', models.FloatField()),
+                ('hours_spent', models.FloatField()),
+                ('substitution', models.BooleanField()),
+                ('employee_id', models.ForeignKey(to='home.Employee')),
             ],
         ),
         migrations.CreateModel(
@@ -125,14 +128,14 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('qr_code', models.CharField(max_length=10)),
                 ('asset_number', models.CharField(max_length=15)),
-                ('serial_number', models.CharField(max_length=25, null=True)),
+                ('serial_number', models.CharField(max_length=25)),
                 ('horse_power_req', models.IntegerField()),
                 ('hitch_capacity_req', models.IntegerField()),
                 ('hitch_category', models.IntegerField(choices=[(1, '1'), (2, '2'), (3, '3'), (4, '4N'), (5, '4'), (6, '5')])),
                 ('drawbar_category', models.IntegerField(choices=[(1, b'1'), (2, b'2'), (3, b'3'), (4, b'4'), (5, b'4WS'), (6, b'5'), (7, b'5WS')])),
                 ('speed_range_min', models.FloatField()),
                 ('speed_range_max', models.FloatField()),
-                ('year_purchased', models.DateField()),
+                ('year_purchased', models.IntegerField()),
                 ('implement_hours', models.IntegerField()),
                 ('service_interval', models.IntegerField()),
                 ('base_cost', models.FloatField()),
@@ -152,7 +155,6 @@ class Migration(migrations.Migration):
             name='ImplementQualification',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('qualification_required', models.IntegerField()),
                 ('implement_id', models.ForeignKey(to='home.Implement')),
             ],
         ),
@@ -180,7 +182,7 @@ class Migration(migrations.Migration):
                 ('drawbar_category', models.IntegerField(choices=[(1, b'1'), (2, b'2'), (3, b'3'), (4, b'4'), (5, b'4WS'), (6, b'5'), (7, b'5WS')])),
                 ('speed_range_min', models.FloatField()),
                 ('speed_range_max', models.FloatField()),
-                ('year_purchased', models.DateField()),
+                ('year_purchased', models.IntegerField()),
                 ('engine_hours', models.IntegerField()),
                 ('service_interval', models.IntegerField()),
                 ('base_cost', models.FloatField()),
@@ -194,16 +196,15 @@ class Migration(migrations.Migration):
             name='MachineCertification',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('Machine_id', models.ForeignKey(to='home.Machine')),
                 ('certification_id', models.ForeignKey(to='home.Certification')),
+                ('machine_id', models.ForeignKey(to='home.Machine')),
             ],
         ),
         migrations.CreateModel(
             name='MachineQualification',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('qualification_required', models.IntegerField()),
-                ('Machine_id', models.ForeignKey(to='home.Machine')),
+                ('machine_id', models.ForeignKey(to='home.Machine')),
             ],
         ),
         migrations.CreateModel(
@@ -214,14 +215,14 @@ class Migration(migrations.Migration):
                 ('done', models.BooleanField()),
                 ('expected_date', models.DateTimeField()),
                 ('price', models.FloatField()),
-                ('Machine_id', models.ForeignKey(to='home.Machine')),
+                ('machine_id', models.ForeignKey(to='home.Machine')),
             ],
         ),
         migrations.CreateModel(
             name='Manufacturer',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('man_name', models.CharField(max_length=20)),
+                ('name', models.CharField(max_length=20)),
             ],
         ),
         migrations.CreateModel(
@@ -252,7 +253,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('category_id', models.IntegerField()),
-                ('s_date', models.DateTimeField()),
+                ('date', models.DateTimeField()),
                 ('done', models.BooleanField()),
             ],
         ),
@@ -282,7 +283,7 @@ class Migration(migrations.Migration):
                 ('hours_prediction', models.FloatField()),
                 ('description', models.CharField(max_length=500)),
                 ('passes', models.IntegerField()),
-                ('t_date', models.DateTimeField()),
+                ('date', models.DateTimeField()),
                 ('accomplished', models.BooleanField()),
                 ('approval', models.BooleanField()),
                 ('field_id', models.ForeignKey(to='home.Field')),
@@ -292,9 +293,10 @@ class Migration(migrations.Migration):
             name='TaskImplementMachine',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('task_id', models.IntegerField()),
-                ('Machine_id', models.IntegerField()),
-                ('implement_id', models.IntegerField()),
+                ('implement_id', models.IntegerField(verbose_name=home.models.Implement)),
+                ('machine', models.BooleanField()),
+                ('machine_id', models.ForeignKey(to='home.Machine')),
+                ('task_id', models.ForeignKey(to='home.Task')),
             ],
         ),
         migrations.AddField(
@@ -351,6 +353,11 @@ class Migration(migrations.Migration):
             model_name='fieldlocalization',
             name='gps_id',
             field=models.ForeignKey(to='home.GPS'),
+        ),
+        migrations.AddField(
+            model_name='employeetask',
+            name='task_id',
+            field=models.ForeignKey(to='home.Task'),
         ),
         migrations.AddField(
             model_name='employeequalifications',
