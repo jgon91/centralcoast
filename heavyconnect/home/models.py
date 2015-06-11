@@ -120,6 +120,12 @@ class Employee(models.Model):
 	def __unicode__(self):
 		return  "User ID: "+ str(self.user.id)+ ", First Name: " + str(self.user.first_name) + ", Last Name: " + str(self.user.last_name)
 
+class EmployeeWithdrawn(models.Model):
+	employee_id = models.ForeignKey(Employee)
+	date = models.DateField()
+
+	def __unicode__(self):
+		return "Date: " + str(self.date) + "Salles Name: " + str(self.employee_id.user.last_name)
 
 class EmployeeAttendance(models.Model):
 	employee_id = models.ForeignKey(Employee)
@@ -247,7 +253,7 @@ class Task(models.Model):
 class EmployeeTask(models.Model):
 	employee_id = models.ForeignKey(Employee)
 	task_id = models.ForeignKey(Task)
-	task_init = models.DateField()
+	task_init = models.DateTimeField()
 	hours_spent = models.FloatField()
 	substitution = models.BooleanField()
 

@@ -3,6 +3,7 @@ from models import *
 
 admin.site.register(Manufacturer)
 admin.site.register(ManufacturerModel)
+admin.site.register(EmployeeWithdrawn)
 admin.site.register(RepairShop)
 admin.site.register(Shop)
 admin.site.register(Machine)
