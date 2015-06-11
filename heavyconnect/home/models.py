@@ -125,7 +125,7 @@ class EmployeeWithdrawn(models.Model):
 	date = models.DateField()
 
 	def __unicode__(self):
-		return "Date: " + str(self.date) + "Salles Name: " + str(self.employee_id.user.last_name)
+		return "Date: " + str(self.date) + ", Name: " + str(self.employee_id.user.last_name)
 
 class EmployeeAttendance(models.Model):
 	employee_id = models.ForeignKey(Employee)
@@ -214,8 +214,8 @@ class Field(models.Model):
 		return "Name: " + str(self.name) + ", Organic: " +  str(self.organic) + ", Size: " +  str(self.size)
 
 class GPS(models.Model):
-	latitude = models.CharField(max_length = 15)
-	longitude = models.CharField(max_length = 15)
+	latitude = models.FloatField()
+	longitude = models.FloatField()
 
 	def __unicode__(self):
 		return "Lati: " +str(self.latitude) + " " +  "Long: " +str(self.longitude)
@@ -229,11 +229,12 @@ class FieldLocalization(models.Model):
 
 class EmployeeLocalization(models.Model):
 	employee_id = models.ForeignKey(Employee)
-	gps_id = models.ForeignKey(GPS)
+	latitude = models.FloatField()
+	longitude = models.FloatField()
 	e_time = models.DateTimeField()
 
 	def __unicode__(self):
-		return str(self.employee_id) + " " +  str(self.gps_id) + " " +  str(self.e_time)
+		return "Employee: " + str(self.employee_id.last_name) + ", Latitude: " +  str(self.latitude) + ", Longitude: " +  str(self.longitude) + ", Date: " + str(self.e_time)
 
 class Task(models.Model):
 	field_id = models.ForeignKey(Field)
