@@ -33,12 +33,12 @@ class Shop(models.Model):
 
 class Machine(models.Model):
 	HITCH_CHOICES = (
-		(1, u'1'),
-		(2, u'2'),
-		(3, u'3'),
-		(4, u'4N'),
-		(5, u'4'),
-		(6, u'5'),
+		(1, '1'),
+		(2, '2'),
+		(3, '3'),
+		(4, '4N'),
+		(5, '4'),
+		(6, '5'),
 	)
 	DRAWBAR_CHOICES = (
 		(1, '1'),
