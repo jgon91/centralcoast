@@ -33,12 +33,12 @@ class Shop(models.Model):
 
 class Machine(models.Model):
 	HITCH_CHOICES = (
-		(1, u'1'),
-		(2, u'2'),
-		(3, u'3'),
-		(4, u'4N'),
-		(5, u'4'),
-		(6, u'5'),
+		(1, '1'),
+		(2, '2'),
+		(3, '3'),
+		(4, '4N'),
+		(5, '4'),
+		(6, '5'),
 	)
 	DRAWBAR_CHOICES = (
 		(1, '1'),
@@ -120,6 +120,12 @@ class Employee(models.Model):
 	def __unicode__(self):
 		return  "User ID: "+ str(self.user.id)+ ", First Name: " + str(self.user.first_name) + ", Last Name: " + str(self.user.last_name)
 
+class EmployeeWithdrawn(models.Model):
+	employee_id = models.ForeignKey(Employee)
+	date = models.DateField()
+
+	def __unicode__(self):
+		return "Date: " + str(self.date) + ", Name: " + str(self.employee_id.user.last_name)
 
 class EmployeeAttendance(models.Model):
 	employee_id = models.ForeignKey(Employee)
@@ -208,8 +214,8 @@ class Field(models.Model):
 		return "Name: " + str(self.name) + ", Organic: " +  str(self.organic) + ", Size: " +  str(self.size)
 
 class GPS(models.Model):
-	latitude = models.CharField(max_length = 15)
-	longitude = models.CharField(max_length = 15)
+	latitude = models.FloatField()
+	longitude = models.FloatField()
 
 	def __unicode__(self):
 		return "Lati: " +str(self.latitude) + " " +  "Long: " +str(self.longitude)
@@ -223,11 +229,12 @@ class FieldLocalization(models.Model):
 
 class EmployeeLocalization(models.Model):
 	employee_id = models.ForeignKey(Employee)
-	gps_id = models.ForeignKey(GPS)
+	latitude = models.FloatField()
+	longitude = models.FloatField()
 	e_time = models.DateTimeField()
 
 	def __unicode__(self):
-		return str(self.employee_id) + " " +  str(self.gps_id) + " " +  str(self.e_time)
+		return "Employee: " + str(self.employee_id.last_name) + ", Latitude: " +  str(self.latitude) + ", Longitude: " +  str(self.longitude) + ", Date: " + str(self.e_time)
 
 class Task(models.Model):
 	field_id = models.ForeignKey(Field)
@@ -247,7 +254,7 @@ class Task(models.Model):
 class EmployeeTask(models.Model):
 	employee_id = models.ForeignKey(Employee)
 	task_id = models.ForeignKey(Task)
-	task_init = models.DateField()
+	task_init = models.DateTimeField()
 	hours_spent = models.FloatField()
 	substitution = models.BooleanField()
 
@@ -312,7 +319,7 @@ class ImplementService(models.Model):
 	price = models.FloatField()
 
 	def __unicode__(self):
-		return "Dcescription: " + str(self.description) + ", Expected Date: " + str(self.expected_date) + ", Price: " + str(self.price) + ", Done " + str(self.done) 
+		return "Description: " + str(self.description) + ", Expected Date: " + str(self.expected_date) + ", Price: " + str(self.price) + ", Done " + str(self.done) 
 
 
 
