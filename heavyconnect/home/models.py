@@ -319,7 +319,7 @@ class ImplementService(models.Model):
 	price = models.FloatField()
 
 	def __unicode__(self):
-		return "Dcescription: " + str(self.description) + ", Expected Date: " + str(self.expected_date) + ", Price: " + str(self.price) + ", Done " + str(self.done) 
+		return "Description: " + str(self.description) + ", Expected Date: " + str(self.expected_date) + ", Price: " + str(self.price) + ", Done " + str(self.done) 
 
 
 
