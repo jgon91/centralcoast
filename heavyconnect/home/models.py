@@ -236,9 +236,15 @@ class EmployeeLocalization(models.Model):
 	def __unicode__(self):
 		return "Employee: " + str(self.employee_id.last_name) + ", Latitude: " +  str(self.latitude) + ", Longitude: " +  str(self.longitude) + ", Date: " + str(self.e_time)
 
+class TaskCategory(models.Model):
+	description = models.CharField(max_length = 30)
+
+	def __unicode__(self):
+		return "ID: " + str(self.id) + ", Category: " + str(self.description)
+
 class Task(models.Model):
 	field_id = models.ForeignKey(Field)
-	t_type = models.CharField(max_length = 100)
+	category = models.ForeignKey(TaskCategory)
 	rate_cost = models.FloatField()
 	hours_spent = models.FloatField()
 	hours_prediction = models.FloatField()
@@ -249,7 +255,7 @@ class Task(models.Model):
 	approval = models.BooleanField()
 
 	def __unicode__(self):
-		return "Field Name: " + str(self.field_id.name) + ", Hour Cost: " +  str(self.rate_cost) + ", Description: " +  str(self.description)
+		return "Field Name: " + str(self.field_id.name) + "Category: " + str(self.category.description) + ", Hour Cost: " +  str(self.rate_cost) + ", Description: " +  str(self.description)
 
 class EmployeeTask(models.Model):
 	employee_id = models.ForeignKey(Employee)
