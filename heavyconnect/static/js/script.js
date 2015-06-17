@@ -181,12 +181,12 @@
 		for (var i = 0; i < number_of_tractors; i++) {
 
 			if (i > 35) {
-				$("#" + tab).append("<div class=\"infoTractor hideout\"><a href=\"equipmentManager.html?equipmentId\"><img src=\"../static/img/" + imgs + "\"/><p>ID</p></a></div>");
+				$("#" + tab).append("<div class=\"infoTractor hideout\"><a href=\"equipmentManager.html?equipmentId\"><img src=\"/static/img/" + imgs + "\"/><p>ID</p></a></div>");
 				//if(i == 36)
 				//$("#container").append("<button id=\"viewMore\" type=\"button\" class=\"btn btn-info btn-block\">View More</button>")
 			} else
 				//$("#" + tab).append("<div class=\"infoTractor\"><a href=\"equipmentManager.html?equipmentId\"><img src=\"../img/" + imgs + "\"/><p>ID</p></a></div>");
-				$("#" + tab).append("<div class=\"infoTractor\"><img src='../img/TractorGood.png' /><p>ID</p></div>");
+				$("#" + tab).append("<div class=\"infoTractor\"><a href=\"equipmentManager.html?equipmentId\"><img src=\"/static/img/" + imgs + "\"/><p>ID</p></a></div>");
 
 		}
 
