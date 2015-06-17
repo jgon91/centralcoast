@@ -86,7 +86,7 @@ def task_flow(request):
 
 @login_required
 def timeKepper(request):
-	return render(request, 'template/timeKepper.html')
+	return render(request, 'driver/timeKepper.html')
 
 @login_required
 def equipament(request):
@@ -115,3 +115,7 @@ def checklist(request):
 @login_required
 def fleet(request):
     return render(request, 'manager/fleet.html')
+
+@login_required
+def headerManager(request):
+    return render(request, 'template/headerManager.html')

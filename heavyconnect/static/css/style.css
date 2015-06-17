@@ -1,4 +1,3 @@
-/*TESTE*/
 body {
 	height: 100%;
 	width: 100%;
@@ -508,9 +507,44 @@ div.notes {
 }
 /* End TASKFLOW page */
 /* Begin CREATE TASKFLOW page */
-
-
-
+#contentCreateTask {
+	width: 80%;
+	margin: auto;
+	margin-top: 70px;
+}
+#flapTask a {
+	background: #809A21;
+	opacity: 0.5;
+	color: white;
+	border-radius: 0px;
+	width: 200px;
+}
+#flapTask li.active a {
+	opacity: 1.0;
+	height: 50px;
+	margin-top: -10px;
+}
+#flapTask a:hover {
+	opacity: 1.0;
+	background: #988173;
+}
+#divText {
+	background: #F3C902;
+}
+.divPart1 {
+	color: black;
+	width: 60%;
+	text-align: right;
+	height: 50px;
+}
+.divPart1 input[type=text] {
+	width: 100%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+#part1 {
+	
+}
 
 
 /* End TASKFLOW page */
@@ -714,6 +748,87 @@ div.notes {
 }
 /* End CHECKLIST page */
 
+/* Profile Page */
+
+.profileList {
+	list-style: none;
+	text-align: left;
+	padding-left: 0px;
+	color: black;
+}
+#userImage {
+	width: 131px;
+	height: 122px;
+	padding-left: 10px;
+}
+#userPicture {
+	width: 131px;
+	height: 122px;
+}
+#userInfo {
+	padding-top: 0px;
+	padding-left: 10px;
+	font-size: 16px;
+	width: 250px;
+	font-size: 20px;
+}
+#userInfo ul {
+	padding-left: 20px;
+}
+#rowUser {
+	margin-top: 60px;
+	padding-bottom: 10px;
+	border-bottom: solid 1px black;
+	border-right: solid 1px black;
+}
+#rowInfo {
+	padding-top: 10px;
+	margin-left: 0px;
+	border-right: solid 1px black;
+}
+#addInfo {
+	padding-top: 0px;
+	padding-left: 0px;
+	padding-bottom: 10px;
+	width: 230px;
+}
+#userAllInfo {
+	width: 470px;
+	margin-left: 2%;
+	padding-bottom: 10px;
+	font-size: 20px;
+}
+#notes {
+	border-radius: 10px;
+	color: black;
+	padding: 5px;
+}
+#containerProfile {
+	width: 80%;
+	text-align: left;
+	margin: auto;
+}
+#taskProfile {
+	text-align: left;
+	padding-top: 100px;
+	padding-left: 10px;
+	padding-bottom: 10px;
+	width: 100px;
+	height: 210px;
+	border-right: solid 1px white;
+	float: left;
+}
+#infoEquipment {
+	float: left;
+	padding-top: 10px;
+}
+#infoEquipment ul {
+	color: white;
+	padding-left: 10px;
+	font-size: 16px;
+	list-style: none;
+}
+/* End Profile Page*/
 
 
 

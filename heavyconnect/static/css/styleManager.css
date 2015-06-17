@@ -400,3 +400,86 @@ input[type="button"] {
 	height: 210px;
 }
 /*End EQUIPMENT MANAGER page*/
+/* Begin Fleet page*/
+
+#containerFleet {
+	margin: auto;
+	width: 1000px;
+	padding-top: 80px;
+}
+.infoTractor {
+	float: left;
+	width: 111px;
+	height: 90px;
+}
+#menu  a {
+	color: white;
+}
+#menu {
+	width: 100%;
+}
+#menu a:hover {
+	color: black;
+}
+#menu > li.active > a:hover {
+	color: black;
+}
+#menu > li > a {
+	border-radius: 0px;
+	padding-bottom: 5px;
+	padding-top: 5px;
+}
+#menu > #greenTab > a {
+	background-color: #809A21;
+}
+#menu > #yellowTab > a {
+	background-color: #F3C902;
+}
+#menu > #redTab > a {
+	background-color: #BB330C;
+}
+#menu > #grayTab > a {
+	background-color: #434343;
+}
+#menu > li.active > a {
+	padding-top: 15px;
+}
+#tractorContent {
+	margin: auto;
+	padding-top: 5px;
+}
+#tractorContent a {
+	text-decoration: none;
+	color: black;
+}
+.tab-content > #goodTab a {
+	color: #809A21;
+}
+.tab-content > #serviceTab a {
+	color: #F3C902;
+}
+.tab-content > #brokenTab a {
+	color: #BB330C;
+}
+.tab-content > #repairTab a {
+	color: #434343;
+}
+.tab-content > #goodTab .infoTractor {
+	border: solid 1px #809A21;
+}
+.tab-content > #serviceTab .infoTractor {
+	border: solid 1px #F3C902;
+}
+.tab-content > #brokenTab .infoTractor {
+	border: solid 1px #BB330C;
+}
+.tab-content > #repairTab .infoTractor {
+	border: solid 1px #434343;
+}
+#viewMore {
+	width: 1000px;
+	border-radius: 0px;
+	background-color: #809A21;
+	border: none;
+}
+/*End Fleet Page*/
