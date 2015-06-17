@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, render_to_response
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
@@ -10,7 +10,6 @@ from home.forms import *
 
 def home(request):
 	if request.user.is_authenticated():
-		print "user is authenticate"
 	 	return redirect('driver')
 	else:
 		return render(request, 'home.html')
@@ -50,3 +49,34 @@ def login(request):
 def logout(request):
 	auth_logout(request)
 	return redirect('home')
+
+# @menezescode: Page only to show the form was correctly sended.
+def formok(request):
+	return render(request, 'formok.html')
+
+'''
+<menezescode:
+Just a quick explanation on how to test forms:
+	def FORMNAMEREHE(request):
+	    if request.method == 'POST': # If the form has been submitted...
+	        form = FORMNAMEREHE(request.POST) # A form bound to the POST data
+	        if form.is_valid(): # All validation rules pass
+	            # Process the data in form.cleaned_data
+	            # ...
+	            return HttpResponseRedirect('/thanks/') # Redirect after POST
+	    else:
+	        form = ContactForm() # An unbound form
+
+	    return render(request, 'THEPAGEYOUWANTTOBERETURNED.html', {
+	        'form': form,
+	    })
+If you need to test the forms change the form name.
+</menezescode>
+'''
+
+def registerManufacturer(request):
+	form = implementServiceForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})

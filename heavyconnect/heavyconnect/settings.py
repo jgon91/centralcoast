@@ -32,6 +32,7 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    #'django.contrib.gis',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home',
@@ -77,10 +78,10 @@ WSGI_APPLICATION = 'heavyconnect.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'd9gfceh6642m3k',                      # Or path to database file if using sqlite3.
-        'USER': 'oiyfrcynbvlyev',                      # Not used with sqlite3.
-        'PASSWORD': 'QI9jiCzj-h6WnhlSEiooEV9pnU',                  # Not used with sqlite3.
-        'HOST': 'ec2-54-83-41-183.compute-1.amazonaws.com',                      # Set to empty string for localhost. Not used with sqlite3.
+        'NAME': 'postgres',                      # Or path to database file if using sqlite3.
+        'USER': 'andremenezes',                      # Not used with sqlite3.
+        'PASSWORD': '',                  # Not used with sqlite3.
+        'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
@@ -91,13 +92,13 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'US/Pacific'
+TIME_ZONE = 'America/Los_Angeles'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
