@@ -132,12 +132,12 @@ class EmployeeAttendance(models.Model):
 	date = models.DateField()
 	hour_started = models.TimeField()
 	hour_ended = models.TimeField()
-	morning_break = models.TimeField()
-	morning_break_end = models.TimeField()
-	afternoon_break = models.TimeField()
-	afternoon_break_end = models.TimeField()
-	evening_break = models.TimeField()
-	evening_break_end = models.TimeField()
+	break_one = models.TimeField()
+	break_one_end = models.TimeField()
+	break_two = models.TimeField()
+	break_two_end = models.TimeField()
+	break_three = models.TimeField()
+	break_three_end = models.TimeField()
 
 	def __unicode__(self):
 		return "Employee: " + str(self.employee_id) + ", Date: " + str(self.date)
