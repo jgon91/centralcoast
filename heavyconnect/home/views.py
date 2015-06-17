@@ -50,8 +50,12 @@ def logout(request):
 	auth_logout(request)
 	return redirect('home')
 
+# @menezescode: Page only to show the form was correctly sended.
+def formok(request):
+	return render(request, 'formok.html')
+
 '''
-<andreemenezes:
+<menezescode:
 Just a quick explanation on how to test forms:
 	def FORMNAMEREHE(request):
 	    if request.method == 'POST': # If the form has been submitted...
@@ -67,12 +71,12 @@ Just a quick explanation on how to test forms:
 	        'form': form,
 	    })
 If you need to test the forms change the form name.
-</andreemenezes>
+</menezescode>
 '''
+
 def registerManufacturer(request):
-	form = machineForm(request.POST)
+	form = implementQualificationForm(request.POST)
 	if form.is_valid():
-		print "Jonh Snow dies!"
-		return redirect('home')
+		return redirect('formok')
 	else:
 		return render(request, 'formTEST.html', {'form': form})

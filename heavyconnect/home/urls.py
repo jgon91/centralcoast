@@ -7,4 +7,5 @@ urlpatterns = patterns('',
     url(r'^logout/$', logout, name='logout'),
     url(r'^driver/$', driver, name='driver'),
     url(r'^formTEST/$', registerManufacturer, name='registerManufacturer'),
+    url(r'^formok/$', formok, name = 'formok'),
 )
