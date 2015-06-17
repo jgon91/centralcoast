@@ -1,180 +1,96 @@
-/* Script checklist page */
-
-//Variables
-var answer1 = 9;
-var answer2 = 9;
-var answer3 = 9;
-var answer4 = 9;
-var answer5 = 9;
-
-// Events
-$("input[name=q1]:radio").change(firstQuestionChecked);
-$("input[name=q2]:radio").change(secondQuestionChecked);
-$("input[name=q3]:radio").change(thirdQuestionChecked);
-$("input[name=q4]:radio").change(fourthQuestionChecked);
-$("input[name=q5]:radio").change(fifthQuestionChecked);
-
-$("#q1").click(showQuestion1);
-$("#q2").click(showQuestion2);
-$("#q3").click(showQuestion3);
-$("#q4").click(showQuestion4);
-$("#q5").click(showQuestion5);
-
-$("#buttonSubmit").click(function() {
-	alert("Data has been updated!!" + "\n" + answer1 + "\n" + answer2 + "\n" + answer3 + "\n" + answer4 + "\n" + answer5);
-
-	return false;
-});
-
-$("#buttonBack").click(function() {
-
-});
-
-//Functions
-function showQuestion1() {
-	$("#checkList1").show();
-	$(this).css("border", "solid 5px #80982D");
-	$(this).css("padding", "10px");
-	$("#checkList2").hide();
-	$("#q2").css("border", "");
-	$("#checkList3").hide();
-	$("#q3").css("border", "");
-	$("#checkList4").hide();
-	$("#q4").css("border", "");
-	$("#checkList5").hide();
-	$("#q5").css("border", "");
-}
-
-function showQuestion2() {
-	$("#checkList2").show();
-	$(this).css("border", "solid 5px #80982D");
-	$(this).css("padding", "10px");
-	$("#checkList1").hide();
-	$("#q1").css("border", "");
-	$("#checkList3").hide();
-	$("#q3").css("border", "");
-	$("#checkList4").hide();
-	$("#q4").css("border", "");
-	$("#checkList5").hide();
-	$("#q5").css("border", "");
-}
-
-function showQuestion3() {
-	$("#checkList3").show();
-	$(this).css("border", "solid 5px #80982D");
-	$(this).css("padding", "10px");
-	$("#checkList1").hide();
-	$("#q1").css("border", "");
-	$("#checkList2").hide();
-	$("#q2").css("border", "");
-	$("#checkList4").hide();
-	$("#q4").css("border", "");
-	$("#checkList5").hide();
-	$("#q5").css("border", "");
-}
-
-function showQuestion4() {
-	$("#checkList4").show();
-	$(this).css("border", "solid 5px #80982D");
-	$(this).css("padding", "10px");
-	$("#checkList1").hide();
-	$("#q1").css("border", "");
-	$("#checkList2").hide();
-	$("#q2").css("border", "");
-	$("#checkList3").hide();
-	$("#q3").css("border", "");
-	$("#checkList5").hide();
-	$("#q5").css("border", "");
-}
-
-function showQuestion5() {
-	$("#checkList5").show();
-	$(this).css("border", "solid 5px #80982D");
-	$(this).css("padding", "10px");
-	$("#checkList1").hide();
-	$("#q1").css("border", "");
-	$("#checkList2").hide();
-	$("#q2").css("border", "");
-	$("#checkList4").hide();
-	$("#q3").css("border", "");
-	$("#checkList3").hide();
-	$("#q4").css("border", "");
-}
-
-function firstQuestionChecked() {
-	showQuestion2();
-
-	if ($("input[name='q1']:checked").val() == 1) {
-		$("#q1").css("background-color", "#80982D");
-		$("#q1").css("color", "white");
-		answer1 = $("input[name='q1']:checked").val();
-
-	} else if ($("input[name='q1']:checked").val() == 0) {
-		$("#q1").css("background-color", "#B9341A");
-		$("#q1").css("color", "white");
-		answer1 = $("input[name='q1']:checked").val();
+	/* Script checklist page */
+	function eventsCheckList() 
+	{
+		//Variables
+		var answer1 = 9; var answer2 = 9; var answer3 = 9; var answer4 = 9; var answer5 = 9;
+		
+		$("#q1").css("border", "solid 5px #FFF");
+		$("#q1").css("padding", "10px");
+		
+		// Events
+		$("input[name=q1]:radio").change(function(){
+			showQuestion("checkList2", "q2");
+			answer1 = questionChecked("q1");
+		});
+		
+		$("input[name=q2]:radio").change(function(){
+			showQuestion("checkList3", "q3");
+			answer2 = questionChecked("q2");
+		});
+		
+		$("input[name=q3]:radio").change(function(){
+			showQuestion("checkList4", "q4");
+			answer3 = questionChecked("q3");
+		});
+		
+		$("input[name=q4]:radio").change(function(){
+			showQuestion("checkList5", "q5");
+			answer4 = questionChecked("q4");
+		});
+		
+		$("input[name=q5]:radio").change(function(){
+			answer5 = questionChecked("q5");
+		});
+	
+		$("#q1").click(function(){
+			showQuestion("checkList1", "q1");
+		});
+		
+		$("#q2").click(function(){
+			showQuestion("checkList2", "q2");
+		});
+		
+		$("#q3").click(function(){
+			showQuestion("checkList3", "q3");
+		});
+		
+		$("#q4").click(function(){
+			showQuestion("checkList4", "q4");
+		});
+		
+		$("#q5").click(function(){
+			showQuestion("checkList5", "q5");
+		});
+	
+		$("#buttonSubmit").click(function() {
+			alert("Data has been updated!!" + "\n" + answer1 + "\n" + answer2 + "\n" + answer3 + "\n" + answer4 + "\n" + answer5);
+			return false;
+		});
 	}
-}
-
-function secondQuestionChecked() {
-	showQuestion3();
-
-	if ($("input[name='q2']:checked").val() == 1) {
-		$("#q2").css("background-color", "#80982D");
-		$("#q2").css("color", "white");
-		answer2 = $("input[name='q2']:checked").val();
-
-	} else if ($("input[name='q2']:checked").val() == 0) {
-		$("#q2").css("background-color", "#B9341A");
-		$("#q2").css("color", "white");
-		answer2 = $("input[name='q2']:checked").val();
+	
+	
+	//Functions
+	function showQuestion(checkedList, question){
+		
+		$("#q1").css("border", ""); $("#checkList1").hide();
+		$("#q2").css("border", ""); $("#checkList2").hide();
+		$("#q3").css("border", ""); $("#checkList3").hide();
+		$("#q4").css("border", ""); $("#checkList4").hide();
+		$("#q5").css("border", ""); $("#checkList5").hide();
+		$("#" + checkedList).fadeIn(500);
+		$("#" + question).css("border", "solid 5px #FFF");
+		$("#" + question).css("padding", "10px");
 	}
-}
-
-function thirdQuestionChecked() {
-	showQuestion4();
-
-	if ($("input[name='q3']:checked").val() == 1) {
-		$("#q3").css("background-color", "#80982D");
-		$("#q3").css("color", "white");
-		answer3 = $("input[name='q3']:checked").val();
-
-	} else if ($("input[name='q3']:checked").val() == 0) {
-		$("#q3").css("background-color", "#B9341A");
-		$("#q3").css("color", "white");
-		answer3 = $("input[name='q3']:checked").val();
+	
+	function questionChecked(question) 
+	{
+		
+		var answer = 0;
+	
+		if ($("input[name='"+question+"']:checked").val() == 1) {
+			$("#" + question).css("background-color", "#80982D");
+			$("#" + question).css("color", "white");
+			answer = 1;
+			return answer;
+	
+		} else if ($("input[name='"+question+"']:checked").val() == 0) {
+			$("#" + question).css("background-color", "#B9341A");
+			$("#" + question).css("color", "white");
+			answer = 0;
+			return answer;
+		}
 	}
-}
-
-function fourthQuestionChecked() {
-	showQuestion5();
-
-	if ($("input[name='q4']:checked").val() == 1) {
-		$("#q4").css("background-color", "#80982D");
-		$("#q4").css("color", "white");
-		answer4 = $("input[name='q4']:checked").val();
-
-	} else if ($("input[name='q4']:checked").val() == 0) {
-		$("#q4").css("background-color", "#B9341A");
-		$("#q4").css("color", "white");
-		answer4 = $("input[name='q4']:checked").val();
-	}
-}
-
-function fifthQuestionChecked() {
-
-	if ($("input[name='q5']:checked").val() == 1) {
-		$("#q5").css("background-color", "#80982D");
-		$("#q5").css("color", "white");
-		answer5 = $("input[name='q5']:checked").val();
-
-	} else if ($("input[name='q5']:checked").val() == 0) {
-		$("#q5").css("background-color", "#B9341A");
-		$("#q5").css("color", "white");
-		answer5 = $("input[name='q5']:checked").val();
-	}
-}
-
+	
 /*End checklist page */
 /*Begin MAP function*/
 	var x = document.getElementById("demo");
@@ -225,3 +141,91 @@ function fifthQuestionChecked() {
 		}
 	}
 /*End MAP function*/
+
+/* Begin Fleet page*/
+	
+	//Events
+	function loadEventsFleet() {
+		$("#greenTab").click(function() {
+			//alert("Show Good Tractors");
+
+			showTractors($(this).val());
+		});
+
+		$("#yellowTab").click(function() {
+			//alert("Show Good Tractors");
+
+			showTractors($(this).val());
+		});
+
+		$("#redTab").click(function() {
+			//alert("Show Good Tractors");
+
+			showTractors($(this).val());
+		});
+
+		$("#grayTab").click(function() {
+			//alert("Show Good Tractors");
+
+			showTractors($(this).val());
+		});
+		$("#viewMore").click(function() {
+			$(".hideout").slideDown(500);
+		});
+	}
+
+	// Functions
+	function showTractorStatus(tab, number_of_tractors, imgs) {
+		$("#" + tab).html("");
+
+		for (var i = 0; i < number_of_tractors; i++) {
+
+			if (i > 35) {
+				$("#" + tab).append("<div class=\"infoTractor hideout\"><a href=\"equipmentManager.html?equipmentId\"><img src=\"../static/img/" + imgs + "\"/><p>ID</p></a></div>");
+				//if(i == 36)
+				//$("#container").append("<button id=\"viewMore\" type=\"button\" class=\"btn btn-info btn-block\">View More</button>")
+			} else
+				//$("#" + tab).append("<div class=\"infoTractor\"><a href=\"equipmentManager.html?equipmentId\"><img src=\"../img/" + imgs + "\"/><p>ID</p></a></div>");
+				$("#" + tab).append("<div class=\"infoTractor\"><img src='../img/TractorGood.png' /><p>ID</p></div>");
+
+		}
+
+		$("#" + tab + " .hideout").hide();
+	}
+
+	function showTractors(tractorStatus) {
+		
+		//Variables 
+		//Number of tractors static
+		var tractors = {
+			good : 54,
+			service : 45,
+			broken : 27,
+			repair : 18
+		};
+
+		if (tractorStatus == 0)//Green Tab
+		{
+			$("#viewMore").css("background-color", "#809A21");
+			showTractorStatus("goodTab", tractors["good"], "TractorGood.png");
+
+		} else if (tractorStatus == 1)//Yellow Tab
+		{
+			$("#viewMore").css("background-color", "#F3C902");
+			showTractorStatus("serviceTab", tractors["service"], "TractorService.png");
+
+		} else if (tractorStatus == 2)//Red Tab
+		{
+
+			$("#viewMore").css("background-color", "#BB330C");
+			showTractorStatus("brokenTab", tractors["broken"], "TractorBroken.png");
+
+		} else//Gray Tab
+		{
+			$("#viewMore").css("background-color", "#434343");
+			showTractorStatus("repairTab", tractors["repair"],"TractorRepair.png");
+		}
+
+	}
+
+/* End Fleet page*/
