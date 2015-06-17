@@ -75,7 +75,7 @@ If you need to test the forms change the form name.
 '''
 
 def registerManufacturer(request):
-	form = implementQualificationForm(request.POST)
+	form = implementServiceForm(request.POST)
 	if form.is_valid():
 		return redirect('formok')
 	else:

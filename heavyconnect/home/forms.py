@@ -2,6 +2,9 @@
 	@menezescode
 	06/10/2015
 	menezescode@gmail.com
+
+	notes: All the BooleanField are (required = False). This is hapening because if we don't
+	use the required false the form will only work wen the checkbox is marked.
 '''
 
 from django import forms
@@ -188,29 +191,36 @@ class machineQualificationForm(forms.Form):
 	qualification_required = forms.ChoiceField(choices = QUALIFICATIONREQUIRED_CHOICES)
 ### End ###
 
-### Structure for implementQualificationForm
+### Structure for implementQualificationForm ###
 class implementQualificationForm(forms.Form):
 	implement_id = forms.ModelChoiceField(queryset = Implement.objects.all())
 	qualification_id = forms.ModelChoiceField(queryset = Qualification.objects.all())
 	qualification_required = forms.ChoiceField(choices = machineQualificationForm.QUALIFICATIONREQUIRED_CHOICES)
 ### End ###
-'''
-class FieldForm(forms.Form):
-	name = forms.CharField()
-	organic = forms.BooleanField()
-	size =  forms.FloatField()
 
-class GPSForm(forms.Form):
+### Structure for fieldForm ###
+class fieldForm(forms.Form):
+	name = forms.CharField()
+	organic = forms.BooleanField(required = False)
+	size =  forms.FloatField()
+### End ###
+
+### Structure for gpsForm ###
+class gpsForm(forms.Form):
 	latitude = forms.CharField()
 	longitude = forms.CharField()
+### End ###
 
-class EmployeeLocalizationForm(forms.Form):
-	employee_id = forms.ForeignKey(Employee)
-	gps_id = forms.ForeignKey(GPS)
+### Structure for employeeLocalizationForm ###
+class employeeLocalizationForm(forms.Form):
+	employee_id = forms.ModelChoiceField(queryset = Employee.objects.all())
+	gps_id = forms.ModelChoiceField(queryset = GPS.objects.all())
 	e_time = forms.DateTimeField()
+### End ###
 
-class TaskForm(forms.Form):
-	field_id = forms.ForeignKey(Field)
+### taskForm ###
+class taskForm(forms.Form):
+	field_id = forms.ModelChoiceField(queryset = Field.objects.all())
 	t_type = forms.CharField()
 	rate_cost = forms.FloatField()
 	hours_spent = forms.FloatField()
@@ -218,52 +228,68 @@ class TaskForm(forms.Form):
 	description =  forms.CharField()
 	passes = forms.IntegerField()
 	date = forms.DateTimeField()
-	accomplished = forms.BooleanField()
-	approval = forms.BooleanField()
+	accomplished = forms.BooleanField(required = False)
+	approval = forms.BooleanField(required = False)
+### End ###
 
-class EmployeeTaskForm(forms.Form):
-	employee_id = forms.ForeignKey(Employee)
-	task_id = forms.ForeignKey(Task)
+### Structure for employeeTaskForm ###
+class employeeTaskForm(forms.Form):
+	employee_id = forms.ModelChoiceField(queryset = Employee.objects.all())
+	task_id = forms.ModelChoiceField(queryset = Task.objects.all())
 	task_init = forms.DateField()
 	hours_spent = forms.FloatField()
-	substitution = forms.BooleanField()
+	substitution = forms.BooleanField(required = False)
+### End ###
 
-class TaskImplementMachineForm(forms.Form):
-	task_id = forms.ForeignKey(Task)
-	machine_id = forms.ForeignKey(Machine)
-	implement_id = forms.ForeignKey(Implement)
-	machine = forms.BooleanField()
+### Structure for taskImplementMachineForm ##
+class taskImplementMachineForm(forms.Form):
+	task_id = forms.ModelChoiceField(queryset = Task.objects.all())
+	machine_id = forms.ModelChoiceField(queryset = Machine.objects.all())
+	implement_id = forms.ModelChoiceField(queryset = Implement.objects.all())
+	machine = forms.BooleanField(required = False)
+### End ###
 
-class AppendixForm(forms.Form):
+### Structure for appendixForm ###
+class appendixForm(forms.Form):
 	a_type = forms.CharField()
+### End ###
 
-class AppendixTaskForm(forms.Form):
-	appendix_id = forms.ForeignKey(Appendix)
-	task_id = forms.ForeignKey(Task)
+### Structure for appendixTaskForm ###
+class appendixTaskForm(forms.Form):
+	appendix_id = forms.ModelChoiceField(queryset = Appendix.objects.all())
+	task_id = forms.ModelChoiceField(queryset = Task.objects.all())
 	quantity = forms.IntegerField()
 	brand = forms.CharField()
+### End ###
 
-class ServiceCategoryForm(forms.Form):
+### Structure for serviceCategoryForm ###
+class serviceCategoryForm(forms.Form):
 	service_category = forms.CharField()
+### End ###
 
-class ServiceForm(forms.Form):
-	category_id = forms.ForeignKey(ServiceCategory)
+### Structure for serviceForm ###
+class serviceForm(forms.Form):
+	category_id = forms.ModelChoiceField(ServiceCategory.objects.all())
 	date = forms.DateTimeField()
-	done = forms.BooleanField()
+	done = forms.BooleanField(required = False)
+### End ###
 
-class MachineServiceForm(forms.Form):
-	machine_id = forms.ForeignKey(Machine)
-	service_id = forms.ForeignKey(Service)
+### Structure for machineServiceForm ### 
+class machineServiceForm(forms.Form):
+	machine_id = forms.ModelChoiceField(queryset = Machine.objects.all())
+	service_id = forms.ModelChoiceField(queryset = Service.objects.all())
 	description = forms.CharField()
-	done = forms.BooleanField()
+	done = forms.BooleanField(required = False)
 	expected_date = forms.DateTimeField()
 	price = forms.FloatField()
+### End ###
 
-class ImplementServiceForm(forms.Form):
-	implement_id = forms.ForeignKey(Implement)
-	service_id = forms.ForeignKey(Service)
+### Structure for implementServiceForm ###
+class implementServiceForm(forms.Form):
+	implement_id = forms.ModelChoiceField(queryset = Implement.objects.all())
+	service_id = forms.ModelChoiceField(queryset = Service.objects.all())
 	description = forms.CharField()
 	expected_date = forms.DateTimeField()
-	done = forms.BooleanField()
+	done = forms.BooleanField(required = False)
 	price = forms.FloatField()
-'''
+### End ### 
