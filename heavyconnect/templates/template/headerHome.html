@@ -18,17 +18,19 @@
 		<link rel="shortcut icon" href="/favicon.ico">
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 	</head>
-	
+	<style>
+		#logoHome
+		{
+			width: 190px;
+			height: 100px;
+		}
+	</style>
 	<body>
 		<div id="top">
 			<div id="menuTop">
-				<a href="{% static 'indexDriver' %}"><input type="button" class="btnTop" id="btnHomeLeft" /></a>
-				<a href="{% url 'equipment'%}"><input type="button" class="btnTop" id="btnEquipmentLeft" /></a>
-				<a href="{% url 'task_flow'%}"><input type="button" class="btnTop" id="btnTaskflowLeft" /></a>
-				<a href="{% url 'schedule'%}"><input type="button" class="btnTop" id="btnSchedulerLeft" /></a>
-				<a href="{% url 'time_keeper'%}"><input type="button" class="btnTop" id="btnTimerkeeperLeft" /></a>
-				<a href="{%url 'logout'%}"><input type="button" id="logOff"/></a>
-				<a href="{% url 'profile'%}"><input type="button" id="userImg"/></a>
+				<img src="{% static 'img/Logo_negative.png' %}" id="logoHome"/>
+				<a href="{% static 'logout' %}"><input type="button" id="logOff"/>
+				<a href="{% static 'profile' %}"><input type="button" id="userImg"/>
 			</div>
 		</div>
 	</body>

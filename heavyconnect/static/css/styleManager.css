@@ -1,0 +1,402 @@
+body {
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+	padding: 0px;
+	font-family: Helvetica, arial;
+}
+#logoHome
+{
+	width: 190px;
+	height: 100px;
+}
+#top {
+	background-color: #1F3801;
+	height: 100px;
+	width: 100%;
+	min-width: 750px;
+	text-align: left;
+	margin: 0 auto;
+	padding: 0px;
+}
+#menuTop {
+	height: 100px;
+	margin: 0px;
+	padding: 0px;
+	margin-left: 4px;
+}
+#userImg {
+	background: url('../img/userPicture.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 105px;
+	height: 90px;
+	margin-right: 5px;
+	margin-top: 5px;
+	float: right;
+}
+#userImg:hover {
+	background-size: 120% 120%;
+	background-position: center;
+}
+#logOff {
+	background: url('../img/buttons/logOffHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
+	width: 60px;
+	height: 90px;
+	margin-right: 5px;
+	margin-top: 5px;
+	float: right;
+}
+#logOff:hover {
+	background: url('../img/buttons/logOff.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+.btnTop {
+	width: 105px;
+	height: 90px;
+	margin-top: 5px;
+	margin-left: 2px;
+}
+#wrapper {
+	text-align: center;
+	width: 100%;
+	min-width: 800px;
+	height: 100%;
+	min-height: 630px;
+	padding: 0px;
+	margin: 0px;
+}
+#namePage {
+	background: #4F7218;
+	float: left;
+	width: 106px;
+	height: 50px;
+	padding-top: 15px;
+	margin-left: 5px;
+	margin-top: 5px;
+	color: white;
+}
+#content {
+	width: 100%;
+	min-width: 800px;
+	float: left;
+}
+footer {
+	padding: 0px;
+	margin: 0px;
+}
+#foot {
+	text-align: center;
+	margin: 0px;
+	clear: both;
+	bottom: 0;
+	width: 100%;
+	min-width: 800px;
+	font-size: 120%;
+	color: white;
+	padding: 5px;
+	font-size: 95%;
+	background-color: #434343;
+}
+#logo {
+	width: 180px;
+	height: 80px;
+	float: right;
+	margin-top: 10px;
+}
+input[type=text] {
+	padding: 7px;
+	border: 0px solid #333;
+	border-radius: 10px;
+	font-weight: bold;
+	color: black;
+	font-weight: bold;
+	font-size: 110%;
+	box-shadow: 4px 4px 7px -1px black;
+	text-align: center;
+}
+input[type=password] {
+	padding: 7px;
+	border: 0px solid #333;
+	border-radius: 10px;
+	font-weight: bold;
+	color: black;
+	font-weight: bold;
+	font-size: 110%;
+	box-shadow: 4px 4px 7px -1px black;
+	text-align: center;
+}
+#login {
+	margin-top: 40px;
+}
+#loginLogo {
+	margin-top: 75px;
+}
+#loginTable {
+	margin: auto;
+}
+.input_login {
+	width: 350px;
+	box-shadow: 2px 3px 2px -1px black;
+	width: 355px;
+	height: 55px;
+}
+#home {
+	color: white;
+	font-weight: bold;
+	text-decoration: none;
+}
+#home:hover {
+	color: black;
+	font-weight: bold;
+	text-decoration: none;
+}
+/*BUTTONS*/
+input[type="button"] {
+	border-style: none;
+	text-decoration: none;
+}
+#driverMenu{
+	margin: auto;
+	margin-top: 4%;
+	text-align: center;
+	width: 90%;
+	/*border: 2px solid #999;*/
+	/*padding: 30px 0px;*/
+	border-radius: 40px 40px 40px 40px;
+}
+.alignright {
+	text-align: right !important;
+}
+.alignLeft {
+	text-align: left !important;
+}
+.colName {
+	width: 10px;
+	background: black;
+}
+/* Buttons of indexDriver.html */
+.btnMain {
+	width: 200px;
+	height: 190px;
+	
+}
+#btnEquipment {
+	background: url('../img/buttons/equipment.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnEquipment:hover {
+	background: url('../img/buttons/equipmentHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTaskflow {
+	background: url('../img/buttons/taskflow.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTaskflow:hover {
+	background: url('../img/buttons/taskflowHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnScheduler {
+	background: url('../img/buttons/scheduler.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnScheduler:hover {
+	background: url('../img/buttons/schedulerHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTimerkeeper {
+	background: url('../img/buttons/timekepper.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTimerkeeper:hover {
+	background: url('../img/buttons/timekepperHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnHomeLeft {
+	background: url('../img/buttons/homeLeft.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnHomeLeft:hover {
+	background: url('../img/buttons/homeHoverLeft.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnEquipmentLeft {
+	background: url('../img/buttons/equipmentLeft.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnEquipmentLeft:hover {
+	background: url('../img/buttons/equipmentHoverLeft.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTaskflowLeft {
+	background: url('../img/buttons/taskflowLeft.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTaskflowLeft:hover {
+	background: url('../img/buttons/taskflowHoverLeft.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTimerkeeperLeft {
+	background: url('../img/buttons/timekepperLeft.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTimerkeeperLeft:hover {
+	background: url('../img/buttons/timekepperHoverLeft.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnSchedulerLeft {
+	background: url('../img/buttons/schedulerLeft.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnSchedulerLeft:hover {
+	background: url('../img/buttons/schedulerHoverLeft.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+/*Begin EQUIPMENT MANAGER page*/
+#equipmentContent{
+	width: 80%;
+	margin: auto;
+	margin-top: 60px;
+}
+.rowEquip
+{
+	color: black;
+	text-align: left;
+	width: 100%;
+	margin: 0px !important;
+}
+#boxBut
+{
+	height: 160px;
+	margin: 0 auto;
+	padding: 0px;
+}
+#btnUpdateProfile
+{
+	width: 100%;
+	background: #1C3700;
+	height: 40px;
+	color: white;
+}
+#btnUpdateProfile:hover
+{
+	color: black;
+}
+#btnHistory
+{
+	width: 100%;
+	background: #4F7218;
+	height: 40px;
+	color: white;
+}
+#btnHistory:hover
+{
+	color: black;
+}
+#btnCosts
+{
+	width: 100%;
+	background: #1C3700;
+	height: 40px;
+	color: white;
+}
+#btnCosts:hover
+{
+	color: black;
+}
+#btnService
+{
+	width: 100%;
+	background: #4F7218;
+	height: 40px;
+	color: white;
+}
+#btnService:hover
+{
+	color: black;
+}
+#boxUpInfo
+{
+	background: #7F9B22;
+	height: 160px;
+	color: white;
+}
+.equipInfo
+{
+	padding: 0px;
+	line-height: 18px;
+	padding-top: 5px;
+}
+.pStatus
+{
+	text-align: center;
+	height: 50px;
+	margin: 0px;
+	font-size: 17px;
+	padding: 15px;
+	min-width: 190px;
+	width: 100%;
+	margin-left: 10px;
+}
+.colLeft
+{
+	padding: 15px;
+}
+#btnStatus1
+{
+	background: #7F9B22;
+}
+#btnStatus2
+{
+	background: #F4CA02;
+}
+#btnStatus3
+{
+	background: #BD330C;
+}
+#notes
+{
+	resize: none;
+	padding: 3px;
+	height: 150px;
+	width: 80%;
+	color: black;
+}
+.imgs
+{
+	height: 180px;
+	width: 180px;
+	margin-right: 20px;
+}
+.divDown
+{
+	margin: auto;
+	width: 100%;
+	height: 210px;
+	background: #434300;
+	color: white;
+	min-width: 800px;
+}
+.colDown
+{
+	margin: 0px;
+	margin-top: 10px;
+	padding: 0px;
+	text-align: left;
+	text-decoration: none;
+}
+#info
+{
+	 background: #7F9B22;
+	 padding-left: 10px;
+	 height: 180px;
+}
+.map
+{
+	float: left;
+	width: 100%;
+	border: none;
+	height: 210px;
+}
+/*End EQUIPMENT MANAGER page*/

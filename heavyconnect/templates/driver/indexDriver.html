@@ -5,35 +5,46 @@
 		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
 		<script>
 			$(document).ready(function() {
-			
-				$("#head").load("{% url 'header' %}");
+				$("#headHome").load("{% url 'headerHome' %}");
 			});
 		</script>
 	</head>
-
 	<body>
-		<header id="head"></header>
-		<div id="wrapper">		
-			<div class="row" id="driverMenu">
-				
-				<div class="col-xs-12 col-md-4">
-					<a href="{% url 'equipment'%}">
-						<input type="button" class="btnMain" id="btnEquipment" />
-					</a>
-				</div>
-				<div class="col-xs-12 col-md-4">
-					<a href="{% url 'task_flow'%}">
-						<input type="button" class="btnMain" id="btnTaskflow" />
-					</a>
-				</div>			
-				<div class="col-xs-12 col-md-4">
-					<a href="{% url 'time_keeper'%}">
-						<input type="button" class="btnMain" id="btnTimerkeeper" />
-					</a>
-				</div>
-		
+		<header id="headHome"></header>
+		<div class="row" id="driverMenu">
+			<div class="col-xs-6 col-md-3 driverMenu">
+				<a href="{% url 'equipment'%}">
+				<input type="button" class="btnMain" id="btnEquipment" />
+				<br>
+				<br>
+				</a>
+			</div>
+			<div class="col-xs-6 col-md-3 driverMenu">
+				<a href="{% url 'task_flow'%}">
+				<input type="button" class="btnMain" id="btnTaskflow" />
+				<br>
+				<br>
+				</a>
+			</div>
+			<div class="col-xs-6 col-md-3 driverMenu">
+				<a href="{% url 'schedule'%}">
+				<input type="button" class="btnMain" id="btnScheduler" />
+				<br>
+				<br>
+				</a>
+			</div>
+			<div class="col-xs-6 col-md-3 driverMenu">
+				<a href="{% url 'time_keeper'%}">
+				<input type="button" class="btnMain" id="btnTimerkeeper" />
+				<br>
+				<br>
+				</a>
 			</div>
 		</div>
-		<footer style="background-image: url('{% static 'img/backgroundFooter.png' %}); background-size: 100% 180px; height: 180px"></footer>
 	</body>
+	<div style="height: 180px; ">
+		<img src="{% static 'img/backgroundFooter.png' %}" style=" bottom : 0; margin-top : 20px;  background-size: 100% 210px; height: 25%;
+		width: 100%;
+		position: fixed;">
+	</div>
 </html>

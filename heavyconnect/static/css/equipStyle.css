@@ -1,26 +1,93 @@
-#namePage
-{
-	background: #4F7218;
-	float: left;
-	width: 10%;
-	height: 50px;
-	padding-top: 15px;
-}
-#images
-{
-	margin-top: 50px;
-	margin-left: 7%;
-}
-.imgs
-{
-	padding-right: 50px;
+
+#equipmentContent{
+	width: 80%;
+	margin: auto;
+	margin-top: 60px;
 }
 .rowEquip
 {
 	color: black;
 	text-align: left;
-	margin-left: 50px;
 	width: 100%;
+	margin: 0px !important;
+}
+.divUp
+{
+	margin: auto;
+	margin-top: 60px;
+	width: 100%;
+	min-width: 800px;
+	height: 250px;
+	background: #434343;
+	padding: 0px;
+	text-align: left;
+	color: white;
+}
+.colUp
+{
+	margin: 0px;
+	margin-top: 10px;
+	padding: 0px;
+}
+.pStatus
+{
+	text-align: center;
+	height: 60px;
+	margin: 0px;
+	font-size: 17px;
+	padding: 15px;
+	min-width: 190px;
+	width: 100%;
+}
+#btnStatus1
+{
+	background: #7F9B22;
+}
+#btnStatus2
+{
+	background: #F4CA02;
+}
+#btnStatus3
+{
+	background: #BD330C;
+}
+#notes
+{
+	resize: none;
+	padding: 3px;
+	height: 180px;
+	width: 100%;
+	color: black;
+}
+.imgs
+{
+	height: 200px;
+	width: 200px;
+	margin-right: 20px;
+}
+.divDown
+{
+	margin: auto;
+	width: 100%;
+	height: 210px;
+	background: #434300;
+	color: white;
+	min-width: 800px;
+}
+.colDown
+{
+	margin: 0px;
+	margin-top: 10px;
+	padding: 0px;
+	text-align: left;
+	text-decoration: none;
+}
+.butEquip {
+	width: 100%;
+	color: white;
+	height: 60px;
+	font-size: 30px;
+	text-decoration: none;
 }
 #boxRight1
 {
@@ -32,6 +99,7 @@
 {
 	height: 150px;
 	margin: 0 auto;
+	
 	padding: 0px;
 }
 #btnUpdate
@@ -67,55 +135,17 @@
 {
 	color: black;
 }
-.mapNotes
+
+#info
 {
-	width: 100%;
-	float: left;
-	margin-left: 50px;
-	background: #434343;
-	padding: 0px;
-	height: 240px;
-	border-bottom-left-radius: 25px;
-	border-top-left-radius: 25px;
-	text-align: left;
+	 background: #7F9B22;
+	 padding-left: 10px;
+	 height: 180px;
 }
-#map
+.map
 {
 	float: left;
 	width: 100%;
-	height: 240px;
-	border-bottom-left-radius: 25px;
-	border-top-left-radius: 25px;
 	border: none;
-}
-#colStatus
-{
-	text-align: left;
-	padding: 0px;
-	margin: 0px;
-	margin-top: 15px;
-}
-.pStatus
-{
-	text-align: left;
-	height: 50px;
-	padding: 14px;
-	margin: 0px;
-	width: 100%;
-}
-#btnStatus1
-{
-	background: #7F9B22;
-}
-#btnStatus2
-{
-	background: #F4CA02;
-}
-#btnStatus3
-{
-	background: #BD330C;
-}
-#notes
-{
-	resize: none;
+	height: 210px;
 }

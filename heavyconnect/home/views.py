@@ -58,11 +58,19 @@ def logout(request):
 
 @login_required
 def driver(request):
-	return render(request, 'driver/indexDriver.html')
+    return render(request, 'driver/indexDriver.html')
+
+@login_required
+def profile(request):
+    return render(request, 'driver/profile.html')
 
 @login_required
 def header(request):
-	return render(request, 'template/header.html')
+    return render(request, 'template/header.html')
+
+@login_required
+def headerHome(request):
+    return render(request, 'template/headerHome.html')
 
 @login_required
 def footer(request):
@@ -82,8 +90,24 @@ def timeKepper(request):
 
 @login_required
 def equipament(request):
-	return render(request, 'driver/equipment.html')
+    return render(request, 'driver/equipment.html')
+
+@login_required
+def schedule(request):
+    return render(request, 'driver/schedule.html')
 
 @login_required
 def time_keeper(request):
-	return render(request, 'driver/timeKepper.html')
+    return render(request, 'driver/timeKepper.html')
+
+@login_required
+def updateStatus(request):
+    return render(request, 'driver/updateStatus.html')
+
+@login_required
+def taskFlow(request):
+    return render(request, 'driver/taskFlow.html')
+
+@login_required
+def checklist(request):
+    return render(request, 'driver/checklist.html')
