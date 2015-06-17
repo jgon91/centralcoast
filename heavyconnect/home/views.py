@@ -111,3 +111,7 @@ def taskFlow(request):
 @login_required
 def checklist(request):
     return render(request, 'driver/checklist.html')
+
+@login_required
+def fleet(request):
+    return render(request, 'manager/fleet.html')

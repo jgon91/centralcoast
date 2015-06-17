@@ -8,8 +8,8 @@
 		<script src="{% static 'js/script.js' %}"></script>
 		<script>
 			$(document).ready(function() {
-				$("#foot").load("{% static 'footer'");
-				$("#head").load("{% static 'header'");
+				$("#foot").load("{% url 'footer' %}");
+				$("#head").load("{% url 'header' %}");
 				getLocation();
 			});
 		</script>

@@ -19,4 +19,5 @@ urlpatterns = patterns('',
     url(r'^updateStatus/$', updateStatus, name='updateStatus'),
     url(r'^taskFlow/$', taskFlow, name='taskFlow'),
     url(r'^checklist/$', checklist, name='checklist'),
+    url(r'^fleet/$', fleet, name='fleet'),
 )
