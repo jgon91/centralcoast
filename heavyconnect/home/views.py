@@ -134,6 +134,6 @@ def fleet(request):
 
 @login_required
 def scanQRCode(request):
-    return render(request, 'manager/scanQRCode.html')
+    return render(request, 'driver/scanQRCode.html')
 
 

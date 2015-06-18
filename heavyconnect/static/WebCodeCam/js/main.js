@@ -35,7 +35,8 @@
 					si.attr('src', imgSrc);
 					
 					alert(text);
-					document.location="equipment.html?id=" + text;
+					//document.location="equipment.html?id=" + text; Need send the Equipment
+					 document.location="{% url 'equipment' %}";
 					sl.fadeOut(150, function() {
 						sl.fadeIn(150);
 					});

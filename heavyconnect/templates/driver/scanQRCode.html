@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    	{% load staticfiles %}
+        <title>Scan QRCode</title>
+        <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+        <style type="text/css">
+        .scanner-laser{
+            position: absolute;
+            margin: 40px;
+            height: 30px;
+            width: 30px;
+        }
+        .laser-leftTop{
+            top: 0;
+            left: 0;
+            border-top: solid red 5px;
+            border-left: solid red 5px;
+        }
+        .laser-leftBottom{
+            bottom: 0;
+            left: 0;
+            border-bottom: solid red 5px;
+            border-left: solid red 5px;
+        }
+        .laser-rightTop{
+            top: 0;
+            right: 0;
+            border-top: solid red 5px;
+            border-right: solid red 5px;
+        }
+        .laser-rightBottom{
+            bottom: 0;
+            right: 0;
+            border-bottom: solid red 5px;
+            border-right: solid red 5px;
+        }
+        </style>
+    </head>
+    <body>
+      
+        <div id="QR-Code" class="container" style="width:90%;">
+            <div class="panel panel-primary">
+                <div class="panel-heading" style="display: inline-block;width: 100%;  text-align: center; color: white; background: #1F3801;">
+                    
+                    <div style="margin auto 40px;text-align: center;">
+                    	<span style="font-size: 20px">Type:  <input type="text" id="" style="color:black;"/> 
+                    		<a href="{% url 'equipment'%}"><button id="submit" title="Play" type="button" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-play"></span></button><a></a>
+                    		or Scan QR Code: </span>
+                    <select id="cameraId" class="form-control" style="display: inline-block;width: auto;"></select>
+                    <button id="play" data-toggle="tooltip" title="Play" type="button" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-play"></span></button>
+                    
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="col-md-12" style="text-align: center;">
+                	
+                    <div class="well" style="position: relative;display: inline-block;">
+                        <canvas id="qr-canvas" width="320" height="240"></canvas>
+                        <div class="scanner-laser laser-rightBottom" style="opacity: 0.5;"></div>
+                        <div class="scanner-laser laser-rightTop" style="opacity: 0.5;"></div>
+                        <div class="scanner-laser laser-leftBottom" style="opacity: 0.5;"></div>
+                        <div class="scanner-laser laser-leftTop" style="opacity: 0.5;"></div>
+                    </div>
+                    
+                </div>
+                
+            </div>
+            <div class="panel-footer">
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="{% static 'WebCodeCam/js/main.js' %}"></script>
+    <script type="text/javascript" src="{% static 'WebCodeCam/js/qrcodelib.js' %}"></script>
+    <script type="text/javascript" src="{% static 'WebCodeCam/js/WebCodeCam.js' %}"></script>
+    
+    <script>
+    
+    	
+    </script>
+</html>

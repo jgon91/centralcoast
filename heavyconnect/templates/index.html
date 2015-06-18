@@ -39,7 +39,7 @@
             <form id="login-form">
               {% csrf_token %}
             <tr>  
-              <td><img src="{% static 'img/user.png' %}" /><br /><br /> </td><td><input  type="text" class="input_login" id="login" name="username" placeholder="Enter your username" /><br /><br /></td>
+              <td><img src="{% static 'img/user.png' %}" /><br /><br /> </td><td><input  type="text" class="input_login" id="username" name="username" placeholder="Enter your username" /><br /><br /></td>
             </tr>
             <tr>  
               <td><img src="{% static 'img/password.png' %}" /> <br /><br /></td><td><input  type="password" class="input_login" id="password" name="password" placeholder="Enter your password" /><br /><br /></td>
@@ -55,9 +55,23 @@
       <br />
       
     <footer>
-     <p>&copy; Copyright  by Heavy Connect</p>
+     <p style="color: white">&copy; Copyright  by Heavy Connect</p>
     </footer>
   </div>
+    <script>
+	    
+  	$("#username").click(function(){
+  		$("#password").attr("placeholder", "Enter your password");
+  		$("#username").attr("placeholder", "");
+  		$("#username").css("font-size", "20px");
+  	});
+  	$("#password").click(function(){
+  		$("#username").attr("placeholder", "Enter your username");
+  		$("#password").attr("placeholder", "");
+  		$("#password").css("font-size", "20px");
+  	});
+  	
+  </script>
 </body>
 </html>
 
