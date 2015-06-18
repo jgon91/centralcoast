@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<script src="../static/js/jquery-1.11.2.min.js"></script>
+		{%load staticfiles %}
+		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
 		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 		<script>
 			$(document).ready(function() {
-				$("#foot").load("../template/footer.html");
-				$("#head").load("../template/header.html");
+				$("#foot").load("{% url 'footer' %}");
+				$("#head").load("{% url 'header' %}");
 				$("#btnEnter1").click(function(){
 					//alert("Button Pressed!!");
 					$("#part1").attr("class", "tab-pane fade");
@@ -100,7 +101,7 @@
 										<input type="text"/>
 									</div>
 									<div class="col-xs-3 col-md-3">
-										<img src="../static/img/tractor-4.png" class="imgCreate"/>
+										<img src="{% static 'img/tractor-4.png' %}" class="imgCreate"/>
 									</div>
 								</div>
 								<div class="row divPart2">
@@ -111,7 +112,7 @@
 										<input type="text"/>
 									</div>
 									<div class="col-xs-3 col-md-3">
-										<img src="../static/img/implement.png" class="imgCreate"/>
+										<img src="{% static 'img/implement.png' %}" class="imgCreate"/>
 									</div>
 								</div>
 							</div>
