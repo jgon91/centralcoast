@@ -132,4 +132,8 @@ def indexManager(request):
 def fleet(request):
     return render(request, 'manager/fleet.html')
 
+@login_required
+def scanQRCode(request):
+    return render(request, 'manager/scanQRCode.html')
+
 
