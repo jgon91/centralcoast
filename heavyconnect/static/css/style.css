@@ -442,6 +442,7 @@ div.notes {
 	background: black;
 	padding-left: 10px;
 	padding-top: 10px;
+	padding-bottom: 10px;
 }
 #taskP {
 	padding-left: 20px;
@@ -488,7 +489,7 @@ div.notes {
 	margin-top: -100px;
 }
 #btnCreateTask {
-	background: url('../img/buttons/createNewTask') no-repeat top left;
+	background: url('../img/buttons/createNewTask.png') no-repeat top left;
 	background-size: 100% 100%;
 	width: 200px;
 	height: 200px;
@@ -500,7 +501,7 @@ div.notes {
 	height: 100px;
 }
 #btnLastTasks {
-	background: url('../img/buttons/lastTasks') no-repeat top left;
+	background: url('../img/buttons/lastTasks.png') no-repeat top left;
 	background-size: 100% 100%;
 	width: 200px;
 	height: 200px;
@@ -528,12 +529,15 @@ div.notes {
 	opacity: 1.0;
 	background: #988173;
 }
-#divText {
-	background: #F3C902;
-}
 .divPart1 {
 	color: black;
-	width: 60%;
+	width: 100%;
+	text-align: right;
+	height: 50px;
+}
+.divPart2 {
+	color: black;
+	width: 100%;
 	text-align: right;
 	height: 50px;
 }
@@ -541,13 +545,85 @@ div.notes {
 	width: 100%;
 	margin-top: 10px;
 	margin-bottom: 10px;
+	height: 45px;
 }
-#part1 {
-	
+.divPart2 input[type=text] {
+	width: 100%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	height: 45px;
 }
-
-
-/* End TASKFLOW page */
+#divText1 {
+	background: #F3C902;
+	height: 400px;
+	width: 60%;
+	float: left;
+	padding-top: 5px;
+}
+#divText2 {
+	background: #F3C902;
+	height: 400px;
+	width: 80%;
+	float: left;
+	padding-top: 5px;
+}
+.textLeft1 {
+	padding-top: 32px;
+	font-size: 18px;
+}
+.textRight1 {
+	padding-top: 10px;
+}
+.textLeft2 {
+	padding-top: 67px;
+	font-size: 18px;
+}
+.textRight2 {
+	padding-top: 50px;
+}
+#divDesc1 {
+	float: left;
+	color: white;
+	background: #434343;
+	width: 40%;
+	height: 400px;
+	padding-top: 10px;
+}
+#divDesc2 {
+	float: left;
+	color: white;
+	background: #434343;
+	width: 20%;
+	height: 400px;
+	padding-top: 10px;
+}
+#noteDesc {
+	width: 90%;
+	height: 65%;
+	border-radius: 5px;
+	border: none;
+	resize: none;
+	color: black;
+}
+#btnEnter1 {
+	background: url('../img/buttons/enterTaskflow.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 50%;
+	height: 80px;
+	margin-top: 15px;
+}
+#btnEnter2 {
+	background: url('../img/buttons/enterTaskflow.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 80%;
+	height: 80px;
+	margin-top: 300px;
+}
+.imgCreate {
+	width: 220px;
+	height: 140px;
+}
+/* End CREATE TASKFLOW page */
 #cal {
 	margin: auto;
 	width: 80%;

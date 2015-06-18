@@ -20,4 +20,8 @@ urlpatterns = patterns('',
     url(r'^checklist/$', checklist, name='checklist'),
     url(r'^fleet/$', fleet, name='fleet'),
     url(r'^headerManager/$', headerManager, name='headerManager'),
+    url(r'^lastTasks/$', lastTasks, name='lastTasks'),
+    url(r'^createTask/$', createTask, name='createTask'),
+    url(r'^startTask/$', startTask, name='startTask'),
+    url(r'^scanQRCode/$', scanQRCode, name='scanQRCode'),
 )

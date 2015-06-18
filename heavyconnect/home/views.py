@@ -115,3 +115,19 @@ def fleet(request):
 @login_required
 def headerManager(request):
     return render(request, 'template/headerManager.html')
+
+@login_required
+def createTask(request):
+    return render(request, 'drive/createTask.html')
+
+@login_required
+def lastTasks(request):
+    return render(request, 'drive/lastTasks.html')
+
+@login_required
+def startTask(request):
+    return render(request, 'drive/startTask.html')
+
+@login_required
+def scanQRCode(request):
+    return render(request, 'drive/scanQRCode.html')
