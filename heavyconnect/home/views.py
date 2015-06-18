@@ -136,3 +136,4 @@ def indexManager(request):
 def fleet(request):
     return render(request, 'manager/fleet.html')
 
+
