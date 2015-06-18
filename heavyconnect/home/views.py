@@ -77,10 +77,6 @@ def footer(request):
 	return render(request, 'template/footer.html')
 
 @login_required
-def menu_left(request):
-	return render(request, 'template/menuLeft.html')
-
-@login_required
 def task_flow(request):
 	return render(request, 'driver/taskFlow.html')
 

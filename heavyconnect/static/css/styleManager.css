@@ -404,13 +404,16 @@ input[type="button"] {
 
 #containerFleet {
 	margin: auto;
-	width: 1000px;
-	padding-top: 80px;
+	width: 800px;
+	padding-top: 60px;
 }
 .infoTractor {
 	float: left;
-	width: 111px;
+	width: 114px;
 	height: 90px;
+}
+.infoTractor:hover {
+	background-color: #DDD;
 }
 #menu  a {
 	color: white;
@@ -477,9 +480,10 @@ input[type="button"] {
 	border: solid 1px #434343;
 }
 #viewMore {
-	width: 1000px;
+	width: 100%;
 	border-radius: 0px;
 	background-color: #809A21;
 	border: none;
+	clear: both;
 }
 /*End Fleet Page*/
