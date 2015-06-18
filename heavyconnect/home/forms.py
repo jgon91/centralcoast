@@ -236,11 +236,16 @@ class taskForm(forms.Form):
 	accomplished = forms.BooleanField(required = False)
 	approval = forms.ChoiceField(choices = APPROVAL_CHOICES)
 ### End ###
+### Structure for taskCategoryForm ###
+class taskCategoryForm(forms.Form):
+	description = forms.CharField()
+### End ###
 
 ### Structure for employeeTaskForm ###
 class employeeTaskForm(forms.Form):
 	employee_id = forms.ModelChoiceField(queryset = Employee.objects.all())
 	task_id = forms.ModelChoiceField(queryset = Task.objects.all())
+	category_id = forms.ModelChoiceField(queryset = TaskCategory.objects.all())
 	task_init = forms.DateField()
 	hours_spent = forms.FloatField()
 	substitution = forms.BooleanField(required = False)
