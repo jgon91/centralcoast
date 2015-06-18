@@ -16,17 +16,17 @@ class ManufacturerModel(models.Model):
 		return "Model: " + str(self.model) + ", Manufacturer: " + str(self.manufacturer_id)
 
 class RepairShop(models.Model):
-	contact_name = models.CharField(max_length = 20)
-	contact_number =  models.CharField(max_length=14)
-	contact_address = models.CharField(max_length = 150)
+	name = models.CharField(max_length = 20)
+	number =  models.CharField(max_length=14)
+	address = models.CharField(max_length = 150)
 
 	def __unicode__(self):
 		return "Contact: " + str(self.contact_name) + ", Phone Number: " + str(self.contact_number) + ", Address: " + str(self.contact_address)
 
 class Shop(models.Model):
-	contact_name = models.CharField(max_length = 20)
-	contact_number = models.CharField(max_length=14)
-	contact_address = models.CharField(max_length = 150)
+	name = models.CharField(max_length = 20)
+	number = models.CharField(max_length = 14)
+	address = models.CharField(max_length = 150)
 
 	def __unicode__(self):
 		return "Contact: " + str(self.contact_name) + "\n" + "Phone Number: " + str(self.contact_number) + "\n" + "Address: " + str(self.contact_address)

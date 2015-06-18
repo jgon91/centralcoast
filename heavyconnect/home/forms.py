@@ -28,16 +28,16 @@ class manufacturerModelForm(forms.Form):
 
 ### Structure for repairShopForm ###
 class repairShopForm(forms.Form):
-	contact_name = forms.CharField(max_length = 20)
-	contact_number =  forms.CharField(max_length = 14)
-	contact_address = forms.CharField(max_length = 150)
+	name = forms.CharField(max_length = 20)
+	number =  forms.CharField(max_length = 14)
+	address = forms.CharField(max_length = 150)
 ### End ###
 
 ### Structure for shopForm ###
 class shopForm(forms.Form):
-	contact_name = forms.CharField()
-	contact_number = forms.CharField()
-	contact_address = forms.CharField()
+	name = forms.CharField()
+	number = forms.CharField()
+	address = forms.CharField()
 ### End ###
 
 ### Structure for machineForm ###
