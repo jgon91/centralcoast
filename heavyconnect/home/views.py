@@ -74,7 +74,179 @@ If you need to test the forms change the form name.
 </menezescode>
 '''
 
-def registerManufacturer(request):
+def manufacturerForm(request):
+	form = manufacturerForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+
+def manufacturerModelForm(request):
+	form = manufacturerModelForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+
+def repairShopForm(request):
+	form = repairShopForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+
+def shopForm(request):
+	form = shopForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+
+def machineForm(request):
+	form = machineForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+
+def implementForm(request):
+	form = implementForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+def employeeForm(request):
+	form = employeeForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+
+def employeeAttendanceForm(request):
+	form = employeeAttendanceForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+
+def qualificationForm(request):
+	form = qualificationForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+
+def certificationForm(request):
+	form = certificationForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+
+def employeeQualificationsForm(request):
+	form = employeeQualificationsForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+
+def machineQualificationForm(request):
+	form = machineQualificationForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+def implementQualificationForm(request):
+	form = implementQualificationForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+
+def fieldForm(request):
+	form = fieldForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+
+def gpsForm(request):
+	form = gpsForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+
+def employeeLocalizationForm(request):
+	form = employeeLocalizationForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+
+def taskForm(request):
+	form = taskForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+
+def taskCategoryForm(request):
+	form = taskCategoryForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+def employeeTaskForm(request):
+	form = employeeTaskForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+
+def taskImplementMachineForm(request):
+	form = taskImplementMachineForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+
+def appendixForm(request):
+	form = appendixForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+
+def appendixTaskForm(request):
+	form = appendixTaskForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+
+def serviceCategoryForm(request):
+	form = serviceCategoryForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+
+def serviceForm(request):
+	form = serviceForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+
+def machineServiceForm(request):
+	form = machineServiceForm(request.POST)
+	if form.is_valid():
+		return redirect('formok')
+	else:
+		return render(request, 'formTEST.html', {'form': form})
+
+def implementServiceForm(request):
 	form = implementServiceForm(request.POST)
 	if form.is_valid():
 		return redirect('formok')

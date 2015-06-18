@@ -236,6 +236,7 @@ class taskForm(forms.Form):
 	accomplished = forms.BooleanField(required = False)
 	approval = forms.ChoiceField(choices = APPROVAL_CHOICES)
 ### End ###
+
 ### Structure for taskCategoryForm ###
 class taskCategoryForm(forms.Form):
 	description = forms.CharField()
