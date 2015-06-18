@@ -243,6 +243,11 @@ class TaskCategory(models.Model):
 		return "ID: " + str(self.id) + ", Category: " + str(self.description)
 
 class Task(models.Model):
+	APPROVAL_CHOICES = (
+		(1, 'Approved'),
+		(2, 'Denied'),
+		(3, 'Pending'),
+	)
 	field_id = models.ForeignKey(Field)
 	category = models.ForeignKey(TaskCategory)
 	rate_cost = models.FloatField()
@@ -252,7 +257,7 @@ class Task(models.Model):
 	passes = models.IntegerField()
 	date = models.DateTimeField()
 	accomplished = models.BooleanField()
-	approval = models.BooleanField()
+	approval = models.IntegerField(choices = APPROVAL_CHOICES)
 
 	def __unicode__(self):
 		return "Field Name: " + str(self.field_id.name) + "Category: " + str(self.category.description) + ", Hour Cost: " +  str(self.rate_cost) + ", Description: " +  str(self.description)

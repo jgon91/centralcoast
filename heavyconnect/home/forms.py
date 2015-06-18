@@ -220,6 +220,11 @@ class employeeLocalizationForm(forms.Form):
 
 ### taskForm ###
 class taskForm(forms.Form):
+	APPROVAL_CHOICES = (
+		(1, 'Approved'),
+		(2, 'Denied'),
+		(3, 'Pending'),
+	)
 	field_id = forms.ModelChoiceField(queryset = Field.objects.all())
 	t_type = forms.CharField()
 	rate_cost = forms.FloatField()
@@ -229,7 +234,7 @@ class taskForm(forms.Form):
 	passes = forms.IntegerField()
 	date = forms.DateTimeField()
 	accomplished = forms.BooleanField(required = False)
-	approval = forms.BooleanField(required = False)
+	approval = forms.ChoiceField(choices = APPROVAL_CHOICES)
 ### End ###
 
 ### Structure for employeeTaskForm ###
