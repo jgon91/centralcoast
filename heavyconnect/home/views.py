@@ -119,10 +119,6 @@ def createTask(request):
 @login_required
 def lastTasks(request):
     return render(request, 'driver/lastTasks.html')
-@login_required
-def lastTasks(request):
-    return render(request, 'driver/lastTasks.html')
-
 
 @login_required
 def startTask(request):
