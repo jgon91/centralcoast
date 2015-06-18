@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{% load staticfiles %}
+		<link rel="stylesheet" type="text/css" href="{% static 'css/equipStyle.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/styleManager.css' %}">
+		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
+		<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+		<script src="{% static 'js/script.js' %}"></script>
+		<script>
+			$(document).ready(function() {
+				$("#foot").load("{% url 'footer' %}");
+				$("#head").load("{% url 'headerManager' %}");
+				getLocation();
+			});
+		</script>
+	</head>
+	<body>
+		<header id="head"></header>
+		<div id="wrapper">
+			<div id="content">
+				<div id="namePage" style="opacity: 0.5">
+					QR CODE
+				</div>
+				<div id="namePage">
+					PROFILES
+				</div>
+				<div id="equipmentContent">
+					<div id="images">
+						<img src="{% static 'img/tractor-1.jpg' %}" class="imgs"/>
+						<img src="{% static 'img/tractor-2.jpg' %}" class="imgs"/>
+						<img src="{% static 'img/tractor-3.jpg' %}" class="imgs"/>
+					</div>
+					<div class="row rowEquip">
+						<div class="col-xs-3 col-md-3" id="boxBut">
+							<div>
+								<a href="#" style="text-decoration: none;">
+								<input type="button" id="btnUpdateProfile" value="Update Profile"/>
+								</a>
+							</div>
+							<div>
+								<a href="#" style="text-decoration: none;">
+								<input type="button" id="btnHistory" value="History"/>
+								</a>
+							</div>
+							<div>
+								<a href="#" style="text-decoration: none;">
+								<input type="button" id="btnCosts" value="Costs">
+								</a>
+							</div>
+							<div>
+								<a href="#" style="text-decoration: none;">
+								<input type="button" id="btnService" value="Service">
+								</a>
+							</div>
+						</div>
+						<div class="col-xs-2 col-md-2" id="boxUpInfo">
+							<div style="padding-top: 5px;">
+								<strong>Implement:</strong>
+								</br>20' disk
+							</div>
+							<div style="padding-top: 10px;">
+								<strong>Operator:</strong>
+								</br>Leonel Junior
+							</div>
+							<div style="padding-top: 10px;">
+								<strong>Task:</strong>
+								</br>Disking
+							</div>
+						</div>
+						<div class="col-xs-3 col-md-3 equipInfo">
+							QR Sticker: 00123
+							</br>Reiter Asset: RAC4556
+							</br>Manufacturer: John Deere
+							</br>Model: 9460RT
+							</br>SN: 1RW9460RTDAC900011
+							</br>Hours: 2.017
+						</div>
+						<div class="col-xs-3 col-md-3 equipInfo">
+							Horse Power: 460
+							</br>Lift Capacity: 15.300 Ibs
+							</br>Hitch Size: 4N/3
+							</br>Drawbar Size: CAT 4
+							</br>Date Acquired: 07/01/2007
+							</br>Service Provider: RD0 Equip.
+						</div>
+					</div>
+					<div class="divDown">
+						<div class="col-xs-3 col-md-3 colLeft">
+							STATUS:
+							<div id="btnStatus1" class="pStatus">
+								OK! Ready to work
+							</div>
+							<div id="btnStatus2" class="pStatus">
+								SERVICE Needed
+							</div>
+							<div id="btnStatus3" class="pStatus">
+								BROKEN! Do not use
+							</div>
+						</div>
+						<div class="col-xs-3 col-md-3 colLeft">
+							NOTES:</br>
+							<textarea rows="6" cols="20" form="notesSubmit" id="notes"></textarea>
+						</div>
+						<div class="col-xs-6 col-md-6" style="padding: 0px;">
+							<div class="map" id="mapholder"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="clearBoth"></div>
+		</div>
+		<footer id="foot"></footer>
+	</body>
+</html>
