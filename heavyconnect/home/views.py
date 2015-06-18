@@ -136,4 +136,10 @@ def fleet(request):
 def scanQRCode(request):
     return render(request, 'manager/scanQRCode.html')
 
+@login_required
+def equipmentManager(request):
+    return render(request, 'manager/equipmentManager.html')
+
+
+
 

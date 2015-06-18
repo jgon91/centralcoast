@@ -25,4 +25,5 @@ urlpatterns = patterns('',
     url(r'^startTask/$', startTask, name='startTask'),
     url(r'^scanQRCode/$', scanQRCode, name='scanQRCode'),
     url(r'^indexManager/$', indexManager, name='indexManager'),
+    url(r'^equipmentManager/$', equipmentManager, name='equipmentManager'),
 )
