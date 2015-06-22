@@ -11,7 +11,7 @@
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'header' %}");
 				getLocation();
-				setActivePage("btnEquipmentUp");
+				$("#" + btn).css('background', 'url({% static "img/btnEquipmentUpHover.jpg" %})');
 			});
 		</script>
 	</head>
