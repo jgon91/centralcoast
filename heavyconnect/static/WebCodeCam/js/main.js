@@ -37,6 +37,7 @@
 					alert(text);
 					//document.location="equipment.html?id=" + text; Need send the Equipment
 					 document.location="{% url 'equipment' %}";
+					 document.location="../equipment";
 					sl.fadeOut(150, function() {
 						sl.fadeIn(150);
 					});

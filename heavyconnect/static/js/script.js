@@ -1,4 +1,12 @@
-	/* Script checklist page */
+
+/*Script */
+	function setActivePage(var btn){
+		$("#" + btn).attr('background', '' + btn + "Hover.png";);
+	}
+
+/*End */
+
+/* Script checklist page */
 	function eventsCheckList() 
 	{
 		//Variables

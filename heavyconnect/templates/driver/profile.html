@@ -11,14 +11,14 @@
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'header' %}");
-				getLocation();
+				getLocation();				
 			});
 		</script>
 		<style>
 		  
 		</style>
 	</head>
-	<body>
+	<body onload="getUserInformation('{{% crsf_token %}}')">
 		<header id="head"></header>
 		<div id="wrapper">
 			<div id="menuLeft"></div>
