@@ -7,6 +7,7 @@
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'header' %}");
+				
 			});
 		</script>
 	</head>
@@ -43,4 +44,28 @@
 		</div>
 		<footer id="foot"></footer>
 	</body>
+	<script>
+		$("#btnCreateTask").click(startNewTask('{{csrf_token}}', "12345678"));
+		
+		function startNewTask(csrf_token, qr_code)
+			{
+				//	console.log("function called")
+					$.ajax({
+						method: "POST",
+						url: "",
+						dataType: "json", 
+           				data: {},
+						success: function(data, status, xhr){
+							if(data.authorized == true){
+								alert("You have enough right to create a task!!");	
+							 	//$("#divCreateTask a").attr("href", "{% url 'taskFlow' %}");
+							 	
+							}else{
+								alert("You do not have enough right to create a task!!");
+								//$("#divCreateTask a").attr("href", "{% url 'createTask' %}");
+							}
+						}
+					});
+				}
+	</script>
 </html>
