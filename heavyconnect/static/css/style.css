@@ -510,15 +510,8 @@ div.notes {
 /* Begin CREATE TASKFLOW page */
 #contentCreateTask {
 	width: 80%;
-	min-width: 800px;
 	margin: auto;
 	margin-top: 70px;
-}
-#aaa {
-	min-width: 800px;
-	background: black;
-	width: 1000px;
-	clear: both;
 }
 #flapTask a {
 	background: #809A21;
@@ -541,7 +534,6 @@ div.notes {
 	width: 100%;
 	text-align: right;
 	height: 50px;
-	
 }
 .divPart2 {
 	color: black;
@@ -564,10 +556,9 @@ div.notes {
 #divText1 {
 	background: #F3C902;
 	height: 400px;
-	width: 55%;
+	width: 60%;
 	float: left;
 	padding-top: 5px;
-	min-width: 620px;
 }
 #divText2 {
 	background: #F3C902;
@@ -575,7 +566,6 @@ div.notes {
 	width: 80%;
 	float: left;
 	padding-top: 5px;
-	min-width: 620px;
 }
 .textLeft1 {
 	padding-top: 32px;
@@ -595,10 +585,9 @@ div.notes {
 	float: left;
 	color: white;
 	background: #434343;
-	width: 35%;
+	width: 40%;
 	height: 400px;
 	padding-top: 10px;
-	min-width: 100px;
 }
 #divDesc2 {
 	float: left;
@@ -607,7 +596,6 @@ div.notes {
 	width: 20%;
 	height: 400px;
 	padding-top: 10px;
-	min-width: 100px;
 }
 #noteDesc {
 	width: 90%;
