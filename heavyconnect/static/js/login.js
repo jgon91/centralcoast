@@ -7,13 +7,15 @@ function process_login() {
 		success: function(data, status, xhr){
 			if(data.success){
 				location.reload();
-			}else if(data == 1){
-				$("#errorMessage").html("");
+			} else if (data.code == 1){
+				$("#errorMessage").html("User Inactive. Call your manager.");
+			} else if (data.code == 2){
+				$("#errorMessage").html("Wrong Username/Password. Try it again. ");
 			}
 		}
 	});
 }
-
+/*
 function getUserInformation(token) {
 	console.log("function called")
 	$.ajax({
@@ -46,4 +48,4 @@ function getUserInformation(token) {
 			}
 		}
 	});
-}
+}*/
