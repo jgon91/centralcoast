@@ -54,7 +54,8 @@
 						method: "POST",
 						url: "",
 						dataType: "json", 
-           				data: {},
+           				data: {"csrf_token": csrf_token,
+           						"qr_code": qr_code},
 						success: function(data, status, xhr){
 							if(data.authorized == true){
 								alert("You have enough right to create a task!!");	
