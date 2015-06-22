@@ -236,11 +236,11 @@ input[type="button"] {
 	background-size: 100% 100%;
 }
 #btnTimerkeeper {
-	background: url('../img/buttons/timekepper.jpg') no-repeat top left;
+	background: url('../img/buttons/timekeeper.jpg') no-repeat top left;
 	background-size: 100% 100%;
 }
 #btnTimerkeeper:hover {
-	background: url('../img/buttons/timekepperHover.jpg') no-repeat top left;
+	background: url('../img/buttons/timekeeperHover.jpg') no-repeat top left;
 	background-size: 100% 100%;
 }
 #btnHomeUp {
@@ -268,19 +268,19 @@ input[type="button"] {
 	background-size: 100% 100%;
 }
 #btnTimerkeeperUp {
-	background: url('../img/buttons/timekepperLeft.jpg') no-repeat top left;
+	background: url('../img/buttons/btnTimekeeperUp.jpg') no-repeat top left;
 	background-size: 100% 100%;
 }
 #btnTimerkeeperUp:hover {
-	background: url('../img/buttons/timekepperHoverLeft.jpg') no-repeat top left;
+	background: url('../img/buttons/btnTimekeeperUpHover.jpg') no-repeat top left;
 	background-size: 100% 100%;
 }
 #btnSchedulerUp {
-	background: url('../img/buttons/schedulerLeft.jpg') no-repeat top left;
+	background: url('../img/buttons/btnSchedulerUp.jpg') no-repeat top left;
 	background-size: 100% 100%;
 }
 #btnSchedulerUp:hover {
-	background: url('../img/buttons/schedulerHoverLeft.jpg') no-repeat top left;
+	background: url('../img/buttons/btnSchedulerUpHover.jpg') no-repeat top left;
 	background-size: 100% 100%;
 }
 
