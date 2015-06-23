@@ -8,17 +8,36 @@
 		<script src="{% static 'js/script.js' %}"></script>
 		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
 		<script>
+
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'header' %}");
-				getLocation();				
+				getLocation();	
+				getUserInformation("{{ csrf_token }}", "{% url 'driverInfo' %}");
 			});
+			
+			function getUserInformation(token, url) {
+				
+					alert("Token: " + token + " - Action: " + url );
+					console.log("function called");
+					
+					$.ajax({
+						method: "POST",
+						url: url,
+						data: {"csrfmiddlewaretoken": token },
+						datatype: "json",
+						success: function(data, status, xhr){
+							alert(data.first_name)
+							//$("#lastName").html(data.lastName);
+						}
+					});
+					console.log("pass2")
+			}
+	
 		</script>
-		<style>
-		  
-		</style>
+
 	</head>
-	<body onload="getUserInformation('{{% crsf_token %}}')">
+	<body>
 		<header id="head"></header>
 		<div id="wrapper">
 			<div id="menuLeft"></div>
@@ -71,7 +90,7 @@
 						</div>
 						<div class="col-xs-3 col-md-3" id="colStatus">
 							<div id="taskProfile">
-								CURRENTLY: 
+								CURRENTLY:  
 							</div>
 							<div id="infoEquipment">
 								<ul class="profileList">

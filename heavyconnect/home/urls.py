@@ -26,4 +26,8 @@ urlpatterns = patterns('',
     url(r'^scanQRCode/$', scanQRCode, name='scanQRCode'),
     url(r'^indexManager/$', indexManager, name='indexManager'),
     url(r'^equipmentManager/$', equipmentManager, name='equipmentManager'),
+    url(r'^getEmployeeLocation/$', getEmployeeLocation, name = 'getEmployeeLocation'),
+    url(r'^formTEST/$', manufacturerForm, name='registerManufacturer'),
+    url(r'^formok/$', formok, name = 'formok'),
+    url(r'^test/$', getDriverInformation, name = 'driverInfo'),
 )

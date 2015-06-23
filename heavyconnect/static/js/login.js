@@ -13,7 +13,7 @@ function process_login() {
 		}
 	});
 }
-
+/*
 function getUserInformation(token) {
 	console.log("function called")
 	$.ajax({
@@ -47,3 +47,4 @@ function getUserInformation(token) {
 		}
 	});
 }
+*/
