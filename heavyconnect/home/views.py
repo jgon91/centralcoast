@@ -92,6 +92,28 @@ def getDriverInformation(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+def getQuickUser(request):
+	result = {'success' : False}
+
+	if request.method == 'Post':
+	 	if request.is_ajax():
+	 		try:
+				employee = Employee.objects.get(user_id = request.user.id)
+				result['first_name'] = employee.user.first_name
+				result['last_name'] = employee.user.last_name
+				result['permission_level'] = employee.permission_level
+				result['user_id'] = employee.user_id
+				result['url'] = employee.photo
+				result['success'] = True
+	 		except DoesNotExist:
+	 			result['code'] = 1 #There is no users associated with this 
+	 	else:
+	 		result['code'] = 4 #Use ajax to perform requests
+	else: 
+	 	result['code'] = 5 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
 def getHoursToday(id):
 	# now = datetime.datetime.now()
 	# attendance = EmployeeAttendance.objects.get(employee_id = id)
