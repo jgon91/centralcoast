@@ -4,8 +4,10 @@ from django.contrib.auth import authenticate, login as auth_login, logout as aut
 from django.contrib.auth.decorators import login_required
 
 import json
+import datetime
 
 from home.forms import *
+from home.models import *
 
 
 def home(request):
@@ -62,6 +64,48 @@ def login(request):
 		result['code'] = 5 #Request was not POST
 	
 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+@login_required
+def getUserInformation(request):
+	result = {'success' : False}
+
+	# if request.method == 'POST':
+	# 	if request.is_ajax():
+	try:
+		employee =  Employee.objects.get(user_id = request.user.id)
+		print employee.company_id
+		result['first_name'] = employee.user.first_name
+		result['last_name'] = employee.user.last_name
+		result['company_id'] = employee.company_id
+		result['qr_code'] = employee.qr_code
+		result['hire_date'] = str(employee.start_date)
+		result['utilization'] = 0
+		result['hours_today'] = getHoursToday(employee.id)
+		result['hours_week'] = getWeekHours(employee.id)
+	except DoesNotExist:
+		result['code'] = 1 #There is no users associated with this 
+	
+	# result['last_name'] = employee.user.last_name
+
+	# 	else:
+	# 		result['code'] = 4 #Use ajax to perform requests
+	# else:
+	# 	result['code'] = 5 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+def getHoursToday(id):
+	# now = datetime.datetime.now()
+	# attendance = EmployeeAttendance.objects.get(employee_id = id)
+
+	# if attendance.break_one is None:
+	# 	delta = now - attendance.hour_started
+	# elif
+	#date__range = (datetime.datetime.combine(now, datetime.time.min),datetime.datetime.combine(now, datetime.time.max))
+	return 0
+
+def getWeekHours(id):
+	return 0
 
 def logout(request):
 	auth_logout(request)
