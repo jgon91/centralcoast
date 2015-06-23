@@ -20,22 +20,46 @@ def home(request):
 def driver(request):
 	return render(request, 'driver.html')
 
-#Issue #73
+@login_required
+def startNewTask(request):
+	result = {'success' : False}
+
+	if request.method == 'POST':
+		if request.is_ajax():
+			try:
+				employee = Employee.objects.get(user_id = request.user.id)
+				# if employee.permission_level = 2:
+				# 	render start task page
+				# else:
+				# 	user does not have permission
+			except DoesNotExist:
+				result['code'] ==  1 #There is no users associated with this
+		else:
+			result['code'] == 4 #Use ajax to perform requests
+	else:
+		result['code'] == 5 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
 @login_required
 def getEmployeeLocation(request):
 	result = {'success' : False}
 
-	employee = Employee.objects.get(user_id = request.user.id)
-
-	localization = EmployeeLocalization.objects.filter(employee_id = employee.id).order_by('-e_time').values('latitude','longitude')[0]
-
-	result['latitude'] = localization['latitude']
-	result['longitude'] = localization['longitude']
-
-	result['success'] = True
+	if request.method == 'POST': #check if the method used for the request was POST
+		if request.is_ajax(): #check if the request came from ajax request
+			try:
+				employee = Employee.objects.get(user_id = request.user.id)
+				localization = EmployeeLocalization.objects.filter(employee_id = employee.id).order_by('-e_time').values('latitude','longitude')[0]
+				result['latitude'] = localization['latitude']
+				result['longitude'] = localization['longitude']
+				result['success'] = True
+			except DoesNotExist:
+				result['code'] = 1 #There is no users associated with this 
+		else:
+	 		result['code'] = 4 #Use ajax to perform requests
+	else:
+		result['code'] = 5 #Request was not POST
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
-
 
 def login(request):
 	#validating the received form
@@ -151,12 +175,11 @@ Just a quick explanation on how to test forms:
 	    return render(request, 'THEPAGEYOUWANTTOBERETURNED.html', {
 	        'form': form,
 	    })
-If you need to test the forms change the form name.
 </menezescode>
 
 @menezescode: 	Those are the forms. At the current point 06/22/2015,
 				each view does nothgin besides render the page and redirect
-				to a different page if it's correct and reload the page 
+				to a different page (formok) if it's correct and reload the page 
 				if the form was sent incorrectly
 
 
