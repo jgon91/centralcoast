@@ -20,22 +20,26 @@ def home(request):
 def driver(request):
 	return render(request, 'driver.html')
 
-#Issue #73
 @login_required
 def getEmployeeLocation(request):
 	result = {'success' : False}
 
-	employee = Employee.objects.get(user_id = request.user.id)
-
-	localization = EmployeeLocalization.objects.filter(employee_id = employee.id).order_by('-e_time').values('latitude','longitude')[0]
-
-	result['latitude'] = localization['latitude']
-	result['longitude'] = localization['longitude']
-
-	result['success'] = True
+	if request.method == 'POST': #check if the method used for the request was POST
+		if request.is_ajax(): #check if the request came from ajax request
+			try:
+				employee = Employee.objects.get(user_id = request.user.id)
+				localization = EmployeeLocalization.objects.filter(employee_id = employee.id).order_by('-e_time').values('latitude','longitude')[0]
+				result['latitude'] = localization['latitude']
+				result['longitude'] = localization['longitude']
+				result['success'] = True
+			except DoesNotExist:
+				result['code'] = 1 #There is no users associated with this 
+		else:
+	 		result['code'] = 4 #Use ajax to perform requests
+	else:
+		result['code'] = 5 #Request was not POST
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
-
 
 def login(request):
 	#validating the received form
