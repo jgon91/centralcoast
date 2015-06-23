@@ -1,78 +1,103 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
+	<head>
+		<meta charset="utf-8">
+		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+		Remove this if you use the .htaccess -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>login</title>
+		<meta name="description" content="">
+		<meta name="author" content="Carlos Eduardo Domingues">
+		<meta name="viewport" content="width=device-width; initial-scale=1.0">
+		{% load staticfiles %}
+		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+		<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<script type="text/javascript" src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
+		<script type="text/javascript" src="{% static 'js/login.js' %}"></script>
+		<link rel="shortcut icon" href="/favicon.ico">
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-  <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame 
-       Remove this if you use the .htaccess -->
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	</head>
+	<body style="background: url('{% static 'img/background.jpg' %}') no-repeat center center fixed; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;">
+		<div id="wrapper">
 
-  <title>login</title>
-  <meta name="description" content="">
-  <meta name="author" content="Carlos Eduardo Domingues">
+			<div id="header">
+				<div class="col-xs-12 col-md-12">
+					<img id="loginLogo" src="{% static 'img/logo.png' %}"/>
+				</div>
+			</div>
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<div id="login">				
+				<br />
+				<table id="loginTable">
+					<form id="login-form">
+						{% csrf_token %}
+						<tr>
+							
+							<td colspan="2">
+								<strong><span id="errorMessage" style="font-size: 18px;"></span></strong>
+							</td>
+						</tr>
+						<tr>
+							<td><img src="{% static 'img/user.png' %}" style="margin-top: 20px;"/>
+							<br />
+							<br />
+							</td><td>
+							<input  type="text" class="input_login" id="username" name="username" placeholder="Enter your username" style="margin-top: 20px;"/>
+							<br />
+							<br />
+							</td>
+						</tr>
+						<tr>
+							<td><img src="{% static 'img/password.png' %}" />
+							<br />
+							<br />
+							</td><td>
+							<input  type="password" class="input_login" id="password" name="password" placeholder="Enter your password" />
+							<br />
+							<br />
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+							<input id="btn_login" class="blue_label" type="button" onclick="process_login()"/>
+							</td>
+						</tr>
+					</form>
+				</table>
+			</div>
 
-  <meta name="viewport" content="width=device-width; initial-scale=1.0">
-  {% load staticfiles %}
-  <!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
-  <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"> 
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-  <script type="text/javascript" src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
-  <script type="text/javascript" src="{% static 'js/login.js' %}"></script>
-  <link rel="shortcut icon" href="/favicon.ico">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  
-</head>
+			<br />
 
-<body style="background: url('{% static 'img/background.jpg' %}') no-repeat center center fixed; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;">
-  <div id="wrapper">
+			<footer>
+				<p style="color: white">
+					&copy; Copyright  by Heavy Connect
+				</p>
+			</footer>
+		</div>
+		<script>
+			$("#username").click(function() {
+				$("#password").attr("placeholder", "Enter your password");
+				$("#username").attr("placeholder", "");
+				$("#username").css("font-size", "20px");
+			});
+			$("#password").click(function() {
+				$("#username").attr("placeholder", "Enter your username");
+				$("#password").attr("placeholder", "");
+				$("#password").css("font-size", "20px");
+			});
 
-    <div id="header">
-      <div class="col-xs-12 col-md-12">
-        <img id="loginLogo" src="{% static 'img/logo.png' %}"/>
-      </div>
-  </div>
-  <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-        <div id="login">
-          <br />
-          <table id="loginTable">
-            <form id="login-form">
-              {% csrf_token %}
-            <tr>  
-              <td><img src="{% static 'img/user.png' %}" /><br /><br /> </td><td><input  type="text" class="input_login" id="username" name="username" placeholder="Enter your username" /><br /><br /></td>
-            </tr>
-            <tr>  
-              <td><img src="{% static 'img/password.png' %}" /> <br /><br /></td><td><input  type="password" class="input_login" id="password" name="password" placeholder="Enter your password" /><br /><br /></td>
-            </tr>
-            <tr>
-              <td colspan="2">
-                <input id="btn_login" class="blue_label" type="button" onclick="process_login()"/></td>
-              </tr>
-            </form>
-          </table>
-        </div>    
-
-      <br />
-      
-    <footer>
-     <p style="color: white">&copy; Copyright  by Heavy Connect</p>
-    </footer>
-  </div>
-    <script>
-	    
-  	$("#username").click(function(){
-  		$("#password").attr("placeholder", "Enter your password");
-  		$("#username").attr("placeholder", "");
-  		$("#username").css("font-size", "20px");
-  	});
-  	$("#password").click(function(){
-  		$("#username").attr("placeholder", "Enter your username");
-  		$("#password").attr("placeholder", "");
-  		$("#password").css("font-size", "20px");
-  	});
-  	
-  </script>
-</body>
+		</script>
+	</body>
 </html>
-
 
