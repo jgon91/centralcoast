@@ -1,10 +1,48 @@
 
-/*Script */
-	function setActivePage(var btn){
-		$("#" + btn).attr('background', '' + btn + "Hover.png";);
+/* Script Profile 
+	function getUserInformation(token) {
+		console.log("function called")
+		$.ajax({
+			method: "POST",
+			url: "login/",
+			data: 'csrf_token':token ,
+			success: function(data, status, xhr){
+				$("#lastName").html(data.lastName);
+			}
+		});
+		
+		$.ajax({
+			method: "POST",
+			url: "login/",
+			data: 'csrf_token':token ,
+			success: function(data, status, xhr){
+				if(data.success){
+					location.reload();
+				}
+			}
+		});
+		
+		$.ajax({
+			method: "POST",
+			url: "login/",
+			data: 'csrf_token':token ,
+			success: function(data, status, xhr){
+				if(data.success){
+					location.reload();
+				}
+			}
+		});
+	}
+ End Profile */
+
+/* Script to Active Page */
+	function setActivePage(btn){
+		//alert(btn);
+		//$("#" + btn).css('background', 'url(/static/img/' + btn + "Hover.jpg)");
+		//$("#" + btn).append("TESTE");
 	}
 
-/*End */
+/* End Active Page */
 
 /* Script checklist page */
 	function eventsCheckList() 
@@ -110,8 +148,8 @@
 		}
 	}
 	function showPosition(position) {
-		lat = position.coords.latitude;
-		lon = position.coords.longitude;
+		var lat = position.coords.latitude;
+		var lon = position.coords.longitude;
 		latlon = new google.maps.LatLng(lat, lon)
 		mapholder = document.getElementById('mapholder')
 		
