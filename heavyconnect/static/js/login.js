@@ -18,6 +18,13 @@ function process_login() {
 	});
 }
 /*
+
+data: {"csrf_token": '{{csrf_token}}', }
+							"qr_code": qr_code
+							"idEquipment": idEquipment
+							
+							{{QR_CODE}} ID_IDENTIFICATION
+							
 function getUserInformation(token) {
 	console.log("function called")
 	$.ajax({
