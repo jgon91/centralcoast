@@ -2,15 +2,12 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-
 		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
 		Remove this if you use the .htaccess -->
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
 		<title>login</title>
 		<meta name="description" content="">
 		<meta name="author" content="Carlos Eduardo Domingues">
-
 		<meta name="viewport" content="width=device-width; initial-scale=1.0">
 		{% load staticfiles %}
 		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
@@ -22,7 +19,6 @@
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
 	</head>
-
 	<body style="background: url('{% static 'img/background.jpg' %}') no-repeat center center fixed; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;">
 		<div id="wrapper">
 
@@ -47,16 +43,17 @@
 					<form id="login-form">
 						{% csrf_token %}
 						<tr>
+							
 							<td colspan="2">
-								<strong><span id="errorMessage"></span></strong>
+								<strong><span id="errorMessage" style="font-size: 18px;"></span></strong>
 							</td>
 						</tr>
 						<tr>
-							<td><img src="{% static 'img/user.png' %}" />
+							<td><img src="{% static 'img/user.png' %}" style="margin-top: 20px;"/>
 							<br />
 							<br />
 							</td><td>
-							<input  type="text" class="input_login" id="username" name="username" placeholder="Enter your username" />
+							<input  type="text" class="input_login" id="username" name="username" placeholder="Enter your username" style="margin-top: 20px;"/>
 							<br />
 							<br />
 							</td>

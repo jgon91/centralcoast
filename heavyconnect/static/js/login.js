@@ -9,8 +9,10 @@ function process_login() {
 				location.reload();
 			} else if (data.code == 1){
 				$("#errorMessage").html("User Inactive. Call your manager.");
+				$("#errorMessage").attr("class", "alert-danger alert");
 			} else if (data.code == 2){
-				$("#errorMessage").html("Wrong Username/Password. Try it again. ");
+				$("#errorMessage").html("Wrong Username/Password. Try it again.");
+				$("#errorMessage").attr("class", "alert-danger alert");
 			}
 		}
 	});
