@@ -63,34 +63,32 @@ def login(request):
 	else:
 		result['code'] = 5 #Request was not POST
 	
-	return HttpResponse(json.dumps(result),content_type='application/json')
+	return HttpResponse(json.dumps(result),content_type='application/js  on')
 
 @login_required
-def getUserInformation(request):
+def getDriverInformation(request):
 	result = {'success' : False}
 
-	# if request.method == 'POST':
-	# 	if request.is_ajax():
-	try:
-		employee =  Employee.objects.get(user_id = request.user.id)
-		print employee.company_id
-		result['first_name'] = employee.user.first_name
-		result['last_name'] = employee.user.last_name
-		result['company_id'] = employee.company_id
-		result['qr_code'] = employee.qr_code
-		result['hire_date'] = str(employee.start_date)
-		result['utilization'] = 0
-		result['hours_today'] = getHoursToday(employee.id)
-		result['hours_week'] = getWeekHours(employee.id)
-	except DoesNotExist:
-		result['code'] = 1 #There is no users associated with this 
-	
-	# result['last_name'] = employee.user.last_name
-
-	# 	else:
-	# 		result['code'] = 4 #Use ajax to perform requests
-	# else:
-	# 	result['code'] = 5 #Request was not POST
+	if request.method == 'POST':
+		if request.is_ajax():
+			try:
+				employee =  Employee.objects.get(user_id = request.user.id)
+				print employee.company_id
+				result['first_name'] = employee.user.first_name
+				result['last_name'] = employee.user.last_name
+				result['company_id'] = employee.company_id
+				result['qr_code'] = employee.qr_code
+				result['hire_date'] = str(employee.start_date)
+				result['utilization'] = 0
+				result['hours_today'] = getHoursToday(employee.id)
+				result['hours_week'] = getWeekHours(employee.id)
+				result['success'] = True
+			except DoesNotExist:
+				result['code'] = 1 #There is no users associated with this 
+		else:
+	 		result['code'] = 4 #Use ajax to perform requests
+	else:
+		result['code'] = 5 #Request was not POST
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 

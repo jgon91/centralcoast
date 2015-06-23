@@ -9,5 +9,5 @@ urlpatterns = patterns('',
     url(r'^getEmployeeLocation/$', getEmployeeLocation, name = 'getEmployeeLocation'),
     url(r'^formTEST/$', manufacturerForm, name='registerManufacturer'),
     url(r'^formok/$', formok, name = 'formok'),
-    url(r'^test/$', getUserInformation, name = 'formok'),
+    url(r'^test/$', getDriverInformation, name = 'driverInfo'),
 )
