@@ -18,6 +18,23 @@ def home(request):
 def driver(request):
 	return render(request, 'driver.html')
 
+#Issue #73
+@login_required
+def getEmployeeLocation(request):
+	result = {'success' : False}
+
+	employee = Employee.objects.get(user_id = request.user.id)
+
+	localization = EmployeeLocalization.objects.filter(employee_id = employee.id).order_by('-e_time').values('latitude','longitude')[0]
+
+	result['latitude'] = localization['latitude']
+	result['longitude'] = localization['longitude']
+
+	result['success'] = True
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
 def login(request):
 	#validating the received form
 	form = loginForm(request.POST)
@@ -72,7 +89,12 @@ Just a quick explanation on how to test forms:
 	    })
 If you need to test the forms change the form name.
 </menezescode>
-'''
+
+@menezescode: 	Those are the forms. At the current point 06/22/2015,
+				each view does nothgin besides render the page and redirect
+				to a different page if it's correct and reload the page 
+				if the form was sent incorrectly
+
 
 def manufacturerForm(request):
 	form = manufacturerForm(request.POST)
@@ -252,3 +274,4 @@ def implementServiceForm(request):
 		return redirect('formok')
 	else:
 		return render(request, 'formTEST.html', {'form': form})
+'''
