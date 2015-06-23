@@ -37,8 +37,8 @@
 
 /* Script to Active Page */
 	function setActivePage(btn){
-		alert(btn);
-		$("#" + btn).css('background', 'url(/static/img/' + btn + "Hover.jpg)");
+		//alert(btn);
+		//$("#" + btn).css('background', 'url(/static/img/' + btn + "Hover.jpg)");
 		//$("#" + btn).append("TESTE");
 	}
 
