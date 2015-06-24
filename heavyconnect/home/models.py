@@ -21,7 +21,7 @@ class RepairShop(models.Model):
 	address = models.CharField(max_length = 150)
 
 	def __unicode__(self):
-		return "Contact: " + str(self.contact_name) + ", Phone Number: " + str(self.contact_number) + ", Address: " + str(self.contact_address)
+		return "Contact: " + str(self.name) + ", Phone Number: " + str(self.number) + ", Address: " + str(self.address)
 
 class Shop(models.Model):
 	name = models.CharField(max_length = 20)
@@ -29,7 +29,7 @@ class Shop(models.Model):
 	address = models.CharField(max_length = 150)
 
 	def __unicode__(self):
-		return "Contact: " + str(self.contact_name) + "\n" + "Phone Number: " + str(self.contact_number) + "\n" + "Address: " + str(self.contact_address)
+		return "Contact: " + str(self.name) + "\n" + "Phone Number: " + str(self.number) + "\n" + "Address: " + str(self.address)
 
 class Machine(models.Model):
 	HITCH_CHOICES = (
