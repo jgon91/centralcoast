@@ -115,15 +115,15 @@ def logout(request):
 
 @login_required
 def driver(request):
-    return render(request, 'driver/indexDriver.html')
+    return render(request, 'driver/home.html')
 
 @login_required
 def profile(request):
     return render(request, 'driver/profile.html')
 
 @login_required
-def header(request):
-    return render(request, 'template/header.html')
+def headerDriver(request):
+    return render(request, 'template/headerDriver.html')
 
 @login_required
 def headerHome(request):
@@ -134,12 +134,12 @@ def footer(request):
 	return render(request, 'template/footer.html')
 
 @login_required
-def task_flow(request):
+def taskFlow(request):
 	return render(request, 'driver/taskFlow.html')
 
 @login_required
-def timeKepper(request):
-	return render(request, 'driver/timeKepper.html')
+def time_keeper(request):
+	return render(request, 'driver/timeKeeper.html')
 
 @login_required
 def equipament(request):
@@ -150,16 +150,8 @@ def schedule(request):
     return render(request, 'driver/schedule.html')
 
 @login_required
-def time_keeper(request):
-    return render(request, 'driver/timeKepper.html')
-
-@login_required
 def updateStatus(request):
     return render(request, 'driver/updateStatus.html')
-
-@login_required
-def taskFlow(request):
-    return render(request, 'driver/taskFlow.html')
 
 @login_required
 def checklist(request):
@@ -187,7 +179,7 @@ def scanQRCode(request):
 
 @login_required
 def indexManager(request):
-    return render(request, 'manager/indexManager.html')
+    return render(request, 'manager/home.html')
 
 @login_required
 def fleet(request):
@@ -195,11 +187,11 @@ def fleet(request):
 
 @login_required
 def equipmentManager(request):
-    return render(request, 'manager/equipmentManager.html')
+    return render(request, 'manager/equipment.html')
 
 @login_required
 def profileManager(request):
-    return render(request, 'manager/profileManager.html')
+    return render(request, 'manager/profile.html')
 
 # @menezescode: Page only to show the form was correctly sended.
 def formok(request):

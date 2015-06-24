@@ -13,7 +13,7 @@
 			//var source = 'cal.json'; We can use a variable in events, to fill the calendar
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
-				$("#head").load("{% url 'header' %}");
+				$("#head").load("{% url 'headerDriver' %}");
 
 				$('#cal').fullCalendar({
 					events : [{

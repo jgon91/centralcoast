@@ -22,16 +22,16 @@
 	<body>
 		<div id="top">
 			<div id="menuTop">
-				<a href="{% url 'home' %}"><input type="button" class="btnTop" id="btnHomeUp" /></a>
-				<a href="{% url 'equipment' %}"><input type="button" class="btnTop" id="btnEquipmentUp" /></a>
-				<a href="{% static 'taskFlow' %}"><input type="button" class="btnTop" id="btnTaskflowUp" /></a>
-				<a href="{% static 'schedule' %}"><input type="button" class="btnTop" id="btnSchedulerUp" /></a>
-				<a href="{% static 'timeKeeper' %}"><input type="button" class="btnTop" id="btnTimerkeeperUp" /></a>
-				<a href="{% static 'employee' %}"><input type="button" class="btnTop" id="btnEmployeeUp" /></a>
-				<a href="{% static 'recorder' %}"><input type="button" class="btnTop" id="btnRecorderUp" /></a>
+				<a href="{% url 'indexManager' %}"><input type="button" class="btnTop" id="btnHomeUp" /></a>
+				<a href="{% url 'equipmentManager' %}"><input type="button" class="btnTop" id="btnEquipmentUp" /></a>
+				<a href="{% url 'indexManager' %}"><input type="button" class="btnTop" id="btnTaskflowUp" /></a>
+				<a href="{% url 'indexManager' %}"><input type="button" class="btnTop" id="btnSchedulerUp" /></a>
+				<a href="{% url 'indexManager' %}"><input type="button" class="btnTop" id="btnTimerkeeperUp" /></a>
+				<a href="{% url 'indexManager' %}"><input type="button" class="btnTop" id="btnEmployeeUp" /></a>
+				<a href="{% url 'indexManager' %}"><input type="button" class="btnTop" id="btnRecorderUp" /></a>
 				<a href="{% url 'fleet' %}"><input type="button" class="btnTop" id="btnFleetUp" /></a>
-				<a href="{% static 'manage' %}"><input type="button" class="btnTop" id="btnManageUp" /></a>
-				<a href="{% static 'logout' %}"><input type="button" id="logOff"/>
+				<a href="{% url 'indexManager' %}"><input type="button" class="btnTop" id="btnManageUp" /></a>
+				<a href="{% url 'logout' %}"><input type="button" id="logOff"/>
 				<a href="{% url 'profile' %}"><input type="button" id="userImg"/>
 			</div>
 		</div>

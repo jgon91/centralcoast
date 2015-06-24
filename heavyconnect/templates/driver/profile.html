@@ -11,7 +11,7 @@
 
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
-				$("#head").load("{% url 'header' %}");
+				$("#head").load("{% url 'headerDriver' %}");
 				getLocation();	
 				getUserInformation("{{ csrf_token }}", "{% url 'driverInfo' %}");
 			});
