@@ -22,17 +22,17 @@
 	<body>
 		<div id="top">
 			<div id="menuTop">
-				<a href="{% static 'indexDriver' %}"><input type="button" class="btnTop" id="btnHomeUp" /></a>
-				<a href="{% static 'equipmentManager' %}"><input type="button" class="btnTop" id="btnEquipmentUp" /></a>
+				<a href="{% url 'indexManager' %}"><input type="button" class="btnTop" id="btnHomeUp" /></a>
+				<a href="{% url 'equipmentManager' %}"><input type="button" class="btnTop" id="btnEquipmentUp" /></a>
 				<a href="{% static 'taskFlow' %}"><input type="button" class="btnTop" id="btnTaskflowUp" /></a>
 				<a href="{% static 'scheduler' %}"><input type="button" class="btnTop" id="btnSchedulerUp" /></a>
 				<a href="{% static 'timeKeeper' %}"><input type="button" class="btnTop" id="btnTimerkeeperUp" /></a>
 				<a href="{% static 'equipmentManager' %}"><input type="button" class="btnTop" id="btnEmployeeUp" /></a>
 				<a href="{% static 'taskFlow' %}"><input type="button" class="btnTop" id="btnRecorderUp" /></a>
-				<a href="{% static 'scheduler' %}"><input type="button" class="btnTop" id="btnFleetUp" /></a>
+				<a href="{% url 'fleet' %}"><input type="button" class="btnTop" id="btnFleetUp" /></a>
 				<a href="{% static 'timeKeeper' %}"><input type="button" class="btnTop" id="btnManageUp" /></a>
 				<a href="{% static 'logout' %}"><input type="button" id="logOff"/>
-				<a href="{% static 'profileManager' %}"><input type="button" id="userImg"/>
+				<a href="{% url 'profileManager' %}"><input type="button" id="userImg"/>
 			</div>
 		</div>
 	</body>
