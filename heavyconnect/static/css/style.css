@@ -544,6 +544,7 @@ div.notes {
 	width: 80%;
 	margin: auto;
 	margin-top: 70px;
+	min-width: 1000px;
 }
 #flapTask a {
 	background: #809A21;
@@ -567,19 +568,7 @@ div.notes {
 	text-align: right;
 	height: 50px;
 }
-.divPart2 {
-	color: black;
-	width: 100%;
-	text-align: right;
-	height: 50px;
-}
 .divPart1 input[type=text] {
-	width: 100%;
-	margin-top: 10px;
-	margin-bottom: 10px;
-	height: 45px;
-}
-.divPart2 input[type=text] {
 	width: 100%;
 	margin-top: 10px;
 	margin-bottom: 10px;
@@ -591,27 +580,16 @@ div.notes {
 	width: 60%;
 	float: left;
 	padding-top: 5px;
-}
-#divText2 {
-	background: #F3C902;
-	height: 400px;
-	width: 80%;
-	float: left;
-	padding-top: 5px;
+	min-width: 550px;
 }
 .textLeft1 {
 	padding-top: 32px;
 	font-size: 18px;
+	width: 40%;
 }
 .textRight1 {
 	padding-top: 10px;
-}
-.textLeft2 {
-	padding-top: 67px;
-	font-size: 18px;
-}
-.textRight2 {
-	padding-top: 50px;
+	width: 60%;
 }
 #divDesc1 {
 	float: left;
@@ -620,6 +598,33 @@ div.notes {
 	width: 40%;
 	height: 400px;
 	padding-top: 10px;
+	min-width: 250px;
+}
+.divPart2 {
+	color: black;
+	width: 100%;
+	text-align: right;
+	height: 50px;
+}
+.divPart2 input[type=text] {
+	width: 100%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	height: 45px;
+}
+#divText2 {
+	background: #F3C902;
+	height: 400px;
+	width: 80%;
+	float: left;
+	padding-top: 5px;
+}
+.textLeft2 {
+	padding-top: 67px;
+	font-size: 18px;
+}
+.textRight2 {
+	padding-top: 50px;
 }
 #divDesc2 {
 	float: left;
@@ -894,6 +899,9 @@ div.notes {
 	text-align: left;
 	padding-left: 0px;
 	color: black;
+}
+.profileList span {
+	font-weight: bold;
 }
 #userImage {
 	width: 131px;
