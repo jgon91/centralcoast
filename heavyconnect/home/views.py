@@ -182,6 +182,10 @@ def startTask(request):
     return render(request, 'driver/startTask.html')
 
 @login_required
+def scanQRCode(request):
+    return render(request, 'driver/scanQRCode.html')
+
+@login_required
 def indexManager(request):
     return render(request, 'manager/indexManager.html')
 
@@ -190,12 +194,12 @@ def fleet(request):
     return render(request, 'manager/fleet.html')
 
 @login_required
-def scanQRCode(request):
-    return render(request, 'driver/scanQRCode.html')
-
-@login_required
 def equipmentManager(request):
     return render(request, 'manager/equipmentManager.html')
+
+@login_required
+def profileManager(request):
+    return render(request, 'manager/profileManager.html')
 
 # @menezescode: Page only to show the form was correctly sended.
 def formok(request):
