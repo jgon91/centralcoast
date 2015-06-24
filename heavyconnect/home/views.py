@@ -154,11 +154,35 @@ def updatePhoto(request):
 			except DoesNotExist:
 	 			result['code'] = 1 #There is no users associated with this 
 	 	else:
-	 		result['code'] = 4 #Use ajax to perform requests
+	 		result['code'] = 2 #Use ajax to perform requests
 	else: 
-	 	result['code'] = 5 #Request was not POST
+	 	result['code'] = 3 #Request was not POST
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+#This function gives back the picture of the refered QrCode
+def loadEquipmentImage(request):
+	result = {'success' : False}
+	qrCode = request.POST['qr_code']
+	if request.method == 'Post':
+	 	if request.is_ajax():
+	try:
+		equipment = Machine.objects.get(qr_code = qrCode)
+		result['url'] = equipment.photo
+		result['success'] = True
+	except Machine.DoesNotExist:
+		try:
+			equipment = Implement.objects.get(qr_code = qrCode)
+			result['url'] = equipment.photo
+			result['success'] = True
+		except Implement.DoesNotExist:
+			result['code'] = 1 #There is no users associated with this
+		else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else: 
+	 	result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
 
 def getHoursToday(id):
 	# now = datetime.datetime.now()
