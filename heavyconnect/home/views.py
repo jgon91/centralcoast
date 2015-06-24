@@ -116,6 +116,7 @@ def getDriverInformation(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+#Get basic information about the User
 def getQuickUser(request):
 	result = {'success' : False}
 
@@ -130,6 +131,26 @@ def getQuickUser(request):
 				result['url'] = employee.photo
 				result['success'] = True
 	 		except DoesNotExist:
+	 			result['code'] = 1 #There is no users associated with this 
+	 	else:
+	 		result['code'] = 4 #Use ajax to perform requests
+	else: 
+	 	result['code'] = 5 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+#Receive one url to a picture and changes the old url in the user profile
+def updatePhoto(request):
+	result = {'success' : False}
+	if request.method == 'Post':
+	 	if request.is_ajax():
+	 		try:
+				employee = Employee.objects.get(user_id = request.user.id)
+				employee.photo = request.POST['photo']
+				result['photo'] = employee.photo
+				result['success'] = True
+				employee.save()
+			except DoesNotExist:
 	 			result['code'] = 1 #There is no users associated with this 
 	 	else:
 	 		result['code'] = 4 #Use ajax to perform requests

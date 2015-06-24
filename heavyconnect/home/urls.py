@@ -12,7 +12,7 @@ urlpatterns = patterns('',
     url(r'^driverInfo/$', getDriverInformation, name = 'driverInfo'),
     url(r'^startNewTask/$', startNewTask, name = 'startNewTask'),
     url(r'^quickUserInfomation/$', getQuickUser, name = 'quickUser'),
-	url(r'^test/$', getDriverInformation, name = 'driverInfo'),
+    url(r'^updatePhoto/$', updatePhoto, name = 'updatePhoto'),
     ### End ###
 
     ### Froms ###
