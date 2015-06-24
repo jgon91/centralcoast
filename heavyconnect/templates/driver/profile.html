@@ -18,20 +18,24 @@
 			
 			function getUserInformation(token, url) {
 				
-					alert("Token: " + token + " - Action: " + url );
-					console.log("function called");
-					
 					$.ajax({
 						method: "POST",
 						url: url,
 						data: {"csrfmiddlewaretoken": token },
 						datatype: "json",
-						success: function(data, status, xhr){
-							alert(data.first_name)
-							//$("#lastName").html(data.lastName);
+						success: function(data, status, xhr){							
+							$("#firstName").html(data.first_name);
+							$("#lastName").html(data.last_name);
+							$("#userId").html(data.user_id);
+							$("#qr_code").html(data.qr_code);
+							$("#hire_date").html(data.hire_date);
+							$("#utilization").html(data.utilization);
+							$("#hours_today").html(data.hours_today);
+							$("#hours_week").html(data.hours_week);
+							$("#ternure").html(data.ternure);
+							$("#ternure").html(data.timeRecord);
 						}
-					});
-					console.log("pass2")
+					});			
 			}
 	
 		</script>
@@ -55,9 +59,9 @@
 							</div>
 							<div class="col-xs-3 col-md-3" id="userInfo">
 								<ul class="profileList">
-									<li>First Name: <span id="firstName"><strong>Robert</strong></span></li>
-									<li>Last Name: <span id="lastName"><strong>Wall</strong></span></li>
-									<li>EID: <span id="userID"><strong>X0918</strong></span></li>
+									<li>First Name: <span id="firstName"></span></li>
+									<li>Last Name: <span id="lastName"></span></li>
+									<li>EID: <span id="userId"></span></li>
 								</ul>
 							</div>		
 						</div>
@@ -65,17 +69,17 @@
 						<div class="row" id="rowInfo" >
 							<div class="col-xs-3 col-md-3" id="addInfo">
 								<ul class="profileList">
-									<li>QR Recal: <span id="QR"><strong>12345</strong></span></li>
-									<li>Hire Date: <span id="hiteDate"><strong>10/11/2007</strong></span></li>
-									<li>Ternure: <span id="ternure"><strong>7,5 years</strong></span></li>
+									<li>QR Recal: <span id="qr_code"></span></li>
+									<li>Hire Date: <span id="hire_date"></span></li>
+									<li>Ternure: <span id="ternure"></span></li>
 								</ul>
 							</div>
 							<div class="col-xs-3 col-md-3" id="addInfo">
 								<ul class="profileList">
-									<li>On-Time Record: <span id="timeRecord"><strong>91%</strong></span></li>
-									<li>Utilization: <span id="utilization"><strong>79%</strong></span></li>
-									<li>Hours Today: <span id="hoursToday"><strong>6,23</strong></span></li>
-									<li>Hours this Week: <span id="hoursWeek"><strong>38,23</strong></span></li>
+									<li>On-Time Record: <span id="timeRecord"></span></li>
+									<li>Utilization: <span id="utilization"></span></li>
+									<li>Hours Today: <span id="hours_today"></span></li>
+									<li>Hours this Week: <span id="hours_week"></span></li>
 								</ul>
 							</div>		
 						</div>
