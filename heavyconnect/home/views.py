@@ -115,7 +115,7 @@ def getQuickUser(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-
+#Receive one url to a picture and changes the old url in the user profile
 def updatePhoto(request):
 	result = {'success' : False}
 	if request.method == 'Post':
