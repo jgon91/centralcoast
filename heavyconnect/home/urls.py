@@ -9,6 +9,7 @@ urlpatterns = patterns('',
     
     ### Functions ###
     url(r'^employeeLocation/$', getEmployeeLocation, name = 'employeeLocation'),
+    url(r'^employeeCheckout/$', getEmployee, name = 'employeeCheckout'),
     url(r'^driverInfo/$', getDriverInformation, name = 'driverInfo'),
     url(r'^startNewTask/$', startNewTask, name = 'startNewTask'),
     url(r'^quickUserInfomation/$', getQuickUser, name = 'quickUser'),
