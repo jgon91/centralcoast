@@ -5,7 +5,10 @@ function process_login() {
 		url: "login/",
 		data: $('#login-form').serialize(),
 		success: function(data, status, xhr){
-			if(data.success){
+			//if(data.success){
+			alert();
+			if(true){
+				
 				location.reload();
 			} else if (data.code == 1){
 				$("#errorMessage").html("User Inactive. Call your manager.");
@@ -18,7 +21,6 @@ function process_login() {
 	});
 }
 /*
-
 data: {"csrf_token": '{{csrf_token}}', }
 							"qr_code": qr_code
 							"idEquipment": idEquipment
