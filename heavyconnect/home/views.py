@@ -143,7 +143,7 @@ def getQuickUser(request):
 #Receive one url to a picture and changes the old url in the user profile
 def updatePhoto(request):
 	result = {'success' : False}
-	if request.method == 'Post':
+	if request.method == 'POST':
 	 	if request.is_ajax():
 	 		try:
 				employee = Employee.objects.get(user_id = request.user.id)
@@ -248,7 +248,7 @@ Just a quick explanation on how to test forms:
 				if the form was sent incorrectly
 
 '''
-def manufacturerForm(request):
+def manufacturerFormView(request):
 	form = manufacturerForm(request.POST)
 	if form.is_valid():
 		return redirect('formok')

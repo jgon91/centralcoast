@@ -17,7 +17,7 @@ urlpatterns = patterns('',
     ### End ###
 
     ### Froms ###
-    url(r'^formTEST/$', manufacturerForm, name='registerManufacturer'),
+    url(r'^formTEST/$', manufacturerFormView, name='registerManufacturer'),
     url(r'^formok/$', formok, name = 'formok'),
     ### End ###
 )
