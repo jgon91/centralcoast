@@ -10,5 +10,6 @@ urlpatterns = patterns('',
     url(r'^formTEST/$', manufacturerForm, name='registerManufacturer'),
     url(r'^formok/$', formok, name = 'formok'),
     url(r'^test/$', getDriverInformation, name = 'driverInfo'),
-    url(r'^quickUserInfomation/$', getQuickUser, name = 'quickUser'),
+    url(r'^quickUserInfomation/$', getQuickUser, name = 'quickUserInfo'),
+    url(r'^updatePhoto/$', updatePhoto, name = 'updatePhoto'),
 )
