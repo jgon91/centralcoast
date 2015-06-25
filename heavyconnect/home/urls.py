@@ -17,6 +17,7 @@ urlpatterns = patterns('',
     url(r'^loadEquipmentImage/$', loadEquipmentImage, name = 'loadEquipmentImage'),
     url(r'^loadMachinesImage/$', loadMachinesImage, name = 'loadMachinesImage'),
     url(r'^loadImplementsImage/$', loadImplementsImage, name = 'loadImplementsImage'),
+    url(r'^startShift/$', startShift, name = 'startShift'),
     ### End ###
 
     ### Froms ###
