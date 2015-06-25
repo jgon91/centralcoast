@@ -11,7 +11,32 @@
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerDriver' %}");
 				getLocation();
+				
+				loadEquipmentInfo("{{ csrf_token }}", "", "1235678");
 			});
+			
+			function loadEquipmentInfo(token, url, id) {
+				
+					$.ajax({
+						method: "POST",
+						url: url,
+						data: {"csrfmiddlewaretoken": token,
+							   "id": id},  // id could be qrCode or employeeId
+						datatype: "json",
+						success: function(data, status, xhr){	
+							if(data.success){
+								$("#aq_code").html(data.aq_code);
+								$("#maufacturer").html(data.manufacturer);
+								$("#model").html(data.model);
+								$("#asset_number").html(data.asset_number);
+								$("#lift_cap").html(data.lift_cap);
+								$("#hitch_sz").html(data.hitch_sz);
+								$("#drawn_size").html(data.drawn_size);
+								$("#aquired_date").html(data.acquired_date);
+							}
+						}
+					});			
+			}
 		</script>
 	</head>
 	<body>
@@ -30,35 +55,35 @@
 				</div>
 				<div class="row rowEquip">
 					<div class="col-xs-3 col-md-3" style="padding: 0px; line-height: 18px; padding-top: 5px;">
-						QR Sticker: 00123
-						</br>Reiter Asset: RAC4556
-						</br>Manufacturer: John Deere
-						</br>Model: 9460RT
-						</br>SN: 1RW9460RTDAC900011
+						QR Sticker: <span id="qrCode"></span>
+						</br>Reiter Asset:<span id="aq_code"></span>
+						</br>Manufacturer:<span id="manufacturer"></span>
+						</br>Model:<span id="model"></span>
+						</br>SN: <span id="asset_number"></span>
 						</br>Hours: 2.017
 						</br></br><strong>LOCATION:</strong>
 					</div>
 					<div class="col-xs-3 col-md-3" style="padding: 0px; line-height: 18px; padding-top: 5px;">
-						Horse Power: 460
-						</br>Lift Capacity: 15.300 Ibs
-						</br>Hitch Size: 4N/3
-						</br>Drawbar Size: CAT 4
-						</br>Date Acquired: 07/01/2007
+						Horse Power:<span id="hp"></span> 
+						</br>Lift Capacity:<span id="lift_cap"></span>
+						</br>Hitch Size:<span id="hitch_sz"></span>
+						</br>Drawbar Size:<span id="drawn_size"></span>
+						</br>Date Acquired:<span id="acquired_date"></span>
 						</br>Service Provider: RD0 Equip.
 						</br>Owner Company: Aptos Berry Co.
 					</div>
 					<div class="col-xs-3 col-md-3" id="boxRight1">
 						<div style="padding-top: 5px;">
 							<strong>Implement:</strong>
-							</br>20' disk
+							</br><span id="implement"></span>
 						</div>
 						<div style="padding-top: 10px;">
 							<strong>Operator:</strong>
-							</br>Leonel Junior
+						</br><span id="operator"></span>
 						</div>
 						<div style="padding-top: 10px;">
 							<strong>Task:</strong>
-							</br>Disking
+						</br><span id="task"></span>
 						</div>
 					</div>
 					<div class="col-xs-3 col-md-3" id="boxRight2">
