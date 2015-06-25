@@ -49,7 +49,7 @@ def startShift(request):
 	if request.method == "POST":
 		if request.is_ajax():
 			try:
-				identifier = request.GET['id']
+				identifier = request.POST['id']
 				employee = Employee.objects.get(id = int(identifier))
 				now = datetime.datetime.now()
 				attendance, created = EmployeeAttendance.objects.get_or_create(employee_id = employee, defaults = {'date' : now, 'hour_started' : now})
@@ -67,6 +67,79 @@ def startShift(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+@login_required
+def startStopBreak(request):
+	result = {'success' : False}
+
+	if request.method == 'POST': #check if the method used for the request was POST
+		if request.is_ajax(): #check if the request came from ajax request
+			
+			identifier = request.POST['id']
+			employee = Employee.objects.get(id = int(identifier))
+
+			now = datetime.datetime.now()
+			start_date = datetime.datetime.combine(now, datetime.time.min)
+			end_date = datetime.datetime.combine(now, datetime.time.max)
+
+			optcode = request.POST['optcode']
+
+			try:
+				attendance = EmployeeAttendance.objects.get(employee_id = employee.id, date__range = (start_date, end_date))
+
+				if optcode == '1':
+					if attendance.break_one is None:
+						attendance.break_one = now
+						result['success'] = True
+						result['time'] = str(now)
+					else:
+						result['code'] = 1 #break one already started
+				elif optcode == '2':
+					if attendance.break_one_end is None:
+						attendance.break_one_end = now
+						result['success'] = True
+						result['time'] = str(now)
+					else:
+						result['code'] = 2 #break one already ended
+				elif optcode == '3':
+					if attendance.break_two is None:
+						attendance.break_two = now
+						result['success'] = True
+						result['time'] = str(now)
+					else:
+						result['code'] = 3 #break two already started
+				elif optcode == '4':
+					if attendance.break_two_end is None:
+						attendance.break_two_end = now
+						result['success'] = True
+						result['time'] = str(now)
+					else:
+						result['code'] = 4 #break two already ended
+				elif optcode == '5':
+					if attendance.break_three is None:
+						attendance.break_three = now
+						result['success'] = True
+						result['time'] = str(now)
+					else:
+						result['code'] = 5 #break three already started
+				elif optcode == '6':
+					if attendance.break_three_end is None:
+						attendance.break_three_end = now
+						result['success'] = True
+						result['time'] = str(now)
+					else:
+						result['code'] = 6 #break two already ended
+				else:
+					result['code'] = 7 #Invalid optcode
+
+				attendance.save()
+			except EmployeeAttendance.DoesNotExist:
+				result['code'] = 8 #You have not started your shift yet
+		else:
+	 		result['code'] = 9 #Use ajax to perform requests
+	else:
+		result['code'] = 10 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
 
 @login_required
 def getEmployeeLocation(request):
@@ -80,12 +153,12 @@ def getEmployeeLocation(request):
 				result['latitude'] = localization['latitude']
 				result['longitude'] = localization['longitude']
 				result['success'] = True
-			except DoesNotExist:
+			except Employee.DoesNotExist:
 				result['code'] = 1 #There is no users associated with this 
 		else:
-	 		result['code'] = 4 #Use ajax to perform requests
+	 		result['code'] = 2 #Use ajax to perform requests
 	else:
-		result['code'] = 5 #Request was not POST
+		result['code'] = 3 #Request was not POST
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
@@ -275,7 +348,6 @@ def loadImplementsImage(request):
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 		
-
 def getHoursToday(id):
 	# now = datetime.datetime.now()
 	# attendance = EmployeeAttendance.objects.get(employee_id = id)
@@ -289,10 +361,9 @@ def getHoursToday(id):
 def getWeekHours(id):
 	return 0
 
-#Return the information about the driver and his or her 
-def getEmployee(request):
+#Return the information about the driver and his or her schedule
+def getEmployeeSchedule(request):
 	result = {'success' : False}
-	stop = False
 
 	if request.method == 'POST':
 		if request.is_ajax():
@@ -305,11 +376,6 @@ def getEmployee(request):
 			end_date = datetime.datetime.combine(now, datetime.time.max)
 			try:
 				attendance = EmployeeAttendance.objects.get(employee_id = employee.id, date__range = (start_date, end_date))
-			except EmployeeAttendance.DoesNotExist:
-				result['code'] = 1 #There is no shift records for this employee
-				stop = True
-
-			if not stop:
 				result['first_name'] = employee.user.first_name
 				result['last_name'] = employee.user.last_name
 				result['qr_code'] = employee.qr_code
@@ -325,6 +391,8 @@ def getEmployee(request):
 				result['break_three'] = str(attendance.break_three) 
 				result['break_three_end'] = str(attendance.break_three_end) 
 				result['success'] = True
+			except EmployeeAttendance.DoesNotExist:
+				result['code'] = 1 #There is no shift records for this employee	
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
 	else: 
