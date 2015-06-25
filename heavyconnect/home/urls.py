@@ -14,6 +14,9 @@ urlpatterns = patterns('',
     url(r'^startNewTask/$', startNewTask, name = 'startNewTask'),
     url(r'^quickUserInfomation/$', getQuickUser, name = 'quickUser'),
     url(r'^updatePhoto/$', updatePhoto, name = 'updatePhoto'),
+    url(r'^loadEquipmentImage/$', loadEquipmentImage, name = 'loadEquipmentImage'),
+    url(r'^loadMachinesImage/$', loadMachinesImage, name = 'loadMachinesImage'),
+    url(r'^loadImplementsImage/$', loadImplementsImage, name = 'loadImplementsImage'),
     ### End ###
 
     ### Froms ###
