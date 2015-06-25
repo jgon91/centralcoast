@@ -46,8 +46,8 @@ def startNewTask(request):
 def startShift(request):
 	result = {'success' : False}
 
-	if request.method != "POST":
-		if not request.is_ajax():
+	if request.method == "POST":
+		if request.is_ajax():
 			try:
 				identifier = request.GET['id']
 				employee = Employee.objects.get(id = int(identifier))
