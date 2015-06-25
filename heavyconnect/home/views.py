@@ -183,7 +183,7 @@ def loadEquipmentImage(request):
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-
+#Look just into Machines 
 def loadMachinesImage(request):
 	result = {'success' : False}
 	if request.method == 'POST':
@@ -202,6 +202,7 @@ def loadMachinesImage(request):
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+#Look just into Implements
 def loadImplementsImage(request):
 	result = {'success' : False}
 	if request.method == 'POST':
