@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     
     ### Functions ###
     url(r'^employeeLocation/$', getEmployeeLocation, name = 'employeeLocation'),
-    url(r'^employeeCheckout/$', getEmployee, name = 'employeeCheckout'),
+    url(r'^employeeSchedule/$', getEmployeeSchedule, name = 'employeeSchedule'),
     url(r'^driverInfo/$', getDriverInformation, name = 'driverInfo'),
     url(r'^startNewTask/$', startNewTask, name = 'startNewTask'),
     url(r'^quickUserInfomation/$', getQuickUser, name = 'quickUser'),
@@ -18,6 +18,7 @@ urlpatterns = patterns('',
     url(r'^loadMachinesImage/$', loadMachinesImage, name = 'loadMachinesImage'),
     url(r'^loadImplementsImage/$', loadImplementsImage, name = 'loadImplementsImage'),
     url(r'^startShift/$', startShift, name = 'startShift'),
+    url(r'^startStopBreak/$', startStopBreak, name = 'startStopBreak'),
     ### End ###
 
     ### Froms ###
