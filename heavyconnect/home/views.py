@@ -33,13 +33,40 @@ def startNewTask(request):
 				# 	render start task page
 				# else:
 				# 	user does not have permission
-			except DoesNotExist:
-				result['code'] ==  1 #There is no users associated with this
+			except Employee.DoesNotExist:
+				result['code'] =  1 #There is no users associated with this
 		else:
-			result['code'] == 4 #Use ajax to perform requests
+			result['code'] = 2 #Use ajax to perform requests
 	else:
-		result['code'] == 5 #Request was not POST
+		result['code'] = 3 #Request was not POST
+
 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+@login_required
+def startShift(request):
+	result = {'success' : False}
+
+	if request.method == "POST":
+		if request.is_ajax():
+			try:
+				identifier = request.GET['id']
+				employee = Employee.objects.get(id = int(identifier))
+				now = datetime.datetime.now()
+				attendance, created = EmployeeAttendance.objects.get_or_create(employee_id = employee, defaults = {'date' : now, 'hour_started' : now})
+				if created:
+					result['success'] = True
+					result['hour_started'] = str(attendance.hour_started)
+				else:
+					result['code'] = 1 #The shift for today was already created
+			except Employee.DoesNotExist:
+				result['code'] =  2 #There is no users associated with this id
+		else:
+			result['code'] = 3 #Use ajax to perform requests
+	else:
+		result['code'] = 4 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
 
 @login_required
 def getEmployeeLocation(request):
@@ -98,7 +125,6 @@ def getDriverInformation(request):
 		if request.is_ajax():
 			try:
 				employee =  Employee.objects.get(user_id = request.user.id)
-				print employee.company_id
 				result['first_name'] = employee.user.first_name
 				result['last_name'] = employee.user.last_name
 				result['company_id'] = employee.company_id
@@ -154,9 +180,9 @@ def updatePhoto(request):
 			except DoesNotExist:
 	 			result['code'] = 1 #There is no users associated with this 
 	 	else:
-	 		result['code'] = 4 #Use ajax to perform requests
+	 		result['code'] = 2 #Use ajax to perform requests
 	else: 
-	 	result['code'] = 5 #Request was not POST
+	 	result['code'] = 3 #Request was not POST
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
@@ -188,6 +214,67 @@ def getEquipmentStatus(request):
 
 
 
+#This function gives back the picture of the refered QrCode
+def loadEquipmentImage(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+		qrCode = request.POST['qr_code']
+	 	if request.is_ajax():
+			try:
+				equipment = Machine.objects.get(qr_code = qrCode)
+				result['url'] = equipment.photo
+				result['success'] = True
+			except Machine.DoesNotExist:
+				try:
+					equipment = Implement.objects.get(qr_code = qrCode)
+					result['url'] = equipment.photo
+					result['success'] = True
+				except Implement.DoesNotExist:
+					result['code'] = 1 #There is no equipment associated with this
+		else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else: 
+	 	result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+#Look just into Machines 
+def loadMachinesImage(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+		qrCode = request.POST['qr_code']
+	 	if request.is_ajax():
+			try:
+				qrCode = request.POST['qr_code']
+				machine = Machine.objects.get(qr_code = qrCode)
+				result['url'] = machine.photo
+				result['success'] = True
+			except Machine.DoesNotExist:
+				result['code'] = 1 #There is no machine associated with this
+		else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else: 
+	 	result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+#Look just into Implements
+def loadImplementsImage(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+		qrCode = request.POST['qr_code']
+	 	if request.is_ajax():
+			try:
+				qrCode = request.POST['qr_code']
+				Implement = Implement.objects.get(qr_code = qrCode)
+				result['url'] = Implement.photo
+				result['success'] = True
+			except Implement.DoesNotExist:
+				result['code'] = 1 #There is no Implement associated with this
+		else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else: 
+	 	result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+		
 
 def getHoursToday(id):
 	# now = datetime.datetime.now()
@@ -202,14 +289,14 @@ def getHoursToday(id):
 def getWeekHours(id):
 	return 0
 
+#Return the information about the driver and his or her 
 def getEmployee(request):
 	result = {'success' : False}
 	stop = False
 
 	if request.method == 'POST':
 		if request.is_ajax():
-			qrc = request.GET['qr_code']
-
+			qrc = request.POST['qr_code']
 			employee = Employee.objects.get(qr_code = qrc)
 
 			#creating the data range for the day, generating the 00:00:00 and the 23:59:59 of the current day
