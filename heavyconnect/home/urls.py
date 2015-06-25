@@ -28,6 +28,10 @@ urlpatterns = [
 	url(r'^equipmentStatus/$', main_views.getEquipmentStatus, name = 'equipmentStatus'),
     ### End ###
 
+    ###Insert###
+    url(r'^createManufacture/$', CRUD.createManufacture, name = 'createManufacture'),
+    ###End###
+
     ### Froms ###
     url(r'^formTEST/$', main_views.manufacturerFormView, name='registerManufacturer'),
     url(r'^formok/$', main_views.formok, name = 'formok'),
