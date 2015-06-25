@@ -5,6 +5,10 @@
         <title>Scan QRCode</title>
         <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
         <style type="text/css">
+        #QR-Code{
+        	margin-top: 60px;
+        	style="width:80%;
+        }
         .scanner-laser{
             position: absolute;
             margin: 40px;
@@ -36,10 +40,21 @@
             border-right: solid red 5px;
         }
         </style>
+        
+        <script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
+		<script>
+			$(document).ready(function() {
+				$("#foot").load("{% url 'footer' %}");
+				$("#head").load("{% url 'headerDriver' %}");
+			});
+		</script>
+        
     </head>
     <body>
-      
-        <div id="QR-Code" class="container" style="width:90%;">
+      <header id="head"></header>
+      <div id="wrapper">
+      	<div id="content">
+        <div id="QR-Code" class="container">
             <div class="panel panel-primary">
                 <div class="panel-heading" style="display: inline-block;width: 100%;  text-align: center; color: white; background: #1F3801;">
                     
@@ -70,15 +85,14 @@
             </div>
         </div>
     </div>
-</body>
-<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="{% static 'WebCodeCam/js/main.js' %}"></script>
+    </div>
+    </div>
+    <footer id="foot"></footer>
+	</body>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="{% static 'WebCodeCam/js/main.js' %}"></script>
     <script type="text/javascript" src="{% static 'WebCodeCam/js/qrcodelib.js' %}"></script>
     <script type="text/javascript" src="{% static 'WebCodeCam/js/WebCodeCam.js' %}"></script>
     
-    <script>
-    
-    	
-    </script>
 </html>

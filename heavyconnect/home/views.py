@@ -19,7 +19,7 @@ def home(request):
 	if request.user.is_authenticated():
 	 	return redirect('driver')
 	else:
-		return render(request, 'index.html')
+		return render(request, 'login.html')
 
 def updatedDate(request):
 	dt = datetime.now()
