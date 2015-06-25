@@ -15,3 +15,17 @@ def test(request):
 	result = {'success' : False}
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+#Insert Manufacture
+def createManufacture(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+		if request.is_ajax():
+			newName = request.POST['name']
+			manu = Manufacturer(name = newName)
+			manu.save()
+			result['success'] = True
+		else:
+			result['code'] = 2 #Use ajax to perform requests
+	else:
+		result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
