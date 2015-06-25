@@ -56,12 +56,14 @@ def startShift(request):
 				if created:
 					result['success'] = True
 					result['hour_started'] = str(attendance.hour_started)
+				else:
+					result['code'] = 1 #The shift for today was already created
 			except Employee.DoesNotExist:
-				result['code'] =  1 #There is no users associated with this id
+				result['code'] =  2 #There is no users associated with this id
 		else:
-			result['code'] = 2 #Use ajax to perform requests
+			result['code'] = 3 #Use ajax to perform requests
 	else:
-		result['code'] = 3 #Request was not POST
+		result['code'] = 4 #Request was not POST
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
