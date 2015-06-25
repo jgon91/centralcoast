@@ -1,24 +1,35 @@
 from django.conf.urls import include, url, patterns
-from home.views import *
+from . import views as main_views 
+from . import viewsCRUD as CRUD
 
-urlpatterns = patterns('',
-	url(r'^$', home, name='home'),
-    url(r'^login/$', login, name='login'),
-    url(r'^logout/$', logout, name='logout'),
-    url(r'^driver/$', driver, name='driver'),
+# The views are divided in 2 different documents
+# The views about CRUD will be on viewsCRUD and
+# the views about functions will be on views
+# In order to speficy which doc has to be looked for. It should put one prefix before the function main_views for views or
+# CRUD. for viewsCRUD
+
+urlpatterns = [
+	url(r'^$', main_views.home, name='home'),
+    url(r'^login/$', main_views.login, name='login'),
+    url(r'^logout/$', main_views.logout, name='logout'),
+    url(r'^driver/$', main_views.driver, name='driver'),
     
     ### Functions ###
-    url(r'^employeeLocation/$', getEmployeeLocation, name = 'employeeLocation'),
-    url(r'^employeeCheckout/$', getEmployee, name = 'employeeCheckout'),
-    url(r'^driverInfo/$', getDriverInformation, name = 'driverInfo'),
-    url(r'^startNewTask/$', startNewTask, name = 'startNewTask'),
-    url(r'^quickUserInfomation/$', getQuickUser, name = 'quickUser'),
-    url(r'^updatePhoto/$', updatePhoto, name = 'updatePhoto'),
+    url(r'^employeeLocation/$', main_views.getEmployeeLocation, name = 'employeeLocation'),
+    url(r'^employeeCheckout/$', main_views.getEmployee, name = 'employeeCheckout'),
+    url(r'^driverInfo/$', main_views.getDriverInformation, name = 'driverInfo'),
+    url(r'^startNewTask/$', main_views.startNewTask, name = 'startNewTask'),
+    url(r'^quickUserInfomation/$', main_views.getQuickUser, name = 'quickUser'),
+    url(r'^updatePhoto/$', main_views.updatePhoto, name = 'updatePhoto'),
+    url(r'^loadEquipmentImage/$', main_views.loadEquipmentImage, name = 'loadEquipmentImage'),
+    url(r'^loadMachinesImage/$', main_views.loadMachinesImage, name = 'loadMachinesImage'),
+    url(r'^loadImplementsImage/$', main_views.loadImplementsImage, name = 'loadImplementsImage'),
+    url(r'^startShift/$', main_views.startShift, name = 'startShift'),
 	url(r'^equipmentStatus/$', main_views.getEquipmentStatus, name = 'equipmentStatus'),
     ### End ###
 
     ### Froms ###
-    url(r'^formTEST/$', manufacturerFormView, name='registerManufacturer'),
-    url(r'^formok/$', formok, name = 'formok'),
+    url(r'^formTEST/$', main_views.manufacturerFormView, name='registerManufacturer'),
+    url(r'^formok/$', main_views.formok, name = 'formok'),
     ### End ###
-)
+
