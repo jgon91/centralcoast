@@ -146,8 +146,20 @@ input[type=password] {
 	font-weight: bold;
 	text-decoration: none;
 }
+#btnScanOther {
+	background: #7F9B22;
+	color: white;
+	height: 50px;
+	float: right;
+	margin-top: 5px;
+	margin-right: 5px;
+	width: 170px;
+	border-radius: 3px;
+}
+#btnScanOther:hover {
+	background: #1C3700;	
+}
 /*BUTTONS*/
-
 input[type="button"] {
 	border-style: none;
 	text-decoration: none;
@@ -204,13 +216,6 @@ input[type="button"] {
 	height: 190px;
 	
 }
-
-/* It`s necessary?
-.btnLeft {
-	width: 115px;
-	height: 100px;
-	margin-top: 30px;
-}*/
 #btnEquipment {
 	background: url('../img/buttons/equipment.jpg') no-repeat top left;
 	background-size: 100% 100%;
@@ -315,7 +320,6 @@ input[type="button"] {
 	background: url('../img/buttons/btnSchedulerUpHover.jpg') no-repeat top left;
 	background-size: 100% 100%;
 }
-
 /*Buttons login*/
 #btn_login {
 	background: url('../img/buttons/loginBtn.png') no-repeat top left;
@@ -327,7 +331,6 @@ input[type="button"] {
 #btn_login:hover {
 	background: url('../img/buttons/loginBtnHover.png') no-repeat top left;
 }
-
 /* Time Keeper Buttons */
 .btnGreen
 {
@@ -353,53 +356,52 @@ input[type="button"] {
 {
 	color: black;
 }
-
 /* Update Status Buttons */
 #updateStatusSubmit {
 	background: url('../img/buttons/arrowUpdate.jpg') no-repeat top left;
 	background-size: 100% 100%;
-	width: 185px;
+	width: 186px;
 	height: 69.5px;
 	position: relative;
-	left: 287px;
+	left: 286px;
+	border: none;
 }
 #updateStatusSubmit:hover {
 	background: url('../img/buttons/arrowUpdateHover.jpg') no-repeat top left;
 	background-size: 100% 100%;
-	width: 185px;
+	width: 186px;
 	height: 69.5px;
 	position: relative;
-	left: 287px;
+	left: 286px;
 }
 #updateStatusBack {
 	background: url('../img/buttons/arrow.jpg') no-repeat top left;
 	background-size: 100% 100%;
 	width: 68px;
-	height: 68px;
+	height: 69.5px;
 	position: relative;
-	right: 287px;
+	right: 286px;
+	border: none;
 }
 #updateStatusBack:hover {
 	background: url('../img/buttons/arrowHover.jpg') no-repeat top left;
 	background-size: 100% 100%;
 	width: 68px;
-	height: 68px;
+	height: 69.5px;
 	position: relative;
-	right: 287px;
+	right: 286px;
 }
-
 /*END BUTTONS*/
 /*Begin Update Status page*/
-
 div.notes {
-	width: 832px;
+	width: 830px;
 	color: #000000;
 	background-color: #434343;
 	padding-left: 10%;
 	padding: 50px;
-	border-radius: 4px;
 	line-height: 1.15em;
 	word-wrap: break-word;
+	margin-left: 1px;
 }
 .notes h4 {
 	color: white;
@@ -409,6 +411,7 @@ div.notes {
 .notes textarea {
 	border-radius: 10px;
 	resize: none;
+	border: none;
 }
 .radioBtn {
 	float: left;
@@ -440,10 +443,11 @@ div.notes {
 	margin-left: 40px;
 }
 #updateStatusForm {
-	width: 832px;
+	width: 830px;
 	position: relative;
 	margin: 0px 0px;
 	background: #E2E0AC;
+	margin-left: 1px;
 }
 .radio[type=radio] {
 	width: 50px;
@@ -808,6 +812,7 @@ div.notes {
 	width: 185px;
 	height: 67px;
 	margin: 0px;
+	border: none;
 }
 #buttonSubmit:hover {
 	background: url('../img/buttons/arrowUpdateHover.jpg') no-repeat top left;
