@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(r'^startNewTask/$', startNewTask, name = 'startNewTask'),
     url(r'^quickUserInfomation/$', getQuickUser, name = 'quickUser'),
     url(r'^updatePhoto/$', updatePhoto, name = 'updatePhoto'),
+	url(r'^equipmentStatus/$', getEquipmentStatus, name = 'equipmentStatus'),
     ### End ###
 
     ### Froms ###

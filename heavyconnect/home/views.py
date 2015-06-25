@@ -160,6 +160,35 @@ def updatePhoto(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+
+#Get equipment status, which can be a machine or a implement
+# Remember the Fron-End guys that Status is mapped as:
+# 1 = OK, 2 = Attention, 3 = Broken, 4 = Quarantine
+def getEquipmentStatus(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+	 	if request.is_ajax():
+			try:
+				machine = Machine.objects.get(qr_code = request.POST('qr_code'))
+				result['status'] = machine.status		
+				result['success'] = True
+			except Machine.DoesNotExist:
+				try:
+					implement = Implement.objects.get(qr_code = request.POST('qr_code'))
+					result['status'] = implement.status
+					result['success'] = True
+				except Implement.DoesNotExist:
+			 		result['code'] = 1 #There is no equipment for this qr_code 
+	 	else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else: 
+	 	result['code'] = 3 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+
+
 def getHoursToday(id):
 	# now = datetime.datetime.now()
 	# attendance = EmployeeAttendance.objects.get(employee_id = id)
@@ -223,6 +252,21 @@ def logout(request):
 # @menezescode: Page only to show the form was correctly sended.
 def formok(request):
 	return render(request, 'formok.html')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 '''
 <menezescode:
