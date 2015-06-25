@@ -143,7 +143,7 @@ def getQuickUser(request):
 #Receive one url to a picture and changes the old url in the user profile
 def updatePhoto(request):
 	result = {'success' : False}
-	if request.method == 'Post':
+	if request.method == 'POST':
 	 	if request.is_ajax():
 	 		try:
 				employee = Employee.objects.get(user_id = request.user.id)
@@ -163,25 +163,64 @@ def updatePhoto(request):
 #This function gives back the picture of the refered QrCode
 def loadEquipmentImage(request):
 	result = {'success' : False}
-	qrCode = request.POST['qr_code']
-	if request.method == 'Post':
+	if request.method == 'POST':
+		qrCode = request.POST['qr_code']
 	 	if request.is_ajax():
-	try:
-		equipment = Machine.objects.get(qr_code = qrCode)
-		result['url'] = equipment.photo
-		result['success'] = True
-	except Machine.DoesNotExist:
-		try:
-			equipment = Implement.objects.get(qr_code = qrCode)
-			result['url'] = equipment.photo
-			result['success'] = True
-		except Implement.DoesNotExist:
-			result['code'] = 1 #There is no users associated with this
+			try:
+				equipment = Machine.objects.get(qr_code = qrCode)
+				result['url'] = equipment.photo
+				result['success'] = True
+			except Machine.DoesNotExist:
+				try:
+					equipment = Implement.objects.get(qr_code = qrCode)
+					result['url'] = equipment.photo
+					result['success'] = True
+				except Implement.DoesNotExist:
+					result['code'] = 1 #There is no equipment associated with this
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
 	else: 
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+def loadMachinesImage(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+		qrCode = request.POST['qr_code']
+	 	if request.is_ajax():
+			try:
+				qrCode = request.POST['qr_code']
+				machine = Machine.objects.get(qr_code = qrCode)
+				result['url'] = machine.photo
+				result['success'] = True
+			except Machine.DoesNotExist:
+				result['code'] = 1 #There is no machine associated with this
+		else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else: 
+	 	result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+def loadImplementsImage(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+		qrCode = request.POST['qr_code']
+	 	if request.is_ajax():
+			try:
+				qrCode = request.POST['qr_code']
+				Implement = Implement.objects.get(qr_code = qrCode)
+				result['url'] = Implement.photo
+				result['success'] = True
+			except Implement.DoesNotExist:
+				result['code'] = 1 #There is no Implement associated with this
+		else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else: 
+	 	result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+		
+
 
 
 def getHoursToday(id):
