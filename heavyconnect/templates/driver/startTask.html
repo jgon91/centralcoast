@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<script src="../static/js/jquery-1.11.2.min.js"></script>
+		{% load staticfiles %}
+		<script src=" {% static 'js/jquery-1.11.2.min.js' %}"></script>
 		<script>
 			$(document).ready(function() {
-				$("#foot").load("../template/footer.html");
-				$("#head").load("../template/header.html");
+				$("#foot").load("{% url 'footer' %}");
+				$("#head").load("{% url 'headerDriver' %}");
 			});
 		</script>
 	</head>
