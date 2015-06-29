@@ -292,6 +292,46 @@ def getEquipmentStatus(request):
 
 
 
+#This function givew back the Machine information, big part of them
+def retrieveMachine(request):
+	result = {'success' : False}
+  	if request.method == 'POST':
+	 	if request.is_ajax():
+	 		machine = Machine.objects.get(qr_code = request.POST('qr_code')	)
+ 			models = ManufacturerModel.objects.get(manufacturer_id = machine.manufacturer_model_id.id)
+	 		manufacturers = Manufacturer.objects.get(id = models.id)
+			result['manufacture:'] = manufacturers.name
+			result['serial'] = machine.serial_number
+			result['status'] = machine.status
+			result['model'] = models.model
+			result['Asset_number:'] = machine.asset_number
+			result['horsepower:'] = machine.horsepower
+			result['hitch_capacity:'] = machine.hitch_capacity
+			result['hitch_category:'] = machine.hitch_category
+			result['drawbar_category:'] = machine.drawbar_category
+			result['speed_range_min:'] = machine.speed_range_min
+			result['speed_range_max:'] = machine.speed_range_max
+			result['year_purchased:'] = machine.year_purchased
+			result['engine_hours:'] = machine.engine_hours
+			result['base_cost:'] = machine.base_cost
+			result['m_type:'] = machine.m_type
+			result['front_tires:'] = machine.front_tires
+			result['rear_tires:'] = machine.rear_tires
+			result['steering:'] = machine.steering
+			result['operator_station:'] = machine.operator_station
+			result['hour_cost:'] = machine.hour_cost
+			result['photo:'] = machine.photo
+			if result['status'] is 1:
+ 				result['success'] = True
+		else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else: 
+	 	result['code'] = 3 #Request was not POST
+ 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+
+
 #This function gives back the picture of the refered QrCode
 def loadEquipmentImage(request):
 	result = {'success' : False}
