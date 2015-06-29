@@ -288,6 +288,7 @@ def getEquipmentStatus(request):
 
 
 #This function givew back the Machine information, big part of them
+@login_required
 def retrieveMachine(request):
 	result = {'success' : False}
   	if request.method == 'POST':
