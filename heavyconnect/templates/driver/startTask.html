@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<script src="../static/js/jquery-1.11.2.min.js"></script>
+		{% load staticfiles %}
+		<script src=" {% static 'js/jquery-1.11.2.min.js' %}"></script>
 		<script>
 			$(document).ready(function() {
-				$("#foot").load("../template/footer.html");
-				$("#head").load("../template/header.html");
+				$("#foot").load("{% url 'footer' %}");
+				$("#head").load("{% url 'headerDriver' %}");
 			});
 		</script>
 	</head>
@@ -26,7 +27,7 @@
 							<input type="text" class="inputTask" id="taskflowInput" placeholder="SCAN QR CODE OR ENTER A NUMBER" readonly="true"/>
 						</div>
 						<div class="col-xs-2 col-md-2">
-							<img src="../static/img/tractor-4.png" class="imgTask"/>
+							<img src="{% static 'img/tractor-4.png' %}" class="imgTask"/>
 						</div>
 					</div>
 					<div class="row taskRows2">
@@ -37,7 +38,7 @@
 							<input type="text" class="inputTask" id="taskflowInput" placeholder="SCAN QR CODE OR ENTER A NUMBER" readonly="true"/>
 						</div>
 						<div class="col-xs-2 col-md-2">
-							<img src="../static/img/implement.png" class="imgTask"/>
+							<img src="{% static 'img/implement.png' %}" class="imgTask"/>
 						</div>
 					</div>
 					<div class="row taskRows3">
@@ -48,7 +49,7 @@
 							<input type="text" class="inputTask" id="taskflowInput" placeholder="SCAN QR CODE OR ENTER A NUMBER" readonly="true"/>
 						</div>
 						<div class="col-xs-2 col-md-2">
-							<img src="../static/img/map.png" class="imgTask"/>
+							<img src="{% static 'img/map.png' %}" class="imgTask"/>
 						</div>
 					</div>
 					<div class="row taskRows4">
