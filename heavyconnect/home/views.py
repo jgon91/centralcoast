@@ -22,6 +22,10 @@ def driver(request):
 	return render(request, 'driver.html')
 
 @login_required
+def taskflow(request):
+	return render(request, 'taskflow.html')
+
+@login_required
 def startNewTask(request):
 	result = {'success' : False}
 
@@ -263,6 +267,7 @@ def updatePhoto(request):
 #Get equipment status, which can be a machine or a implement
 # Remember the Fron-End guys that Status is mapped as:
 # 1 = OK, 2 = Attention, 3 = Broken, 4 = Quarantine
+@login_required
 def getEquipmentStatus(request):
 	result = {'success' : False}
 	if request.method == 'POST':
@@ -347,11 +352,7 @@ def loadImplementsImage(request):
 	else: 
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
-		
-<<<<<<< HEAD
 
-=======
->>>>>>> 8b188837b922605e0634e8707c3a1c1f18fe6e1d
 def getHoursToday(id):
 	# now = datetime.datetime.now()
 	# attendance = EmployeeAttendance.objects.get(employee_id = id)

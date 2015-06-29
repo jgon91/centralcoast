@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^login/$', main_views.login, name='login'),
     url(r'^logout/$', main_views.logout, name='logout'),
     url(r'^driver/$', main_views.driver, name='driver'),
+	url(r'^taskflow/$', main_views.taskflow, name='taskflow'),
     
     ### Functions ###
     url(r'^employeeLocation/$', main_views.getEmployeeLocation, name = 'employeeLocation'),
@@ -27,6 +28,7 @@ urlpatterns = [
     url(r'^startShift/$', main_views.startShift, name = 'startShift'),
     url(r'^equipmentStatus/$', main_views.getEquipmentStatus, name = 'equipmentStatus'),
     url(r'^startStopBreak/$', main_views.startStopBreak, name = 'startStopBreak'),
+
     ### End ###
 
     ###Insert###
