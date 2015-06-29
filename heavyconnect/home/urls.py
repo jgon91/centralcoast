@@ -16,7 +16,7 @@ urlpatterns = [
     
     ### Functions ###
     url(r'^employeeLocation/$', main_views.getEmployeeLocation, name = 'employeeLocation'),
-    url(r'^employeeCheckout/$', main_views.getEmployee, name = 'employeeCheckout'),
+    url(r'^employeeSchedule/$', main_views.getEmployeeSchedule, name = 'employeeSchedule'),
     url(r'^driverInfo/$', main_views.getDriverInformation, name = 'driverInfo'),
     url(r'^startNewTask/$', main_views.startNewTask, name = 'startNewTask'),
     url(r'^quickUserInfomation/$', main_views.getQuickUser, name = 'quickUser'),
@@ -25,11 +25,16 @@ urlpatterns = [
     url(r'^loadMachinesImage/$', main_views.loadMachinesImage, name = 'loadMachinesImage'),
     url(r'^loadImplementsImage/$', main_views.loadImplementsImage, name = 'loadImplementsImage'),
     url(r'^startShift/$', main_views.startShift, name = 'startShift'),
-	url(r'^equipmentStatus/$', main_views.getEquipmentStatus, name = 'equipmentStatus'),
+    url(r'^equipmentStatus/$', main_views.getEquipmentStatus, name = 'equipmentStatus'),
+    url(r'^startStopBreak/$', main_views.startStopBreak, name = 'startStopBreak'),
     ### End ###
+
+    ###Insert###
+    url(r'^createManufacture/$', CRUD.createManufacture, name = 'createManufacture'),
+    ###End###
 
     ### Froms ###
     url(r'^formTEST/$', main_views.manufacturerFormView, name='registerManufacturer'),
     url(r'^formok/$', main_views.formok, name = 'formok'),
     ### End ###
-
+]
