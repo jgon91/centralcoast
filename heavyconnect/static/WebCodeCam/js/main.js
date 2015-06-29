@@ -23,6 +23,7 @@
 		$('[data-toggle="tooltip"]').tooltip();
 	sl.css('opacity', .5);
 	pl.click(function() {
+	//function startScan() {	
 		if (typeof decoder.data().plugin_WebCodeCam == "undefined") {
 			decoder.WebCodeCam({
 				videoSource: {
@@ -34,9 +35,8 @@
 				resultFunction: function(text, imgSrc) {
 					si.attr('src', imgSrc);
 					
-					alert(text);
-					//document.location="equipment.html?id=" + text; Need send the Equipment
-					 document.location="{% url 'equipment' %}";
+					 alert(text);// Shows the QRCode scanned
+					 //document.location="{% url 'equipment' %}";
 					 document.location="../equipment";
 					sl.fadeOut(150, function() {
 						sl.fadeIn(150);
