@@ -4,43 +4,7 @@
     	{% load staticfiles %}
         <title>Scan QRCode</title>
         <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
-        <style type="text/css">
-        #QR-Code{
-        	margin-top: 60px;
-        	style="width:80%;
-        }
-        .scanner-laser{
-            position: absolute;
-            margin: 40px;
-            height: 30px;
-            width: 30px;
-        }
-        .laser-leftTop{
-            top: 0;
-            left: 0;
-            border-top: solid red 5px;
-            border-left: solid red 5px;
-        }
-        .laser-leftBottom{
-            bottom: 0;
-            left: 0;
-            border-bottom: solid red 5px;
-            border-left: solid red 5px;
-        }
-        .laser-rightTop{
-            top: 0;
-            right: 0;
-            border-top: solid red 5px;
-            border-right: solid red 5px;
-        }
-        .laser-rightBottom{
-            bottom: 0;
-            right: 0;
-            border-bottom: solid red 5px;
-            border-right: solid red 5px;
-        }
-        </style>
-        
+
         <script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
 		<script>
 			$(document).ready(function() {

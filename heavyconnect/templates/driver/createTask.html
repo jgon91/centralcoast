@@ -16,8 +16,31 @@
 					$("#p1").attr("class", "");
 					$("#p2").addClass("active");
 				});
-				
+				//Call function to get machine information.
+				$("#findMachine").click(function(){
+					//alert("Button Pressed!!");
+					var obj = getTractors();
+					var len  = obj.tractors.length;
+					
+					for (var i=0; i < len; i++){
+						$("#showEquipmentDiv").append("<div class='tractorFiltered'><img src='"+obj.tractors[i].picture+"'><br>Id: "+ obj.tractors[i].id +" </div>");
+					}
+				});
+
 			});
+			
+			function getTractors(){
+
+					var data = '{ "tractors" : [' +
+					'{ "id":"12346ABCD" , "Manufacture":"JOHN DEERE" , "Year":"2015" , "HP":"175" , "picture":"https://www.rallydev.com/sites/rallydev.com.blog/files/agileblog/2011/08/jd-tractor.jpg"},' +
+					'{ "id":"87636ABCD" , "Manufacture":"JOHN DEERE" , "Year":"2012" , "HP":"175" , "picture":"http://www.stackyard.com/news/2006/09/machinery/john_deere_6030.jpg" },' +
+					'{ "id":"87636ABCD" , "Manufacture":"Ford" , "Year":"2012" , "HP":"175" , "picture":"http://www.mbauction.com/assets/kn-turf.jpg" },' +
+					'{ "id":"33322ABCD" , "Manufacture":"JOHN DEERE" , "Year":"2005" , "HP":"40" , "picture":"http://agwired.com/wp-content/uploads/2011/06/Deere.jpg" } ]}';
+				
+					var obj = JSON.parse(data);
+					return obj;
+			}
+			
 		</script>
 	</head>
 	<body>
@@ -56,7 +79,14 @@
 										FIELD ID:
 									</div>
 									<div class="col-xs-8 col-md-8 textRight1">
-										<input type="text"/>
+										
+										<select class="inputCreateTask">
+										  <option value="0"></option>
+										  <option value="1">Ranch 1 - Block 1</option>
+										  <option value="2">Ranch 3 - Block 3</option>
+										  <option value="3">Ranch 6 - Block 5</option>
+										  <option value="4">Ranch 9 - Block 8</option>
+										</select> 
 									</div>
 								</div>
 								<div class="row divPart1">
@@ -75,12 +105,22 @@
 										<input type="text"/>
 									</div>
 								</div>
+								
+								<div class="row divPart1">
+									<div class="col-xs-4 col-md-4 textLeft1">
+										TIME START:
+									</div>
+									<div class="col-xs-8 col-md-8 textRight1">
+										<input type="time" class="inputCreateTask"/>
+									</div>
+								</div>
+								
 								<div class="row divPart1">
 									<div class="col-xs-4 col-md-4 textLeft1">
 										DATE START:
 									</div>
 									<div class="col-xs-8 col-md-8 textRight1">
-										<input type="text"/>
+										<input type="date" class="inputCreateTask"/>
 									</div>
 								</div>
 							</div>
@@ -100,18 +140,23 @@
 										MACHINE:
 									</div>
 									<div class="col-xs-6 col-md-6 textRight2">
-										<input type="text"/>
+										<input type="text"/></ br>
+										<input type="button" id="findMachine" value="Find a machine" onClick="$('#findTractor').modal()" class="btnCreateTask" /> 
+										<input type="button" value="Scan QRCode" onClick="$('#scanQRCode').modal()" class="btnCreateTask" />
 									</div>
 									<div class="col-xs-3 col-md-3">
 										<img src="{% static 'img/tractor-4.png' %}" class="imgCreate"/>
 									</div>
 								</div>
+								
 								<div class="row divPart2">
 									<div class="col-xs-3 col-md-3 textLeft2">
 										IMPLEMENT:
 									</div>
 									<div class="col-xs-6 col-md-6 textRight2">
 										<input type="text"/>
+										<input type="button" id="findImplement" value="Find a implement" class="btnCreateTask" />
+										<input type="button" value="Scan QRCode" class="btnCreateTask" />
 									</div>
 									<div class="col-xs-3 col-md-3">
 										<img src="{% static 'img/implement.png' %}" class="imgCreate"/>
@@ -119,16 +164,124 @@
 								</div>
 							</div>
 							<div id="divDesc2">
-								<a href=""><input type="button" id="btnEnter2"/></a>
+								<a href="{% url 'schedule' %}"><input type="button" id="btnEnter2"/></a>
 							</div>
 						</div>
 					</div>
-
+	
 				</div>
 			</div>
+			<div class="modal fade" id="findTractor" role="dialog">
+				    <div class="modal-dialog findTractor">
+				    	 <!-- Modal content-->
+					      <div class="modal-content">
+					        <div class="modal-header">
+					          <button type="button" class="close" data-dismiss="modal">&times;</button>
+					          <h4 class="modal-title"><strong>Find a Machine</strong></h4>
+					        </div>
+					        <div class="modal-body">
+					          <div id="filterDiv">
+					          	<h3>Filters</h3>
+					          	HP:<br>
+					          	<select class="selectFilters">
+					          		<option>All</option>
+					          		<option>175 HP Or Greater</option>
+					          		<option>100 HP to 174 HP</option>
+					          		<option>40 HP to 99 HP</option>
+					          		<option>Less than 40 HP</option>
+					          	</select >
+					          	<br><br>
+					          	Manufacturers:<br>
+					          	<select class="selectFilters">
+					          		<option value="">All</option>
+					          		<option>JOHN DEERE</option>
+					          		<option>MASSEY-FERGUSON</option>
+					          		<option>NEW HOLLAND</option>
+					          		<option>VERSATILE</option>
+					          		<option>FORD</option>
+					          	</select>
+					          	<br><br>
+					          	Year:<br>
+					          	<select class="selectFilters">
+					          		<option>All</option>
+					          		<option>2010-2015</option>
+					          		<option>2005-2010</option>
+					          		<option>2000-2000</option>
+					          	</select>
+					          	
+					          </div>
+					          <div id="showEquipmentDiv">
+					          	
+					          </div>
+					        </div>
+					 		<div class="clearBoth"></div>
+					        <div class="modal-footer">
+					          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					        </div>
+					      </div>
+					      
+					</div>
+			</div>
+			
+			<div class="modal fade" id="scanQRCode" role="dialog">
+				    <div class="modal-dialog findTractor">
+				    	 <!-- Modal content-->
+					      <div class="modal-content">
+					        <div class="modal-header">
+					          <button type="button" class="close" data-dismiss="modal">&times;</button>
+					          <h4 class="modal-title"><strong>Scan QRCode</strong></h4>
+					        </div>
+					        <div class="modal-body">
+					          	<!--SCANQRCODE -->
+					          	<div id="QR-Code" class="container">
+							            <div class="panel panel-primary">
+							                <div class="panel-heading" style="display: inline-block;width: 100%;  text-align: center; color: white; background: #1F3801;">
+							                    
+							                    <div style="margin auto 40px;text-align: center;">
+							                    	<span style="font-size: 20px">Type:  <input type="text" id="" style="color:black;"/> 
+							                    		<a href="#"><button data-dismiss="modal" id="submit" title="Play" type="button" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-play"></span></button><a></a>
+							                    		or Scan QR Code: </span>
+							                    <select id="cameraId" class="form-control" style="display: inline-block;width: auto;"></select>
+							                    <button id="play" data-toggle="tooltip" title="Play" type="button" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-play"></span></button>
+							                    
+							                </div>
+							            </div>
+							            <div class="panel-body">
+							                <div class="col-md-12" style="text-align: center;">
+							                	
+							                    <div class="well" style="position: relative;display: inline-block;">
+							                        <canvas id="qr-canvas" width="320" height="240"></canvas>
+							                        <div class="scanner-laser laser-rightBottom" style="opacity: 0.5;"></div>
+							                        <div class="scanner-laser laser-rightTop" style="opacity: 0.5;"></div>
+							                        <div class="scanner-laser laser-leftBottom" style="opacity: 0.5;"></div>
+							                        <div class="scanner-laser laser-leftTop" style="opacity: 0.5;"></div>
+							                    </div>
+							                    
+							                </div>
+							                
+							            </div>
+							            <div class="panel-footer">
+							            </div>
+							        </div>
+							    </div>
+							    <!--END SCANQRCODE -->
+					        </div>
+					 		<div class="clearBoth"></div>
+					        <div class="modal-footer">
+					          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					        </div>
+					      </div>
+					      
+					</div>
+			</div>
+			
 			<div id="clearBoth"></div>
 		</div>
 		<footer id="foot"></footer>
 	</body>
-	<script></script>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="{% static 'WebCodeCam/js/mainCreateTaskEquipment.js' %}"></script>
+    <script type="text/javascript" src="{% static 'WebCodeCam/js/qrcodelib.js' %}"></script>
+    <script type="text/javascript" src="{% static 'WebCodeCam/js/WebCodeCam.js' %}"></script>
 </html>
