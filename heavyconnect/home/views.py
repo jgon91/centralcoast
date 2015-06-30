@@ -221,6 +221,7 @@ def getDriverInformation(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 #Get basic information about the User
+@login_required
 def getQuickUser(request):
 	result = {'success' : False}
 
@@ -244,6 +245,7 @@ def getQuickUser(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 #Receive one url to a picture and changes the old url in the user profile
+@login_required
 def updatePhoto(request):
 	result = {'success' : False}
 	if request.method == 'POST':
@@ -294,7 +296,7 @@ def getEquipmentStatus(request):
 
 #This function givew back the Machine information, big part of them
 @login_required
-def retrieveMachine(request):
+def retrieveScannedMachine(request):
 	result = {'success' : False}
   	if request.method == 'POST':
 	 	if request.is_ajax():
@@ -334,6 +336,7 @@ def retrieveMachine(request):
 
 
 #This function gives back the picture of the refered QrCode
+@login_required
 def loadEquipmentImage(request):
 	result = {'success' : False}
 	if request.method == 'POST':
@@ -356,7 +359,8 @@ def loadEquipmentImage(request):
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-#Look just into Machines 
+#Look just into Machines
+@login_required 
 def loadMachinesImage(request):
 	result = {'success' : False}
 	if request.method == 'POST':
@@ -376,6 +380,7 @@ def loadMachinesImage(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 #Look just into Implements
+@login_required
 def loadImplementsImage(request):
 	result = {'success' : False}
 	if request.method == 'POST':
@@ -394,6 +399,40 @@ def loadImplementsImage(request):
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+#Return task that are not complished until today, the number of task returned is according to the number n
+@login_required
+def retrievePedingTask(request):
+	result = []
+	result.append({'success' : False})
+	date1 = datetime.timedelta(days = 1) #it will work as increment to the current day
+	date2 =  datetime.datetime.now() + date1
+	if request.method == 'POST':
+		qrCode = request.POST['qr_code']
+	 	if request.is_ajax():
+			try:
+				flag = 0
+				aux = {}
+				emplo = request.POST['Employee_id']
+				n = request.POST['N']
+				emploTask = EmployeeTask.objects.filter(employee_id = "1", task_init__lte =  date2)
+				for item in emploTask:
+					if not item.task_id.accomplished:
+						aux['category'] = item.task_id.description
+						result.append(aux)
+						aux = {}
+						flag = flag + 1
+						if flag >= n:
+						 	break
+				result[0] = {'success' : True}
+			except EmployeeTask.DoesNotExist:
+				result.append({'result' : 1})#There is no Implement associated with this
+		else:
+	 		result.append({'result' : 2}) #Use ajax to perform requests
+	else: 
+	 	result.append({'result' : 3}) #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+		
 def getHoursToday(id):
 	# now = datetime.datetime.now()
 	# attendance = EmployeeAttendance.objects.get(employee_id = id)
