@@ -292,6 +292,40 @@ def getEquipmentStatus(request):
 
 
 
+
+# It will return (some) information of all implements on database.
+# Maybe later it will be need to filter some information based on size, capacity, etc
+def getImplementInfo(request):
+	each_result = {'success' : False}
+	result = []
+	if request.method == 'POST':
+	 	if request.is_ajax():
+			try:
+				implements = Implement.objects.filter()
+				for each in implements:
+					each_result['qr_code'] = each.qr_code
+					each_result['year_purchased'] = each.year_purchased
+					each_result['photo'] = each.photo
+					each_result['manufacturer_model_id'] = each.manufacturer_model_id.manufacturer_id.name
+					each_result['asset_number'] = each.asset_number
+			 		each_result['horse_power_req'] = each.horse_power_req
+					each_result['hitch_capacity_req'] = each.hitch_capacity_req
+					each_result['status'] = each.status
+					each_result['speed_range_max'] = each.speed_range_max
+					result.append(each_result)
+				result.append({'success' : True})
+			except Machine.DoesNotExist:
+				result.append({'code' : 1}) #There is no machine associated with this
+		else:
+	 		result.append({'code' : 2}) #Use ajax to perform requests
+	else: 
+	 	result.append({'code' : 3}) #result[0]['code'] = 3 #Request was not POST
+
+	# On the ELSE, the answer will be in result[0]
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+
 #This function gives back the picture of the refered QrCode
 def loadEquipmentImage(request):
 	result = {'success' : False}
