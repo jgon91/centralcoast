@@ -352,10 +352,10 @@ def retrieveScannedMachine(request):
 				result['operator_station'] = machine.operator_station
 				result['hour_cost'] = machine.hour_cost
 				result['photo'] = machine.photo
+				if result['status'] is 1:
+ 					result['success'] = True
 			except Machine.DoesNotExist:
 				result['code'] = 1 #There is no users associated with this 
-			if result['status'] is 1:
- 				result['success'] = True
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
 	else: 
@@ -469,31 +469,38 @@ def retrievePedingTask(request):
 	result.append({'success' : False})
 	date1 = datetime.timedelta(days = 1) #it will work as increment to the current day
 	date2 =  datetime.datetime.now() + date1
-	# if request.method == 'POST':
-	# 	qrCode = request.POST['qr_code']
-	#  	if request.is_ajax():
-	# 		try:
-	flag = 0
-	aux = {}
-	# emplo = request.POST['Employee_id']
-	# n = request.POST['N']
-	emploTask = EmployeeTask.objects.filter(user_id = request.user.id, task_init__lte =  date2)
-	for item in emploTask:
-		if not item.task_id.accomplished:
-			aux['category'] = item.task_id.description
-			result.append(aux)
-			aux = {}
-			flag = flag + 1
-			if flag >= 4:
-			 	break
-	result[0] = {'success' : True}
-	# 		except EmployeeTask.DoesNotExist:
-	# 			result.append({'result' : 1})#There is no Implement associated with this
-	# 	else:
-	#  		result.append({'result' : 2}) #Use ajax to perform requests
-	# else: 
-	#  	result.append({'result' : 3}) #Request was not POST
+	if request.method == 'POST':
+		qrCode = request.POST['qr_code']
+	 	if request.is_ajax():
+			try:
+				flag = 0
+				aux = {}
+				n = request.POST['N']
+				emploTask = EmployeeTask.objects.filter(employee_id_id = request.user.id, task_init__lte =  date2)
+				for item in emploTask:
+					if not item.task_id.accomplished:
+						aux['category'] = item.task_id.description
+						aux['field'] = item.task_id.field_id.name
+						aux['date'] = str(item.task_id.date)
+						result.append(aux)
+						aux = {}
+						flag = flag + 1
+						if flag >= n:
+						 	break
+				result[0] = {'success' : True}
+			except EmployeeTask.DoesNotExist:
+				result.append({'result' : 1})#There is no Implement associated with this
+		else:
+	 		result.append({'result' : 2}) #Use ajax to perform requests
+	else: 
+	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+# @login_required
+# def pastTaskList(request):
+# 	result = []
+# 	result.append({'success' : False})
+# 	tasks = Task.objects.filter
 
 		
 def getHoursToday(id):
