@@ -28,10 +28,10 @@ urlpatterns = [
     url(r'^startShift/$', main_views.startShift, name = 'startShift'),
     url(r'^equipmentStatus/$', main_views.getEquipmentStatus, name = 'equipmentStatus'),
     url(r'^startStopBreak/$', main_views.startStopBreak, name = 'startStopBreak'),
-    #url(r'^retrieveMachine/$', main_views.retrieveMachine, name = 'retrieveMachine'),
 	url(r'^getImplementInfo/$', main_views.getImplementInfo, name = 'getImplementInfo'),
     url(r'^retrieveScannedMachine/$', main_views.retrieveScannedMachine, name = 'retrieveScannedMachine'),
     url(r'^retrievePedingTask/$', main_views.retrievePedingTask, name = 'retrievePedingTask'),
+    url(r'^retrieveMachine/$', main_views.retrieveMachine, name = 'retrieveMachine'),
     ### End ###
 
     ###Insert###
