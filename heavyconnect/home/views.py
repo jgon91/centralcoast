@@ -466,19 +466,22 @@ def retrievePedingTask(request):
 			try:
 				flag = 0
 				aux = {}
-				n = request.POST['N']
-				emploTask = EmployeeTask.objects.filter(employee_id_id = request.user.id, task_init__lte =  date2)
-				for item in emploTask:
-					if not item.task_id.accomplished:
-						aux['category'] = item.task_id.description
-						aux['field'] = item.task_id.field_id.name
-						aux['date'] = str(item.task_id.date)
-						result.append(aux)
-						aux = {}
-						flag = flag + 1
-						if flag >= n:
-						 	break
-				result[0] = {'success' : True}
+				n = int(request.POST['N'])
+				if n > 0:
+					emploTask = EmployeeTask.objects.filter(employee_id_id = request.user.id, task_init__lte =  date2)
+					for item in emploTask:
+						if not item.task_id.accomplished:
+							aux['category'] = item.task_id.description
+							aux['field'] = item.task_id.field_id.name
+							aux['date'] = str(item.task_id.date)
+							result.append(aux)
+							aux = {}
+							flag = flag + 1
+							if flag >= n:
+							 	break
+					result[0] = {'success' : True}
+				else:
+					result.append({'result' : 11})#Index is invalid
 			except EmployeeTask.DoesNotExist:
 				result.append({'result' : 1})#There is no Implement associated with this
 		else:
@@ -486,6 +489,37 @@ def retrievePedingTask(request):
 	else:
 	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+#Return 
+@login_required
+def pastTaskList(request):
+	result = []
+	aux = {}
+	result.append({'success' : False})
+	if request.method == 'POST':
+	 	if request.is_ajax():
+			try:
+				off = int(request.POST['offset'])
+				limit =int(request.POST['limit'])
+				if off >= 0 and limit > 0:
+					tasks = EmployeeTask.objects.filter(employee_id_id = request.user.id, task_id__accomplished = True)[off:limit]
+					for item in tasks:
+						aux['category'] = item.task_id.description
+						aux['field'] = item.task_id.field_id.name
+						aux['date'] = str(item.task_id.date)
+						result.append(aux)
+						aux = {}
+					result[0] = {'success' : True}
+				else:
+					result.append({'result' : 11})#Index is invalid
+			except EmployeeTask.DoesNotExist:
+				result.append({'result' : 1})#There is no Implement associated with this
+		else:
+	 		result.append({'result' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'result' : 3}) #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
 
 def getHoursToday(id):
 	# now = datetime.datetime.now()
