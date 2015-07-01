@@ -6,7 +6,7 @@ class Manufacturer(models.Model):
 	name = models.CharField(max_length = 20)
 
 	def __unicode__(self):
-		return "Manafacture: " + self.name
+		return "Manafacturer: " + self.name
 
 class ManufacturerModel(models.Model):
 	manufacturer_id = models.ForeignKey(Manufacturer)
@@ -81,7 +81,7 @@ class Machine(models.Model):
 	photo = models.URLField(max_length = 200)
 
 	def __unicode__(self):
-		return "QRcode: " + str(self.qr_code) + ", Year of Purchased: " + str(self.year_purchased)
+		return "QRcode: " + str(self.qr_code) + ", Model: " + str(self.manufacturer_model_id.model)
 
 class Implement(models.Model):
 	manufacturer_model_id = models.ForeignKey(ManufacturerModel)
@@ -105,7 +105,7 @@ class Implement(models.Model):
 	photo = models.URLField(max_length = 200)
 
 	def __unicode__(self):
-		return "QRcode: " + str(self.qr_code) + ", Year of Purchased: " + str(self.year_purchased)
+		return "QRcode: " + str(self.qr_code) + ", Model: " + str(self.manufacturer_model_id.model)
 
 class Employee(models.Model):
 	user = models.OneToOneField(User)
@@ -118,7 +118,7 @@ class Employee(models.Model):
 	photo = models.URLField(max_length = 200)
 
 	def __unicode__(self):
-		return  "User ID: "+ str(self.user.id)+ ", First Name: " + str(self.user.first_name) + ", Last Name: " + str(self.user.last_name)
+		return  "User ID: " + str(self.user.id) + ", First Name: " + str(self.user.first_name) + ", Last Name: " + str(self.user.last_name)
 
 class EmployeeWithdrawn(models.Model):
 	employee_id = models.ForeignKey(Employee)
@@ -181,7 +181,7 @@ class MachineQualification(models.Model):
 	qualification_required = models.IntegerField(choices = EmployeeQualifications.LEVEL_CHOICES)
 
 	def __unicode__(self):
-		return "Machine ID: " + str(self.machine_id.id) + ", Qualification ID: " + str(self.qualification_id) + ", Qualification level required: " +  str(self.qualification_required) + + ", Machine QRcode: " + str(self.machine_id.qr_code)
+		return "Machine ID: " + str(self.machine_id.id) + ", Qualification ID: " + str(self.qualification_id) + ", Qualification level required: " +  str(self.qualification_required) + ", Machine QRcode: " + str(self.machine_id.qr_code)
 
 class MachineCertification(models.Model):
 	machine_id =  models.ForeignKey(Machine)
@@ -218,7 +218,7 @@ class GPS(models.Model):
 	longitude = models.FloatField()
 
 	def __unicode__(self):
-		return "Lati: " +str(self.latitude) + " " +  "Long: " +str(self.longitude)
+		return "Latitude: " +str(self.latitude) + " " +  "Longitude: " +str(self.longitude)
 
 class FieldLocalization(models.Model):
 	field_id = models.ForeignKey(Field)
@@ -234,7 +234,7 @@ class EmployeeLocalization(models.Model):
 	e_time = models.DateTimeField()
 
 	def __unicode__(self):
-		return "Employee: " + str(self.employee_id.last_name) + ", Latitude: " +  str(self.latitude) + ", Longitude: " +  str(self.longitude) + ", Date: " + str(self.e_time)
+		return "Employee: " + str(self.employee_id.user.last_name) + ", Latitude: " +  str(self.latitude) + ", Longitude: " +  str(self.longitude) + ", Date: " + str(self.e_time)
 
 class TaskCategory(models.Model):
 	description = models.CharField(max_length = 30)
@@ -260,7 +260,7 @@ class Task(models.Model):
 	approval = models.IntegerField(choices = APPROVAL_CHOICES)
 
 	def __unicode__(self):
-		return "Field Name: " + str(self.field_id.name) + "Category: " + str(self.category.description) + ", Hour Cost: " +  str(self.rate_cost) + ", Description: " +  str(self.description)
+		return "Field Name: " + str(self.field_id.name) + " Category: " + str(self.category.description) + ", Hour Cost: " +  str(self.rate_cost) + ", Description: " +  str(self.description)
 
 class EmployeeTask(models.Model):
 	employee_id = models.ForeignKey(Employee)
@@ -308,7 +308,7 @@ class Service(models.Model):
 	done = models.BooleanField()
 
 	def __unicode__(self):
-		return str(self.category_id) + " " +  str(self.date) + " " +  str(self.done)
+		return str(self.category_id) + ", Date: " +  str(self.date) + ", Done: " +  str(self.done)
 
 class MachineService(models.Model):
 	machine_id = models.ForeignKey(Machine)
