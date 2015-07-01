@@ -301,12 +301,12 @@ def getEquipmentStatus(request):
 	if request.method == 'POST':
 	 	if request.is_ajax():
 			try:
-				machine = Machine.objects.get(qr_code = request.POST('qr_code'))
+				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
 				result['status'] = machine.status		
 				result['success'] = True
 			except Machine.DoesNotExist:
 				try:
-					implement = Implement.objects.get(qr_code = request.POST('qr_code'))
+					implement = Implement.objects.get(qr_code = request.POST['qr_code'])
 					result['status'] = implement.status
 					result['success'] = True
 				except Implement.DoesNotExist:
@@ -317,6 +317,52 @@ def getEquipmentStatus(request):
 	 	result['code'] = 3 #Request was not POST
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+# Get equipment info by qr_code, which can be a machine or a implement and return it
+def getEquipmentInfo(request):
+	result = {'success' : False}
+	if not request.method == 'POST':
+	 	if not request.is_ajax():	
+			try:
+				machine = Machine.objects.get(qr_code = request.GET.get('qr_code'))
+				result['manufacturer'] = machine.manufacturer_model_id.manufacturer_id.name
+				result['model'] = machine.manufacturer_model_id.model
+				result['asset_number'] = machine.asset_number
+				result['serial_number'] = machine.serial_number
+				result['horse_power'] = machine.horsepower
+				result['hitch_capacity'] = machine.hitch_capacity
+				result['drawbar_category'] = machine.drawbar_category
+				result['year_purchased'] = machine.year_purchased
+				result['status'] = machine.status
+				result['hour_cost'] = machine.hour_cost
+				result['photo'] = machine.photo
+				result['success'] = True
+			except Machine.DoesNotExist:
+				try:
+					implement = Implement.objects.get(qr_code = request.GET.get('qr_code'))
+					result['manufacturer'] = implement.manufacturer_model_id.manufacturer_id.name
+					result['model'] = implement.manufacturer_model_id.model
+					result['asset_number'] = implement.asset_number
+					result['serial_number'] = implement.serial_number
+					result['horse_power_req'] = implement.horse_power_req
+					result['hitch_capacity'] = implement.hitch_capacity_req
+					result['drawbar_category'] = implement.drawbar_category
+					result['year_purchased'] = implement.year_purchased
+					result['status'] = implement.status
+					result['hour_cost'] = implement.hour_cost
+					result['photo'] = implement.photo
+					result['success'] = True
+				except Implement.DoesNotExist:
+					result['code'] = 1 #There is no equipment associated with this
+	 	else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else: 
+	 	result['code'] = 3 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
 
 
 
