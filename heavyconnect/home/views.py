@@ -98,6 +98,31 @@ def startShift(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 @login_required
+def stopShift(request):
+	result = {'success' : False}
+
+	if request.method == "POST":
+		if request.is_ajax():
+			try:
+				identifier = request.POST['id']
+				employee = Employee.objects.get(id = int(identifier))
+				now = datetime.datetime.now()
+				attendance, created = EmployeeAttendance.objects.get_or_create(employee_id = employee, defaults = {'date' : now, 'hour_ended' : now})
+				if created:
+					result['success'] = True
+					result['hour_ended'] = str(attendance.hour_ended)
+				else:
+					result['code'] = 1 #The shift for today was already finished
+			except Employee.DoesNotExist:
+				result['code'] =  2 #There is no users associated with this id
+		else:
+			result['code'] = 3 #Use ajax to perform requests
+	else:
+		result['code'] = 4 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+@login_required
 def startStopBreak(request):
 	result = {'success' : False}
 
@@ -464,21 +489,16 @@ def retrievePedingTask(request):
 		qrCode = request.POST['qr_code']
 	 	if request.is_ajax():
 			try:
-				flag = 0
 				aux = {}
 				n = int(request.POST['N'])
 				if n > 0:
-					emploTask = EmployeeTask.objects.filter(employee_id_id = request.user.id, task_init__lte =  date2)
+					emploTask = EmployeeTask.objects.filter(employee_id_id = request.user.id, task_init__lte =  date2, task_id__accomplished = False)[:n]
 					for item in emploTask:
-						if not item.task_id.accomplished:
-							aux['category'] = item.task_id.description
-							aux['field'] = item.task_id.field_id.name
-							aux['date'] = str(item.task_id.date)
-							result.append(aux)
-							aux = {}
-							flag = flag + 1
-							if flag >= n:
-							 	break
+						aux['category'] = item.task_id.description
+						aux['field'] = item.task_id.field_id.name
+						aux['date'] = str(item.task_id.date)
+						result.append(aux)
+						aux = {}
 					result[0] = {'success' : True}
 				else:
 					result.append({'result' : 11})#Index is invalid
