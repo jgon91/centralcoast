@@ -1,0 +1,1067 @@
+[
+   {
+      "fields":{
+         "codename":"add_logentry",
+         "name":"Can add log entry",
+         "content_type":1
+      },
+      "model":"auth.permission",
+      "pk":1
+   },
+   {
+      "fields":{
+         "codename":"change_logentry",
+         "name":"Can change log entry",
+         "content_type":1
+      },
+      "model":"auth.permission",
+      "pk":2
+   },
+   {
+      "fields":{
+         "codename":"delete_logentry",
+         "name":"Can delete log entry",
+         "content_type":1
+      },
+      "model":"auth.permission",
+      "pk":3
+   },
+   {
+      "fields":{
+         "codename":"add_permission",
+         "name":"Can add permission",
+         "content_type":2
+      },
+      "model":"auth.permission",
+      "pk":4
+   },
+   {
+      "fields":{
+         "codename":"change_permission",
+         "name":"Can change permission",
+         "content_type":2
+      },
+      "model":"auth.permission",
+      "pk":5
+   },
+   {
+      "fields":{
+         "codename":"delete_permission",
+         "name":"Can delete permission",
+         "content_type":2
+      },
+      "model":"auth.permission",
+      "pk":6
+   },
+   {
+      "fields":{
+         "codename":"add_group",
+         "name":"Can add group",
+         "content_type":3
+      },
+      "model":"auth.permission",
+      "pk":7
+   },
+   {
+      "fields":{
+         "codename":"change_group",
+         "name":"Can change group",
+         "content_type":3
+      },
+      "model":"auth.permission",
+      "pk":8
+   },
+   {
+      "fields":{
+         "codename":"delete_group",
+         "name":"Can delete group",
+         "content_type":3
+      },
+      "model":"auth.permission",
+      "pk":9
+   },
+   {
+      "fields":{
+         "codename":"add_user",
+         "name":"Can add user",
+         "content_type":4
+      },
+      "model":"auth.permission",
+      "pk":10
+   },
+   {
+      "fields":{
+         "codename":"change_user",
+         "name":"Can change user",
+         "content_type":4
+      },
+      "model":"auth.permission",
+      "pk":11
+   },
+   {
+      "fields":{
+         "codename":"delete_user",
+         "name":"Can delete user",
+         "content_type":4
+      },
+      "model":"auth.permission",
+      "pk":12
+   },
+   {
+      "fields":{
+         "codename":"add_contenttype",
+         "name":"Can add content type",
+         "content_type":5
+      },
+      "model":"auth.permission",
+      "pk":13
+   },
+   {
+      "fields":{
+         "codename":"change_contenttype",
+         "name":"Can change content type",
+         "content_type":5
+      },
+      "model":"auth.permission",
+      "pk":14
+   },
+   {
+      "fields":{
+         "codename":"delete_contenttype",
+         "name":"Can delete content type",
+         "content_type":5
+      },
+      "model":"auth.permission",
+      "pk":15
+   },
+   {
+      "fields":{
+         "codename":"add_session",
+         "name":"Can add session",
+         "content_type":6
+      },
+      "model":"auth.permission",
+      "pk":16
+   },
+   {
+      "fields":{
+         "codename":"change_session",
+         "name":"Can change session",
+         "content_type":6
+      },
+      "model":"auth.permission",
+      "pk":17
+   },
+   {
+      "fields":{
+         "codename":"delete_session",
+         "name":"Can delete session",
+         "content_type":6
+      },
+      "model":"auth.permission",
+      "pk":18
+   },
+   {
+      "fields":{
+         "codename":"add_manufacturer",
+         "name":"Can add manufacturer",
+         "content_type":7
+      },
+      "model":"auth.permission",
+      "pk":19
+   },
+   {
+      "fields":{
+         "codename":"change_manufacturer",
+         "name":"Can change manufacturer",
+         "content_type":7
+      },
+      "model":"auth.permission",
+      "pk":20
+   },
+   {
+      "fields":{
+         "codename":"delete_manufacturer",
+         "name":"Can delete manufacturer",
+         "content_type":7
+      },
+      "model":"auth.permission",
+      "pk":21
+   },
+   {
+      "fields":{
+         "codename":"add_manufacturermodel",
+         "name":"Can add manufacturer model",
+         "content_type":8
+      },
+      "model":"auth.permission",
+      "pk":22
+   },
+   {
+      "fields":{
+         "codename":"change_manufacturermodel",
+         "name":"Can change manufacturer model",
+         "content_type":8
+      },
+      "model":"auth.permission",
+      "pk":23
+   },
+   {
+      "fields":{
+         "codename":"delete_manufacturermodel",
+         "name":"Can delete manufacturer model",
+         "content_type":8
+      },
+      "model":"auth.permission",
+      "pk":24
+   },
+   {
+      "fields":{
+         "codename":"add_repairshop",
+         "name":"Can add repair shop",
+         "content_type":9
+      },
+      "model":"auth.permission",
+      "pk":25
+   },
+   {
+      "fields":{
+         "codename":"change_repairshop",
+         "name":"Can change repair shop",
+         "content_type":9
+      },
+      "model":"auth.permission",
+      "pk":26
+   },
+   {
+      "fields":{
+         "codename":"delete_repairshop",
+         "name":"Can delete repair shop",
+         "content_type":9
+      },
+      "model":"auth.permission",
+      "pk":27
+   },
+   {
+      "fields":{
+         "codename":"add_shop",
+         "name":"Can add shop",
+         "content_type":10
+      },
+      "model":"auth.permission",
+      "pk":28
+   },
+   {
+      "fields":{
+         "codename":"change_shop",
+         "name":"Can change shop",
+         "content_type":10
+      },
+      "model":"auth.permission",
+      "pk":29
+   },
+   {
+      "fields":{
+         "codename":"delete_shop",
+         "name":"Can delete shop",
+         "content_type":10
+      },
+      "model":"auth.permission",
+      "pk":30
+   },
+   {
+      "fields":{
+         "codename":"add_machine",
+         "name":"Can add machine",
+         "content_type":11
+      },
+      "model":"auth.permission",
+      "pk":31
+   },
+   {
+      "fields":{
+         "codename":"change_machine",
+         "name":"Can change machine",
+         "content_type":11
+      },
+      "model":"auth.permission",
+      "pk":32
+   },
+   {
+      "fields":{
+         "codename":"delete_machine",
+         "name":"Can delete machine",
+         "content_type":11
+      },
+      "model":"auth.permission",
+      "pk":33
+   },
+   {
+      "fields":{
+         "codename":"add_implement",
+         "name":"Can add implement",
+         "content_type":12
+      },
+      "model":"auth.permission",
+      "pk":34
+   },
+   {
+      "fields":{
+         "codename":"change_implement",
+         "name":"Can change implement",
+         "content_type":12
+      },
+      "model":"auth.permission",
+      "pk":35
+   },
+   {
+      "fields":{
+         "codename":"delete_implement",
+         "name":"Can delete implement",
+         "content_type":12
+      },
+      "model":"auth.permission",
+      "pk":36
+   },
+   {
+      "fields":{
+         "codename":"add_employee",
+         "name":"Can add employee",
+         "content_type":13
+      },
+      "model":"auth.permission",
+      "pk":37
+   },
+   {
+      "fields":{
+         "codename":"change_employee",
+         "name":"Can change employee",
+         "content_type":13
+      },
+      "model":"auth.permission",
+      "pk":38
+   },
+   {
+      "fields":{
+         "codename":"delete_employee",
+         "name":"Can delete employee",
+         "content_type":13
+      },
+      "model":"auth.permission",
+      "pk":39
+   },
+   {
+      "fields":{
+         "codename":"add_employeewithdrawn",
+         "name":"Can add employee withdrawn",
+         "content_type":14
+      },
+      "model":"auth.permission",
+      "pk":40
+   },
+   {
+      "fields":{
+         "codename":"change_employeewithdrawn",
+         "name":"Can change employee withdrawn",
+         "content_type":14
+      },
+      "model":"auth.permission",
+      "pk":41
+   },
+   {
+      "fields":{
+         "codename":"delete_employeewithdrawn",
+         "name":"Can delete employee withdrawn",
+         "content_type":14
+      },
+      "model":"auth.permission",
+      "pk":42
+   },
+   {
+      "fields":{
+         "codename":"add_employeeattendance",
+         "name":"Can add employee attendance",
+         "content_type":15
+      },
+      "model":"auth.permission",
+      "pk":43
+   },
+   {
+      "fields":{
+         "codename":"change_employeeattendance",
+         "name":"Can change employee attendance",
+         "content_type":15
+      },
+      "model":"auth.permission",
+      "pk":44
+   },
+   {
+      "fields":{
+         "codename":"delete_employeeattendance",
+         "name":"Can delete employee attendance",
+         "content_type":15
+      },
+      "model":"auth.permission",
+      "pk":45
+   },
+   {
+      "fields":{
+         "codename":"add_qualification",
+         "name":"Can add qualification",
+         "content_type":16
+      },
+      "model":"auth.permission",
+      "pk":46
+   },
+   {
+      "fields":{
+         "codename":"change_qualification",
+         "name":"Can change qualification",
+         "content_type":16
+      },
+      "model":"auth.permission",
+      "pk":47
+   },
+   {
+      "fields":{
+         "codename":"delete_qualification",
+         "name":"Can delete qualification",
+         "content_type":16
+      },
+      "model":"auth.permission",
+      "pk":48
+   },
+   {
+      "fields":{
+         "codename":"add_certification",
+         "name":"Can add certification",
+         "content_type":17
+      },
+      "model":"auth.permission",
+      "pk":49
+   },
+   {
+      "fields":{
+         "codename":"change_certification",
+         "name":"Can change certification",
+         "content_type":17
+      },
+      "model":"auth.permission",
+      "pk":50
+   },
+   {
+      "fields":{
+         "codename":"delete_certification",
+         "name":"Can delete certification",
+         "content_type":17
+      },
+      "model":"auth.permission",
+      "pk":51
+   },
+   {
+      "fields":{
+         "codename":"add_employeequalifications",
+         "name":"Can add employee qualifications",
+         "content_type":18
+      },
+      "model":"auth.permission",
+      "pk":52
+   },
+   {
+      "fields":{
+         "codename":"change_employeequalifications",
+         "name":"Can change employee qualifications",
+         "content_type":18
+      },
+      "model":"auth.permission",
+      "pk":53
+   },
+   {
+      "fields":{
+         "codename":"delete_employeequalifications",
+         "name":"Can delete employee qualifications",
+         "content_type":18
+      },
+      "model":"auth.permission",
+      "pk":54
+   },
+   {
+      "fields":{
+         "codename":"add_employeecertifications",
+         "name":"Can add employee certifications",
+         "content_type":19
+      },
+      "model":"auth.permission",
+      "pk":55
+   },
+   {
+      "fields":{
+         "codename":"change_employeecertifications",
+         "name":"Can change employee certifications",
+         "content_type":19
+      },
+      "model":"auth.permission",
+      "pk":56
+   },
+   {
+      "fields":{
+         "codename":"delete_employeecertifications",
+         "name":"Can delete employee certifications",
+         "content_type":19
+      },
+      "model":"auth.permission",
+      "pk":57
+   },
+   {
+      "fields":{
+         "codename":"add_machinequalification",
+         "name":"Can add machine qualification",
+         "content_type":20
+      },
+      "model":"auth.permission",
+      "pk":58
+   },
+   {
+      "fields":{
+         "codename":"change_machinequalification",
+         "name":"Can change machine qualification",
+         "content_type":20
+      },
+      "model":"auth.permission",
+      "pk":59
+   },
+   {
+      "fields":{
+         "codename":"delete_machinequalification",
+         "name":"Can delete machine qualification",
+         "content_type":20
+      },
+      "model":"auth.permission",
+      "pk":60
+   },
+   {
+      "fields":{
+         "codename":"add_machinecertification",
+         "name":"Can add machine certification",
+         "content_type":21
+      },
+      "model":"auth.permission",
+      "pk":61
+   },
+   {
+      "fields":{
+         "codename":"change_machinecertification",
+         "name":"Can change machine certification",
+         "content_type":21
+      },
+      "model":"auth.permission",
+      "pk":62
+   },
+   {
+      "fields":{
+         "codename":"delete_machinecertification",
+         "name":"Can delete machine certification",
+         "content_type":21
+      },
+      "model":"auth.permission",
+      "pk":63
+   },
+   {
+      "fields":{
+         "codename":"add_implementqualification",
+         "name":"Can add implement qualification",
+         "content_type":22
+      },
+      "model":"auth.permission",
+      "pk":64
+   },
+   {
+      "fields":{
+         "codename":"change_implementqualification",
+         "name":"Can change implement qualification",
+         "content_type":22
+      },
+      "model":"auth.permission",
+      "pk":65
+   },
+   {
+      "fields":{
+         "codename":"delete_implementqualification",
+         "name":"Can delete implement qualification",
+         "content_type":22
+      },
+      "model":"auth.permission",
+      "pk":66
+   },
+   {
+      "fields":{
+         "codename":"add_implementcertification",
+         "name":"Can add implement certification",
+         "content_type":23
+      },
+      "model":"auth.permission",
+      "pk":67
+   },
+   {
+      "fields":{
+         "codename":"change_implementcertification",
+         "name":"Can change implement certification",
+         "content_type":23
+      },
+      "model":"auth.permission",
+      "pk":68
+   },
+   {
+      "fields":{
+         "codename":"delete_implementcertification",
+         "name":"Can delete implement certification",
+         "content_type":23
+      },
+      "model":"auth.permission",
+      "pk":69
+   },
+   {
+      "fields":{
+         "codename":"add_field",
+         "name":"Can add field",
+         "content_type":24
+      },
+      "model":"auth.permission",
+      "pk":70
+   },
+   {
+      "fields":{
+         "codename":"change_field",
+         "name":"Can change field",
+         "content_type":24
+      },
+      "model":"auth.permission",
+      "pk":71
+   },
+   {
+      "fields":{
+         "codename":"delete_field",
+         "name":"Can delete field",
+         "content_type":24
+      },
+      "model":"auth.permission",
+      "pk":72
+   },
+   {
+      "fields":{
+         "codename":"add_gps",
+         "name":"Can add gps",
+         "content_type":25
+      },
+      "model":"auth.permission",
+      "pk":73
+   },
+   {
+      "fields":{
+         "codename":"change_gps",
+         "name":"Can change gps",
+         "content_type":25
+      },
+      "model":"auth.permission",
+      "pk":74
+   },
+   {
+      "fields":{
+         "codename":"delete_gps",
+         "name":"Can delete gps",
+         "content_type":25
+      },
+      "model":"auth.permission",
+      "pk":75
+   },
+   {
+      "fields":{
+         "codename":"add_fieldlocalization",
+         "name":"Can add field localization",
+         "content_type":26
+      },
+      "model":"auth.permission",
+      "pk":76
+   },
+   {
+      "fields":{
+         "codename":"change_fieldlocalization",
+         "name":"Can change field localization",
+         "content_type":26
+      },
+      "model":"auth.permission",
+      "pk":77
+   },
+   {
+      "fields":{
+         "codename":"delete_fieldlocalization",
+         "name":"Can delete field localization",
+         "content_type":26
+      },
+      "model":"auth.permission",
+      "pk":78
+   },
+   {
+      "fields":{
+         "codename":"add_employeelocalization",
+         "name":"Can add employee localization",
+         "content_type":27
+      },
+      "model":"auth.permission",
+      "pk":79
+   },
+   {
+      "fields":{
+         "codename":"change_employeelocalization",
+         "name":"Can change employee localization",
+         "content_type":27
+      },
+      "model":"auth.permission",
+      "pk":80
+   },
+   {
+      "fields":{
+         "codename":"delete_employeelocalization",
+         "name":"Can delete employee localization",
+         "content_type":27
+      },
+      "model":"auth.permission",
+      "pk":81
+   },
+   {
+      "fields":{
+         "codename":"add_taskcategory",
+         "name":"Can add task category",
+         "content_type":28
+      },
+      "model":"auth.permission",
+      "pk":82
+   },
+   {
+      "fields":{
+         "codename":"change_taskcategory",
+         "name":"Can change task category",
+         "content_type":28
+      },
+      "model":"auth.permission",
+      "pk":83
+   },
+   {
+      "fields":{
+         "codename":"delete_taskcategory",
+         "name":"Can delete task category",
+         "content_type":28
+      },
+      "model":"auth.permission",
+      "pk":84
+   },
+   {
+      "fields":{
+         "codename":"add_task",
+         "name":"Can add task",
+         "content_type":29
+      },
+      "model":"auth.permission",
+      "pk":85
+   },
+   {
+      "fields":{
+         "codename":"change_task",
+         "name":"Can change task",
+         "content_type":29
+      },
+      "model":"auth.permission",
+      "pk":86
+   },
+   {
+      "fields":{
+         "codename":"delete_task",
+         "name":"Can delete task",
+         "content_type":29
+      },
+      "model":"auth.permission",
+      "pk":87
+   },
+   {
+      "fields":{
+         "codename":"add_employeetask",
+         "name":"Can add employee task",
+         "content_type":30
+      },
+      "model":"auth.permission",
+      "pk":88
+   },
+   {
+      "fields":{
+         "codename":"change_employeetask",
+         "name":"Can change employee task",
+         "content_type":30
+      },
+      "model":"auth.permission",
+      "pk":89
+   },
+   {
+      "fields":{
+         "codename":"delete_employeetask",
+         "name":"Can delete employee task",
+         "content_type":30
+      },
+      "model":"auth.permission",
+      "pk":90
+   },
+   {
+      "fields":{
+         "codename":"add_taskimplementmachine",
+         "name":"Can add task implement machine",
+         "content_type":31
+      },
+      "model":"auth.permission",
+      "pk":91
+   },
+   {
+      "fields":{
+         "codename":"change_taskimplementmachine",
+         "name":"Can change task implement machine",
+         "content_type":31
+      },
+      "model":"auth.permission",
+      "pk":92
+   },
+   {
+      "fields":{
+         "codename":"delete_taskimplementmachine",
+         "name":"Can delete task implement machine",
+         "content_type":31
+      },
+      "model":"auth.permission",
+      "pk":93
+   },
+   {
+      "fields":{
+         "codename":"add_appendix",
+         "name":"Can add appendix",
+         "content_type":32
+      },
+      "model":"auth.permission",
+      "pk":94
+   },
+   {
+      "fields":{
+         "codename":"change_appendix",
+         "name":"Can change appendix",
+         "content_type":32
+      },
+      "model":"auth.permission",
+      "pk":95
+   },
+   {
+      "fields":{
+         "codename":"delete_appendix",
+         "name":"Can delete appendix",
+         "content_type":32
+      },
+      "model":"auth.permission",
+      "pk":96
+   },
+   {
+      "fields":{
+         "codename":"add_appendixtask",
+         "name":"Can add appendix task",
+         "content_type":33
+      },
+      "model":"auth.permission",
+      "pk":97
+   },
+   {
+      "fields":{
+         "codename":"change_appendixtask",
+         "name":"Can change appendix task",
+         "content_type":33
+      },
+      "model":"auth.permission",
+      "pk":98
+   },
+   {
+      "fields":{
+         "codename":"delete_appendixtask",
+         "name":"Can delete appendix task",
+         "content_type":33
+      },
+      "model":"auth.permission",
+      "pk":99
+   },
+   {
+      "fields":{
+         "codename":"add_servicecategory",
+         "name":"Can add service category",
+         "content_type":34
+      },
+      "model":"auth.permission",
+      "pk":100
+   },
+   {
+      "fields":{
+         "codename":"change_servicecategory",
+         "name":"Can change service category",
+         "content_type":34
+      },
+      "model":"auth.permission",
+      "pk":101
+   },
+   {
+      "fields":{
+         "codename":"delete_servicecategory",
+         "name":"Can delete service category",
+         "content_type":34
+      },
+      "model":"auth.permission",
+      "pk":102
+   },
+   {
+      "fields":{
+         "codename":"add_service",
+         "name":"Can add service",
+         "content_type":35
+      },
+      "model":"auth.permission",
+      "pk":103
+   },
+   {
+      "fields":{
+         "codename":"change_service",
+         "name":"Can change service",
+         "content_type":35
+      },
+      "model":"auth.permission",
+      "pk":104
+   },
+   {
+      "fields":{
+         "codename":"delete_service",
+         "name":"Can delete service",
+         "content_type":35
+      },
+      "model":"auth.permission",
+      "pk":105
+   },
+   {
+      "fields":{
+         "codename":"add_machineservice",
+         "name":"Can add machine service",
+         "content_type":36
+      },
+      "model":"auth.permission",
+      "pk":106
+   },
+   {
+      "fields":{
+         "codename":"change_machineservice",
+         "name":"Can change machine service",
+         "content_type":36
+      },
+      "model":"auth.permission",
+      "pk":107
+   },
+   {
+      "fields":{
+         "codename":"delete_machineservice",
+         "name":"Can delete machine service",
+         "content_type":36
+      },
+      "model":"auth.permission",
+      "pk":108
+   },
+   {
+      "fields":{
+         "codename":"add_implementservice",
+         "name":"Can add implement service",
+         "content_type":37
+      },
+      "model":"auth.permission",
+      "pk":109
+   },
+   {
+      "fields":{
+         "codename":"change_implementservice",
+         "name":"Can change implement service",
+         "content_type":37
+      },
+      "model":"auth.permission",
+      "pk":110
+   },
+   {
+      "fields":{
+         "codename":"delete_implementservice",
+         "name":"Can delete implement service",
+         "content_type":37
+      },
+      "model":"auth.permission",
+      "pk":111
+   },
+   {
+      "fields":{
+         "username":"heavy",
+         "first_name":"Heavy",
+         "last_name":"Connect",
+         "is_active":true,
+         "is_superuser":true,
+         "is_staff":true,
+         "last_login":"2015-06-29T16:55:08",
+         "groups":[
+
+         ],
+         "user_permissions":[
+
+         ],
+         "password":"pbkdf2_sha256$20000$FDe02jnraWAC$P+ewmiHzE1MqkKihx8c5/HSdtKBt0IwgftGRCITl634=",
+         "email":"test@heavyconnect.com",
+         "date_joined":"2015-06-29T16:54:52"
+      },
+      "model":"auth.user",
+      "pk":1
+   },
+   {
+      "fields":{
+         "username":"andre",
+         "first_name":"Andre",
+         "last_name":"Menezes",
+         "is_active":true,
+         "is_superuser":false,
+         "is_staff":false,
+         "last_login":"2015-06-30T13:47:49",
+         "groups":[
+
+         ],
+         "user_permissions":[
+
+         ],
+         "password":"pbkdf2_sha256$20000$L6jNGehb4bEl$1Zv6wjEccdBtJa5LRniG7I2nnY/DzCZMgknEihgAFYs=",
+         "email":"test@andre.com",
+         "date_joined":"2015-06-30T13:47:36"
+      },
+      "model":"auth.user",
+      "pk":2
+   },
+   {
+      "fields":{
+         "username":"bss3",
+         "first_name":"Bruim",
+         "last_name":"DNS",
+         "is_active":true,
+         "is_superuser":false,
+         "is_staff":false,
+         "last_login":"2015-06-30T13:53:52",
+         "groups":[
+
+         ],
+         "user_permissions":[
+
+         ],
+         "password":"pbkdf2_sha256$20000$l89sdly4qfM2$2aNIqIivVKWPE5d73D/Ej4ZXhxwx5Si40BrAO65zuLA=",
+         "email":"bruninho@solucoeseminformatica.com",
+         "date_joined":"2015-06-30T13:53:28"
+      },
+      "model":"auth.user",
+      "pk":3
+   }
+]
