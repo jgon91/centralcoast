@@ -32,7 +32,8 @@ urlpatterns = [
     url(r'^retrieveScannedMachine/$', main_views.retrieveScannedMachine, name = 'retrieveScannedMachine'),
     url(r'^retrievePedingTask/$', main_views.retrievePedingTask, name = 'retrievePedingTask'),
     url(r'^retrieveMachine/$', main_views.retrieveMachine, name = 'retrieveMachine'),
-	url(r'^retrieveScannedEmployee', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee')
+	url(r'^retrieveScannedEmployee/$', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee'),
+    url(r'^pastTaskList/$', main_views.pastTaskList, name = 'pastTaskList'),
     ### End ###
 
     ###Insert###
