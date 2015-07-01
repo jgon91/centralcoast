@@ -599,8 +599,8 @@ def continueTask(request):
 
 
 # @menezescode: Page only to show the form was correctly sended.
-def formok(request):
-	return render(request, 'formok.html')
+def formOk(request):
+	return render(request, 'formOk.html')
 
 '''
 <menezescode:
@@ -622,185 +622,184 @@ Just a quick explanation on how to test forms:
 
 @menezescode: 	Those are the forms. At the current point 06/22/2015,
 				each view does nothgin besides render the page and redirect
-				to a different page (formok) if it's correct and reload the page
+				to a different page (formOk) if it's correct and reload the page
 				if the form was sent incorrectly
-
+'''
 def manufacturerFormView(request):
 	form = manufacturerForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def manufacturerModelForm(request):
+def manufacturerModelFormView(request):
 	form = manufacturerModelForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def repairShopForm(request):
+def repairShopFormView(request):
 	form = repairShopForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def shopForm(request):
+def shopFormView(request):
 	form = shopForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def machineForm(request):
+def machineFormView(request):
 	form = machineForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def implementForm(request):
+def implementFormView(request):
 	form = implementForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
-def employeeForm(request):
+		return render(request, 'formTest.html', {'form': form})
+def employeeFormView(request):
 	form = employeeForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def employeeAttendanceForm(request):
+def employeeAttendanceFormView(request):
 	form = employeeAttendanceForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def qualificationForm(request):
+def qualificationFormView(request):
 	form = qualificationForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def certificationForm(request):
+def certificationFormView(request):
 	form = certificationForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def employeeQualificationsForm(request):
+def employeeQualificationsFormView(request):
 	form = employeeQualificationsForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def machineQualificationForm(request):
+def machineQualificationFormView(request):
 	form = machineQualificationForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
-def implementQualificationForm(request):
+		return render(request, 'formTest.html', {'form': form})
+def implementQualificationFormView(request):
 	form = implementQualificationForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def fieldForm(request):
+def fieldFormView(request):
 	form = fieldForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def gpsForm(request):
+def gpsFormView(request):
 	form = gpsForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def employeeLocalizationForm(request):
+def employeeLocalizationFormView(request):
 	form = employeeLocalizationForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def taskForm(request):
+def taskFormView(request):
 	form = taskForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def taskCategoryForm(request):
+def taskCategoryFormView(request):
 	form = taskCategoryForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
-def employeeTaskForm(request):
+		return render(request, 'formTest.html', {'form': form})
+def employeeTaskFormView(request):
 	form = employeeTaskForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def taskImplementMachineForm(request):
+def taskImplementMachineFormView(request):
 	form = taskImplementMachineForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def appendixForm(request):
+def appendixFormView(request):
 	form = appendixForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def appendixTaskForm(request):
+def appendixTaskFormView(request):
 	form = appendixTaskForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def serviceCategoryForm(request):
+def serviceCategoryFormView(request):
 	form = serviceCategoryForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def serviceForm(request):
+def serviceFormView(request):
 	form = serviceForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def machineServiceForm(request):
+def machineServiceFormView(request):
 	form = machineServiceForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def implementServiceForm(request):
+def implementServiceFormView(request):
 	form = implementServiceForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
-'''
+		return render(request, 'formTest.html', {'form': form})
