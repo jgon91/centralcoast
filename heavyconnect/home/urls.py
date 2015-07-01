@@ -32,7 +32,8 @@ urlpatterns = [
     url(r'^retrieveScannedMachine/$', main_views.retrieveScannedMachine, name = 'retrieveScannedMachine'),
     url(r'^retrievePedingTask/$', main_views.retrievePedingTask, name = 'retrievePedingTask'),
     url(r'^retrieveMachine/$', main_views.retrieveMachine, name = 'retrieveMachine'),
-	url(r'^retrieveScannedEmployee', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee')
+	url(r'^retrieveScannedEmployee/$', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee'),
+    url(r'^continueTask/$', main_views.continueTask, name = 'continueTask'),
     ### End ###
 
     ###Insert###
@@ -40,7 +41,7 @@ urlpatterns = [
     ###End###
 
     ### Froms ###
-    url(r'^formTEST/$', main_views.manufacturerFormView, name='registerManufacturer'),
+    #url(r'^formTEST/$', main_views.manufacturerFormView, name='registerManufacturer'),
     url(r'^formok/$', main_views.formok, name = 'formok'),
     ### End ###
 ]
