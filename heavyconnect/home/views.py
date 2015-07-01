@@ -300,12 +300,12 @@ def getEquipmentStatus(request):
 	if request.method == 'POST':
 	 	if request.is_ajax():
 			try:
-				machine = Machine.objects.get(qr_code = request.POST('qr_code'))
+				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
 				result['status'] = machine.status
 				result['success'] = True
 			except Machine.DoesNotExist:
 				try:
-					implement = Implement.objects.get(qr_code = request.POST('qr_code'))
+					implement = Implement.objects.get(qr_code = request.POST['qr_code'])
 					result['status'] = implement.status
 					result['success'] = True
 				except Implement.DoesNotExist:
@@ -324,7 +324,7 @@ def retrieveScannedMachine(request):
   	if request.method == 'POST':
 	 	if request.is_ajax():
 	 		try:
-		 		machine = Machine.objects.get(qr_code = request.POST('qr_code')	)
+		 		machine = Machine.objects.get(qr_code = request.POST['qr_code'])
 	 			models = ManufacturerModel.objects.get(manufacturer_id = machine.manufacturer_model_id.id)
 		 		manufacturers = Manufacturer.objects.get(id = models.id)
 				result['manufacture'] = manufacturers.name
@@ -582,7 +582,7 @@ def retrieveScannedEmployee(request):
   	if request.method == 'POST':
 	 	if request.is_ajax():
 			try:
-				employee = Employee.objects.get(qr_code = request.POST('qr_code'))
+				employee = Employee.objects.get(qr_code = request.POST['qr_code'])
 				result['first_name'] = employee.user.first_name
 				result['last_name'] = employee.user.last_name
 				result['photo'] = employee.photo
@@ -602,7 +602,7 @@ def continueTask(request):
 			try:
 				flag = 0
 				aux = {}
-				employeeTask = EmployeeTask.objects.filter(task_id_id__id = request.POST('id'), task_id__accomplished = False)
+				employeeTask = EmployeeTask.objects.filter(task_id_id__id = request.POST['id'], task_id__accomplished = False)
 				for item in employeeTask:
 						aux['description'] = item.task_id.description
 						aux['id'] = item.task_id.field_id_id
