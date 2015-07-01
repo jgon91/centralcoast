@@ -327,30 +327,33 @@ def retrieveScannedMachine(request):
 	result = {'success' : False}
   	if request.method == 'POST':
 	 	if request.is_ajax():
-	 		machine = Machine.objects.get(qr_code = request.POST('qr_code')	)
- 			models = ManufacturerModel.objects.get(manufacturer_id = machine.manufacturer_model_id.id)
-	 		manufacturers = Manufacturer.objects.get(id = models.id)
-			result['manufacture:'] = manufacturers.name
-			result['serial'] = machine.serial_number
-			result['status'] = machine.status
-			result['model'] = models.model
-			result['Asset_number:'] = machine.asset_number
-			result['horsepower:'] = machine.horsepower
-			result['hitch_capacity:'] = machine.hitch_capacity
-			result['hitch_category:'] = machine.hitch_category
-			result['drawbar_category:'] = machine.drawbar_category
-			result['speed_range_min:'] = machine.speed_range_min
-			result['speed_range_max:'] = machine.speed_range_max
-			result['year_purchased:'] = machine.year_purchased
-			result['engine_hours:'] = machine.engine_hours
-			result['base_cost:'] = machine.base_cost
-			result['m_type:'] = machine.m_type
-			result['front_tires:'] = machine.front_tires
-			result['rear_tires:'] = machine.rear_tires
-			result['steering:'] = machine.steering
-			result['operator_station:'] = machine.operator_station
-			result['hour_cost:'] = machine.hour_cost
-			result['photo:'] = machine.photo
+	 		try:
+		 		machine = Machine.objects.get(qr_code = request.POST('qr_code')	)
+	 			models = ManufacturerModel.objects.get(manufacturer_id = machine.manufacturer_model_id.id)
+		 		manufacturers = Manufacturer.objects.get(id = models.id)
+				result['manufacture'] = manufacturers.name
+				result['serial'] = machine.serial_number
+				result['status'] = machine.status
+				result['model'] = models.model
+				result['asset_number'] = machine.asset_number
+				result['horsepower'] = machine.horsepower
+				result['hitch_capacity'] = machine.hitch_capacity
+				result['hitch_category'] = machine.hitch_category
+				result['drawbar_category'] = machine.drawbar_category
+				result['speed_range_min'] = machine.speed_range_min
+				result['speed_range_max'] = machine.speed_range_max
+				result['year_purchased'] = machine.year_purchased
+				result['engine_hours'] = machine.engine_hours
+				result['base_cost'] = machine.base_cost
+				result['m_type'] = machine.m_type
+				result['front_tires'] = machine.front_tires
+				result['rear_tires'] = machine.rear_tires
+				result['steering:'] = machine.steering
+				result['operator_station'] = machine.operator_station
+				result['hour_cost'] = machine.hour_cost
+				result['photo'] = machine.photo
+			except Machine.DoesNotExist:
+				result['code'] = 1 #There is no users associated with this 
 			if result['status'] is 1:
  				result['success'] = True
 		else:
@@ -466,30 +469,30 @@ def retrievePedingTask(request):
 	result.append({'success' : False})
 	date1 = datetime.timedelta(days = 1) #it will work as increment to the current day
 	date2 =  datetime.datetime.now() + date1
-	if request.method == 'POST':
-		qrCode = request.POST['qr_code']
-	 	if request.is_ajax():
-			try:
-				flag = 0
-				aux = {}
-				emplo = request.POST['Employee_id']
-				n = request.POST['N']
-				emploTask = EmployeeTask.objects.filter(employee_id = "1", task_init__lte =  date2)
-				for item in emploTask:
-					if not item.task_id.accomplished:
-						aux['category'] = item.task_id.description
-						result.append(aux)
-						aux = {}
-						flag = flag + 1
-						if flag >= n:
-						 	break
-				result[0] = {'success' : True}
-			except EmployeeTask.DoesNotExist:
-				result.append({'result' : 1})#There is no Implement associated with this
-		else:
-	 		result.append({'result' : 2}) #Use ajax to perform requests
-	else: 
-	 	result.append({'result' : 3}) #Request was not POST
+	# if request.method == 'POST':
+	# 	qrCode = request.POST['qr_code']
+	#  	if request.is_ajax():
+	# 		try:
+	flag = 0
+	aux = {}
+	# emplo = request.POST['Employee_id']
+	# n = request.POST['N']
+	emploTask = EmployeeTask.objects.filter(user_id = request.user.id, task_init__lte =  date2)
+	for item in emploTask:
+		if not item.task_id.accomplished:
+			aux['category'] = item.task_id.description
+			result.append(aux)
+			aux = {}
+			flag = flag + 1
+			if flag >= 4:
+			 	break
+	result[0] = {'success' : True}
+	# 		except EmployeeTask.DoesNotExist:
+	# 			result.append({'result' : 1})#There is no Implement associated with this
+	# 	else:
+	#  		result.append({'result' : 2}) #Use ajax to perform requests
+	# else: 
+	#  	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 		
