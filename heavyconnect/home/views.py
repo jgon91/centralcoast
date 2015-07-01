@@ -291,7 +291,6 @@ def updatePhoto(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-
 #Get equipment status, which can be a machine or a implement
 # Remember the Fron-End guys that Status is mapped as:
 # 1 = OK, 2 = Attention, 3 = Broken, 4 = Quarantine
@@ -317,9 +316,6 @@ def getEquipmentStatus(request):
 	 	result['code'] = 3 #Request was not POST
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
-
-
-
 
 #This function givew back the Machine information, big part of them
 @login_required
@@ -362,8 +358,6 @@ def retrieveScannedMachine(request):
 	 	result['code'] = 3 #Request was not POST
  	return HttpResponse(json.dumps(result),content_type='application/json')
 
-
-
 # It will return (some) information of all implements on database.
 # Maybe later it will be need to filter some information based on size, capacity, etc
 def getImplementInfo(request):
@@ -394,9 +388,6 @@ def getImplementInfo(request):
 
 	# On the ELSE, the answer will be in result[0]
 	return HttpResponse(json.dumps(result),content_type='application/json')
-
-
-
 
 #This function gives back the picture of the refered QrCode
 @login_required
@@ -569,6 +560,31 @@ def retrieveScannedEmployee(request):
 	 	result['code'] = 3 #Request was not POST
  	return HttpResponse(json.dumps(result),content_type='application/json')
 
+def continueTask(request):
+	result = []
+	result.append({'success' : False})
+	if request.method == 'POST':
+	 	if request.is_ajax():
+			try:
+				flag = 0
+				aux = {}
+				employeeTask = EmployeeTask.objects.filter(task_id_id__id = request.POST('id'), task_id__accomplished = False)
+				for item in employeeTask:
+						aux['description'] = item.task_id.description
+						aux['id'] = item.task_id.field_id_id
+						aux['passes'] = item.task_id.passes
+						aux['hours_prediction'] = item.task_id.hours_prediction
+						aux['hour_started'] = str(item.task_init)
+						result.append(aux)
+						aux = {}
+				result[0] = {'success' : True}
+			except EmployeeTask.DoesNotExist:
+				result.append({'result' : 1})#There is no Implement associated with this
+		else:
+	 		result.append({'result' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'result' : 3}) #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
 
