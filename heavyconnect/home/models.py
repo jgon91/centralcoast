@@ -118,7 +118,7 @@ class Employee(models.Model):
 	photo = models.URLField(max_length = 200)
 
 	def __unicode__(self):
-		return  "User ID: "+ str(self.user.id)+ ", First Name: " + str(self.user.first_name) + ", Last Name: " + str(self.user.last_name)
+		return  "User ID: " + str(self.user.id) + ", First Name: " + str(self.user.first_name) + ", Last Name: " + str(self.user.last_name)
 
 class EmployeeWithdrawn(models.Model):
 	employee_id = models.ForeignKey(Employee)
@@ -234,7 +234,7 @@ class EmployeeLocalization(models.Model):
 	e_time = models.DateTimeField()
 
 	def __unicode__(self):
-		return "Employee: " + str(self.employee_id.last_name) + ", Latitude: " +  str(self.latitude) + ", Longitude: " +  str(self.longitude) + ", Date: " + str(self.e_time)
+		return "Employee: " + str(self.employee_id.user.last_name) + ", Latitude: " +  str(self.latitude) + ", Longitude: " +  str(self.longitude) + ", Date: " + str(self.e_time)
 
 class TaskCategory(models.Model):
 	description = models.CharField(max_length = 30)
