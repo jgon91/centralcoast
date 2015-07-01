@@ -98,6 +98,31 @@ def startShift(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 @login_required
+def stopShift(request):
+	result = {'success' : False}
+
+	if request.method == "POST":
+		if request.is_ajax():
+			try:
+				identifier = request.POST['id']
+				employee = Employee.objects.get(id = int(identifier))
+				now = datetime.datetime.now()
+				attendance, created = EmployeeAttendance.objects.get_or_create(employee_id = employee, defaults = {'date' : now, 'hour_ended' : now})
+				if created:
+					result['success'] = True
+					result['hour_ended'] = str(attendance.hour_ended)
+				else:
+					result['code'] = 1 #The shift for today was already finished
+			except Employee.DoesNotExist:
+				result['code'] =  2 #There is no users associated with this id
+		else:
+			result['code'] = 3 #Use ajax to perform requests
+	else:
+		result['code'] = 4 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+@login_required
 def startStopBreak(request):
 	result = {'success' : False}
 
