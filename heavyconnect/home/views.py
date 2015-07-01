@@ -46,6 +46,32 @@ def startNewTask(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+# Receives, as argument, filter information 
+# from front-end (size, manufacturer, etc) and Implement_id
+# (if chosen or NULL if not chosen). Then, retrieves all machines 
+# from Machine table, filtering by those information.
+# Check with Patrick whi info should be filtered and what info retrieved.
+# Used tables: Machines, Implements
+@login_required
+def retrieveMachine(request):
+	result = {'success' : False}
+
+	machine = Machine.objects.all()
+	print machine
+
+	# if request.method == 'POST':
+	# 	if request.is_ajax():
+	# 		try:
+	# 			...
+	# 		except Employee.DoesNotExist:
+	# 			result['code'] =  1 #There is no users associated with this
+	# 	else:
+	# 		result['code'] = 2 #Use ajax to perform requests
+	# else:
+	# 	result['code'] = 3 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
 @login_required
 def startShift(request):
 	result = {'success' : False}
@@ -294,7 +320,7 @@ def getEquipmentStatus(request):
 
 #This function givew back the Machine information, big part of them
 @login_required
-def retrieveMachine(request):
+def retrieveScannedMachine(request):
 	result = {'success' : False}
   	if request.method == 'POST':
 	 	if request.is_ajax():
