@@ -496,17 +496,6 @@ def retrievePedingTask(request):
 	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-<<<<<<< HEAD
-
-=======
-# @login_required
-# def pastTaskList(request):
-# 	result = []
-# 	result.append({'success' : False})
-# 	tasks = Task.objects.filter
-
-		
->>>>>>> Fix-issue-#99
 def getHoursToday(id):
 	# now = datetime.datetime.now()
 	# attendance = EmployeeAttendance.objects.get(employee_id = id)
@@ -581,24 +570,22 @@ def retrieveScannedEmployee(request):
 	 	result['code'] = 3 #Request was not POST
  	return HttpResponse(json.dumps(result),content_type='application/json')
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 # @menezescode: Page only to show the form was correctly sended.
 def formok(request):
 	return render(request, 'formok.html')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 '''
 <menezescode:
@@ -623,14 +610,13 @@ Just a quick explanation on how to test forms:
 				to a different page (formok) if it's correct and reload the page
 				if the form was sent incorrectly
 
-'''
 def manufacturerFormView(request):
 	form = manufacturerForm(request.POST)
 	if form.is_valid():
 		return redirect('formok')
 	else:
 		return render(request, 'formTEST.html', {'form': form})
-'''
+
 def manufacturerModelForm(request):
 	form = manufacturerModelForm(request.POST)
 	if form.is_valid():
