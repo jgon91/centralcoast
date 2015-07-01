@@ -553,6 +553,7 @@ div.notes {
 }
 #btnGoScheduler:hover {
 	background: url('../img/buttons/scheduleTaskflowHover.png') no-repeat top left;
+	background-size: 100% 100%;
 }
 #btnLastTasks {
 	background: url('../img/buttons/lastTasks.png') no-repeat top left;
