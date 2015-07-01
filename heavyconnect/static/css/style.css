@@ -757,21 +757,28 @@ div.notes {
 	margin: auto;
 	min-width: 800px;
 	margin-top: 60px;
-	color: white;
-	height: 450px;
-	background: black;
+	color: black;
 	padding: 0px;
 	padding-top: 5px;
 	font-size: 30px;
 }
 .pastBox {
+	color: white;
 	background: #434343;
 	text-align: left;
-	margin-left: 30px;
-	width: 30%;
+	margin: auto;
+	width: 32%;
 	font-size: 20px;
 	padding-top: 20px;
 	padding-bottom: 20px;
+}
+#past2 {
+	margin-left: 2%;
+	margin-right: 2%;
+}
+#past3 {
+	float: right;
+	
 }
 #btnSchedulePast {
 	background: url('../img/buttons/btnSchedulePastTasks.png') no-repeat top left;
@@ -779,7 +786,9 @@ div.notes {
 	width: 100%;
 	height: 80px;
 }
-
+#btnSchedulePast:hover {
+	
+}
 /* End PAST TASKS page */
 #cal {
 	margin: auto;
