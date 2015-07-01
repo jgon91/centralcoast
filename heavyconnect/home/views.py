@@ -355,7 +355,7 @@ def retrieveScannedMachine(request):
 				if result['status'] is 1:
  					result['success'] = True
 			except Machine.DoesNotExist:
-				result['code'] = 1 #There is no users associated with this 
+				result['code'] = 1 #There is no users associated with this
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
 	else:
@@ -558,7 +558,6 @@ def retrieveScannedEmployee(request):
 	 	if request.is_ajax():
 			try:
 				employee = Employee.objects.get(qr_code = request.POST('qr_code'))
-				employee = Employee.objects.get(user_id = request.user.id)
 				result['first_name'] = employee.user.first_name
 				result['last_name'] = employee.user.last_name
 				result['photo'] = employee.photo
