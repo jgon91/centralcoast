@@ -327,32 +327,35 @@ def retrieveScannedMachine(request):
 	result = {'success' : False}
   	if request.method == 'POST':
 	 	if request.is_ajax():
-	 		machine = Machine.objects.get(qr_code = request.POST('qr_code')	)
- 			models = ManufacturerModel.objects.get(manufacturer_id = machine.manufacturer_model_id.id)
-	 		manufacturers = Manufacturer.objects.get(id = models.id)
-			result['manufacture:'] = manufacturers.name
-			result['serial'] = machine.serial_number
-			result['status'] = machine.status
-			result['model'] = models.model
-			result['Asset_number:'] = machine.asset_number
-			result['horsepower:'] = machine.horsepower
-			result['hitch_capacity:'] = machine.hitch_capacity
-			result['hitch_category:'] = machine.hitch_category
-			result['drawbar_category:'] = machine.drawbar_category
-			result['speed_range_min:'] = machine.speed_range_min
-			result['speed_range_max:'] = machine.speed_range_max
-			result['year_purchased:'] = machine.year_purchased
-			result['engine_hours:'] = machine.engine_hours
-			result['base_cost:'] = machine.base_cost
-			result['m_type:'] = machine.m_type
-			result['front_tires:'] = machine.front_tires
-			result['rear_tires:'] = machine.rear_tires
-			result['steering:'] = machine.steering
-			result['operator_station:'] = machine.operator_station
-			result['hour_cost:'] = machine.hour_cost
-			result['photo:'] = machine.photo
-			if result['status'] is 1:
- 				result['success'] = True
+	 		try:
+		 		machine = Machine.objects.get(qr_code = request.POST('qr_code')	)
+	 			models = ManufacturerModel.objects.get(manufacturer_id = machine.manufacturer_model_id.id)
+		 		manufacturers = Manufacturer.objects.get(id = models.id)
+				result['manufacture'] = manufacturers.name
+				result['serial'] = machine.serial_number
+				result['status'] = machine.status
+				result['model'] = models.model
+				result['asset_number'] = machine.asset_number
+				result['horsepower'] = machine.horsepower
+				result['hitch_capacity'] = machine.hitch_capacity
+				result['hitch_category'] = machine.hitch_category
+				result['drawbar_category'] = machine.drawbar_category
+				result['speed_range_min'] = machine.speed_range_min
+				result['speed_range_max'] = machine.speed_range_max
+				result['year_purchased'] = machine.year_purchased
+				result['engine_hours'] = machine.engine_hours
+				result['base_cost'] = machine.base_cost
+				result['m_type'] = machine.m_type
+				result['front_tires'] = machine.front_tires
+				result['rear_tires'] = machine.rear_tires
+				result['steering'] = machine.steering
+				result['operator_station'] = machine.operator_station
+				result['hour_cost'] = machine.hour_cost
+				result['photo'] = machine.photo
+				if result['status'] is 1:
+ 					result['success'] = True
+			except Machine.DoesNotExist:
+				result['code'] = 1 #There is no users associated with this 
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
 	else:
@@ -472,12 +475,13 @@ def retrievePedingTask(request):
 			try:
 				flag = 0
 				aux = {}
-				emplo = request.POST['Employee_id']
 				n = request.POST['N']
-				emploTask = EmployeeTask.objects.filter(employee_id = "1", task_init__lte =  date2)
+				emploTask = EmployeeTask.objects.filter(employee_id_id = request.user.id, task_init__lte =  date2)
 				for item in emploTask:
 					if not item.task_id.accomplished:
 						aux['category'] = item.task_id.description
+						aux['field'] = item.task_id.field_id.name
+						aux['date'] = str(item.task_id.date)
 						result.append(aux)
 						aux = {}
 						flag = flag + 1
@@ -492,7 +496,17 @@ def retrievePedingTask(request):
 	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+<<<<<<< HEAD
 
+=======
+# @login_required
+# def pastTaskList(request):
+# 	result = []
+# 	result.append({'success' : False})
+# 	tasks = Task.objects.filter
+
+		
+>>>>>>> Fix-issue-#99
 def getHoursToday(id):
 	# now = datetime.datetime.now()
 	# attendance = EmployeeAttendance.objects.get(employee_id = id)
