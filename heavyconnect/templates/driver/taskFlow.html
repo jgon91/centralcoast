@@ -21,18 +21,18 @@
 				<div id="divTask">
 					<div id="pendingTask">
 						<p id="taskP">PENDING TASKS</p>
-						<div class="lastClass">
-							<a href="{% url 'startTask' %}" id="last1" style="text-decoration: none;">Disk 3 passes N-W - Ranch 1 Block 1.</a>
-						</div>
-						<div class="lastClass">
-							<a href="{% url 'startTask' %}" id="last2" style="text-decoration: none;">Disk 4 passes S-N - Ranch 3 Block 3.</a>
-						</div>
-						<div class="lastClass">
-							<a href="{% url 'startTask' %}" id="last3" style="text-decoration: none;">Disk 2 passes N-E - Ranch 6 Block 5.</a>
-						</div>
-						<div class="lastClass">
-							<a href="{% url 'startTask' %}" id="last4" style="text-decoration: none;">Disk 4 passes W-E - Ranch 9 Block 8.</a>
-						</div>
+						<a href="{% url 'startTask' %}" id="last1" style="text-decoration: none;">
+							<div class="lastClass">Disk 3 passes N-W - Ranch 1 Block 1.
+						</div></a>
+						<a href="{% url 'startTask' %}" id="last2" style="text-decoration: none;">
+							<div class="lastClass">Disk 4 passes S-N - Ranch 3 Block 3.
+						</div></a>
+						<a href="{% url 'startTask' %}" id="last3" style="text-decoration: none;">
+							<div class="lastClass">Disk 2 passes N-E - Ranch 6 Block 5.
+						</div></a>
+						<a href="{% url 'startTask' %}" id="last4" style="text-decoration: none;">
+							<div class="lastClass">Disk 4 passes W-E - Ranch 9 Block 8.
+						</div></a>
 					</div>
 					<div id="divCreateTask"><a href="{% url 'createTask' %}"><input type="button" id="btnCreateTask" /></a></div>
 					<div id="divLastTask"><a href="{% url 'pastTasks' %}"><input type="button" id="btnLastTasks" /></a></div>

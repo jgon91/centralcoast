@@ -71,6 +71,21 @@ body {
 	margin-top: 5px;
 	color: white;
 }
+#scanOther {
+	margin-top: 5px;
+	margin-right: 5px;
+	height: 50px;
+	width: 170px;
+	background-color: #809A21;
+	color: white;
+	border-radius: 8px;
+	font-size: 18px;
+	padding: 5px;
+	float: right;
+}
+#scanOther:hover {
+	background: #6C6259;
+}
 #content {
 	width: 100%;
 	min-width: 800px;
@@ -359,8 +374,8 @@ input[type="button"] {
 #updateStatusSubmit {
 	background: url('../img/buttons/arrowUpdate.jpg') no-repeat top left;
 	background-size: 100% 100%;
-	width: 186px;
-	height: 69.5px;
+	width: 187px;
+	height: 70px;
 	position: relative;
 	left: 286px;
 	border: none;
@@ -368,16 +383,16 @@ input[type="button"] {
 #updateStatusSubmit:hover {
 	background: url('../img/buttons/arrowUpdateHover.jpg') no-repeat top left;
 	background-size: 100% 100%;
-	width: 186px;
-	height: 69.5px;
+	width: 187px;
+	height: 70px;
 	position: relative;
 	left: 286px;
 }
 #updateStatusBack {
 	background: url('../img/buttons/arrow.jpg') no-repeat top left;
 	background-size: 100% 100%;
-	width: 68px;
-	height: 69.5px;
+	width: 67px;
+	height: 70px;
 	position: relative;
 	right: 286px;
 	border: none;
@@ -385,8 +400,8 @@ input[type="button"] {
 #updateStatusBack:hover {
 	background: url('../img/buttons/arrowHover.jpg') no-repeat top left;
 	background-size: 100% 100%;
-	width: 68px;
-	height: 69.5px;
+	width: 67px;
+	height: 70px;
 	position: relative;
 	right: 286px;
 }
@@ -443,6 +458,7 @@ div.notes {
 }
 #updateStatusForm {
 	width: 830px;
+	height: 70px;
 	position: relative;
 	margin: 0px 0px;
 	background: #E2E0AC;
@@ -470,11 +486,11 @@ div.notes {
 #divTask {
 	text-align: left;
 	width: 80%;
+	min-width: 800px;
 	margin: auto;
 	margin-top: 60px;
 	color: white;
 	height: 430px;
-	background: black;
 	padding-left: 10px;
 	padding-top: 10px;
 	padding-bottom: 10px;
@@ -490,7 +506,7 @@ div.notes {
 	float: left;
 	height: 300px;
 	margin-right: 10px;
-	font-size: 25px;
+	font-size: 27px;
 }
 .lastClass {
 	color: white;
@@ -521,7 +537,7 @@ div.notes {
 	margin-bottom: 10px;
 }
 #divGoScheduler {
-	margin-top: -100px;
+	margin-top: -104.5px;
 }
 #btnCreateTask {
 	background: url('../img/buttons/createNewTask.png') no-repeat top left;
@@ -534,6 +550,9 @@ div.notes {
 	background-size: 100% 100%;
 	width: calc(100% - 220px);
 	height: 100px;
+}
+#btnGoScheduler:hover {
+	background: url('../img/buttons/scheduleTaskflowHover.png') no-repeat top left;
 }
 #btnLastTasks {
 	background: url('../img/buttons/lastTasks.png') no-repeat top left;
@@ -914,12 +933,18 @@ div.notes {
 	padding: 18px;
 	font-size: 22px;
 }
+.numButton:hover {
+	background: #44670F;	
+}
 #hoursButton {
 	width: 108px;
 	color: black;
 	background-color: #E1DFAB;
 	padding: 18px;
 	font-size: 22px;
+}
+#hoursButton:hover {
+	background: #44670F;	
 }
 .radioBtn {
 	margin: auto;

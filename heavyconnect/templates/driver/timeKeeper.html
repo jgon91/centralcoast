@@ -10,15 +10,22 @@
 			});
 		</script>
 	</head>
-	
+
 	<body>
 		<header id="head"></header>
 		<div id="wrapper">
-			<div id="menuLeft"></div>
-			
 			<div id="content">
+				<div id="namePage">
+					TIMEKEEPER
+				</div>
+				<div>
+					<a href="{% url 'scanQRCode' %}" style="text-decoration: none;">
+					<input type="button" id="scanOther" value="SCAN MORE"/>
+					</a>
+				</div>
+
 				<img src="{% static 'img/clock.png'%}" style="margin-top: 40px;"/>
-				<div class="row">				
+				<div class="row">
 					<div class="col-xs-12 col-md-12">
 						<input type="button" value="START SHIFT" class="btnGreen" />
 					</div>
@@ -28,7 +35,7 @@
 						<input type="button" value="AM BREAK" class="btnGreen " />
 					</div>
 					<div class="col-xs-2 col-md-2	">
-					<hr style="margin-top: 20%; border: solid 1px black">
+						<hr style="margin-top: 20%; border: solid 1px black">
 					</div>
 					<div class="col-xs-5 col-md-5  alignLeft">
 						<input type="button" value="STOP"  class="btnRed"/>
@@ -39,7 +46,7 @@
 						<input type="button" value="LUNCH" class="btnGreen" />
 					</div>
 					<div class="col-xs-2 col-md-2">
-					<hr style="margin-top: 20%;border: solid 1px black">
+						<hr style="margin-top: 20%;border: solid 1px black">
 					</div>
 					<div class="col-xs-5 col-md-5 alignLeft">
 						<input type="button" value="STOP" class="btnRed" />
@@ -50,7 +57,7 @@
 						<input type="button" value="PM BREAK" class="btnGreen" />
 					</div>
 					<div class="col-xs-2 col-md-2">
-					<hr style="margin-top: 20%;border: solid 1px black">
+						<hr style="margin-top: 20%;border: solid 1px black">
 					</div>
 					<div class="col-xs-5 col-md-5 alignLeft">
 						<input type="button" value="STOP" class="btnRed" />
@@ -58,11 +65,11 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-md-4" >
-					
+
 					</div>
-				
+
 				</div>
-				
+
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
 						<input type="button" value="STOP SHIFT"  class="btnRed" />

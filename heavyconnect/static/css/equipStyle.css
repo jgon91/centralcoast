@@ -112,7 +112,7 @@
 }
 #btnUpdate:hover
 {
-	color: black;
+	background: #6E655C;
 }
 #btnNewTask
 {
@@ -123,7 +123,7 @@
 }
 #btnNewTask:hover
 {
-	color: black;
+	background: #6E655C;
 }
 #btnChecklist
 {
@@ -134,7 +134,7 @@
 }
 #btnChecklist:hover
 {
-	color: black;
+	background: #6E655C;
 }
 
 #info

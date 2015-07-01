@@ -77,7 +77,7 @@
 		$("input[name=q5]:radio").change(function(){
 			answer5 = questionChecked("q5");
 		});
-	
+		
 		$("#q1").click(function(){
 			showQuestion("checkList1", "q1");
 		});
