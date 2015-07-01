@@ -46,9 +46,9 @@ def startNewTask(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-# Receives, as argument, filter information 
+# Receives, as argument, filter information
 # from front-end (size, manufacturer, etc) and Implement_id
-# (if chosen or NULL if not chosen). Then, retrieves all machines 
+# (if chosen or NULL if not chosen). Then, retrieves all machines
 # from Machine table, filtering by those information.
 # Check with Patrick whi info should be filtered and what info retrieved.
 # Used tables: Machines, Implements
@@ -103,7 +103,7 @@ def startStopBreak(request):
 
 	if request.method == 'POST': #check if the method used for the request was POST
 		if request.is_ajax(): #check if the request came from ajax request
-			
+
 			identifier = request.POST['id']
 			employee = Employee.objects.get(id = int(identifier))
 
@@ -184,7 +184,7 @@ def getEmployeeLocation(request):
 				result['longitude'] = localization['longitude']
 				result['success'] = True
 			except Employee.DoesNotExist:
-				result['code'] = 1 #There is no users associated with this 
+				result['code'] = 1 #There is no users associated with this
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
 	else:
@@ -217,7 +217,7 @@ def login(request):
 			result['code'] = 4 #Use ajax to perform requests
 	else:
 		result['code'] = 5 #Request was not POST
-	
+
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 @login_required
@@ -238,7 +238,7 @@ def getDriverInformation(request):
 				result['hours_week'] = getWeekHours(employee.id)
 				result['success'] = True
 			except DoesNotExist:
-				result['code'] = 1 #There is no users associated with this 
+				result['code'] = 1 #There is no users associated with this
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
 	else:
@@ -262,10 +262,10 @@ def getQuickUser(request):
 				result['url'] = employee.photo
 				result['success'] = True
 	 		except Employee.DoesNotExist:
-	 			result['code'] = 1 #There is no users associated with this 
+	 			result['code'] = 1 #There is no users associated with this
 	 	else:
 	 		result['code'] = 2 #Use ajax to perform requests
-	else: 
+	else:
 	 	result['code'] = 3 #Request was not POST
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
@@ -283,10 +283,10 @@ def updatePhoto(request):
 				result['success'] = True
 				employee.save()
 			except DoesNotExist:
-	 			result['code'] = 1 #There is no users associated with this 
+	 			result['code'] = 1 #There is no users associated with this
 	 	else:
 	 		result['code'] = 2 #Use ajax to perform requests
-	else: 
+	else:
 	 	result['code'] = 3 #Request was not POST
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
@@ -302,7 +302,7 @@ def getEquipmentStatus(request):
 	 	if request.is_ajax():
 			try:
 				machine = Machine.objects.get(qr_code = request.POST('qr_code'))
-				result['status'] = machine.status		
+				result['status'] = machine.status
 				result['success'] = True
 			except Machine.DoesNotExist:
 				try:
@@ -310,10 +310,10 @@ def getEquipmentStatus(request):
 					result['status'] = implement.status
 					result['success'] = True
 				except Implement.DoesNotExist:
-			 		result['code'] = 1 #There is no equipment for this qr_code 
+			 		result['code'] = 1 #There is no equipment for this qr_code
 	 	else:
 	 		result['code'] = 2 #Use ajax to perform requests
-	else: 
+	else:
 	 	result['code'] = 3 #Request was not POST
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
@@ -355,7 +355,7 @@ def retrieveScannedMachine(request):
  				result['success'] = True
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
-	else: 
+	else:
 	 	result['code'] = 3 #Request was not POST
  	return HttpResponse(json.dumps(result),content_type='application/json')
 
@@ -386,7 +386,7 @@ def getImplementInfo(request):
 				result.append({'code' : 1}) #There is no machine associated with this
 		else:
 	 		result.append({'code' : 2}) #Use ajax to perform requests
-	else: 
+	else:
 	 	result.append({'code' : 3}) #result[0]['code'] = 3 #Request was not POST
 
 	# On the ELSE, the answer will be in result[0]
@@ -415,12 +415,12 @@ def loadEquipmentImage(request):
 					result['code'] = 1 #There is no equipment associated with this
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
-	else: 
+	else:
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 #Look just into Machines
-@login_required 
+@login_required
 def loadMachinesImage(request):
 	result = {'success' : False}
 	if request.method == 'POST':
@@ -435,7 +435,7 @@ def loadMachinesImage(request):
 				result['code'] = 1 #There is no machine associated with this
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
-	else: 
+	else:
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
@@ -455,7 +455,7 @@ def loadImplementsImage(request):
 				result['code'] = 1 #There is no Implement associated with this
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
-	else: 
+	else:
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
@@ -488,11 +488,11 @@ def retrievePedingTask(request):
 				result.append({'result' : 1})#There is no Implement associated with this
 		else:
 	 		result.append({'result' : 2}) #Use ajax to perform requests
-	else: 
+	else:
 	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-		
+
 def getHoursToday(id):
 	# now = datetime.datetime.now()
 	# attendance = EmployeeAttendance.objects.get(employee_id = id)
@@ -528,19 +528,19 @@ def getEmployeeSchedule(request):
 				result['permission_level'] = employee.permission_level
 				result['photo_url'] = employee.photo
 				result['hour_started'] = str(attendance.hour_started)
-				result['hour_ended'] = str(attendance.hour_ended) 
-				result['break_one'] = str(attendance.break_one) 
-				result['break_one_end'] = str(attendance.break_one_end) 
-				result['break_two'] = str(attendance.break_two) 
-				result['break_two_end'] = str(attendance.break_two_end) 
-				result['break_three'] = str(attendance.break_three) 
-				result['break_three_end'] = str(attendance.break_three_end) 
+				result['hour_ended'] = str(attendance.hour_ended)
+				result['break_one'] = str(attendance.break_one)
+				result['break_one_end'] = str(attendance.break_one_end)
+				result['break_two'] = str(attendance.break_two)
+				result['break_two_end'] = str(attendance.break_two_end)
+				result['break_three'] = str(attendance.break_three)
+				result['break_three_end'] = str(attendance.break_three_end)
 				result['success'] = True
 			except EmployeeAttendance.DoesNotExist:
-				result['code'] = 1 #There is no shift records for this employee	
+				result['code'] = 1 #There is no shift records for this employee
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
-	else: 
+	else:
 	 	result['code'] = 3 #Request was not POST
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
@@ -548,6 +548,24 @@ def getEmployeeSchedule(request):
 def logout(request):
 	auth_logout(request)
 	return redirect('home')
+
+def retrieveScannedEmployee(request):
+	result = {'success' : False}
+  	if request.method == 'POST':
+	 	if request.is_ajax():
+			try:
+				employee = Employee.objects.get(qr_code = request.POST('qr_code'))
+				employee = Employee.objects.get(user_id = request.user.id)
+				result['first_name'] = employee.user.first_name
+				result['last_name'] = employee.user.last_name
+				result['photo'] = employee.photo
+			except Employee.DoesNotExist:
+				result['code'] = 1 #There is no records for this employee
+		else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else:
+	 	result['code'] = 3 #Request was not POST
+ 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 # @menezescode: Page only to show the form was correctly sended.
 def formok(request):
@@ -588,7 +606,7 @@ Just a quick explanation on how to test forms:
 
 @menezescode: 	Those are the forms. At the current point 06/22/2015,
 				each view does nothgin besides render the page and redirect
-				to a different page (formok) if it's correct and reload the page 
+				to a different page (formok) if it's correct and reload the page
 				if the form was sent incorrectly
 
 '''

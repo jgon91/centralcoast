@@ -1,5 +1,5 @@
 from django.conf.urls import include, url, patterns
-from . import views as main_views 
+from . import views as main_views
 from . import viewsCRUD as CRUD
 
 # The views are divided in 2 different documents
@@ -14,7 +14,7 @@ urlpatterns = [
     url(r'^logout/$', main_views.logout, name='logout'),
     url(r'^driver/$', main_views.driver, name='driver'),
 	url(r'^taskflow/$', main_views.taskflow, name='taskflow'),
-    
+
     ### Functions ###
     url(r'^employeeLocation/$', main_views.getEmployeeLocation, name = 'employeeLocation'),
     url(r'^employeeSchedule/$', main_views.getEmployeeSchedule, name = 'employeeSchedule'),
@@ -32,6 +32,7 @@ urlpatterns = [
     url(r'^retrieveScannedMachine/$', main_views.retrieveScannedMachine, name = 'retrieveScannedMachine'),
     url(r'^retrievePedingTask/$', main_views.retrievePedingTask, name = 'retrievePedingTask'),
     url(r'^retrieveMachine/$', main_views.retrieveMachine, name = 'retrieveMachine'),
+	url(r'^retrieveScannedEmployee', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee')
     ### End ###
 
     ###Insert###
