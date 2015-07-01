@@ -489,21 +489,16 @@ def retrievePedingTask(request):
 		qrCode = request.POST['qr_code']
 	 	if request.is_ajax():
 			try:
-				flag = 0
 				aux = {}
 				n = int(request.POST['N'])
 				if n > 0:
-					emploTask = EmployeeTask.objects.filter(employee_id_id = request.user.id, task_init__lte =  date2)
+					emploTask = EmployeeTask.objects.filter(employee_id_id = request.user.id, task_init__lte =  date2, task_id__accomplished = False)[:n]
 					for item in emploTask:
-						if not item.task_id.accomplished:
-							aux['category'] = item.task_id.description
-							aux['field'] = item.task_id.field_id.name
-							aux['date'] = str(item.task_id.date)
-							result.append(aux)
-							aux = {}
-							flag = flag + 1
-							if flag >= n:
-							 	break
+						aux['category'] = item.task_id.description
+						aux['field'] = item.task_id.field_id.name
+						aux['date'] = str(item.task_id.date)
+						result.append(aux)
+						aux = {}
 					result[0] = {'success' : True}
 				else:
 					result.append({'result' : 11})#Index is invalid
