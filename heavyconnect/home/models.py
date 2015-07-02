@@ -13,7 +13,7 @@ class ManufacturerModel(models.Model):
 	model = models.CharField(max_length = 10)
 
 	def __unicode__(self):
-		return "Model: " + str(self.model) + ", Manufacturer: " + str(self.manufacturer_id)
+		return "Model: " + str(self.model) + ", Manufacturer: " + str(self.manufacturer)
 
 class RepairShop(models.Model):
 	name = models.CharField(max_length = 20)
@@ -81,7 +81,7 @@ class Machine(models.Model):
 	photo = models.URLField(max_length = 200)
 
 	def __unicode__(self):
-		return "QRcode: " + str(self.qr_code) + ", Model: " + str(self.manufacturer_model_id.model)
+		return "QRcode: " + str(self.qr_code) + ", Model: " + str(self.manufacturer_model.model)
 
 class Implement(models.Model):
 	manufacturer_model = models.ForeignKey(ManufacturerModel)
@@ -105,7 +105,7 @@ class Implement(models.Model):
 	photo = models.URLField(max_length = 200)
 
 	def __unicode__(self):
-		return "QRcode: " + str(self.qr_code) + ", Model: " + str(self.manufacturer_model_id.model)
+		return "QRcode: " + str(self.qr_code) + ", Model: " + str(self.manufacturer_model.model)
 
 class Employee(models.Model):
 	user = models.OneToOneField(User)
@@ -125,7 +125,7 @@ class EmployeeWithdrawn(models.Model):
 	date = models.DateField()
 
 	def __unicode__(self):
-		return "Date: " + str(self.date) + ", Name: " + str(self.employee_id.user.last_name)
+		return "Date: " + str(self.date) + ", Name: " + str(self.employee.user.last_name)
 
 class EmployeeAttendance(models.Model):
 	employee = models.ForeignKey(Employee)
@@ -140,7 +140,7 @@ class EmployeeAttendance(models.Model):
 	break_three_end = models.TimeField(null = True, blank = True)
 
 	def __unicode__(self):
-		return "Employee: " + str(self.employee_id) + ", Date: " + str(self.date)
+		return "Employee: " + str(self.employee) + ", Date: " + str(self.date)
 
 class Qualification(models.Model):
 	description = models.CharField(max_length = 50)
@@ -166,14 +166,14 @@ class EmployeeQualifications(models.Model):
 	level = models.IntegerField(choices = LEVEL_CHOICES)
 
 	def __unicode__(self):
-		return str(self.employee_id) +  ", Qualification: " + str(self.qualification_id.id) + ", Level: "+ str(self.level)
+		return str(self.employee) +  ", Qualification: " + str(self.qualification.id) + ", Level: "+ str(self.level)
 
 class EmployeeCertifications(models.Model):
 	employee = models.ForeignKey(Employee)
 	certification = models.ForeignKey(Certification)
 
 	def __unicode__(self):
-		return "Employee ID: " + str(self.employee_id.id) + ", Last Name: " + str(self.employee_id.user.last_name) + ", Certification ID: " + str(self.certification_id.id)
+		return "Employee ID: " + str(self.employee.id) + ", Last Name: " + str(self.employee.user.last_name) + ", Certification ID: " + str(self.certification.id)
 
 class MachineQualification(models.Model):
 	machine = models.ForeignKey(Machine)
@@ -181,14 +181,14 @@ class MachineQualification(models.Model):
 	qualification_required = models.IntegerField(choices = EmployeeQualifications.LEVEL_CHOICES)
 
 	def __unicode__(self):
-		return "Machine ID: " + str(self.machine_id.id) + ", Qualification ID: " + str(self.qualification_id) + ", Qualification level required: " +  str(self.qualification_required) + ", Machine QRcode: " + str(self.machine_id.qr_code)
+		return "Machine ID: " + str(self.machine.id) + ", Qualification ID: " + str(self.qualification) + ", Qualification level required: " +  str(self.qualification_required) + ", Machine QRcode: " + str(self.machine.qr_code)
 
 class MachineCertification(models.Model):
 	machine =  models.ForeignKey(Machine)
 	certification = models.ForeignKey(Certification)
 
 	def __unicode__(self):
-		return "Machine ID: " + str(self.machine_id.id) + ", Certification ID:" +  str(self.certification_id.id) + ", Machine QRcode: " + str(self.machine_id.qr_code)
+		return "Machine ID: " + str(self.machine.id) + ", Certification ID:" +  str(self.certification.id) + ", Machine QRcode: " + str(self.machine.qr_code)
 
 class ImplementQualification(models.Model):
 	implement = models.ForeignKey(Implement)
@@ -196,14 +196,14 @@ class ImplementQualification(models.Model):
 	qualification_required = models.IntegerField(choices = EmployeeQualifications.LEVEL_CHOICES)
 
 	def __unicode__(self):
-		return "Implement ID: " + str(self.implement_id.id) + ", Qualification ID: " + str(self.qualification_id.id) + ", Qualification Required: " + str(self.qualification_required) + ", Implement QRcode: " + str(self.implement_id.qr_code)
+		return "Implement ID: " + str(self.implement.id) + ", Qualification ID: " + str(self.qualification.id) + ", Qualification Required: " + str(self.qualification_required) + ", Implement QRcode: " + str(self.implement.qr_code)
 
 class ImplementCertification(models.Model):
 	implement = models.ForeignKey(Implement)
 	certification =  models.ForeignKey(Certification)
 
 	def __unicode__(self):
-		return str(self.implement_id) + " " +  str(self.certification_id)
+		return str(self.implement) + " " +  str(self.certification)
 
 class Field(models.Model):
 	name = models.CharField(max_length = 50)
@@ -225,7 +225,7 @@ class FieldLocalization(models.Model):
 	gps = models.ForeignKey(GPS)
 
 	def __unicode__(self):
-		return "Field: " + str(self.field_id.name) + ", GPS ID: " + str( self.gps_id)
+		return "Field: " + str(self.field.name) + ", GPS ID: " + str( self.gps)
 
 class EmployeeLocalization(models.Model):
 	employee = models.ForeignKey(Employee)
@@ -234,7 +234,7 @@ class EmployeeLocalization(models.Model):
 	e_time = models.DateTimeField()
 
 	def __unicode__(self):
-		return "Employee: " + str(self.employee_id.user.last_name) + ", Latitude: " +  str(self.latitude) + ", Longitude: " +  str(self.longitude) + ", Date: " + str(self.e_time)
+		return "Employee: " + str(self.employee.user.last_name) + ", Latitude: " +  str(self.latitude) + ", Longitude: " +  str(self.longitude) + ", Date: " + str(self.e_time)
 
 class TaskCategory(models.Model):
 	description = models.CharField(max_length = 30)
@@ -260,7 +260,7 @@ class Task(models.Model):
 	approval = models.IntegerField(choices = APPROVAL_CHOICES)
 
 	def __unicode__(self):
-		return "Field Name: " + str(self.field_id.name) + " Category: " + str(self.category.description) + ", Hour Cost: " +  str(self.rate_cost) + ", Description: " +  str(self.description)
+		return "Field Name: " + str(self.field.name) + " Category: " + str(self.category.description) + ", Hour Cost: " +  str(self.rate_cost) + ", Description: " +  str(self.description)
 
 class EmployeeTask(models.Model):
 	employee = models.ForeignKey(Employee)
@@ -270,7 +270,7 @@ class EmployeeTask(models.Model):
 	substitution = models.BooleanField()
 
 	def __unicode__(self):
-		return "Employee ID: " + str(self.employee_id.id) + ", Task Begin: " +  str(self.task_init) + " Hours Spent: " +  str(self.hours_spent)
+		return "Employee ID: " + str(self.employee.id) + ", Task Begin: " +  str(self.task_init) + " Hours Spent: " +  str(self.hours_spent)
 
 class TaskImplementMachine(models.Model):
 	task = models.ForeignKey(Task)
@@ -279,7 +279,7 @@ class TaskImplementMachine(models.Model):
 	machine = models.BooleanField()
 
 	def __unicode__(self):
-		return "Task ID: " + str(self.task_id.id) + ", Machine ID: " +  str(self.machine_id.id) + ", Implement ID:" +  str(self.implement_id.id)
+		return "Task ID: " + str(self.task.id) + ", Machine ID: " +  str(self.machine.id) + ", Implement ID:" +  str(self.implement.id)
 
 class Appendix(models.Model):
 	a_type =  models.CharField(max_length = 20)
@@ -294,7 +294,7 @@ class AppendixTask(models.Model):
 	brand = models.CharField(max_length = 20)
 
 	def __unicode__(self):
-		return "Category: " + str(self.appendix_id.a_type) + ", Brand: " + str(self.brand)
+		return "Category: " + str(self.appendix.a_type) + ", Brand: " + str(self.brand)
 
 class ServiceCategory(models.Model):
 	service_category = models.CharField(max_length = 30)
@@ -308,7 +308,7 @@ class Service(models.Model):
 	done = models.BooleanField()
 
 	def __unicode__(self):
-		return str(self.category_id) + ", Date: " +  str(self.date) + ", Done: " +  str(self.done)
+		return str(self.category) + ", Date: " +  str(self.date) + ", Done: " +  str(self.done)
 
 class MachineService(models.Model):
 	machine = models.ForeignKey(Machine)

@@ -328,7 +328,6 @@ def getEquipmentStatus(request):
 			try:
 				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
 				result['status'] = machine.status		
-				result['status'] = machine.status
 				result['success'] = True
 			except Machine.DoesNotExist:
 				try:
@@ -352,8 +351,8 @@ def getEquipmentInfo(request):
 	 	if request.is_ajax():	
 			try:
 				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
-				result['manufacturer'] = machine.manufacturer_model_id.manufacturer_id.name
-				result['model'] = machine.manufacturer_model_id.model
+				result['manufacturer'] = machine.manufacturer_model.manufacturer.name
+				result['model'] = machine.manufacturer_model.model
 				result['asset_number'] = machine.asset_number
 				result['serial_number'] = machine.serial_number
 				result['horse_power'] = machine.horsepower
@@ -367,8 +366,8 @@ def getEquipmentInfo(request):
 			except Machine.DoesNotExist:
 				try:
 					implement = Implement.objects.get(qr_code = request.POST['qr_code'])
-					result['manufacturer'] = implement.manufacturer_model_id.manufacturer_id.name
-					result['model'] = implement.manufacturer_model_id.model
+					result['manufacturer'] = implement.manufacturer_model.manufacturer.name
+					result['model'] = implement.manufacturer_model.model
 					result['asset_number'] = implement.asset_number
 					result['serial_number'] = implement.serial_number
 					result['horse_power_req'] = implement.horse_power_req
@@ -397,7 +396,7 @@ def retrieveScannedMachine(request):
 	 	if request.is_ajax():
 	 		try:
 		 		machine = Machine.objects.get(qr_code = request.POST['qr_code'])
-	 			models = ManufacturerModel.objects.get(manufacturer_id = machine.manufacturer_model_id.id)
+	 			models = ManufacturerModel.objects.get(manufacturer_id = machine.manufacturer_model.id)
 		 		manufacturers = Manufacturer.objects.get(id = models.id)
 				result['manufacture'] = manufacturers.name
 				result['serial'] = machine.serial_number
@@ -443,7 +442,7 @@ def getImplementInfo(request):
 					each_result['qr_code'] = each.qr_code
 					each_result['year_purchased'] = each.year_purchased
 					each_result['photo'] = each.photo
-					each_result['manufacturer_model_id'] = each.manufacturer_model_id.manufacturer_id.name
+					each_result['manufacturer_model'] = each.manufacturer_model.manufacturer.name
 					each_result['asset_number'] = each.asset_number
 			 		each_result['horse_power_req'] = each.horse_power_req
 					each_result['hitch_capacity_req'] = each.hitch_capacity_req
