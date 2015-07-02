@@ -727,11 +727,18 @@ Just a quick explanation on how to test forms:
 				if the form was sent incorrectly
 '''
 def manufacturerFormView(request):
-	form = manufacturerForm(request.POST)
-	if form.is_valid():
-		return redirect('formOk')
-	else:
-		return render(request, 'formTest.html', {'form': form})
+	result = {'success' : False}
+	if request.method == 'POST':
+		form = manufacturerForm(request.POST)
+		if form.is_valid():
+			# return redirect('formOk')
+			man_name = form.cleaned_data['name']
+			new_manufacturer = Manufacturer(name = man_name)
+			new_manufacturer.save()
+			result['success'] = True
+			return HttpResponse(json.dumps(result),content_type='application/json')
+		else:
+			return render(request, 'formTest.html', {'form': form})
 
 def manufacturerModelFormView(request):
 	form = manufacturerModelForm(request.POST)
