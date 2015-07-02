@@ -13,6 +13,10 @@
 				getLocation();
 				
 				loadEquipmentInfo("{{ csrf_token }}", "{% url 'getEquipmentInfo' %}", "123123");
+				loadEquipmentStatus("{{ csrf_token }}", "{% url 'equipmentStatus' %}", "123123"); //Broken
+				//loadEquipmentStatus("{{ csrf_token }}", "{% url 'equipmentStatus' %}", "KFJHDSKJH4"); //Ok
+				//loadEquipmentStatus("{{ csrf_token }}", "{% url 'equipmentStatus' %}", "2173"); //Attention
+
 			});
 			
 			function loadEquipmentInfo(token, url, id) {
@@ -39,6 +43,36 @@
 						}
 					});			
 			}
+
+
+			function loadEquipmentStatus(token, url, id) {
+					$.ajax({
+						method: "POST",
+						url: url,
+						data: {"csrfmiddlewaretoken": token, "qr_code": id},  // id could be qrCode or employeeId
+						datatype: "json",
+						success: function(data, status, xhr){	
+							if(data.success){
+								if(data["status"] == 1){ // status Ok
+									changeColorStatus("btnStatus1", "btnStatus2", "btnStatus3");									
+								}else if(data["status"] == 2){ // Status Attention
+									changeColorStatus("btnStatus2", "btnStatus1", "btnStatus3");						
+								}else{ // status Broken
+									changeColorStatus("btnStatus3", "btnStatus2", "btnStatus1");							
+								}
+							}
+						}
+					});			
+			}
+
+			function changeColorStatus(btn1, btn2, btn3){
+				$("#" + btn2).css("background-color", "#666");
+				$("#" + btn3 ).css("background-color", "#666");
+				$("#" + btn1).css("border-bottom", "solid 2px #434300");
+				$("#" + btn2).css("border-bottom", "solid 2px #434300");
+				$("#" + btn3).css("border-bottom", "solid 2px #434300");				
+			}
+
 		</script>
 	</head>
 	<body>
