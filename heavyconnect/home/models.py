@@ -233,6 +233,7 @@ class FieldLocalization(models.Model):
 	gps = models.ForeignKey(GPS)
 
 	def __unicode__(self):
+
 		return "Field: " + str(self.field.name) + ", GPS ID: " + str( self.gps)
 
 class EmployeeLocalization(models.Model):
