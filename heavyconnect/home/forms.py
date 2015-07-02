@@ -134,8 +134,14 @@ class employeeForm(forms.Form):
 		(1, 'Driver'),
 		(2, 'Manager'),
 	)
+	LANGUAGE_CHOICES = (
+		(1, 'pt-br'),
+		(2, 'es'),
+		(3, 'en'),
+	)
 	#user = forms.OneToOneField(User) Users are only created on the database
 	company_id = forms.CharField()
+	language = forms.ChoiceField(choices = LANGUAGE_CHOICES)
 	qr_code = forms.CharField()
 	start_date = forms.DateField()
 	hour_cost = forms.FloatField()

@@ -1,4 +1,4 @@
-from django.db import models
+ 	from django.db import models
 from django.contrib.auth.models import User
 
 
@@ -110,8 +110,14 @@ class Implement(models.Model):
 		return "QRcode: " + str(self.qr_code) + ", Model: " + str(self.manufacturer_model.model)
 
 class Employee(models.Model):
+	LANGUAGE_CHOICES = (
+		(1, 'pt-br'),
+		(2, 'es'),
+		(3, 'en'),
+	)
 	user = models.OneToOneField(User)
 	company_id = models.CharField(max_length = 10)
+	language = models.IntegerField(choices = LANGUAGE_CHOICES)
 	qr_code = models.CharField(max_length = 10)
 	start_date = models.DateField()
 	hour_cost = models.FloatField()
