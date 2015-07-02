@@ -308,16 +308,16 @@ def getEquipmentStatus(request):
 	if request.method == 'POST':
 	 	if request.is_ajax():
 			try:
-				machine = Machine.objects.get(qr_code = request.POST('qr_code'))
+				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
 				result['status'] = machine.status
 				result['success'] = True
 			except Machine.DoesNotExist:
 				try:
-					implement = Implement.objects.get(qr_code = request.POST('qr_code'))
+					implement = Implement.objects.get(qr_code = request.POST['qr_code'])
 					result['status'] = implement.status
 					result['success'] = True
 				except Implement.DoesNotExist:
-			 		result['code'] = 1 #There is no equipment for this qr_code
+	 				result['code'] = 1 #There is no equipment for this qr_code
 	 	else:
 	 		result['code'] = 2 #Use ajax to perform requests
 	else:

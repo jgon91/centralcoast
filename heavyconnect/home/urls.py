@@ -8,33 +8,33 @@ from . import viewsCRUD as CRUD
 # In order to speficy which doc has to be looked for. It should put one prefix before the function main_views for views or
 # CRUD. for viewsCRUD
 
-urlpatterns = patterns('',
-	url(r'^$', home, name='home'),
-    url(r'^login/$', login, name='login'),
-    url(r'^logout/$', logout, name='logout'),
-    url(r'^profile/$', profile, name='profile'),
-    url(r'^driver/$', driver, name='driver'),
-    url(r'^equipment/$', equipament, name='equipment'),
-    url(r'^schedule/$', schedule, name='schedule'),
-    url(r'^headerDriver/$', headerDriver, name='headerDriver'),
-    url(r'^headerHome/$', headerHome, name='headerHome'),
-    url(r'^footer/$', footer, name='footer'),
-    url(r'^taskFlow/$', taskFlow, name='taskFlow'),
-    url(r'^serverDate/$', updatedDate, name='updated_date'),
-    url(r'^time_keeper/$', time_keeper, name='time_keeper'),
-    url(r'^updateStatus/$', updateStatus, name='updateStatus'),
-    url(r'^checklist/$', checklist, name='checklist'),
-    url(r'^fleet/$', fleet, name='fleet'),
-    url(r'^headerManager/$', headerManager, name='headerManager'),
-    url(r'^pastTasks/$', pastTasks, name='pastTasks'),
-    url(r'^createTask/$', createTask, name='createTask'),
-    url(r'^startTask/$', startTask, name='startTask'),
-    url(r'^scanQRCode/$', scanQRCode, name='scanQRCode'),
-    url(r'^indexManager/$', indexManager, name='indexManager'),
-    url(r'^equipmentManager/$', equipmentManager, name='equipmentManager'),
-    url(r'^profileManager/$', profileManager, name='profileManager'),
-    url(r'^getEmployeeLocation/$', getEmployeeLocation, name = 'getEmployeeLocation'),
-    url(r'^formTEST/$', manufacturerForm, name='registerManufacturer'),
+urlpatterns = [
+	url(r'^$', main_views.home, name='home'),
+    url(r'^login/$', main_views.login, name='login'),
+    url(r'^logout/$', main_views.logout, name='logout'),
+    url(r'^profile/$', main_views.profile, name='profile'),
+    url(r'^driver/$', main_views.driver, name='driver'),
+    url(r'^equipment/$', main_views.equipament, name='equipment'),
+    url(r'^schedule/$', main_views.schedule, name='schedule'),
+    url(r'^headerDriver/$', main_views.headerDriver, name='headerDriver'),
+    url(r'^headerHome/$', main_views.headerHome, name='headerHome'),
+    url(r'^footer/$', main_views.footer, name='footer'),
+    url(r'^taskFlow/$', main_views.taskFlow, name='taskFlow'),
+    url(r'^serverDate/$', main_views.updatedDate, name='updated_date'),
+    url(r'^time_keeper/$', main_views.time_keeper, name='time_keeper'),
+    url(r'^updateStatus/$', main_views.updateStatus, name='updateStatus'),
+    url(r'^checklist/$', main_views.checklist, name='checklist'),
+    url(r'^fleet/$', main_views.fleet, name='fleet'),
+    url(r'^headerManager/$', main_views.headerManager, name='headerManager'),
+    url(r'^pastTasks/$', main_views.pastTasks, name='pastTasks'),
+    url(r'^createTask/$', main_views.createTask, name='createTask'),
+    url(r'^startTask/$', main_views.startTask, name='startTask'),
+    url(r'^scanQRCode/$', main_views.scanQRCode, name='scanQRCode'),
+    url(r'^indexManager/$', main_views.indexManager, name='indexManager'),
+    url(r'^equipmentManager/$', main_views.equipmentManager, name='equipmentManager'),
+    url(r'^profileManager/$', main_views.profileManager, name='profileManager'),
+    url(r'^getEmployeeLocation/$', main_views.getEmployeeLocation, name = 'getEmployeeLocation'),
+    url(r'^formTEST/$', main_views.manufacturerForm, name='registerManufacturer'),
 
 
     
@@ -55,7 +55,7 @@ urlpatterns = patterns('',
     url(r'^retrieveScannedMachine/$', main_views.retrieveScannedMachine, name = 'retrieveScannedMachine'),
     url(r'^retrievePedingTask/$', main_views.retrievePedingTask, name = 'retrievePedingTask'),
     url(r'^retrieveMachine/$', main_views.retrieveMachine, name = 'retrieveMachine'),
-	url(r'^retrieveScannedEmployee', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee')
+	url(r'^retrieveScannedEmployee', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee'),
     ### End ###
 
     ###Insert###
@@ -63,8 +63,7 @@ urlpatterns = patterns('',
     ###End###
 
     ### Froms ###
-    url(r'^formTEST/$', main_views.manufacturerFormView, name='registerManufacturer'),
     url(r'^formok/$', main_views.formok, name = 'formok'),
 
     ### End ###
-)
+]
