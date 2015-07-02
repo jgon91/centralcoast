@@ -397,7 +397,7 @@ def retrieveScannedMachine(request):
 	 	if request.is_ajax():
 	 		try:
 		 		machine = Machine.objects.get(qr_code = request.POST['qr_code'])
-	 			models = ManufacturerModel.objects.get(manufacturer_id = machine.manufacturer_model_id.id)
+	 			models = ManufacturerModel.objects.get(manufacturer = machine.manufacturer_model.id)
 		 		manufacturers = Manufacturer.objects.get(id = models.id)
 				result['manufacture'] = manufacturers.name
 				result['serial'] = machine.serial_number
@@ -539,11 +539,11 @@ def retrievePedingTask(request):
 				aux = {}
 				n = int(request.POST['N'])
 				if n > 0:
-					emploTask = EmployeeTask.objects.filter(employee_id_id = request.user.id, task_init__lte =  date2, task_id__accomplished = False)[:n]
+					emploTask = EmployeeTask.objects.filter(employee__id = request.user.id, task_init__lte =  date2, task__accomplished = False)[:4]
 					for item in emploTask:
-						aux['category'] = item.task_id.description
-						aux['field'] = item.task_id.field_id.name
-						aux['date'] = str(item.task_id.date)
+						aux['category'] = item.task.description
+						aux['field'] = item.task.field.name
+						aux['date'] = str(item.task.date)
 						result.append(aux)
 						aux = {}
 					result[0] = {'success' : True}
@@ -569,11 +569,11 @@ def pastTaskList(request):
 				off = int(request.POST['offset'])
 				limit =int(request.POST['limit'])
 				if off >= 0 and limit > 0:
-					tasks = EmployeeTask.objects.filter(employee_id_id = request.user.id, task_id__accomplished = True)[off:limit]
+					tasks = EmployeeTask.objects.filter(employee__id = request.user.id, task__accomplished = False)[off:limit]
 					for item in tasks:
-						aux['category'] = item.task_id.description
-						aux['field'] = item.task_id.field_id.name
-						aux['date'] = str(item.task_id.date)
+						aux['category'] = item.task.description
+						aux['field'] = item.task.field.name
+						aux['date'] = str(item.task.date)
 						result.append(aux)
 						aux = {}
 					result[0] = {'success' : True}
