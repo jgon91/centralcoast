@@ -12,61 +12,29 @@
 				$("#head").load("{% url 'headerDriver' %}");
 				getLocation();
 				
-				//loadEquipmentInfo("{{ csrf_token }}", "", "1235678");
-				loadEquipmentStatus("{{ csrf_token }}", "{% url 'equipmentStatus' %}", "KRHDFUSH43"); //Broken
-				//loadEquipmentStatus("{{ csrf_token }}", "{% url 'equipmentStatus' %}", "KFJHDSKJH4"); //Ok
-				//loadEquipmentStatus("{{ csrf_token }}", "{% url 'equipmentStatus' %}", "2173"); //Attention
+				loadEquipmentInfo("{{ csrf_token }}", "{% url 'equipmentStatus' %}", "KRHDFUSH43");
 			});
 			
 			function loadEquipmentInfo(token, url, id) {
-				
 					$.ajax({
 						method: "POST",
 						url: url,
 						data: {"csrfmiddlewaretoken": token,
-							   "id": id},  // id could be qrCode or employeeId
+							   "qr_code": id},  // id could be qrCode or employeeId
 						datatype: "json",
 						success: function(data, status, xhr){	
 							if(data.success){
-								$("#aq_code").html(data.aq_code);
+								$("#qr_code").html(data.asset_number);
 								$("#maufacturer").html(data.manufacturer);
 								$("#model").html(data.model);
 								$("#asset_number").html(data.asset_number);
-								$("#lift_cap").html(data.lift_cap);
-								$("#hitch_sz").html(data.hitch_sz);
-								$("#drawn_size").html(data.drawn_size);
-								$("#aquired_date").html(data.acquired_date);
+								$("#hp").html(data.horsepower);
+								$("#hitch_sz").html(data.hitch_capacity);
+								$("#drawn_size").html(data.drawnbar_category);
+								$("#aquired_date").html(data.year_purchased);
 							}
 						}
 					});			
-			}
-
-			function loadEquipmentStatus(token, url, id) {
-					$.ajax({
-						method: "POST",
-						url: url,
-						data: {"csrfmiddlewaretoken": token, "qr_code": id},  // id could be qrCode or employeeId
-						datatype: "json",
-						success: function(data, status, xhr){	
-							if(data.success){
-								if(data["status"] == 1){ // status Ok
-									changeColorStatus("btnStatus1", "btnStatus2", "btnStatus3");									
-								}else if(data["status"] == 2){ // Status Attention
-									changeColorStatus("btnStatus2", "btnStatus1", "btnStatus3");						
-								}else{ // status Broken
-									changeColorStatus("btnStatus3", "btnStatus2", "btnStatus1");							
-								}
-							}
-						}
-					});			
-			}
-
-			function changeColorStatus(btn1, btn2, btn3){
-				$("#" + btn2).css("background-color", "#666");
-				$("#" + btn3 ).css("background-color", "#666");
-				$("#" + btn1).css("border-bottom", "solid 2px #434300");
-				$("#" + btn2).css("border-bottom", "solid 2px #434300");
-				$("#" + btn3).css("border-bottom", "solid 2px #434300");				
 			}
 		</script>
 	</head>
@@ -75,12 +43,7 @@
 		<div id="wrapper">
 			<div id="content">
 				<div id="namePage">
-					EQUIPMENT
-				</div>
-				<div>
-					<a href="{% url 'scanQRCode' %}" style="text-decoration: none;">
-						<input type="button" id="scanOther" value="SCAN MORE"/>
-					</a>
+					PROFILES
 				</div>
 				
 			<div id="equipmentContent">	
@@ -91,22 +54,19 @@
 				</div>
 				<div class="row rowEquip">
 					<div class="col-xs-3 col-md-3" style="padding: 0px; line-height: 18px; padding-top: 5px;">
-						QR Sticker: <span id="qrCode"></span>
-						</br>Reiter Asset:<span id="aq_code"></span>
+						QR Sticker: <span id="qr_code"></span>
+						</br>Reiter Asset:<span id="asset_number"></span>
 						</br>Manufacturer:<span id="manufacturer"></span>
 						</br>Model:<span id="model"></span>
-						</br>SN: <span id="asset_number"></span>
-						</br>Hours: 2.017
+						</br>SN: <span id="serial_number"></span>
+						</br>Hours: <span id="hours_cost"></span>
 						</br></br><strong>LOCATION:</strong>
 					</div>
 					<div class="col-xs-3 col-md-3" style="padding: 0px; line-height: 18px; padding-top: 5px;">
 						Horse Power:<span id="hp"></span> 
-						</br>Lift Capacity:<span id="lift_cap"></span>
 						</br>Hitch Size:<span id="hitch_sz"></span>
 						</br>Drawbar Size:<span id="drawn_size"></span>
 						</br>Date Acquired:<span id="acquired_date"></span>
-						</br>Service Provider: RD0 Equip.
-						</br>Owner Company: Aptos Berry Co.
 					</div>
 					<div class="col-xs-3 col-md-3" id="boxRight1">
 						<div style="padding-top: 5px;">
