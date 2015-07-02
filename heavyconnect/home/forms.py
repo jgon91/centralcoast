@@ -77,9 +77,10 @@ class machineForm(forms.Form):
 		(3, 'Broken'),
 		(4, 'Quarantine'),
 	)
-	manufacturer_model_id = forms.ModelChoiceField(queryset = ManufacturerModel.objects.all())
-	repair_shop_id = forms.ModelChoiceField(queryset = RepairShop.objects.all())
-	shop_id = forms.ModelChoiceField(queryset = Shop.objects.all())
+	manufacturer_model = forms.ModelChoiceField(queryset = ManufacturerModel.objects.all())
+	repair_shop = forms.ModelChoiceField(queryset = RepairShop.objects.all())
+	shop = forms.ModelChoiceField(queryset = Shop.objects.all())
+	nickname = forms.CharField(max_length = 20)
 	qr_code = forms.CharField(max_length = 10)
 	asset_number = forms.CharField(max_length = 15)
 	serial_number = forms.CharField(max_length = 25)
@@ -105,9 +106,10 @@ class machineForm(forms.Form):
 
 ### Structure for implementForm ###
 class implementForm(forms.Form):
-	manufacturer_model_id = forms.ModelChoiceField(queryset = ManufacturerModel.objects.all())
-	repair_shop_id = forms.ModelChoiceField(queryset = RepairShop.objects.all())
-	shop_id = forms.ModelChoiceField(queryset = Shop.objects.all())
+	manufacturer_model = forms.ModelChoiceField(queryset = ManufacturerModel.objects.all())
+	repair_shop = forms.ModelChoiceField(queryset = RepairShop.objects.all())
+	shop = forms.ModelChoiceField(queryset = Shop.objects.all())
+	nickname = forms.CharField(max_length = 20)
 	qr_code = forms.CharField()
 	asset_number = forms.CharField()
 	serial_number = forms.CharField()
@@ -144,7 +146,7 @@ class employeeForm(forms.Form):
 
 ### Structure for employeeAttendanceForm ###
 class employeeAttendanceForm(forms.Form):
-	employee_id = forms.ModelChoiceField(queryset = Employee.objects.all())
+	employee = forms.ModelChoiceField(queryset = Employee.objects.all())
 	date = forms.DateField()
 	hour_started = forms.TimeField()
 	hour_ended = forms.TimeField()
@@ -174,8 +176,8 @@ class employeeQualificationsForm(forms.Form):
 		(2, 'Medium'),
 		(3, 'High'),
 	)
-	employee_id = forms.ModelChoiceField(queryset = Employee.objects.all())
-	qualification_id = forms.ModelChoiceField(queryset = Qualification.objects.all())
+	employee = forms.ModelChoiceField(queryset = Employee.objects.all())
+	qualification = forms.ModelChoiceField(queryset = Qualification.objects.all())
 	level = forms.ChoiceField(choices = LEVEL_CHOICES)
 ### End ###
 
@@ -186,15 +188,15 @@ class machineQualificationForm(forms.Form):
 		(2, 'Medium'),
 		(3, 'High'),
 	)
-	machine_id = forms.ModelChoiceField(queryset = Machine.objects.all())
-	qualification_id = forms.ModelChoiceField(queryset = Qualification.objects.all())
+	machine = forms.ModelChoiceField(queryset = Machine.objects.all())
+	qualification = forms.ModelChoiceField(queryset = Qualification.objects.all())
 	qualification_required = forms.ChoiceField(choices = QUALIFICATIONREQUIRED_CHOICES)
 ### End ###
 
 ### Structure for implementQualificationForm ###
 class implementQualificationForm(forms.Form):
-	implement_id = forms.ModelChoiceField(queryset = Implement.objects.all())
-	qualification_id = forms.ModelChoiceField(queryset = Qualification.objects.all())
+	implement = forms.ModelChoiceField(queryset = Implement.objects.all())
+	qualification = forms.ModelChoiceField(queryset = Qualification.objects.all())
 	qualification_required = forms.ChoiceField(choices = machineQualificationForm.QUALIFICATIONREQUIRED_CHOICES)
 ### End ###
 
@@ -213,8 +215,8 @@ class gpsForm(forms.Form):
 
 ### Structure for employeeLocalizationForm ###
 class employeeLocalizationForm(forms.Form):
-	employee_id = forms.ModelChoiceField(queryset = Employee.objects.all())
-	gps_id = forms.ModelChoiceField(queryset = GPS.objects.all())
+	employee = forms.ModelChoiceField(queryset = Employee.objects.all())
+	gps = forms.ModelChoiceField(queryset = GPS.objects.all())
 	e_time = forms.DateTimeField()
 ### End ###
 
@@ -225,7 +227,7 @@ class taskForm(forms.Form):
 		(2, 'Denied'),
 		(3, 'Pending'),
 	)
-	field_id = forms.ModelChoiceField(queryset = Field.objects.all())
+	field = forms.ModelChoiceField(queryset = Field.objects.all())
 	t_type = forms.CharField()
 	rate_cost = forms.FloatField()
 	hours_spent = forms.FloatField()
@@ -244,9 +246,9 @@ class taskCategoryForm(forms.Form):
 
 ### Structure for employeeTaskForm ###
 class employeeTaskForm(forms.Form):
-	employee_id = forms.ModelChoiceField(queryset = Employee.objects.all())
-	task_id = forms.ModelChoiceField(queryset = Task.objects.all())
-	category_id = forms.ModelChoiceField(queryset = TaskCategory.objects.all())
+	employee = forms.ModelChoiceField(queryset = Employee.objects.all())
+	task = forms.ModelChoiceField(queryset = Task.objects.all())
+	category = forms.ModelChoiceField(queryset = TaskCategory.objects.all())
 	task_init = forms.DateField()
 	hours_spent = forms.FloatField()
 	substitution = forms.BooleanField(required = False)
@@ -254,9 +256,9 @@ class employeeTaskForm(forms.Form):
 
 ### Structure for taskImplementMachineForm ##
 class taskImplementMachineForm(forms.Form):
-	task_id = forms.ModelChoiceField(queryset = Task.objects.all())
-	machine_id = forms.ModelChoiceField(queryset = Machine.objects.all())
-	implement_id = forms.ModelChoiceField(queryset = Implement.objects.all())
+	task = forms.ModelChoiceField(queryset = Task.objects.all())
+	machine = forms.ModelChoiceField(queryset = Machine.objects.all())
+	implement = forms.ModelChoiceField(queryset = Implement.objects.all())
 	machine = forms.BooleanField(required = False)
 ### End ###
 
@@ -267,8 +269,8 @@ class appendixForm(forms.Form):
 
 ### Structure for appendixTaskForm ###
 class appendixTaskForm(forms.Form):
-	appendix_id = forms.ModelChoiceField(queryset = Appendix.objects.all())
-	task_id = forms.ModelChoiceField(queryset = Task.objects.all())
+	appendix = forms.ModelChoiceField(queryset = Appendix.objects.all())
+	task = forms.ModelChoiceField(queryset = Task.objects.all())
 	quantity = forms.IntegerField()
 	brand = forms.CharField()
 ### End ###
@@ -280,15 +282,15 @@ class serviceCategoryForm(forms.Form):
 
 ### Structure for serviceForm ###
 class serviceForm(forms.Form):
-	category_id = forms.ModelChoiceField(ServiceCategory.objects.all())
+	category = forms.ModelChoiceField(ServiceCategory.objects.all())
 	date = forms.DateTimeField()
 	done = forms.BooleanField(required = False)
 ### End ###
 
 ### Structure for machineServiceForm ### 
 class machineServiceForm(forms.Form):
-	machine_id = forms.ModelChoiceField(queryset = Machine.objects.all())
-	service_id = forms.ModelChoiceField(queryset = Service.objects.all())
+	machine = forms.ModelChoiceField(queryset = Machine.objects.all())
+	service = forms.ModelChoiceField(queryset = Service.objects.all())
 	description = forms.CharField()
 	done = forms.BooleanField(required = False)
 	expected_date = forms.DateTimeField()
@@ -297,8 +299,8 @@ class machineServiceForm(forms.Form):
 
 ### Structure for implementServiceForm ###
 class implementServiceForm(forms.Form):
-	implement_id = forms.ModelChoiceField(queryset = Implement.objects.all())
-	service_id = forms.ModelChoiceField(queryset = Service.objects.all())
+	implement = forms.ModelChoiceField(queryset = Implement.objects.all())
+	service = forms.ModelChoiceField(queryset = Service.objects.all())
 	description = forms.CharField()
 	expected_date = forms.DateTimeField()
 	done = forms.BooleanField(required = False)
