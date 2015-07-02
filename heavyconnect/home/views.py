@@ -334,11 +334,7 @@ def getEquipmentStatus(request):
 	 	if request.is_ajax():
 			try:
 				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
-<<<<<<< HEAD
-				result['status'] = machine.status
-=======
 				result['status'] = machine.status		
->>>>>>> 960f34c0941ef3cb053dbbd47b7feebeaa1bea4b
 				result['success'] = True
 			except Machine.DoesNotExist:
 				try:
@@ -354,9 +350,6 @@ def getEquipmentStatus(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-
-<<<<<<< HEAD
-=======
 # Get equipment info by qr_code, which can be a machine or a implement and return it
 def getEquipmentInfo(request):
 	result = {'success' : False}
@@ -401,7 +394,6 @@ def getEquipmentInfo(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
->>>>>>> 960f34c0941ef3cb053dbbd47b7feebeaa1bea4b
 #This function givew back the Machine information, big part of them
 @login_required
 def retrieveScannedMachine(request):
@@ -474,10 +466,6 @@ def getImplementInfo(request):
 	# On the ELSE, the answer will be in result[0]
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 960f34c0941ef3cb053dbbd47b7feebeaa1bea4b
 #This function gives back the picture of the refered QrCode
 @login_required
 def loadEquipmentImage(request):
