@@ -12,7 +12,7 @@
 				$("#head").load("{% url 'headerDriver' %}");
 				getLocation();
 				
-				loadEquipmentInfo("{{ csrf_token }}", "{% url 'equipmentStatus' %}", "KRHDFUSH43");
+				loadEquipmentInfo("{{ csrf_token }}", "{% url 'getEquipmentInfo' %}", "123123");
 			});
 			
 			function loadEquipmentInfo(token, url, id) {
@@ -22,16 +22,19 @@
 						data: {"csrfmiddlewaretoken": token,
 							   "qr_code": id},  // id could be qrCode or employeeId
 						datatype: "json",
-						success: function(data, status, xhr){	
+						success: function(data, status, xhr){	 
 							if(data.success){
 								$("#qr_code").html(data.asset_number);
-								$("#maufacturer").html(data.manufacturer);
+								$("#manufacturer").html(data.manufacturer);
+								$("#serial_number").html(data.serial_number);
 								$("#model").html(data.model);
 								$("#asset_number").html(data.asset_number);
-								$("#hp").html(data.horsepower);
+								$("#hours_cost").html(data.hour_cost);
+								$("#nickname").html(data.hour_cost);
+								$("#hp").html(data.horse_power);
 								$("#hitch_sz").html(data.hitch_capacity);
-								$("#drawn_size").html(data.drawnbar_category);
-								$("#aquired_date").html(data.year_purchased);
+								$("#drawn_size").html(data.drawbar_category);
+								$("#acquired_date").html(data.year_purchased);
 							}
 						}
 					});			
@@ -55,18 +58,19 @@
 				<div class="row rowEquip">
 					<div class="col-xs-3 col-md-3" style="padding: 0px; line-height: 18px; padding-top: 5px;">
 						QR Sticker: <span id="qr_code"></span>
-						</br>Reiter Asset:<span id="asset_number"></span>
-						</br>Manufacturer:<span id="manufacturer"></span>
+						</br>Reiter Asset: <span id="asset_number"></span>
+						</br>Manufacturer: <span id="manufacturer"></span>
 						</br>Model:<span id="model"></span>
 						</br>SN: <span id="serial_number"></span>
 						</br>Hours: <span id="hours_cost"></span>
-						</br></br><strong>LOCATION:</strong>
+						</br></br> <strong>LOCATION:</strong>
 					</div>
 					<div class="col-xs-3 col-md-3" style="padding: 0px; line-height: 18px; padding-top: 5px;">
-						Horse Power:<span id="hp"></span> 
-						</br>Hitch Size:<span id="hitch_sz"></span>
-						</br>Drawbar Size:<span id="drawn_size"></span>
-						</br>Date Acquired:<span id="acquired_date"></span>
+						Horse Power: <span id="hp"></span> 
+					    </br>Nickname: <span id="nickname"></span>
+						</br>Hitch Size: <span id="hitch_sz"></span>
+						</br>Drawbar Size: <span id="drawn_size"></span>
+						</br>Date Acquired: <span id="acquired_date"></span>
 					</div>
 					<div class="col-xs-3 col-md-3" id="boxRight1">
 						<div style="padding-top: 5px;">
