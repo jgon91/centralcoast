@@ -316,6 +316,7 @@ def updatePhoto(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+
 #Get equipment status, which can be a machine or a implement
 # Remember the Fron-End guys that Status is mapped as:
 # 1 = OK, 2 = Attention, 3 = Broken, 4 = Quarantine
@@ -326,11 +327,8 @@ def getEquipmentStatus(request):
 	 	if request.is_ajax():
 			try:
 				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
-<<<<<<< HEAD
 				result['status'] = machine.status		
-=======
 				result['status'] = machine.status
->>>>>>> 1f78469aa6f50c713068c29aff89f97188465105
 				result['success'] = True
 			except Machine.DoesNotExist:
 				try:
@@ -346,15 +344,14 @@ def getEquipmentStatus(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-<<<<<<< HEAD
 
 # Get equipment info by qr_code, which can be a machine or a implement and return it
 def getEquipmentInfo(request):
 	result = {'success' : False}
-	if not request.method == 'POST':
-	 	if not request.is_ajax():	
+	if request.method == 'POST':
+	 	if request.is_ajax():	
 			try:
-				machine = Machine.objects.get(qr_code = request.GET.get('qr_code'))
+				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
 				result['manufacturer'] = machine.manufacturer_model_id.manufacturer_id.name
 				result['model'] = machine.manufacturer_model_id.model
 				result['asset_number'] = machine.asset_number
@@ -369,7 +366,7 @@ def getEquipmentInfo(request):
 				result['success'] = True
 			except Machine.DoesNotExist:
 				try:
-					implement = Implement.objects.get(qr_code = request.GET.get('qr_code'))
+					implement = Implement.objects.get(qr_code = request.POST['qr_code'])
 					result['manufacturer'] = implement.manufacturer_model_id.manufacturer_id.name
 					result['model'] = implement.manufacturer_model_id.model
 					result['asset_number'] = implement.asset_number
@@ -392,12 +389,6 @@ def getEquipmentInfo(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
-
-
-
-
-=======
->>>>>>> 1f78469aa6f50c713068c29aff89f97188465105
 #This function givew back the Machine information, big part of them
 @login_required
 def retrieveScannedMachine(request):
