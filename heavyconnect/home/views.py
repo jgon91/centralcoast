@@ -317,7 +317,8 @@ def updatePhoto(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
-#Get equipment status, which can be a machine or a implement
+# Driver 3.4.1.1
+# Get equipment status, which can be a machine or a implement
 # Remember the Fron-End guys that Status is mapped as:
 # 1 = OK, 2 = Attention, 3 = Broken, 4 = Quarantine
 @login_required
@@ -343,7 +344,7 @@ def getEquipmentStatus(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-
+# Driver 3.2
 # Get equipment info by qr_code, which can be a machine or a implement and return it
 def getEquipmentInfo(request):
 	result = {'success' : False}
@@ -429,11 +430,45 @@ def retrieveScannedMachine(request):
 	 	result['code'] = 3 #Request was not POST
  	return HttpResponse(json.dumps(result),content_type='application/json')
 
+
+
+# Driver 6.3.2.2
+# Just retrieve a Implement according with qr_code passed as argument
+def getScannedImplement(request):
+	result = {'success' : False}
+  	if request.method == 'POST':
+	 	if request.is_ajax():
+			try:
+				implement = Implement.objects.get(qr_code = request.POST['qr_code'])
+				result['qr_code'] = implement.qr_code	
+				result['nickname'] = implement.nickname
+				result['year_purchased'] = implement.year_purchased
+				result['photo'] = implement.photo
+				result['manufacturer_model'] = implement.manufacturer_model.manufacturer.name
+				result['asset_number'] = implement.asset_number
+		 		result['horse_power_req'] = implement.horse_power_req
+				result['hitch_capacity_req'] = implement.hitch_capacity_req
+				result['status'] = implement.status
+				result['speed_range_max'] = implement.speed_range_max
+				result['success'] = True
+			except Implement.DoesNotExist:
+				result['code'] = 1 #There is no users associated with this
+		else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else:
+	 	result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+
+
+# Driver 6.3.2.4
 # It will return (some) information of all implements on database.
-# Maybe later it will be need to filter some information based on size, capacity, etc
-def getImplementInfo(request):
-	each_result = {'success' : False}
+# The result will be and vector of dictionaries, with the 'success' on first position.	
+def getAllImplementInfo(request):
+	each_result = {}
 	result = []
+	result.append({'success' : False})
 	if request.method == 'POST':
 	 	if request.is_ajax():
 			try:
@@ -441,6 +476,7 @@ def getImplementInfo(request):
 				for each in implements:
 					each_result['qr_code'] = each.qr_code
 					each_result['year_purchased'] = each.year_purchased
+					each_result['nickname'] = each.nickname
 					each_result['photo'] = each.photo
 					each_result['manufacturer_model'] = each.manufacturer_model.manufacturer.name
 					each_result['asset_number'] = each.asset_number
@@ -449,15 +485,14 @@ def getImplementInfo(request):
 					each_result['status'] = each.status
 					each_result['speed_range_max'] = each.speed_range_max
 					result.append(each_result)
-				result.append({'success' : True})
+					each_result = {} # I have to clean it, otherwise it will keep the same value always
+				result[0] = {'success' : True}
 			except Machine.DoesNotExist:
 				result.append({'code' : 1}) #There is no machine associated with this
 		else:
 	 		result.append({'code' : 2}) #Use ajax to perform requests
 	else:
 	 	result.append({'code' : 3}) #result[0]['code'] = 3 #Request was not POST
-
-	# On the ELSE, the answer will be in result[0]
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 #This function gives back the picture of the refered QrCode
