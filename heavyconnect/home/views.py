@@ -535,10 +535,12 @@ def getAllImplementInfo(request):
 	each_result = {}
 	result = []
 	result.append({'success' : False})
-	if request.method == 'POST':
-	 	if request.is_ajax():
+	if not request.method == 'POST':
+	 	if not request.is_ajax():
 			try:
-				implements = Implement.objects.filter()
+				implements_tmp = Implement.objects.filter()
+				# Remove implement with status = 'broken' and status = 'quarantine' 
+				implements = implements_tmp.exclude(status__gte = 3)
 				for each in implements:
 					each_result['qr_code'] = each.qr_code
 					each_result['year_purchased'] = each.year_purchased
