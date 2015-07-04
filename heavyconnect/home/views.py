@@ -346,6 +346,7 @@ def getEquipmentStatus(request):
 
 # Driver 3.2
 # Get equipment info by qr_code, which can be a machine or a implement and return it
+@login_required
 def getEquipmentInfo(request):
 	result = {'success' : False}
 	if request.method == 'POST':
@@ -431,9 +432,74 @@ def retrieveScannedMachine(request):
  	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
+# Driver 6.3.2.5
+# It will return the Machine filtered by some options and the Implement (if it has been chosed) 
+# In the Front End, it will have choices with ids for Manufacture.
+# Attention: This function will return machines with status = 'OK' and status = 'Attention'  
+@login_required
+def getFilteredMachine(request):
+	result = []
+	each_result = {}
+
+	# Save values from request
+	manufacturer = request.GET.get('manufacturer')
+	hitch_capacity = request.GET.get('hitch_capacity')
+	horse_power = request.GET.get('horse_power')
+	implement_qr_code = request.GET.get('implement_qr_code')
+
+	# Set minimum values in case no filters were applied for those option
+	if hitch_capacity == '' or hitch_capacity == None:
+		hitch_capacity = -1
+	if horse_power == '' or horse_power == None:
+		horse_power = -1
+
+	result.append({'success' : False})
+  	if not request.method == 'POST':
+	 	if not request.is_ajax():
+	 		try:
+				# Filtering by manufacturer, hitch_cap, horse_power, and status.
+				# Do not filter by manufacture in case if this filter hasn't been chosen
+				if manufacturer == '' or manufacturer == None:
+					machine = Machine.objects.filter(
+					hitch_capacity__gte = hitch_capacity,
+					horsepower__gte = horse_power,
+					status__lte = 2)
+				else:
+					machine = Machine.objects.filter(
+					manufacturer_model__manufacturer__id = manufacturer, 
+					hitch_capacity__gte = hitch_capacity,
+					horsepower__gte = horse_power,
+					status__lte = 2)
+				# Remove those machines that doesn't support the hitch capacity required by the selected implement,
+				# and those machines that have different hitch category then the selected implement
+				if implement_qr_code != '' or implement_qr_code != None:
+					implement = Implement.objects.get(qr_code = implement_qr_code)
+					machine2 = machine.exclude(hitch_capacity__lt = implement.hitch_capacity_req)
+					machine3 = machine2.exclude(hitch_category__gt = implement.hitch_category).exclude(hitch_category__lt = implement.hitch_category)
+				# Selecting which field will be retrieved to fron-end
+				for each in machine3:
+					each_result['qr_code'] = each.qr_code
+					each_result['nickname'] = each.nickname
+					each_result['photo'] = each.photo
+					each_result['horse_power'] = each.horsepower
+					each_result['asset_number'] = each.asset_number
+					each_result['drawbar_category'] = each.drawbar_category
+					result.append(each_result)	
+					each_result = {}
+				result[0] = {'success' : True}
+			except Machine.DoesNotExist:
+				result.append({'code' : 1}) #There is no users associated with this
+		else:
+	 		result.append({'code' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'code' : 3}) #Request was not POST
+ 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
 
 # Driver 6.3.2.2
 # Just retrieve a Implement according with qr_code passed as argument
+@login_required
 def getScannedImplement(request):
 	result = {'success' : False}
   	if request.method == 'POST':
@@ -465,6 +531,7 @@ def getScannedImplement(request):
 # Driver 6.3.2.4
 # It will return (some) information of all implements on database.
 # The result will be and vector of dictionaries, with the 'success' on first position.	
+@login_required
 def getAllImplementInfo(request):
 	each_result = {}
 	result = []
