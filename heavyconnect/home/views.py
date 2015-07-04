@@ -441,21 +441,20 @@ def getFilteredMachine(request):
 	result = []
 	each_result = {}
 
-	# Save values from request
-	manufacturer = request.GET.get('manufacturer')
-	hitch_capacity = request.GET.get('hitch_capacity')
-	horse_power = request.GET.get('horse_power')
-	implement_qr_code = request.GET.get('implement_qr_code')
-
-	# Set minimum values in case no filters were applied for those option
-	if hitch_capacity == '' or hitch_capacity == None:
-		hitch_capacity = -1
-	if horse_power == '' or horse_power == None:
-		horse_power = -1
-
 	result.append({'success' : False})
-  	if not request.method == 'POST':
-	 	if not request.is_ajax():
+  	if request.method == 'POST':
+		# Save values from request
+		manufacturer = request.POST['manufacturer']
+		hitch_capacity = request.POST['hitch_capacity']
+		horse_power = request.POST['horse_power']
+		implement_qr_code = request.POST['implement_qr_code']
+		# Set minimum values in case no filters were applied for those option
+		if hitch_capacity == '' or hitch_capacity == None:
+			hitch_capacity = -1
+		if horse_power == '' or horse_power == None:
+			horse_power = -1
+	
+	 	if request.is_ajax():
 	 		try:
 				# Filtering by manufacturer, hitch_cap, horse_power, and status.
 				# Do not filter by manufacture in case if this filter hasn't been chosen
