@@ -432,10 +432,11 @@ def retrieveScannedMachine(request):
  	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
+
 # Driver 6.3.2.5
 # It will return the Machine filtered by some options and the Implement (if it has been chosed) 
 # In the Front End, it will have choices with ids for Manufacture.
-# Attention: This function will return machines with status = 'OK' and status = 'Attention'  
+# Attention: This function will return only machines with status = 'OK' and status = 'Attention'  
 @login_required
 def getFilteredMachine(request):
 	result = []
