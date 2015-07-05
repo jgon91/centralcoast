@@ -34,6 +34,7 @@ urlpatterns = [
 	url(r'^getEquipmentInfo/$', main_views.getEquipmentInfo, name = 'getEquipmentInfo'),
     url(r'^retrieveScannedMachine/$', main_views.retrieveScannedMachine, name = 'retrieveScannedMachine'),
 	url(r'^getFilteredMachine/$', main_views.getFilteredMachine, name = 'getFilteredMachine'),
+	url(r'^getFilteredImplement/$', main_views.getFilteredImplement, name = 'getFilteredImplement'),
 	url(r'^getScannedImplement/$', main_views.getScannedImplement, name = 'getScannedImplement'),
     url(r'^retrievePedingTask/$', main_views.retrievePedingTask, name = 'retrievePedingTask'),
     url(r'^retrieveMachine/$', main_views.retrieveMachine, name = 'retrieveMachine'),

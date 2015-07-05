@@ -436,7 +436,8 @@ def retrieveScannedMachine(request):
 # Driver 6.3.2.5 
 # It will return the Machine filtered by some options and the Implement (if it has been chosed) 
 # In the Front End, it will have choices with ids for Manufacture.
-# Attention: This function will return only machines with status = 'OK' and status = 'Attention'  
+# Attention: This function will return only machines with status = 'OK' and status = 'Attention'
+# So in case no machine have returned, consider machine 'Broken' or in 'Quarantine'  
 @login_required
 def getFilteredMachine(request):
 	result = []
@@ -482,6 +483,70 @@ def getFilteredMachine(request):
 					each_result['nickname'] = each.nickname
 					each_result['photo'] = each.photo
 					each_result['horse_power'] = each.horsepower
+					each_result['asset_number'] = each.asset_number
+					each_result['drawbar_category'] = each.drawbar_category
+					result.append(each_result)	
+					each_result = {}
+				result[0] = {'success' : True}
+			except Machine.DoesNotExist:
+				result.append({'code' : 1}) #There is no users associated with this
+		else:
+	 		result.append({'code' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'code' : 3}) #Request was not POST
+ 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+
+# Driver 6.3.2.6
+# It will return the Implement filtered by some options and the Machine (if it has been chosed) 
+# In the Front End, it will have choices with ids for Manufacture.
+# Attention: This function will return only machines with status = 'OK' and status = 'Attention'  
+# So in case no implements have returned, consider implements 'Broken' or in 'Quarantine'
+@login_required
+def getFilteredImplement(request):
+	result = []
+	each_result = {}
+	result.append({'success' : False})
+  	if request.method == 'POST':
+		# Save values from request
+		manufacturer = request.POST['manufacturer']
+		hitch_capacity_req = request.POST['hitch_capacity_req']
+		horse_power_req = request.POST['horse_power_req']
+		machine_qr_code = request.POST['machine_qr_code']
+		# Set minimum values in case no filters were applied for those option
+		if hitch_capacity_req == '' or hitch_capacity_req == None:
+			hitch_capacity_req = -1
+		if horse_power_req == '' or horse_power_req == None:
+			horse_power_req = -1
+	
+	 	if request.is_ajax():
+	 		try:
+				# Filtering by manufacturer, hitch_cap_req, horse_power_req, and status.
+				# Do not filter by manufacture in case if this filter hasn't been chosen
+				if manufacturer == '' or manufacturer == None:
+					implement = Implement.objects.filter(
+					hitch_capacity_req__gte = hitch_capacity_req,
+					horse_power_req__gte = horse_power_req,
+					status__lte = 2)
+				else:
+					implement = Implement.objects.filter(
+					manufacturer_model__manufacturer__id = manufacturer, 
+					hitch_capacity_req__gte = hitch_capacity_req,
+					horse_power_req__gte = horse_power_req,
+					status__lte = 2)
+				# Remove those implements that requires more hitch capacity then the selected machine can carry,
+				# and those implements that have different hitch category then the selected machine
+				if machine_qr_code != '' or machine_qr_code != None:
+					machine = Machine.objects.get(qr_code = machine_qr_code)
+					implement2 = implement.exclude(hitch_capacity_req__gt = machine.hitch_capacity)
+					implement3 = implement2.exclude(hitch_category__gt = machine.hitch_category).exclude(hitch_category__lt = machine.hitch_category)
+				# Selecting which field will be retrieved to fron-end
+				for each in implement3:
+					each_result['qr_code'] = each.qr_code
+					each_result['nickname'] = each.nickname
+					each_result['photo'] = each.photo
+					each_result['horse_power_req'] = each.horse_power_req
 					each_result['asset_number'] = each.asset_number
 					each_result['drawbar_category'] = each.drawbar_category
 					result.append(each_result)	
