@@ -716,7 +716,7 @@ def retrievePedingTask(request):
 				aux = {}
 				n = int(request.POST['N'])
 				if n > 0:
-					emploTask = EmployeeTask.objects.filter(employee__id = request.user.id, task_init__lte =  date2, task__accomplished = False)[:4]
+					emploTask = EmployeeTask.objects.filter(employee__id = request.user.id, task_init__lte =  date2, task__accomplished = False)[:n]
 					for item in emploTask:
 						aux['category'] = item.task.description
 						aux['field'] = item.task.field.name
@@ -816,6 +816,26 @@ def getEmployeeSchedule(request):
 	 	result['code'] = 3 #Request was not POST
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+def validatePermission(request):
+	result = {'success' : False}	
+	if request.method == 'POST':
+		if request.is_ajax():
+			try:
+				employee = Employee.objects.get(id = request.user.id)
+				aux = employee.permission_level
+				result['authorized'] = False
+				if aux == 2 or aux == 3:
+					result['authorized'] = True
+				result['success'] = True
+			except Employee.DoesNotExist:
+				result['code'] = 1 #There is no shift records for this employee
+		else:
+			result['code'] = 2 #Use ajax to perform requests
+	else:
+		result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
 
 def logout(request):
 	auth_logout(request)
