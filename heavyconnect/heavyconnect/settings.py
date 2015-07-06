@@ -82,8 +82,6 @@ WSGI_APPLICATION = 'heavyconnect.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'dev',                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.

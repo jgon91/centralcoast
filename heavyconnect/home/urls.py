@@ -63,6 +63,7 @@ urlpatterns = [
     url(r'^continueTask/$', main_views.continueTask, name = 'continueTask'),
     url(r'^pastTaskList/$', main_views.pastTaskList, name = 'pastTaskList'),
 	url(r'^retrieveScannedEmployee', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee'),
+    url(r'^validatePermission', main_views.validatePermission, name = 'validatePermission'),
     ### End ###
 
     ###Insert###
