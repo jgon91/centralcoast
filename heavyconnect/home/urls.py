@@ -8,6 +8,8 @@ from . import viewsCRUD as CRUD
 # In order to speficy which doc has to be looked for. It should put one prefix before the function main_views for views or
 # CRUD. for viewsCRUD
 
+#Example: url(r'^ /$', main_views., name = ''),
+
 urlpatterns = [
 	url(r'^$', main_views.home, name='home'),
     url(r'^login/$', main_views.login, name='login'),
@@ -51,11 +53,13 @@ urlpatterns = [
     url(r'^startShift/$', main_views.startShift, name = 'startShift'),
     url(r'^equipmentStatus/$', main_views.getEquipmentStatus, name = 'equipmentStatus'),
     url(r'^startStopBreak/$', main_views.startStopBreak, name = 'startStopBreak'),
-	#url(r'^getImplementInfo/$', main_views.getImplementInfo, name = 'getImplementInfo'),
+	url(r'^getEquipmentInfo/$', main_views.getEquipmentInfo, name = 'getEquipmentInfo'),
     url(r'^retrieveScannedMachine/$', main_views.retrieveScannedMachine, name = 'retrieveScannedMachine'),
     url(r'^retrievePedingTask/$', main_views.retrievePedingTask, name = 'retrievePedingTask'),
     url(r'^retrieveMachine/$', main_views.retrieveMachine, name = 'retrieveMachine'),
-	url(r'^retrieveScannedEmployee', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee'),
+	url(r'^retrieveScannedEmployee/$', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee'),
+    url(r'^continueTask/$', main_views.continueTask, name = 'continueTask'),
+    url(r'^pastTaskList/$', main_views.pastTaskList, name = 'pastTaskList'),
     ### End ###
 
     ###Insert###
@@ -63,7 +67,32 @@ urlpatterns = [
     ###End###
 
     ### Froms ###
-    #url(r'^formok/$', main_views.formok, name = 'formok'),
-
+    url(r'^formOk/$', main_views.formOk, name = 'formOk'),
+    url(r'^manufacturerFormView/$', main_views.manufacturerFormView, name='registerManufacturer'),
+    url(r'^manufacturerModelFormView/$', main_views.manufacturerModelFormView, name = 'registerManufacturerModel'),
+    url(r'^repairShopFormView/$', main_views.repairShopFormView, name = 'registerRepairShop'),
+    url(r'^shopFormView/$', main_views.shopFormView, name = 'registerShop'),
+    url(r'^machineFormView/$', main_views.machineFormView, name = 'registerMachine'),
+    url(r'^implementFormView/$', main_views.implementFormView, name = 'registerImplement'),
+    url(r'^employeeFormView/$', main_views.employeeFormView, name = 'registerEmployee'),
+    url(r'^employeeAttendanceFormView/$', main_views.employeeAttendanceFormView, name = 'registerEmployeeAttendance'),
+    url(r'^qualificationFormView/$', main_views.qualificationFormView, name = 'registerQualification'),
+    url(r'^certificationFormView/$', main_views.certificationFormView, name = 'registerCertification'),
+    url(r'^employeeQualificationsFormView/$', main_views.employeeQualificationsFormView, name = 'registerEmployeeQualification'),
+    url(r'^machineQualificationFormView/$', main_views.machineQualificationFormView, name = 'registerMachineQualification'),
+    url(r'^implementQualificationFormView/$', main_views.implementQualificationFormView, name = 'registerImplementQualification'),
+    url(r'^fieldFormView/$', main_views.fieldFormView, name = 'registerField'),
+    url(r'^gpsFormView/$', main_views.gpsFormView, name = 'registerGps'),
+    url(r'^employeeLocalizationFormView/$', main_views.employeeLocalizationFormView, name = 'registerEmployeeLocalization'),
+    url(r'^taskFormView/$', main_views.taskFormView, name = 'registerTask'),
+    url(r'^taskCategoryFormView/$', main_views.taskCategoryFormView, name = 'registerTaskCategory'),
+    url(r'^employeeTaskFormView/$', main_views.employeeTaskFormView, name = 'registerEmployeeTask'),
+    url(r'^taskImplementMachineFormView/$', main_views.taskImplementMachineFormView, name = 'registerTaskImplementMachine'),
+    url(r'^appendixFormView/$', main_views.appendixFormView, name = 'registerAppendix'),
+    url(r'^appendixTaskFormView/$', main_views.appendixTaskFormView, name = 'registerAppendixTask'),
+    url(r'^serviceCategoryFormView/$', main_views.serviceCategoryFormView, name = 'registerServiceCategory'),
+    url(r'^serviceFormView/$', main_views.serviceFormView, name = 'registerService'),
+    url(r'^machineServiceFormView/$', main_views.machineServiceFormView, name = 'registerMachineService'),
+    url(r'^implementServiceFormView/$', main_views.implementServiceFormView, name = 'registerImplementService'),
     ### End ###
 ]
