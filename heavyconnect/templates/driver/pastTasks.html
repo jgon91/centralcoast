@@ -7,7 +7,32 @@
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerDriver' %}");
+
+				getLastTasks("{{csrf_token}}", "{% url 'pastTaskList' %}")
+				//getLastTasks("{{csrf_token}}", "{% url 'retrievePedingTask' %}")
 			});
+
+			function getLastTasks(token, url) {
+				
+					$.ajax({
+						method: "POST",
+						url: url,
+						data: {"csrfmiddlewaretoken": token, "offset": 0, "limit": 3 },
+						datatype: "json",
+						success: function(data, status, xhr){							
+							for (var i = 1; i < 4; i++) {
+								$("#task" + i + " .date").html(data[i].date.substring(0,10) + "</br>" + data[i].date.substring(10,16));
+								$("#past" + i + " .field").html(data[i].field);
+								$("#past" + i + " .category").html(data[i].category);
+								//$("#past" + i + " .machine").html(data[i].machine);
+								//$("#past" + i + " .task").html(data[i].task);
+								//$("#past" + i + " .duration").html(data[i].duration);
+								//$("#past" + i + " .implement").html(data[i].implement);
+							}
+							
+						}
+					});			
+			}
 		</script>
 	</head>
 	<body>
@@ -23,42 +48,45 @@
 				<div id="divPast">
 					<div class="row">
 						<div class="col-xs-4 col-md-4">
-							JULY 21</br>
-							04:30 PM
+							<div id="task1">
+								<span class="date"></span>
+							</div>
 						</div>
 						<div class="col-xs-4 col-md-4">
-							JULY 22</br>
-							08:30 AM
+							<div id="task2">
+								<span class="date"></span>
+							</div>
 						</div>
 						<div class="col-xs-4 col-md-4">
-							JULY 22</br>
-							04:30 PM
+							<div id="task3">
+								<span class="date"></span>
+							</div>
 						</div>
 					</div>
 					<div class="row" style="margin: 0px;">
 						<div class="col-xs-4 col-md-4 pastBox" id="past1">
-							TASKFLOW: RAC4556 CAT 65D
-							</br></br>IMPLEMENT: RBF2791 20' DISK
-							</br></br>FIELD: HOME RANCH 2A
-							</br></br>TASK: DISK 5 PASSES NW
-							</br></br>COMPLETED: 4:06 PM 05/30/2015
-							</br></br>DURATION: 2:40 HOURS
+							MACHINE: <span class="machine"></span>
+							</br></br>IMPLEMENT: <span class="implement" ></span>
+							</br></br>FIELD: <span class="field" ></span>
+							</br></br>TASK: <span class="task"></span>
+							</br></br>CATEGORY: <span class="category"></span>
+							</br></br>DURATION: <span class="duration"></span>
 						</div>
 						<div class="col-xs-4 col-md-4 pastBox" id="past2">
-							TASKFLOW: RAC4556 CAT 65D
-							</br></br>IMPLEMENT: RBF2791 20' DISK
-							</br></br>FIELD: HOME RANCH 2A
-							</br></br>TASK: DISK 5 PASSES NW
-							</br></br>COMPLETED: 4:06 PM 05/30/2015
-							</br></br>DURATION: 2:40 HOURS
+							MACHINE: <span class="machine"></span>
+							</br></br>IMPLEMENT: <span class="implement" ></span>
+							</br></br>FIELD: <span class="field" ></span>
+							</br></br>TASK: <span class="task"></span>
+							</br></br>CATEGORY: <span class="category"></span>
+							</br></br>DURATION: <span class="duration"></span>
 						</div>
 						<div class="col-xs-4 col-md-4 pastBox" id="past3">
-							TASKFLOW: RAC4556 CAT 65D
-							</br></br>IMPLEMENT: RBF2791 20' DISK
-							</br></br>FIELD: HOME RANCH 2A
-							</br></br>TASK: DISK 5 PASSES NW
-							</br></br>COMPLETED: 4:06 PM 05/30/2015
-							</br></br>DURATION: 2:40 HOURS
+							MACHINE: <span class="machine"></span>
+							</br></br>IMPLEMENT: <span class="implement" ></span>
+							</br></br>FIELD: <span class="field" ></span>
+							</br></br>TASK: <span class="task"></span>
+							</br></br>CATEGORY: <span class="category"></span>
+							</br></br>DURATION: <span class="duration"></span>
 						</div>
 					</div>
 					<div class="row">
