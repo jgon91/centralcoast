@@ -104,6 +104,31 @@ def startShift(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 @login_required
+def stopShift(request):
+	result = {'success' : False}
+
+	if request.method == "POST":
+		if request.is_ajax():
+			try:
+				identifier = request.POST['id']
+				employee = Employee.objects.get(id = int(identifier))
+				now = datetime.datetime.now()
+				attendance, created = EmployeeAttendance.objects.get_or_create(employee_id = employee, defaults = {'date' : now, 'hour_ended' : now})
+				if created:
+					result['success'] = True
+					result['hour_ended'] = str(attendance.hour_ended)
+				else:
+					result['code'] = 1 #The shift for today was already finished
+			except Employee.DoesNotExist:
+				result['code'] =  2 #There is no users associated with this id
+		else:
+			result['code'] = 3 #Use ajax to perform requests
+	else:
+		result['code'] = 4 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+@login_required
 def startStopBreak(request):
 	result = {'success' : False}
 
@@ -309,7 +334,7 @@ def getEquipmentStatus(request):
 	 	if request.is_ajax():
 			try:
 				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
-				result['status'] = machine.status
+				result['status'] = machine.status		
 				result['success'] = True
 			except Machine.DoesNotExist:
 				try:
@@ -325,6 +350,49 @@ def getEquipmentStatus(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+# Get equipment info by qr_code, which can be a machine or a implement and return it
+def getEquipmentInfo(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+	 	if request.is_ajax():	
+			try:
+				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
+				result['manufacturer'] = machine.manufacturer_model.manufacturer.name
+				result['model'] = machine.manufacturer_model.model
+				result['asset_number'] = machine.asset_number
+				result['serial_number'] = machine.serial_number
+				result['horse_power'] = machine.horsepower
+				result['hitch_capacity'] = machine.hitch_capacity
+				result['drawbar_category'] = machine.drawbar_category
+				result['year_purchased'] = machine.year_purchased
+				result['status'] = machine.status
+				result['hour_cost'] = machine.hour_cost
+				result['photo'] = machine.photo
+				result['success'] = True
+			except Machine.DoesNotExist:
+				try:
+					implement = Implement.objects.get(qr_code = request.POST['qr_code'])
+					result['manufacturer'] = implement.manufacturer_model.manufacturer.name
+					result['model'] = implement.manufacturer_model.model
+					result['asset_number'] = implement.asset_number
+					result['serial_number'] = implement.serial_number
+					result['horse_power_req'] = implement.horse_power_req
+					result['hitch_capacity'] = implement.hitch_capacity_req
+					result['drawbar_category'] = implement.drawbar_category
+					result['year_purchased'] = implement.year_purchased
+					result['status'] = implement.status
+					result['hour_cost'] = implement.hour_cost
+					result['photo'] = implement.photo
+					result['success'] = True
+				except Implement.DoesNotExist:
+					result['code'] = 1 #There is no equipment associated with this
+	 	else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else: 
+	 	result['code'] = 3 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
 
 #This function givew back the Machine information, big part of them
 @login_required
@@ -333,8 +401,8 @@ def retrieveScannedMachine(request):
   	if request.method == 'POST':
 	 	if request.is_ajax():
 	 		try:
-		 		machine = Machine.objects.get(qr_code = request.POST('qr_code')	)
-	 			models = ManufacturerModel.objects.get(manufacturer_id = machine.manufacturer_model_id.id)
+		 		machine = Machine.objects.get(qr_code = request.POST['qr_code'])
+	 			models = ManufacturerModel.objects.get(manufacturer = machine.manufacturer_model.id)
 		 		manufacturers = Manufacturer.objects.get(id = models.id)
 				result['manufacture'] = manufacturers.name
 				result['serial'] = machine.serial_number
@@ -360,46 +428,55 @@ def retrieveScannedMachine(request):
 				if result['status'] is 1:
  					result['success'] = True
 			except Machine.DoesNotExist:
-				result['code'] = 1 #There is no users associated with this 
+				result['code'] = 1 #There is no users associated with this
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
 	else:
 	 	result['code'] = 3 #Request was not POST
  	return HttpResponse(json.dumps(result),content_type='application/json')
 
-
-
-# It will return (some) information of all implements on database.
-# Maybe later it will be need to filter some information based on size, capacity, etc
-def getImplementInfo(request):
-	each_result = {'success' : False}
-	result = []
+# Get equipment info by qr_code, which can be a machine or a implement and return it
+def getEquipmentInfo(request):
+	result = {'success' : False}
 	if request.method == 'POST':
-	 	if request.is_ajax():
+	 	if request.is_ajax():	
 			try:
-				implements = Implement.objects.filter()
-				for each in implements:
-					each_result['qr_code'] = each.qr_code
-					each_result['year_purchased'] = each.year_purchased
-					each_result['photo'] = each.photo
-					each_result['manufacturer_model_id'] = each.manufacturer_model_id.manufacturer_id.name
-					each_result['asset_number'] = each.asset_number
-			 		each_result['horse_power_req'] = each.horse_power_req
-					each_result['hitch_capacity_req'] = each.hitch_capacity_req
-					each_result['status'] = each.status
-					each_result['speed_range_max'] = each.speed_range_max
-					result.append(each_result)
-				result.append({'success' : True})
+				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
+				result['manufacturer'] = machine.manufacturer_model.manufacturer.name
+				result['model'] = machine.manufacturer_model.model
+				result['asset_number'] = machine.asset_number
+				result['serial_number'] = machine.serial_number
+				result['horse_power'] = machine.horsepower
+				result['hitch_capacity'] = machine.hitch_capacity
+				result['drawbar_category'] = machine.drawbar_category
+				result['year_purchased'] = machine.year_purchased
+				result['status'] = machine.status
+				result['hour_cost'] = machine.hour_cost
+				result['photo'] = machine.photo
+				result['success'] = True
 			except Machine.DoesNotExist:
-				result.append({'code' : 1}) #There is no machine associated with this
-		else:
-	 		result.append({'code' : 2}) #Use ajax to perform requests
-	else:
-	 	result.append({'code' : 3}) #result[0]['code'] = 3 #Request was not POST
+				try:
+					implement = Implement.objects.get(qr_code = request.POST['qr_code'])
+					result['manufacturer'] = implement.manufacturer_model.manufacturer.name
+					result['model'] = implement.manufacturer_model.model
+					result['asset_number'] = implement.asset_number
+					result['serial_number'] = implement.serial_number
+					result['horse_power_req'] = implement.horse_power_req
+					result['hitch_capacity'] = implement.hitch_capacity_req
+					result['drawbar_category'] = implement.drawbar_category
+					result['year_purchased'] = implement.year_purchased
+					result['status'] = implement.status
+					result['hour_cost'] = implement.hour_cost
+					result['photo'] = implement.photo
+					result['success'] = True
+				except Implement.DoesNotExist:
+					result['code'] = 1 #There is no equipment associated with this
+	 	else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else: 
+	 	result['code'] = 3 #Request was not POST
 
-	# On the ELSE, the answer will be in result[0]
 	return HttpResponse(json.dumps(result),content_type='application/json')
-
 
 #This function gives back the picture of the refered QrCode
 @login_required
@@ -466,6 +543,7 @@ def loadImplementsImage(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 #Return task that are not complished until today, the number of task returned is according to the number n
+#Return task that are not complished until today, the number of task returned is according to the number n
 @login_required
 def retrievePedingTask(request):
 	result = []
@@ -473,24 +551,21 @@ def retrievePedingTask(request):
 	date1 = datetime.timedelta(days = 1) #it will work as increment to the current day
 	date2 =  datetime.datetime.now() + date1
 	if request.method == 'POST':
-		qrCode = request.POST['qr_code']
-	 	if request.is_ajax():
-			try:
-				flag = 0
+	  	if request.is_ajax():
+	 		try:
 				aux = {}
-				n = request.POST['N']
-				emploTask = EmployeeTask.objects.filter(employee_id_id = request.user.id, task_init__lte =  date2)
-				for item in emploTask:
-					if not item.task_id.accomplished:
-						aux['category'] = item.task_id.description
-						aux['field'] = item.task_id.field_id.name
-						aux['date'] = str(item.task_id.date)
+				n = 1
+				if n > 0:
+					emploTask = EmployeeTask.objects.filter(employee__id = request.user.id, task_init__lte =  date2, task__accomplished = False)[:n]
+					for item in emploTask:
+						aux['category'] = item.task.description
+						aux['field'] = item.task.field.name
+						aux['date'] = str(item.task.date)
 						result.append(aux)
 						aux = {}
-						flag = flag + 1
-						if flag >= n:
-						 	break
-				result[0] = {'success' : True}
+					result[0] = {'success' : True}
+				else:
+					result.append({'result' : 11})#Index is invalid
 			except EmployeeTask.DoesNotExist:
 				result.append({'result' : 1})#There is no Implement associated with this
 		else:
@@ -498,6 +573,37 @@ def retrievePedingTask(request):
 	else:
 	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+#Return 
+@login_required
+def pastTaskList(request):
+	result = []
+	aux = {}
+	result.append({'success' : False})
+	if request.method == 'POST':
+	 	if request.is_ajax():
+			try:
+				off = int(request.POST['offset'])
+				limit =int(request.POST['limit'])
+				if off >= 0 and limit > 0:
+					tasks = EmployeeTask.objects.filter(employee__id = request.user.id, task__accomplished = False)[off:limit]
+					for item in tasks:
+						aux['category'] = item.task.description
+						aux['field'] = item.task.field.name
+						aux['date'] = str(item.task.date)
+						result.append(aux)
+						aux = {}
+					result[0] = {'success' : True}
+				else:
+					result.append({'result' : 11})#Index is invalid
+			except EmployeeTask.DoesNotExist:
+				result.append({'result' : 1})#There is no Implement associated with this
+		else:
+	 		result.append({'result' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'result' : 3}) #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
 
 def getHoursToday(id):
 	# now = datetime.datetime.now()
@@ -641,8 +747,7 @@ def retrieveScannedEmployee(request):
   	if request.method == 'POST':
 	 	if request.is_ajax():
 			try:
-				employee = Employee.objects.get(qr_code = request.POST('qr_code'))
-				employee = Employee.objects.get(user_id = request.user.id)
+				employee = Employee.objects.get(qr_code = request.POST['qr_code'])
 				result['first_name'] = employee.user.first_name
 				result['last_name'] = employee.user.last_name
 				result['photo'] = employee.photo
@@ -654,10 +759,35 @@ def retrieveScannedEmployee(request):
 	 	result['code'] = 3 #Request was not POST
  	return HttpResponse(json.dumps(result),content_type='application/json')
 
+def continueTask(request):
+	result = []
+	result.append({'success' : False})
+	if request.method == 'POST':
+	 	if request.is_ajax():
+			try:
+				flag = 0
+				aux = {}
+				employeeTask = EmployeeTask.objects.filter(task_id_id__id = request.POST['id'], task_id__accomplished = False)
+				for item in employeeTask:
+						aux['description'] = item.task_id.description
+						aux['id'] = item.task_id.field_id_id
+						aux['passes'] = item.task_id.passes
+						aux['hours_prediction'] = item.task_id.hours_prediction
+						aux['hour_started'] = str(item.task_init)
+						result.append(aux)
+						aux = {}
+				result[0] = {'success' : True}
+			except EmployeeTask.DoesNotExist:
+				result.append({'result' : 1})#There is no Implement associated with this
+		else:
+	 		result.append({'result' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'result' : 3}) #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
 
 # @menezescode: Page only to show the form was correctly sended.
-def formok(request):
-	return render(request, 'formok.html')
+def formOk(request):
+	return render(request, 'formOk.html')
 
 '''
 <menezescode:
@@ -679,185 +809,191 @@ Just a quick explanation on how to test forms:
 
 @menezescode: 	Those are the forms. At the current point 06/22/2015,
 				each view does nothgin besides render the page and redirect
-				to a different page (formok) if it's correct and reload the page
+				to a different page (formOk) if it's correct and reload the page
 				if the form was sent incorrectly
-
+'''
 def manufacturerFormView(request):
-	form = manufacturerForm(request.POST)
-	if form.is_valid():
-		return redirect('formok')
-	else:
-		return render(request, 'formTEST.html', {'form': form})
+	result = {'success' : False}
+	if request.method == 'POST':
+		form = manufacturerForm(request.POST)
+		if form.is_valid():
+			# return redirect('formOk')
+			man_name = form.cleaned_data['name']
+			new_manufacturer = Manufacturer(name = man_name)
+			new_manufacturer.save()
+			result['success'] = True
+			return HttpResponse(json.dumps(result),content_type='application/json')
+		else:
+			return render(request, 'formTest.html', {'form': form})
 
-def manufacturerModelForm(request):
+def manufacturerModelFormView(request):
 	form = manufacturerModelForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def repairShopForm(request):
+def repairShopFormView(request):
 	form = repairShopForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def shopForm(request):
+def shopFormView(request):
 	form = shopForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def machineForm(request):
+def machineFormView(request):
 	form = machineForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def implementForm(request):
+def implementFormView(request):
 	form = implementForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
-def employeeForm(request):
+		return render(request, 'formTest.html', {'form': form})
+def employeeFormView(request):
 	form = employeeForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def employeeAttendanceForm(request):
+def employeeAttendanceFormView(request):
 	form = employeeAttendanceForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def qualificationForm(request):
+def qualificationFormView(request):
 	form = qualificationForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def certificationForm(request):
+def certificationFormView(request):
 	form = certificationForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def employeeQualificationsForm(request):
+def employeeQualificationsFormView(request):
 	form = employeeQualificationsForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def machineQualificationForm(request):
+def machineQualificationFormView(request):
 	form = machineQualificationForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
-def implementQualificationForm(request):
+		return render(request, 'formTest.html', {'form': form})
+def implementQualificationFormView(request):
 	form = implementQualificationForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def fieldForm(request):
+def fieldFormView(request):
 	form = fieldForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def gpsForm(request):
+def gpsFormView(request):
 	form = gpsForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def employeeLocalizationForm(request):
+def employeeLocalizationFormView(request):
 	form = employeeLocalizationForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def taskForm(request):
+def taskFormView(request):
 	form = taskForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def taskCategoryForm(request):
+def taskCategoryFormView(request):
 	form = taskCategoryForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
-def employeeTaskForm(request):
+		return render(request, 'formTest.html', {'form': form})
+def employeeTaskFormView(request):
 	form = employeeTaskForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def taskImplementMachineForm(request):
+def taskImplementMachineFormView(request):
 	form = taskImplementMachineForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def appendixForm(request):
+def appendixFormView(request):
 	form = appendixForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def appendixTaskForm(request):
+def appendixTaskFormView(request):
 	form = appendixTaskForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def serviceCategoryForm(request):
+def serviceCategoryFormView(request):
 	form = serviceCategoryForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def serviceForm(request):
+def serviceFormView(request):
 	form = serviceForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def machineServiceForm(request):
+def machineServiceFormView(request):
 	form = machineServiceForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
+		return render(request, 'formTest.html', {'form': form})
 
-def implementServiceForm(request):
+def implementServiceFormView(request):
 	form = implementServiceForm(request.POST)
 	if form.is_valid():
-		return redirect('formok')
+		return redirect('formOk')
 	else:
-		return render(request, 'formTEST.html', {'form': form})
-'''
+		return render(request, 'formTest.html', {'form': form})

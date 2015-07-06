@@ -7,8 +7,23 @@
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerDriver' %}");
-				
+				//getPendingTask("{{ csrf_token }}", "{% url 'driverInfo' %}");
+				getPendingTask("{{ csrf_token }}", "{% url 'retrievePedingTask' %}");
 			});
+			
+			function getPendingTask(token, url) {
+				
+					$.ajax({
+						method: "POST",
+						url: url,
+						data: {"csrfmiddlewaretoken": token, "N": 1 },
+						datatype: "json",
+						success: function(data, status, xhr){							
+							//$("#firstName").html(data.first_name);
+							alert("Hey there: " + data[1].category);
+						}
+					});			
+			}
 		</script>
 	</head>
 	<body>
