@@ -17,7 +17,11 @@ from home.models import *
 
 def home(request):
 	if request.user.is_authenticated():
-	 	return redirect('driver')
+		employee = Employee.objects.get(user_id = request.user.id)
+		if employee.permission_level == 1: #Driver
+			return redirect('driver')
+		elif employee.permission_level == 2: #Manager
+			return redirect('indexManager')
 	else:
 		return render(request, 'login.html')
 
