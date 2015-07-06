@@ -14,9 +14,30 @@ urlpatterns = [
 	url(r'^$', main_views.home, name='home'),
     url(r'^login/$', main_views.login, name='login'),
     url(r'^logout/$', main_views.logout, name='logout'),
+    url(r'^profile/$', main_views.profile, name='profile'),
     url(r'^driver/$', main_views.driver, name='driver'),
-	url(r'^taskflow/$', main_views.taskflow, name='taskflow'),
-
+    url(r'^equipment/$', main_views.equipament, name='equipment'),
+    url(r'^schedule/$', main_views.schedule, name='schedule'),
+    url(r'^headerDriver/$', main_views.headerDriver, name='headerDriver'),
+    url(r'^headerHome/$', main_views.headerHome, name='headerHome'),
+    url(r'^footer/$', main_views.footer, name='footer'),
+    url(r'^taskFlow/$', main_views.taskFlow, name='taskFlow'),
+    url(r'^serverDate/$', main_views.updatedDate, name='updated_date'),
+    url(r'^time_keeper/$', main_views.time_keeper, name='time_keeper'),
+    url(r'^updateStatus/$', main_views.updateStatus, name='updateStatus'),
+    url(r'^checklist/$', main_views.checklist, name='checklist'),
+    url(r'^fleet/$', main_views.fleet, name='fleet'),
+    url(r'^headerManager/$', main_views.headerManager, name='headerManager'),
+    url(r'^pastTasks/$', main_views.pastTasks, name='pastTasks'),
+    url(r'^createTask/$', main_views.createTask, name='createTask'),
+    url(r'^startTask/$', main_views.startTask, name='startTask'),
+    url(r'^scanQRCode/$', main_views.scanQRCode, name='scanQRCode'),
+    url(r'^indexManager/$', main_views.indexManager, name='indexManager'),
+    url(r'^equipmentManager/$', main_views.equipmentManager, name='equipmentManager'),
+    url(r'^profileManager/$', main_views.profileManager, name='profileManager'),
+    url(r'^getEmployeeLocation/$', main_views.getEmployeeLocation, name = 'getEmployeeLocation'),
+    url(r'^formTEST/$', main_views.manufacturerForm, name='registerManufacturer'),
+    
     ### Functions ###
     url(r'^employeeLocation/$', main_views.getEmployeeLocation, name = 'employeeLocation'),
     url(r'^employeeSchedule/$', main_views.getEmployeeSchedule, name = 'employeeSchedule'),
@@ -41,6 +62,7 @@ urlpatterns = [
 	url(r'^retrieveScannedEmployee/$', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee'),
     url(r'^continueTask/$', main_views.continueTask, name = 'continueTask'),
     url(r'^pastTaskList/$', main_views.pastTaskList, name = 'pastTaskList'),
+	url(r'^retrieveScannedEmployee', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee'),
     ### End ###
 
     ###Insert###
@@ -75,5 +97,6 @@ urlpatterns = [
     url(r'^serviceFormView/$', main_views.serviceFormView, name = 'registerService'),
     url(r'^machineServiceFormView/$', main_views.machineServiceFormView, name = 'registerMachineService'),
     url(r'^implementServiceFormView/$', main_views.implementServiceFormView, name = 'registerImplementService'),
+    url(r'^formok/$', main_views.formok, name = 'formok'),
     ### End ###
 ]

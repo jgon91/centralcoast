@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{% load staticfiles %}
+		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
+		<script>
+			$(document).ready(function() {
+				$("#headHome").load("{% url 'headerHome' %}");
+			});
+		</script>
+	</head>
+	<body>
+		<input type="hidden" id="page" value="1">
+		<header id="headHome"></header>
+		<div class="row" id="driverMenu">
+			<div class="col-xs-6 col-md-3 driverMenu">
+				<a href="{% url 'equipmentManager'%}">
+				<input type="button" class="btnMain" id="btnEquipment" />
+				<br>
+				<br>
+				</a>
+			</div>
+			<div class="col-xs-6 col-md-3 driverMenu">
+				<a href="{% url 'indexManager'%}">
+				<input type="button" class="btnMain" id="btnTaskflow" />
+				<br>
+				<br>
+				</a>
+			</div>
+			<div class="col-xs-6 col-md-3 driverMenu">
+				<a href="{% url 'indexManager'%}">
+				<input type="button" class="btnMain" id="btnScheduler" />
+				<br>
+				<br>
+				</a>
+			</div>
+			<div class="col-xs-6 col-md-3 driverMenu">
+				<a href="{% url 'indexManager'%}">
+				<input type="button" class="btnMain" id="btnTimerkeeper" />
+				<br>
+				<br>
+				</a>
+			</div>
+		</div>
+		<div class="row" id="driverMenu">
+			<div class="col-xs-6 col-md-3 driverMenu">
+				<a href="{% url 'indexManager'%}">
+				<input type="button" class="btnMain" id="btnEmployee" />
+				<br>
+				<br>
+				</a>
+			</div>
+			<div class="col-xs-6 col-md-3 driverMenu">
+				<a href="{% url 'indexManager'%}">
+				<input type="button" class="btnMain" id="btnRecorder" />
+				<br>
+				<br>
+				</a>
+			</div>
+			<div class="col-xs-6 col-md-3 driverMenu">
+				<a href="{% url 'fleet'%}">
+				<input type="button" class="btnMain" id="btnFleet" />
+				<br>
+				<br>
+				</a>
+			</div>
+			<div class="col-xs-6 col-md-3 driverMenu">
+				<a href="{% url 'indexManager'%}">
+				<input type="button" class="btnMain" id="btnManage" />
+				<br>
+				<br>
+				</a>
+			</div>
+		</div>
+	</body>
+	<div style="height: 180px; ">
+		<img src="{% static 'img/backgroundFooter.png' %}" style=" bottom : 0; margin-top : 20px;  background-size: 100% 210px; height: 25%;
+		width: 100%;
+		position: fixed;">
+	</div>
+</html>

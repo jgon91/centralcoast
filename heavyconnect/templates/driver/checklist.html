@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{% load staticfiles %}
+		<link rel="stylesheet" type="text/css" href="{% static 'css/equipStyle.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
+		<script src="{% static 'js/script.js' %}"></script>
+		<script>
+			$(document).ready(function() {
+				$("#foot").load("{% url 'footer' %}");
+				$("#head").load("{% url 'headerDriver' %}");
+				
+				eventsCheckList();
+			});
+		</script>
+	</head>
+	<body>
+		<header id="head"></header>
+		<div id="wrapper">
+			<div id="content">
+				<div id="namePage">
+					CHECKLIST
+				</div>
+				<br />
+				<div id="checkList1" class="questionsCheckList">
+					<p style="color: black; font-size: 24px;">
+						<strong>Safety Equipment</strong> present and working properly?
+					</p>
+					<div class="radioBtnCheck"  id="checkYes">
+						<label>YES!</label>
+						<input type="radio" class="radio"  name="q1" value="1" />
+					</div>
+					<div class="radioBtnCheck" id="checkNo">
+						<label>NO!</label>
+						<input type="radio" class="radio"  name="q1" value="0" />
+					</div>
+				</div>
+				<div id="checkList2" class="questionsCheckList" >
+					<p style="color: black; font-size: 24px;">
+						Engine oil level is OK?
+					</p>
+					<div class="radioBtnCheck"  id="checkYes">
+						<label>YES!</label>
+						<input type="radio" class="radio"  name="q2" value="1"/>
+					</div>
+					<div class="radioBtnCheck" id="checkNo">
+						<label>NO!</label>
+						<input type="radio" class="radio"  name="q2" value="0" />
+					</div>
+				</div>
+				<div id="checkList3"  class="questionsCheckList" >
+					<p style="color: black; font-size: 24px;">
+						Coolant level is OK?
+					</p>
+					<div class="radioBtnCheck"  id="checkYes">
+						<label>YES!</label>
+						<input type="radio" class="radio"  name="q3" value="1"/>
+					</div>
+					<div class="radioBtnCheck" id="checkNo">
+						<label>NO!</label>
+						<input type="radio" class="radio"  name="q3" value="0" />
+					</div>
+				</div>
+				<div id="checkList4"  class="questionsCheckList" >
+					<p style="color: black; font-size: 24px;">
+						Cab interior condition acceptable?
+					</p>
+					<div class="radioBtnCheck"  id="checkYes">
+						<label>YES!</label>
+						<input type="radio" class="radio"  name="q4" value="1"/>
+					</div>
+					<div class="radioBtnCheck" id="checkNo">
+						<label>NO!</label>
+						<input type="radio" class="radio"  name="q4" value="0" />
+					</div>
+				</div>
+				<div id="checkList5"  class="questionsCheckList" >
+					<p style="color: black; font-size: 24px;">
+						Start Engine?
+					</p>
+					<div class="radioBtnCheck"  id="checkYes">
+						<label>YES!</label>
+						<input type="radio" class="radio"  name="q5" value="1"/>
+					</div>
+					<div class="radioBtnCheck" id="checkNo">
+						<label>NO!</label>
+						<input type="radio" class="radio"  name="q5" value="0" />
+					</div>
+				</div>
+				<div id="checkListForm">
+					<form action="" method="get">
+						<div class="questions">
+							<input type="button" id="buttonBack">
+						</div>
+						<div class="questions">
+							<input type="button" class="numButton" id="q1" value="1">
+						</div>
+						<div class="questions">
+							<input type="button" class="numButton" id="q2" value="2">
+						</div>
+						<div class="questions">
+							<input type="button" class="numButton" id="q3" value="3">
+						</div>
+						<div class="questions">
+							<input type="button" class="numButton" id="q4" value="4">
+						</div>
+						<div class="questions">
+							<input type="button" class="numButton" id="q5" value="5">
+						</div>
+						<div class="questions">
+							<input type="button" id="hoursButton" value="Hours">
+						</div>
+						<input type="submit" id="buttonSubmit" value="">
+					</form>
+				</div>
+			</div>
+		</div>
+		<footer id="foot"></footer>
+	</body>
+</html>

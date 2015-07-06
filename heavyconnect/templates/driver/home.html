@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{% load staticfiles %}
+		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
+		<script>
+			$(document).ready(function() {
+				$("#headHome").load("{% url 'headerHome' %}");
+			});
+		</script>
+	</head>
+	<body>
+		<input type="hidden" id="page" value="0"> 
+		<header id="headHome"></header>
+		<div class="row" id="driverMenu">
+			<div class="col-xs-6 col-md-3 driverMenu">
+				<a href="{% url 'scanQRCode'%}">
+				<input type="button" class="btnMain" id="btnEquipment" />
+				<br>
+				<br>
+				</a>
+			</div>
+			<div class="col-xs-6 col-md-3 driverMenu">
+				<a href="{% url 'taskFlow'%}">
+				<input type="button" class="btnMain" id="btnTaskflow" />
+				<br>
+				<br>
+				</a>
+			</div>
+			<div class="col-xs-6 col-md-3 driverMenu">
+				<a href="{% url 'schedule'%}">
+				<input type="button" class="btnMain" id="btnScheduler" />
+				<br>
+				<br>
+				</a>
+			</div>
+			<div class="col-xs-6 col-md-3 driverMenu">
+				<a href="{% url 'time_keeper'%}">
+				<input type="button" class="btnMain" id="btnTimerkeeper" />
+				<br>
+				<br>
+				</a>
+			</div>
+		</div>
+	</body>
+	<div style="height: 180px; ">
+		<img src="{% static 'img/backgroundFooter.png' %}" style=" bottom : 0; margin-top : 20px;  background-size: 100% 210px; height: 25%;
+		width: 100%;
+		position: fixed;">
+	</div>
+</html>

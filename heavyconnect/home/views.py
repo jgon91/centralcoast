@@ -1,8 +1,12 @@
-from django.shortcuts import render, redirect, render_to_response
-from django.http import HttpResponse
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
+
+from django.http import HttpResponse
+from django.shortcuts import render, redirect, render_to_response
+from django.utils.dateformat import DateFormat
+
 from django.template.loader import render_to_string
+
 
 import json
 import datetime
@@ -15,11 +19,13 @@ def home(request):
 	if request.user.is_authenticated():
 	 	return redirect('driver')
 	else:
-		return render(request, 'home.html')
+		return render(request, 'login.html')
 
-@login_required
-def driver(request):
-	return render(request, 'driver.html')
+def updatedDate(request):
+	dt = datetime.now()
+	df = DateFormat(dt)
+	result = df.format('D, F j Y - g:i A')
+	return HttpResponse(json.dumps(result),content_type='application/json')
 
 @login_required
 def taskflow(request):
@@ -231,7 +237,8 @@ def login(request):
 				if user is not None:
 					if user.is_active:
 						auth_login(request,user)
-						return redirect('driver')
+						#return redirect('driver')
+						result['success'] = True
 					else:
 						result['code'] = 1 #This user is not active in the system
  				else:
@@ -336,7 +343,7 @@ def getEquipmentStatus(request):
 					result['status'] = implement.status
 					result['success'] = True
 				except Implement.DoesNotExist:
-			 		result['code'] = 1 #There is no equipment for this qr_code
+	 				result['code'] = 1 #There is no equipment for this qr_code
 	 	else:
 	 		result['code'] = 2 #Use ajax to perform requests
 	else:
@@ -386,9 +393,7 @@ def getEquipmentInfo(request):
 	 		result['code'] = 2 #Use ajax to perform requests
 	else: 
 	 	result['code'] = 3 #Request was not POST
-
 	return HttpResponse(json.dumps(result),content_type='application/json')
-
 
 #This function givew back the Machine information, big part of them
 @login_required
@@ -812,6 +817,87 @@ def logout(request):
 	auth_logout(request)
 	return redirect('home')
 
+
+@login_required
+def driver(request):
+    return render(request, 'driver/home.html')
+
+@login_required
+def profile(request):
+    return render(request, 'driver/profile.html')
+
+@login_required
+def headerDriver(request):
+    return render(request, 'template/headerDriver.html')
+
+@login_required
+def headerHome(request):
+    return render(request, 'template/headerHome.html')
+
+@login_required
+def footer(request):
+	return render(request, 'template/footer.html')
+
+@login_required
+def taskFlow(request):
+	return render(request, 'driver/taskFlow.html')
+
+@login_required
+def time_keeper(request):
+	return render(request, 'driver/timeKeeper.html')
+
+@login_required
+def equipament(request):
+    return render(request, 'driver/equipment.html')
+
+@login_required
+def schedule(request):
+    return render(request, 'driver/schedule.html')
+
+@login_required
+def updateStatus(request):
+    return render(request, 'driver/updateStatus.html')
+
+@login_required
+def checklist(request):
+    return render(request, 'driver/checklist.html')
+
+@login_required
+def headerManager(request):
+    return render(request, 'template/headerManager.html')
+
+@login_required
+def createTask(request):
+    return render(request, 'driver/createTask.html')
+
+@login_required
+def pastTasks(request):
+    return render(request, 'driver/pastTasks.html')
+
+@login_required
+def startTask(request):
+    return render(request, 'driver/startTask.html')
+
+@login_required
+def scanQRCode(request):
+    return render(request, 'driver/scanQRCode.html')
+
+@login_required
+def indexManager(request):
+    return render(request, 'manager/home.html')
+
+@login_required
+def fleet(request):
+    return render(request, 'manager/fleet.html')
+
+@login_required
+def equipmentManager(request):
+    return render(request, 'manager/equipment.html')
+
+@login_required
+def profileManager(request):
+    return render(request, 'manager/profile.html')
+
 def retrieveScannedEmployee(request):
 	result = {'success' : False}
   	if request.method == 'POST':
@@ -854,18 +940,6 @@ def continueTask(request):
 	else:
 	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
-
-
-
-
-
-
-
-
-
-
-
-
 
 # @menezescode: Page only to show the form was correctly sended.
 def formOk(request):

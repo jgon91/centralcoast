@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{% load staticfiles %}
+		<script src=" {% static 'js/jquery-1.11.2.min.js' %}"></script>
+		<script>
+			$(document).ready(function() {
+				$("#foot").load("{% url 'footer' %}");
+				$("#head").load("{% url 'headerDriver' %}");
+			});
+		</script>
+	</head>
+	<body>
+		<header id="head"></header>
+		<div id="wrapper">
+			<div id="content">
+				<div id="namePage">
+					TASKFLOW
+				</div>
+				<div id="divTaskS">
+					NEW TASK:
+					<div class="row taskRows1">
+						<div class="col-xs-2 col-md-2 colNameTask">
+							TASKFLOW:
+						</div>
+						<div class="col-xs-7 col-md-7">
+							<input type="text" class="inputTask" id="taskflowInput" placeholder="SCAN QR CODE OR ENTER A NUMBER" readonly="true"/>
+						</div>
+						<div class="col-xs-2 col-md-2">
+							<img src="{% static 'img/tractor-4.png' %}" class="imgTask"/>
+						</div>
+					</div>
+					<div class="row taskRows2">
+						<div class="col-xs-2 col-md-2 colNameTask">
+							IMPLEMENT:
+						</div>
+						<div class="col-xs-7 col-md-7">
+							<input type="text" class="inputTask" id="taskflowInput" placeholder="SCAN QR CODE OR ENTER A NUMBER" readonly="true"/>
+						</div>
+						<div class="col-xs-2 col-md-2">
+							<img src="{% static 'img/implement.png' %}" class="imgTask"/>
+						</div>
+					</div>
+					<div class="row taskRows3">
+						<div class="col-xs-2 col-md-2 colNameTask">
+							FIELD:
+						</div>
+						<div class="col-xs-7 col-md-7">
+							<input type="text" class="inputTask" id="taskflowInput" placeholder="SCAN QR CODE OR ENTER A NUMBER" readonly="true"/>
+						</div>
+						<div class="col-xs-2 col-md-2">
+							<img src="{% static 'img/map.png' %}" class="imgTask"/>
+						</div>
+					</div>
+					<div class="row taskRows4">
+						<div class="col-xs-2 col-md-2 colNameTask">
+							TASK:
+						</div>
+						<div class="col-xs-7 col-md-7">
+							<input type="text" class="inputTask" id="taskflowInput" placeholder="SCAN QR CODE OR ENTER A NUMBER" readonly="true"/>
+						</div>
+						<div class="col-xs-2 col-md-2">
+
+						</div>
+					</div>
+					<div class="row taskRowBut">
+						<div class="col-xs-3 col-md-3" style="padding: 0px;">
+							<a href="indexDriver.html">
+							<input type="button" id="lastTaskBut"/>
+							</a>
+						</div><div class="col-xs-6 col-md-6"></div>
+						<div class="col-xs-3 col-md-3" style="text-align: right; padding: 0px;">
+							<a href="indexDriver.html">
+							<input type="button" id="nextTaskBut" />
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="clearBoth"></div>
+		</div>
+		<footer id="foot"></footer>
+	</body>
+
+</html>
