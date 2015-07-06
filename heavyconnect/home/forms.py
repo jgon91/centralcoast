@@ -9,6 +9,9 @@
 
 from django import forms
 from django.contrib.auth.models import User
+
+import datetime
+
 from home.models import * 
 
 class loginForm(forms.Form):
@@ -234,15 +237,15 @@ class taskForm(forms.Form):
 		(3, 'Pending'),
 	)
 	field = forms.ModelChoiceField(queryset = Field.objects.all())
-	t_type = forms.CharField()
-	rate_cost = forms.FloatField()
-	hours_spent = forms.FloatField()
+	category = forms.ModelChoiceField(queryset = TaskCategory.objects.all())
+	rate_cost = forms.FloatField(required = False)
+	hours_spent = forms.FloatField(required = False)
 	hours_prediction = forms.FloatField()
 	description =  forms.CharField()
 	passes = forms.IntegerField()
-	date = forms.DateTimeField()
+	date = forms.DateTimeField(initial=datetime.date.today())
 	accomplished = forms.BooleanField(required = False)
-	approval = forms.ChoiceField(choices = APPROVAL_CHOICES)
+	approval = forms.ChoiceField(choices = APPROVAL_CHOICES,required = False)
 ### End ###
 
 ### Structure for taskCategoryForm ###

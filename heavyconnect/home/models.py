@@ -259,23 +259,23 @@ class Task(models.Model):
 	)
 	field = models.ForeignKey(Field)
 	category = models.ForeignKey(TaskCategory)
-	rate_cost = models.FloatField()
-	hours_spent = models.FloatField()
+	rate_cost = models.FloatField(null=True, blank=True)
+	hours_spent = models.FloatField(null=True, blank=True)
 	hours_prediction = models.FloatField()
 	description =  models.CharField(max_length = 500)
 	passes = models.IntegerField()
 	date = models.DateTimeField()
-	accomplished = models.BooleanField()
-	approval = models.IntegerField(choices = APPROVAL_CHOICES)
+	accomplished = models.BooleanField(default=False)
+	approval = models.IntegerField(choices = APPROVAL_CHOICES, default = 3)
 
 	def __unicode__(self):
 		return "Field Name: " + str(self.field.name) + " Category: " + str(self.category.description) + ", Hour Cost: " +  str(self.rate_cost) + ", Description: " +  str(self.description)
 
 class EmployeeTask(models.Model):
 	employee = models.ForeignKey(Employee)
-	task = models.ForeignKey(Task)
-	task_init = models.DateTimeField()
-	hours_spent = models.FloatField()
+	task_id = models.ForeignKey(Task)
+	task_init = models.DateTimeField(null=True, blank=True)
+	hours_spent = models.FloatField(default=0)
 	substitution = models.BooleanField()
 
 	def __unicode__(self):
