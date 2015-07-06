@@ -9,6 +9,36 @@
 				$("#head").load("{% url 'headerDriver' %}");
 				
 			});
+
+			//Events
+			$("#btnCreateTask").click(startNewTask);
+
+			//Functions
+			function startNewTask()
+			{			
+					
+					console.log("function called");
+					$.ajax({
+						method: "POST",
+						url: "",
+						dataType: "json", 
+           				data: {"csrf_token": '{{csrf_token}}'},
+						success: function(data, status, xhr)
+						{
+							if(data.success)
+							{		 	
+							 	if(data.authorized)
+							 	{	
+							 		return true;
+							 	}else
+							 	{
+							 		alert("You do not have enough right to create a task!!");
+							 		return false;
+							 	}
+							}
+						}
+					});
+			}
 		</script>
 	</head>
 	<body>
@@ -71,7 +101,6 @@
 					});
 			}
 			
-			$("#btnCreateTask").click(startNewTask);
 			
 	</script>
 </html>
