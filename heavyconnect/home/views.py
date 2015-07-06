@@ -339,7 +339,7 @@ def getEquipmentStatus(request):
 	 	if request.is_ajax():
 			try:
 				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
-				result['status'] = machine.status		
+				result['status'] = machine.status
 				result['success'] = True
 			except Machine.DoesNotExist:
 				try:
@@ -361,7 +361,7 @@ def getEquipmentStatus(request):
 def getEquipmentInfo(request):
 	result = {'success' : False}
 	if request.method == 'POST':
-	 	if request.is_ajax():	
+	 	if request.is_ajax():
 			try:
 				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
 				result['manufacturer'] = machine.manufacturer_model.manufacturer.name
@@ -395,7 +395,7 @@ def getEquipmentInfo(request):
 					result['code'] = 1 #There is no equipment associated with this
 	 	else:
 	 		result['code'] = 2 #Use ajax to perform requests
-	else: 
+	else:
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
@@ -442,11 +442,11 @@ def retrieveScannedMachine(request):
 
 
 
-# Driver 6.3.2.5 
-# It will return the Machine filtered by some options and the Implement (if it has been chosed) 
+# Driver 6.3.2.5
+# It will return the Machine filtered by some options and the Implement (if it has been chosed)
 # In the Front End, it will have choices with ids for Manufacture.
 # Attention: This function will return only machines with status = 'OK' and status = 'Attention'
-# So in case no machine have returned, consider machine 'Broken' or in 'Quarantine'  
+# So in case no machine have returned, consider machine 'Broken' or in 'Quarantine'
 @login_required
 def getFilteredMachine(request):
 	result = []
@@ -464,7 +464,7 @@ def getFilteredMachine(request):
 			hitch_capacity = -1
 		if horse_power == '' or horse_power == None:
 			horse_power = -1
-	
+
 	 	if request.is_ajax():
 	 		try:
 				# Filtering by manufacturer, hitch_cap, horse_power, and status.
@@ -476,7 +476,7 @@ def getFilteredMachine(request):
 					status__lte = 2)
 				else:
 					machine = Machine.objects.filter(
-					manufacturer_model__manufacturer__id = manufacturer, 
+					manufacturer_model__manufacturer__id = manufacturer,
 					hitch_capacity__gte = hitch_capacity,
 					horsepower__gte = horse_power,
 					status__lte = 2)
@@ -494,7 +494,7 @@ def getFilteredMachine(request):
 					each_result['horse_power'] = each.horsepower
 					each_result['asset_number'] = each.asset_number
 					each_result['drawbar_category'] = each.drawbar_category
-					result.append(each_result)	
+					result.append(each_result)
 					each_result = {}
 				result[0] = {'success' : True}
 			except Machine.DoesNotExist:
@@ -508,9 +508,9 @@ def getFilteredMachine(request):
 
 
 # Driver 6.3.2.6
-# It will return the Implement filtered by some options and the Machine (if it has been chosed) 
+# It will return the Implement filtered by some options and the Machine (if it has been chosed)
 # In the Front End, it will have choices with ids for Manufacture.
-# Attention: This function will return only machines with status = 'OK' and status = 'Attention'  
+# Attention: This function will return only machines with status = 'OK' and status = 'Attention'
 # So in case no implements have returned, consider implements 'Broken' or in 'Quarantine'
 @login_required
 def getFilteredImplement(request):
@@ -528,7 +528,7 @@ def getFilteredImplement(request):
 			hitch_capacity_req = -1
 		if horse_power_req == '' or horse_power_req == None:
 			horse_power_req = -1
-	
+
 	 	if request.is_ajax():
 	 		try:
 				# Filtering by manufacturer, hitch_cap_req, horse_power_req, and status.
@@ -540,7 +540,7 @@ def getFilteredImplement(request):
 					status__lte = 2)
 				else:
 					implement = Implement.objects.filter(
-					manufacturer_model__manufacturer__id = manufacturer, 
+					manufacturer_model__manufacturer__id = manufacturer,
 					hitch_capacity_req__gte = hitch_capacity_req,
 					horse_power_req__gte = horse_power_req,
 					status__lte = 2)
@@ -558,7 +558,7 @@ def getFilteredImplement(request):
 					each_result['horse_power_req'] = each.horse_power_req
 					each_result['asset_number'] = each.asset_number
 					each_result['drawbar_category'] = each.drawbar_category
-					result.append(each_result)	
+					result.append(each_result)
 					each_result = {}
 				result[0] = {'success' : True}
 			except Machine.DoesNotExist:
@@ -580,7 +580,7 @@ def getScannedImplement(request):
 	 	if request.is_ajax():
 			try:
 				implement = Implement.objects.get(qr_code = request.POST['qr_code'])
-				result['qr_code'] = implement.qr_code	
+				result['qr_code'] = implement.qr_code
 				result['nickname'] = implement.nickname
 				result['year_purchased'] = implement.year_purchased
 				result['photo'] = implement.photo
@@ -604,7 +604,7 @@ def getScannedImplement(request):
 
 # Driver 6.3.2.4
 # It will return (some) information of all implements on database.
-# The result will be and vector of dictionaries, with the 'success' on first position.	
+# The result will be and vector of dictionaries, with the 'success' on first position.
 @login_required
 def getAllImplementInfo(request):
 	each_result = {}
@@ -614,7 +614,7 @@ def getAllImplementInfo(request):
 	 	if not request.is_ajax():
 			try:
 				implements_tmp = Implement.objects.filter()
-				# Remove implement with status = 'broken' and status = 'quarantine' 
+				# Remove implement with status = 'broken' and status = 'quarantine'
 				implements = implements_tmp.exclude(status__gte = 3)
 				for each in implements:
 					each_result['qr_code'] = each.qr_code
@@ -734,7 +734,7 @@ def retrievePedingTask(request):
 	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-#Return 
+#Return
 @login_required
 def pastTaskList(request):
 	result = []
@@ -817,8 +817,26 @@ def getEmployeeSchedule(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+def getAllManufacturers(request):
+	# each_result = {}
+	result = []
+	result.append({'success' : False})
+	if request.method == 'POST':
+		if request.is_ajax:
+			try:
+				manufacturers = Manufacturer.objects.all()
+				result.append(str(manufacturers))
+			except Manufacture.DoesNotExist:
+				result.append({'code' : 1}) #There is no machine associated with this
+		else:
+			result.append({'code': 2}) #result[0]['code'] = 2 #request is not ajax
+	else:
+		result.append({'code' : 3}) #result[0]['code'] = 3 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
 def validatePermission(request):
-	result = {'success' : False}	
+	result = {'success' : False}
 	if request.method == 'POST':
 		if request.is_ajax():
 			try:

@@ -37,7 +37,7 @@ urlpatterns = [
     url(r'^profileManager/$', main_views.profileManager, name='profileManager'),
     url(r'^getEmployeeLocation/$', main_views.getEmployeeLocation, name = 'getEmployeeLocation'),
     url(r'^formTEST/$', main_views.manufacturerForm, name='registerManufacturer'),
-    
+
     ### Functions ###
     url(r'^employeeLocation/$', main_views.getEmployeeLocation, name = 'employeeLocation'),
     url(r'^employeeSchedule/$', main_views.getEmployeeSchedule, name = 'employeeSchedule'),
@@ -64,6 +64,7 @@ urlpatterns = [
     url(r'^pastTaskList/$', main_views.pastTaskList, name = 'pastTaskList'),
 	url(r'^retrieveScannedEmployee', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee'),
     url(r'^validatePermission', main_views.validatePermission, name = 'validatePermission'),
+	url(r'^getAllManufacturers/$', main_views.getAllManufacturers, name = 'getAllManufacturers'),
     ### End ###
 
     ###Insert###
