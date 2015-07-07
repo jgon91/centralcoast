@@ -38,14 +38,15 @@
 						datatype: "json",
 						success: function(data, status, xhr){							
 							//$("#firstName").html(data.first_name);
-							alert("Hey there:" + data[1].asset_number);
+							//alert("Hey there:" + data[1].asset_number);
+							var len = data.length;
+							$("#showEquipmentDiv").html("");
+							for (var i=1; i < len; i++){
+								$("#showEquipmentDiv").append("<div class='tractorFiltered'><img src='"+data[i].photo+"'><br>Id: "+ data[i].asset_number +"<br>Nickname: "+ data[i].nickname +"<br>Id: "+ data[i].asset_number +" </div>");
+							}
 						}
 					});
-					
-					$("#showEquipmentDiv").html("");
-					for (var i=0; i < len; i++){
-						$("#showEquipmentDiv").append("<div class='tractorFiltered'><img src='"+obj.tractors[i].picture+"'><br>Id: "+ obj.tractors[i].id +" </div>");
-					}
+
 				}
 				
 				//Call function to get machines informations.
