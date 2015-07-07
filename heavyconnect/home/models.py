@@ -287,7 +287,6 @@ class TaskImplementMachine(models.Model):
 	task = models.ForeignKey(Task)
 	machine = models.ForeignKey(Machine)
 	implement = models.ForeignKey(Implement)
-	machine = models.BooleanField()
 
 	def __unicode__(self):
 		return "Task ID: " + str(self.task.id) + ", Machine ID: " +  str(self.machine.id) + ", Implement ID:" +  str(self.implement.id)
