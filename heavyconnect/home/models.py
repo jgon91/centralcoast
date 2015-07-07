@@ -10,7 +10,7 @@ class Manufacturer(models.Model):
 
 class ManufacturerModel(models.Model):
 	manufacturer = models.ForeignKey(Manufacturer)
-	model = models.CharField(max_length = 10)
+	model = models.CharField(max_length = 30)
 
 	def __unicode__(self):
 		return "Model: " + str(self.model) + ", Manufacturer: " + str(self.manufacturer)
