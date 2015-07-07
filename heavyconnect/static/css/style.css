@@ -499,6 +499,7 @@ div.notes {
 	font-weight: bold;
 	background: #4F7219;
 	height: 55px;
+	text-align: left;
 }
 #pendingTask {
 	width: calc(100% - 220px);
@@ -507,28 +508,16 @@ div.notes {
 	margin-right: 15px;
 	font-size: 27px;
 	margin-bottom: 15px;
+	text-align: center;
 }
-#titleNextTask1 {
-	font-size: 20px;
+.titleNextTask {
+	font-size: 23px;
 	font-weight: bold;
-	margin: 18%;
-	margin-bottom: 50px;
-}
-#titleNextTask2 {
-	font-size: 20px;
-	font-weight: bold;
-	margin: 11%;
-}
-#titleNextTask3 {
-	font-size: 20px;
-	font-weight: bold;
-	margin: 16%;
 }
 #divStartNow {
 	text-decoration: none;
 	color: white;
-	margin: 15%;
-	font-size: 20px;
+	font-size: 25px;
 	font-weight: bold;
 	margin-top: 900px;
 }
@@ -538,13 +527,12 @@ div.notes {
 .nextBox {
 	color: white;
 	background: #809A21;
-	text-align: left;
 	margin: auto;
 	width: 32%;
-	font-size: 11.5px;
-	line-height: 25px;
+	font-size: 14px;
+	line-height: 15px;
 	padding: 5px;
-	height: 255px;
+	height: 275px;
 }
 #next2 {
 	margin-left: 2%;
@@ -561,7 +549,7 @@ div.notes {
 	margin-bottom: 10px;
 }
 #divGoScheduler {
-	margin-top: -104.5px;
+	margin-top: -74.5px;
 }
 #btnCreateTask {
 	background: url('../img/buttons/createNewTask.png') no-repeat top left;
@@ -573,7 +561,7 @@ div.notes {
 	background: url('../img/buttons/scheduleTaskflow.png') no-repeat top left;
 	background-size: 100% 100%;
 	width: calc(100% - 220px);
-	height: 90px;
+	height: 70px;
 }
 #btnGoScheduler:hover {
 	background: url('../img/buttons/scheduleTaskflowHover.png') no-repeat top left;
