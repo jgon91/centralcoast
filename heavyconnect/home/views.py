@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect, render_to_response
 from django.utils.dateformat import DateFormat
 
 from django.template.loader import render_to_string
+from django.db import transaction
 
 
 import json
@@ -36,22 +37,40 @@ def taskflow(request):
 	return render(request, 'taskflow.html')
 
 @login_required
-def startNewTask(request):
+def createNewTask1(request):
+	form = taskForm(request.POST)
 	result = {'success' : False}
 	if request.method == 'POST':
 		if request.is_ajax():
-			try:
-				task = EmployeeTask.objects.get(task_id = request.POST['qr_code'])
-				now = datetime.datetime.now()
-				task.task_init = now
-				task.save()
-				result = {'success' : True} # Task updated with success
-			except Employee.DoesNotExist:
-				result['code'] =  1 # Task DoesNotExist
+			if form.is_valid():
+				try:
+					employee = Employee.objects.get(user_id = request.user.id)
+					field = form.cleaned_data['field']
+					category = form.cleaned_data['category']
+					hours_prediction = float(form.cleaned_data['hours_prediction'])
+					description = form.cleaned_data['description']
+					passes = int(form.cleaned_data['passes'])
+					time = form.cleaned_data['time']
+					date = form.cleaned_data['date']
+					date = date + datetime.timedelta(hours = time.hour, minutes = time.minute)
+					task = Task(field = field, category = category, hours_prediction = hours_prediction, description = description, passes = passes, date = date)
+					task.save()
+					result['success'] = True
+				except Employee.DoesNotExist:
+					result['code'] =  1 #There is no users associated with this
+			else:
+				result['code'] = 2 #No all data is valid
 		else:
-			result['code'] = 2 #Use ajax to perform requests
+			result['code'] = 3 #Use ajax to perform requests
 	else:
-		result['code'] = 3 #Request was not POST
+		result['code'] = 4 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+@login_required
+def createNewTask2(request):
+	result = {'success' : False}
+
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
@@ -598,9 +617,6 @@ def getScannedImplement(request):
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-
-
-
 # Driver 6.3.2.4
 # It will return (some) information of all implements on database.
 # The result will be and vector of dictionaries, with the 'success' on first position.
@@ -1039,7 +1055,7 @@ def manufacturerFormView(request):
 		else:
 			return render(request, 'formTest.html', {'form': form})
 
-def manufacturerModelFormView(request):
+def manufacturerModelForm(request):
 	form = manufacturerModelForm(request.POST)
 	if form.is_valid():
 		return redirect('formOk')
