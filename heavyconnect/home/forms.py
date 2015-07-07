@@ -142,7 +142,8 @@ class employeeForm(forms.Form):
 		(2, 'es'),
 		(3, 'en'),
 	)
-	#user = forms.OneToOneField(User) Users are only created on the database
+	last_task = forms.ModelChoiceField(queryset = Task.objects.all())
+	active = forms.BooleanField()
 	company_id = forms.CharField()
 	language = forms.ChoiceField(choices = LANGUAGE_CHOICES)
 	qr_code = forms.CharField()
