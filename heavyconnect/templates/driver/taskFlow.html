@@ -7,12 +7,18 @@
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerDriver' %}");
-				//getPendingTask("{{ csrf_token }}", "{% url 'driverInfo' %}");
 				getPendingTask("{{ csrf_token }}", "{% url 'retrievePedingTask' %}");
+
+				$("#btnCreateTask").click(function() {
+
+					var permission = permissionCreateTask("{{csrf_token}}", "{% url 'validatePermission' %}");
+					alert("Hey Victor" + permission);
+					return permission;
+					
+					
+				});
 			});
 
-			//Events
-			$("#btnCreateTask").click(permissionCreateTask("{{csrf_token}}", "{% url 'startNewTask' %}", "1234"));
 
 			function getPendingTask(token, url) {
 
@@ -35,28 +41,20 @@
 			}
 			
 			//Functions
-			function permissionCreateTask(token, url, qr_code)
+			function permissionCreateTask(token, url)
 			{			
-					//console.log("function called");
 					$.ajax({
 						method: "POST",
 						url: url,
 						dataType: "json", 
-           				data: {"csrf_token": token,
-           					   "qr_code": qr_code},
+           				data: {"csrfmiddlewaretoken" : token},
 						success: function(data, status, xhr)
-						{
-							if(data.success)
-							{		 	
-							 	if(data.authorized)
-							 	{	
-							 		return true;
-							 	}else
-							 	{
-							 		alert("You do not have enough right to create a task!!");
-							 		return false;
-							 	}
-							}
+						{					 	
+						 	if(!data.authorized)
+						 	{	
+						 		alert("You do not have enough right to create a task!!" + data.authorized);
+						 	}
+					 		return data.authorized;
 						}
 					});
 			}
