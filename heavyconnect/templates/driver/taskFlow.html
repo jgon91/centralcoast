@@ -11,6 +11,9 @@
 				getPendingTask("{{ csrf_token }}", "{% url 'retrievePedingTask' %}");
 			});
 
+			//Events
+			$("#btnCreateTask").click(permissionCreateTask("{{csrf_token}}", "{% url 'startNewTask' %}", "1234"));
+
 			function getPendingTask(token, url) {
 
 				$.ajax({
@@ -26,6 +29,32 @@
 						alert("Hey there: " + data[1].category);
 					}
 				});
+			
+			//Functions
+			function permissionCreateTask(token, url, qr_code)
+			{			
+					//console.log("function called");
+					$.ajax({
+						method: "POST",
+						url: url,
+						dataType: "json", 
+           				data: {"csrf_token": token,
+           					   "qr_code": qr_code},
+						success: function(data, status, xhr)
+						{
+							if(data.success)
+							{		 	
+							 	if(data.authorized)
+							 	{	
+							 		return true;
+							 	}else
+							 	{
+							 		alert("You do not have enough right to create a task!!");
+							 		return false;
+							 	}
+							}
+						}
+					});
 			}
 		</script>
 	</head>
@@ -96,32 +125,4 @@
 		</div>
 		<footer id="foot"></footer>
 	</body>
-	<script>
-		function startNewTask() {
-
-			console.log("function called");
-			$.ajax({
-				method : "POST",
-				url : "",
-				dataType : "json",
-				data : {
-					"csrf_token" : '{{csrf_token}}'
-				},
-				success : function(data, status, xhr) {
-					if (data.success) {
-						if (data.authorized) {
-							return true;
-						} else {
-							alert("You do not have enough right to create a task!!");
-							return false;
-						}
-					}
-				}
-			});
-		}
-
-
-		$("#btnCreateTask").click(startNewTask);
-
-	</script>
 </html>
