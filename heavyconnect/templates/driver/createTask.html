@@ -16,15 +16,41 @@
 					$("#p1").attr("class", "");
 					$("#p2").addClass("active");
 				});
-				//Call function to get machine information.
-				$("#findMachine").click(function(){
-					//alert("Button Pressed!!");
+				//Functions filter tractors
+				$(".selectFilters").change(function(){
+					//$("#hitch_capacity").val();
+					//$("#horse_power").val();
+					//alert("Changed!!!" + $("#manufacturer").val());
+					getFilteredMachine("{{ csrf_token }}", "{% url 'getFilteredMachine' %}");
+				});
+				
+				function getFilteredMachine(token, url){
+					//Just to test
 					var obj = getTractors();
 					var len  = obj.tractors.length;
+					//alert("Teste");
 					
+					$.ajax({
+						method: "POST",
+						url: url,
+						//needs send Implement QRCode
+						data: {"csrfmiddlewaretoken": token, "manufacturer": 1, "hitch_capacity":0, "horse_power": 0, "implement_qr_code": $("#implement").val()},
+						datatype: "json",
+						success: function(data, status, xhr){							
+							//$("#firstName").html(data.first_name);
+							alert("Hey there:" + data[1].asset_number);
+						}
+					});
+					
+					$("#showEquipmentDiv").html("");
 					for (var i=0; i < len; i++){
 						$("#showEquipmentDiv").append("<div class='tractorFiltered'><img src='"+obj.tractors[i].picture+"'><br>Id: "+ obj.tractors[i].id +" </div>");
 					}
+				}
+				
+				//Call function to get machines informations.
+				$("#findMachine").click(function(){
+					getFilteredMachine("{{ csrf_token }}", "{% url 'getFilteredMachine' %}");
 				});
 
 			});
@@ -154,7 +180,7 @@
 										IMPLEMENT:
 									</div>
 									<div class="col-xs-6 col-md-6 textRight2">
-										<input type="text"/>
+										<input type="text" id="implement"/>
 										<input type="button" id="findImplement" value="Find a implement" class="btnCreateTask" />
 										<input type="button" value="Scan QRCode" class="btnCreateTask" />
 									</div>
@@ -182,31 +208,31 @@
 					        <div class="modal-body">
 					          <div id="filterDiv">
 					          	<h3>Filters</h3>
-					          	HP:<br>
-					          	<select class="selectFilters">
-					          		<option>All</option>
-					          		<option>175 HP Or Greater</option>
-					          		<option>100 HP to 174 HP</option>
-					          		<option>40 HP to 99 HP</option>
-					          		<option>Less than 40 HP</option>
-					          	</select >
-					          	<br><br>
 					          	Manufacturers:<br>
-					          	<select class="selectFilters">
-					          		<option value="">All</option>
-					          		<option>JOHN DEERE</option>
-					          		<option>MASSEY-FERGUSON</option>
-					          		<option>NEW HOLLAND</option>
-					          		<option>VERSATILE</option>
-					          		<option>FORD</option>
+					          	<select id="manufacturer" class="selectFilters">
+					          		<option value="0">All</option>
+					          		<option value="1">JOHN DEERE</option>
+					          		<option value="2">MASSEY-FERGUSON</option>
+					          		<option value="3">NEW HOLLAND</option>
+					          		<option value="4">VERSATILE</option>
+					          		<option value="5">FORD</option>
 					          	</select>
 					          	<br><br>
-					          	Year:<br>
-					          	<select class="selectFilters">
-					          		<option>All</option>
-					          		<option>2010-2015</option>
-					          		<option>2005-2010</option>
-					          		<option>2000-2000</option>
+					          	HP:<br>
+					          	<select id="horse_power" class="selectFilters">
+					          		<option value="0">All</option>
+					          		<option value="175">175 HP Or Greater</option>
+					          		<option value="100">100 HP Or Greater</option>
+					          		<option value="40">40 HP Or Greater</option>
+					          	</select >
+					          	<br><br>
+					          	Hitch Capacity:<br>
+					          	<select id="hitch_capacity" class="selectFilters">
+					          		<option value="0">All</option>
+					          		<option>20 000 lbs or Greater</option>
+					          		<option>15 000 lbs or Greater</option>
+					          		<option>10 000 lbs or Greater</option>
+					          		<option>5 000 lbs or Greater</option>
 					          	</select>
 					          	
 					          </div>

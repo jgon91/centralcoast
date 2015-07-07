@@ -435,6 +435,74 @@ def retrieveScannedMachine(request):
 	 	result['code'] = 3 #Request was not POST
  	return HttpResponse(json.dumps(result),content_type='application/json')
 
+# Driver 6.3.2.5 
+# It will return the Machine filtered by some options and the Implement (if it has been chosed) 
+# In the Front End, it will have choices with ids for Manufacture.
+# Attention: This function will return only machines with status = 'OK' and status = 'Attention'
+# So in case no machine have returned, consider machine 'Broken' or in 'Quarantine'  
+@login_required
+def getFilteredMachine(request):
+	result = []
+	each_result = {}
+
+	result.append({'success' : False})
+  	if request.method == 'POST':
+		# Save values from request
+		manufacturer = request.POST['manufacturer']
+		hitch_capacity = request.POST['hitch_capacity']
+		horse_power = request.POST['horse_power']
+		implement_qr_code = request.POST['implement_qr_code']
+		print '___' + implement_qr_code + '___'
+		
+		
+		# Set minimum values in case no filters were applied for those option
+		if hitch_capacity == '' or hitch_capacity == None:
+			hitch_capacity = -1
+		if horse_power == '' or horse_power == None:
+			horse_power = -1
+	
+	 	if request.is_ajax():
+	 		try:
+				# Filtering by manufacturer, hitch_cap, horse_power, and status.
+				# Do not filter by manufacture in case if this filter hasn't been chosen
+				if manufacturer == '' or manufacturer == None:
+					machine = Machine.objects.filter(
+					hitch_capacity__gte = hitch_capacity,
+					horsepower__gte = horse_power,
+					status__lte = 2)
+				else:
+					machine = Machine.objects.filter(
+					manufacturer_model__manufacturer__id = manufacturer, 
+					hitch_capacity__gte = hitch_capacity,
+					horsepower__gte = horse_power,
+					status__lte = 2)
+				# Remove those machines that doesn't support the hitch capacity required by the selected implement,
+				# and those machines that have different hitch category then the selected implement
+				if implement_qr_code != '':
+					print 'aaaaalibaba'
+					implement = Implement.objects.get(qr_code = implement_qr_code)
+					machine2 = machine.exclude(hitch_capacity__lt = implement.hitch_capacity_req)
+					machine = machine2.exclude(hitch_category__gt = implement.hitch_category).exclude(hitch_category__lt = implement.hitch_category)
+				# Selecting which field will be retrieved to fron-end
+				for each in machine:
+					each_result['qr_code'] = each.qr_code
+					each_result['nickname'] = each.nickname
+					each_result['photo'] = each.photo
+					each_result['horse_power'] = each.horsepower
+					each_result['asset_number'] = each.asset_number
+					each_result['drawbar_category'] = each.drawbar_category
+					result.append(each_result)	
+					each_result = {}
+				result[0] = {'success' : True}
+			except Machine.DoesNotExist:
+				result.append({'code' : 1}) #There is no users associated with this
+		else:
+	 		result.append({'code' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'code' : 3}) #Request was not POST
+ 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
 # Get equipment info by qr_code, which can be a machine or a implement and return it
 def getEquipmentInfo(request):
 	result = {'success' : False}
@@ -586,7 +654,7 @@ def pastTaskList(request):
 				off = int(request.POST['offset'])
 				limit =int(request.POST['limit'])
 				if off >= 0 and limit > 0:
-					tasks = EmployeeTask.objects.filter(employee__id = request.user.id, task__accomplished = False)[off:limit]
+					tasks = EmployeeTask.objects.filter(employee__id = request.user.id, task__accomplished = True)[off:limit]
 					for item in tasks:
 						aux['category'] = item.task.description
 						aux['field'] = item.task.field.name
