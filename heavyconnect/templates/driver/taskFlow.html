@@ -11,10 +11,10 @@
 			});
 
 			//Events
-			$("#btnCreateTask").click(startNewTask("{{csrf_token}}", "{% url 'startNewTask' %}", "1234"));
+			$("#btnCreateTask").click(permissionCreateTask("{{csrf_token}}", "{% url 'startNewTask' %}", "1234"));
 
 			//Functions
-			function startNewTask(token, url, qr_code)
+			function permissionCreateTask(token, url, qr_code)
 			{			
 					//console.log("function called");
 					$.ajax({
