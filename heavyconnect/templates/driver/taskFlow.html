@@ -11,18 +11,18 @@
 			});
 
 			//Events
-			$("#btnCreateTask").click(startNewTask);
+			$("#btnCreateTask").click(startNewTask("{{csrf_token}}", "{% url 'startNewTask' %}", "1234"));
 
 			//Functions
-			function startNewTask()
+			function startNewTask(token, url, qr_code)
 			{			
-					
-					console.log("function called");
+					//console.log("function called");
 					$.ajax({
 						method: "POST",
-						url: "",
+						url: url,
 						dataType: "json", 
-           				data: {"csrf_token": '{{csrf_token}}'},
+           				data: {"csrf_token": token,
+           					   "qr_code": qr_code},
 						success: function(data, status, xhr)
 						{
 							if(data.success)
@@ -74,33 +74,4 @@
 		</div>
 		<footer id="foot"></footer>
 	</body>
-	<script>
-			function startNewTask()
-			{			
-					
-					console.log("function called");
-					$.ajax({
-						method: "POST",
-						url: "",
-						dataType: "json", 
-           				data: {"csrf_token": '{{csrf_token}}'},
-						success: function(data, status, xhr)
-						{
-							if(data.success)
-							{		 	
-							 	if(data.authorized)
-							 	{	
-							 		return true;
-							 	}else
-							 	{
-							 		alert("You do not have enough right to create a task!!");
-							 		return false;
-							 	}
-							}
-						}
-					});
-			}
-			
-			
-	</script>
 </html>
