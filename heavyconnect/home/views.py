@@ -45,7 +45,7 @@ def startNewTask(request):
 				now = datetime.datetime.now()
 				task.task_init = now
 				task.save()
-				result['code'] = 4 # Task updated with success
+				result = {'success' : True} # Task updated with success
 			except Employee.DoesNotExist:
 				result['code'] =  1 # Task DoesNotExist
 		else:
