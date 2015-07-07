@@ -38,17 +38,16 @@ def taskflow(request):
 @login_required
 def startNewTask(request):
 	result = {'success' : False}
-
 	if request.method == 'POST':
 		if request.is_ajax():
 			try:
-				employee = Employee.objects.get(user_id = request.user.id)
-				# if employee.permission_level = 2:
-				# 	render start task page
-				# else:
-				# 	user does not have permission
+				task = EmployeeTask.objects.get(task_id = request.POST['qr_code'])
+				now = datetime.datetime.now()
+				task.task_init = now
+				task.save()
+				result['code'] = 4 # Task updated with success
 			except Employee.DoesNotExist:
-				result['code'] =  1 #There is no users associated with this
+				result['code'] =  1 # Task DoesNotExist
 		else:
 			result['code'] = 2 #Use ajax to perform requests
 	else:
