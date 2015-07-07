@@ -109,12 +109,47 @@ class Implement(models.Model):
 	def __unicode__(self):
 		return "QRcode: " + str(self.qr_code) + ", Model: " + str(self.manufacturer_model.model)
 
+class Field(models.Model):
+	name = models.CharField(max_length = 50)
+	organic = models.BooleanField()
+	size =  models.FloatField()
+
+	def __unicode__(self):
+		return "Name: " + str(self.name) + ", Organic: " +  str(self.organic) + ", Size: " +  str(self.size)
+
+class TaskCategory(models.Model):
+	description = models.CharField(max_length = 30)
+
+	def __unicode__(self):
+		return "ID: " + str(self.id) + ", Category: " + str(self.description)
+
+class Task(models.Model):
+	APPROVAL_CHOICES = (
+		(1, 'Approved'),
+		(2, 'Denied'),
+		(3, 'Pending'),
+	)
+	field = models.ForeignKey(Field)
+	category = models.ForeignKey(TaskCategory)
+	rate_cost = models.FloatField()
+	hours_spent = models.FloatField()
+	hours_prediction = models.FloatField()
+	description =  models.CharField(max_length = 500)
+	passes = models.IntegerField()
+	date = models.DateTimeField()
+	accomplished = models.BooleanField()
+	approval = models.IntegerField(choices = APPROVAL_CHOICES)
+
+	def __unicode__(self):
+		return "Field Name: " + str(self.field.name) + " Category: " + str(self.category.description) + ", Hour Cost: " +  str(self.rate_cost) + ", Description: " +  str(self.description)
+
 class Employee(models.Model):
 	LANGUAGE_CHOICES = (
 		(1, 'pt-br'),
 		(2, 'es'),
 		(3, 'en'),
 	)
+	last_task = models.ForeignKey(Task, null = True)
 	user = models.OneToOneField(User)
 	company_id = models.CharField(max_length = 10)
 	language = models.IntegerField(choices = LANGUAGE_CHOICES)
@@ -213,14 +248,6 @@ class ImplementCertification(models.Model):
 	def __unicode__(self):
 		return str(self.implement) + " " +  str(self.certification)
 
-class Field(models.Model):
-	name = models.CharField(max_length = 50)
-	organic = models.BooleanField()
-	size =  models.FloatField()
-
-	def __unicode__(self):
-		return "Name: " + str(self.name) + ", Organic: " +  str(self.organic) + ", Size: " +  str(self.size)
-
 class GPS(models.Model):
 	latitude = models.FloatField()
 	longitude = models.FloatField()
@@ -244,32 +271,6 @@ class EmployeeLocalization(models.Model):
 
 	def __unicode__(self):
 		return "Employee: " + str(self.employee.user.last_name) + ", Latitude: " +  str(self.latitude) + ", Longitude: " +  str(self.longitude) + ", Date: " + str(self.e_time)
-
-class TaskCategory(models.Model):
-	description = models.CharField(max_length = 30)
-
-	def __unicode__(self):
-		return "ID: " + str(self.id) + ", Category: " + str(self.description)
-
-class Task(models.Model):
-	APPROVAL_CHOICES = (
-		(1, 'Approved'),
-		(2, 'Denied'),
-		(3, 'Pending'),
-	)
-	field = models.ForeignKey(Field)
-	category = models.ForeignKey(TaskCategory)
-	rate_cost = models.FloatField()
-	hours_spent = models.FloatField()
-	hours_prediction = models.FloatField()
-	description =  models.CharField(max_length = 500)
-	passes = models.IntegerField()
-	date = models.DateTimeField()
-	accomplished = models.BooleanField()
-	approval = models.IntegerField(choices = APPROVAL_CHOICES)
-
-	def __unicode__(self):
-		return "Field Name: " + str(self.field.name) + " Category: " + str(self.category.description) + ", Hour Cost: " +  str(self.rate_cost) + ", Description: " +  str(self.description)
 
 class EmployeeTask(models.Model):
 	employee = models.ForeignKey(Employee)
