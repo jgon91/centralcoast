@@ -341,5 +341,38 @@ class ImplementService(models.Model):
 	def __unicode__(self):
 		return "Description: " + str(self.description) + ", Expected Date: " + str(self.expected_date) + ", Price: " + str(self.price) + ", Done " + str(self.done) 
 
+class Question(models.Model):
+	description = models.CharField(max_length = 250)
+	category = models.IntegerField()
+	refers = models.IntegerField(choices = ((1, 'Machine'), (2, 'Implement')))
+
+	def __unicode__(self):
+		return "Description: " + str(self.description) + ", category: " + str(self.category) + ", refers: " + str(self.refers)
+
+
+class MachineChecklist(models.Model):
+	question = models.ForeignKey(Question)
+	qrCode = models.ForeignKey(Machine)
+	answer = models.BooleanField()
+	note = models.CharField(max_length = 200,blank = True)
+	date = models.DateTimeField()
+	photo = models.URLField(max_length = 200, blank = True)
+
+	def __unicode__(self):
+		return "Answer: " + str(self.answer) + ", note: " + str(self.note)
+
+
+class ImplementChecklist(models.Model):
+	question = models.ForeignKey(Question)
+	qrCode = models.ForeignKey(Implement)
+	answer = models.BooleanField()
+	note = models.CharField(max_length = 200, blank = True)
+	date = models.DateTimeField()
+	photo = models.URLField(max_length = 200, blank = True)
+
+	def __unicode__(self):
+		return "Answer: " + str(self.answer) + ", note: " + str(self.note)
+
+
 
 
