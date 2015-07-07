@@ -818,7 +818,6 @@ def getEmployeeSchedule(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 def getAllManufacturers(request):
-	# each_result = {}
 	result = []
 	result.append({'success' : False})
 	if request.method == 'POST':
@@ -827,7 +826,24 @@ def getAllManufacturers(request):
 				manufacturers = Manufacturer.objects.all()
 				result.append(str(manufacturers))
 			except Manufacture.DoesNotExist:
-				result.append({'code' : 1}) #There is no machine associated with this
+				result.append({'code' : 1}) #There is no manufacture on the database
+		else:
+			result.append({'code': 2}) #result[0]['code'] = 2 #request is not ajax
+	else:
+		result.append({'code' : 3}) #result[0]['code'] = 3 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+def getAllFields(request):
+	result = []
+	result.append({'success' : False})
+	if request.method == 'POST':
+		if request.is_ajax:
+			try:
+				fields = Field.objects.all()
+				result.append(str(fields))
+			except Manufacture.DoesNotExist:
+				result.append({'code' : 1}) #There is no field on the database
 		else:
 			result.append({'code': 2}) #result[0]['code'] = 2 #request is not ajax
 	else:
