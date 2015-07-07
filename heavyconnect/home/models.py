@@ -149,8 +149,9 @@ class Employee(models.Model):
 		(2, 'es'),
 		(3, 'en'),
 	)
-	last_task = models.ForeignKey(Task, null = True)
+	last_task = models.ForeignKey(Task)
 	user = models.OneToOneField(User)
+	active = models.BooleanField()
 	company_id = models.CharField(max_length = 10)
 	language = models.IntegerField(choices = LANGUAGE_CHOICES)
 	qr_code = models.CharField(max_length = 10)
