@@ -8,8 +8,7 @@
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerDriver' %}");
 
-				getLastTasks("{{csrf_token}}", "{% url 'pastTaskList' %}")
-				//getLastTasks("{{csrf_token}}", "{% url 'retrievePedingTask' %}")
+				getLastTasks("{{csrf_token}}", "{% url 'pastTaskList' %}");	
 			});
 
 			function getLastTasks(token, url) {
@@ -19,8 +18,10 @@
 						url: url,
 						data: {"csrfmiddlewaretoken": token, "offset": 0, "limit": 3 },
 						datatype: "json",
-						success: function(data, status, xhr){							
-							for (var i = 1; i < 4; i++) {
+						success: function(data, status, xhr){		
+									
+							for (var i = 1; i < 4; i++) 
+							{
 								$("#task" + i + " .date").html(data[i].date.substring(0,10) + "</br>" + data[i].date.substring(10,16));
 								$("#past" + i + " .field").html(data[i].field);
 								$("#past" + i + " .category").html(data[i].category);
