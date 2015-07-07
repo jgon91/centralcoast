@@ -46,12 +46,17 @@ def createNewTask1(request):
 			if form.is_valid():
 				try:
 					employee = Employee.objects.get(user_id = request.user.id)
-					field = Field.objects.get(id = int(form.cleaned_data['field_id']))
-					category = TaskCategory.objects.get(id = int(form.cleaned_data['category_id']))
+					field = form.cleaned_data['field']
+					category = form.cleaned_data['category']
 					hours_prediction = float(form.cleaned_data['hours_prediction'])
 					description = form.cleaned_data['description']
 					passes = int(form.cleaned_data['passes'])
-					date = forms.DateTimeField()
+					time = form.cleaned_data['time']
+					date = form.cleaned_data['date']
+					date = date + datetime.timedelta(hours = time.hour, minutes = time.minute)
+					task = Task(field = field, category = category, hours_prediction = hours_prediction, description = description, passes = passes, date = date)
+					task.save()
+					result['success'] = True
 				except Employee.DoesNotExist:
 					result['code'] =  1 #There is no users associated with this
 			else:

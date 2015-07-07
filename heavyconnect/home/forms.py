@@ -235,6 +235,7 @@ class taskForm(forms.Form):
 		(1, 'Approved'),
 		(2, 'Denied'),
 		(3, 'Pending'),
+		(4, 'Setup'),
 	)
 	field = forms.ModelChoiceField(queryset = Field.objects.all())
 	category = forms.ModelChoiceField(queryset = TaskCategory.objects.all())
@@ -243,7 +244,8 @@ class taskForm(forms.Form):
 	hours_prediction = forms.FloatField()
 	description =  forms.CharField()
 	passes = forms.IntegerField()
-	date = forms.DateTimeField(initial=datetime.date.today())
+	date = forms.DateTimeField(widget=forms.DateTimeInput(format="%Y-%m-%d"))
+	time = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))
 	accomplished = forms.BooleanField(required = False)
 	approval = forms.ChoiceField(choices = APPROVAL_CHOICES,required = False)
 ### End ###
