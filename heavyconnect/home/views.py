@@ -622,7 +622,7 @@ def retrievePedingTask(request):
 	  	if request.is_ajax():
 	 		try:
 				aux = {}
-				n = 1
+				n = request.POST['N']
 				if n > 0:
 					emploTask = EmployeeTask.objects.filter(employee__id = request.user.id, task_init__lte =  date2, task__accomplished = False)[:n]
 					for item in emploTask:

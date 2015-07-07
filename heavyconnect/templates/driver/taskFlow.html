@@ -21,12 +21,15 @@
 					url : url,
 					data : {
 						"csrfmiddlewaretoken" : token,
-						"N" : 1
+						"N" : 3
 					},
 					datatype : "json",
 					success : function(data, status, xhr) {
-						//$("#firstName").html(data.first_name);
-						alert("Hey there: " + data[1].category);
+						for (var i = 1; i < 4; i++) {
+							//$("#next" + i + " .machineModel").html(data[i].machine);
+							$("#next" + i + " .fieldName").html(data[i].field);
+						};
+						
 					}
 				});
 			}
@@ -69,24 +72,24 @@
 				<div id="divTask">
 					<div id="pendingTask">
 						<div id="taskP">
-							PENDING TASKS
+							UPCOMING TASKS
 						</div>
 						<div class="row" style="margin: 0px;">
 							<div class="col-xs-4 col-md-4 nextBox" id="next1">
 								<span class="titleNextTask"></br>#1 First Task</span>
-								<h4></br>Taskflow:</h4>RAC4556 CAT 65D
-								<h4></br>Field:</h4>HOME RANCH 2A
+								<h4></br>Machine:</h4><span class="machineModel"></span>
+								<h4></br>Field:</h4><span class="fieldName"></span>
 								</br></br></br></br><a href="#" id="divStartNow">START NOW</a>
 							</div>
 							<div class="col-xs-4 col-md-4 nextBox" id="next2">
 								<span class="titleNextTask"></br>#2 Second Task</span>
-								<h4></br>Taskflow:</h4>RAC4556 CAT 65D
-								<h4></br>Field:</h4>HOME RANCH 2A
+								<h4></br>Machine:</h4><span class="machineModel"></span>
+								<h4></br>Field:</h4><span class="fieldName"></span>
 							</div>
 							<div class="col-xs-4 col-md-4 nextBox" id="next3">
 								<span class="titleNextTask"></br>#3 Third Task</span>
-								<h4></br>Taskflow:</h4>RAC4556 CAT 65D
-								<h4></br>Field:</h4>HOME RANCH 2A
+								<h4></br>Machine:</h4><span class="machineModel"></span>
+								<h4></br>Field:</h4><span class="fieldName"></span>
 							</div>
 						</div>
 						<!--
