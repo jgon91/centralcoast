@@ -481,7 +481,6 @@ div.notes {
 	margin: -10px 0px 0px;
 }
 /* End Update Status page */
-
 /* Begin TASKFLOW page */
 #divTask {
 	text-align: left;
@@ -490,7 +489,6 @@ div.notes {
 	margin: auto;
 	margin-top: 60px;
 	color: white;
-	height: 430px;
 	padding-left: 10px;
 	padding-top: 10px;
 	padding-bottom: 10px;
@@ -499,45 +497,59 @@ div.notes {
 	padding-left: 20px;
 	padding-top: 10px;
 	font-weight: bold;
+	background: #4F7219;
+	height: 55px;
+	text-align: left;
 }
 #pendingTask {
-	background: #809A21;
 	width: calc(100% - 220px);
 	float: left;
-	height: 300px;
-	margin-right: 10px;
+	height: 309px;
+	margin-right: 15px;
 	font-size: 27px;
+	margin-bottom: 15px;
+	text-align: center;
 }
-.lastClass {
-	color: white;
-	height: 50px;
-	background: #4F7219;
-	width: 100%;
-	margin-top: 10px;
-	padding-left: 10px;
-	padding-top: 4px;
+.titleNextTask {
+	font-size: 23px;
+	font-weight: bold;
 }
-.lastClass:hover {
+#divStartNow {
+	text-decoration: none;
 	color: white;
-	background: #434343;
+	font-size: 25px;
+	font-weight: bold;
+	margin-top: 900px;
 }
-#last1 {
-	color: white;
+#divStartNow:hover {
+	color: #434343;
 }
-#last2 {
+.nextBox {
 	color: white;
+	background: #809A21;
+	margin: auto;
+	width: 32%;
+	font-size: 14px;
+	line-height: 15px;
+	padding: 5px;
+	height: 275px;
 }
-#last3 {
-	color: white;
+#next2 {
+	margin-left: 2%;
+	margin-right: 2%;
+	background: #E0E0A7;
+	color: #4C4C49;
 }
-#last4 {
-	color: white;
+#next3 {
+	float: right;
+	background: #E0E0A7;
+	color: #4C4C49;
 }
 #divCreateTask {
 	margin-bottom: 10px;
 }
 #divGoScheduler {
-	margin-top: -104.5px;
+	margin-top: -74.5px;
 }
 #btnCreateTask {
 	background: url('../img/buttons/createNewTask.png') no-repeat top left;
@@ -549,7 +561,7 @@ div.notes {
 	background: url('../img/buttons/scheduleTaskflow.png') no-repeat top left;
 	background-size: 100% 100%;
 	width: calc(100% - 220px);
-	height: 100px;
+	height: 70px;
 }
 #btnGoScheduler:hover {
 	background: url('../img/buttons/scheduleTaskflowHover.png') no-repeat top left;
@@ -708,8 +720,8 @@ div.notes {
 	min-height: 400px;
 }
 .selectFilters{
-	font-size: 20px;
-	width: 80%;
+	font-size: 18px;
+	width: 90%;
 }
 #showEquipmentDiv{
 	width: 79%;
