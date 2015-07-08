@@ -599,6 +599,101 @@ def getFilteredImplement(request):
 
 
 
+
+# Driver 6.3.3.1
+# It will receive some employee qr_code, and maybe machine_qr_code and implement_qr_code, and it will 
+# return: first name, company_id, and photo; if its certification/qualification is enough for the 
+# machine and implement, if they were selected.
+@login_required
+def getScannedFilteredEmployee(request):
+	result = []
+	each_result = {}
+	employee_is_able = True
+	result.append({'success' : False})
+  	if request.method == 'POST':
+		# Save values from request
+		employee_qr_code = request.POST['employee_qr_code']
+		implement_qr_code = request.POST['implement_qr_code']
+		machine_qr_code = request.POST['machine_qr_code']
+
+	 	if request.is_ajax():
+	 		try:	
+				# Create list of Qualifications that the employee has
+				employee_used = Employee.objects.get(qr_code = employee_qr_code)
+				emp_qualification = EmployeeQualifications.objects.filter(employee__id = employee_used.id)
+				emp_qualification_list = []
+				emp_qualification_level_list = {}
+				for each in emp_qualification:
+					emp_qualification_list.append(each.qualification.id)
+					emp_qualification_level_list[str(each.qualification.id)] = each.level
+				# Create list of Certifications that the employee has
+				emp_certification = EmployeeCertifications.objects.filter(employee__id = employee_used.id)
+				emp_certification_list = []
+				for each in emp_certification:
+					emp_certification_list.append(each.certification.id)
+
+				# Check if the employee has all Qualifications required by Implement, if it was chosen
+				if implement_qr_code:
+					implement_used = Implement.objects.get(qr_code = implement_qr_code)
+					imp_qualification = ImplementQualification.objects.filter(implement__id = implement_used.id)
+					for each in imp_qualification:
+						if each.qualification.id in emp_qualification_list:
+							if each.qualification_required > emp_qualification_level_list[str(each.qualification.id)]:
+								employee_is_able = False
+								error = 'Insuficient level for qualification: '+str(each.qualification.description)+' required by selected Implement' 
+								result.append({'error':error})
+						else:
+							employee_is_able = False
+							error = 'Missing qualification: '+str(each.qualification.description)+' required by selected Implement' 
+							result.append({'error':error})
+					# Check if the employee has all Certifications required by Implement, if it was chosen
+					imp_certification = ImplementCertification.objects.filter(implement__id = implement_used.id)
+					for each in imp_certification:
+						if not each.certification.id in emp_certification_list:
+							employee_is_able = False
+							error = 'Missing certification: '+str(each.certification.description)+' required by selected Implement' 
+							result.append({'error':error})
+					
+				# Check if the employee has all Qualifications required by Machine, if it was chosen
+				if machine_qr_code:
+					machine_used = Machine.objects.get(qr_code = machine_qr_code)
+					mac_qualification = MachineQualification.objects.filter(machine__id = machine_used.id)
+					for each in mac_qualification:
+						if each.qualification.id in emp_qualification_list:
+							if each.qualification_required > emp_qualification_level_list[str(each.qualification.id)]:
+								employee_is_able = False
+								error = 'Insuficient level for qualification: '+str(each.qualification.description)+' required by selected Machine' 
+								result.append({'error':error})
+						else:
+							employee_is_able = False
+							error = 'Missing qualification: '+str(each.qualification.description)+' required by selected Machine' 
+							result.append({'error':error})
+					# Check if the employee has all Certifications required by Machine, if it was chosen
+					mac_certification = MachineCertification.objects.filter(machine__id = machine_used.id)
+					for each in mac_certification:
+						if not each.certification.id in emp_certification_list:
+							employee_is_able = False
+							error = 'Missing certification: '+str(each.certification.description)+' required by selected Machine' 
+							result.append({'error':error})
+
+				if employee_is_able == True:
+					result[0] = {'success' : True}
+					each_result['name'] = str(employee_used.user.first_name)
+					each_result['photo'] = employee_used.photo
+					each_result['company_id'] = employee_used.company_id
+					result.append(each_result)
+			except Machine.DoesNotExist:
+				result.append({'code' : 1}) #There is no users associated with this
+		else:
+	 		result.append({'code' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'code' : 3}) #Request was not POST
+ 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+
+
+
 # Driver 6.3.2.2
 # Just retrieve a Implement according with qr_code passed as argument
 @login_required
