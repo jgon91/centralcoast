@@ -509,13 +509,17 @@ def getFilteredMachine(request):
 					horsepower__gte = horse_power,
 					status__lte = 2)
 				# Remove those machines that doesn't support the hitch capacity required by the selected implement,
-				# and those machines that have different hitch category then the selected implement
-				if implement_qr_code != '' or implement_qr_code != None:
+				# Remove those machines that have different drawbar_category then the selected implement,
+				# Remove those machines that have different hitch category then the selected implement
+				# And remove those machines that have different drawbar category then the selected implement
+				if implement_qr_code:
 					implement = Implement.objects.get(qr_code = implement_qr_code)
-					machine2 = machine.exclude(hitch_capacity__lt = implement.hitch_capacity_req)
-					machine3 = machine2.exclude(hitch_category__gt = implement.hitch_category).exclude(hitch_category__lt = implement.hitch_category)
+					machine2 = machine.exclude(hitch_capacity__lt = implement.hitch_capacity_req)															# Remove Machine with less hitch_capacity
+					machine3 = machine2.exclude(horsepower__lt = implement.horse_power_req)																	# Remove Machine with less horse_power
+					machine2 = machine3.exclude(hitch_category__gt = implement.hitch_category).exclude(hitch_category__lt = implement.hitch_category)		# Remove Machine with different hitch_category
+					machine = machine2.exclude(drawbar_category__gt = implement.drawbar_category).exclude(drawbar_category__lt = implement.drawbar_category)# Remove Machine with different drawbar_category
 				# Selecting which field will be retrieved to fron-end
-				for each in machine3:
+				for each in machine:
 					each_result['qr_code'] = each.qr_code
 					each_result['nickname'] = each.nickname
 					each_result['photo'] = each.photo
@@ -573,13 +577,17 @@ def getFilteredImplement(request):
 					horse_power_req__gte = horse_power_req,
 					status__lte = 2)
 				# Remove those implements that requires more hitch capacity then the selected machine can carry,
-				# and those implements that have different hitch category then the selected machine
-				if machine_qr_code != '' or machine_qr_code != None:
+				# Remove those implements that requires more horse_power then the selected machine have,
+				# Remove those implements that have different hitch category then the selected machine,
+				# And remove those implements that have different drawbar category then the selected machine
+				if machine_qr_code:
 					machine = Machine.objects.get(qr_code = machine_qr_code)
-					implement2 = implement.exclude(hitch_capacity_req__gt = machine.hitch_capacity)
-					implement3 = implement2.exclude(hitch_category__gt = machine.hitch_category).exclude(hitch_category__lt = machine.hitch_category)
+					implement2 = implement.exclude(hitch_capacity_req__gt = machine.hitch_capacity)															# Remove Implement with more hitch_capacity req
+					implement3 = implement2.exclude(horse_power_req__gt = machine.horsepower)																# Remove Implement with more horse_power req
+					implement2 = implement3.exclude(hitch_category__gt = machine.hitch_category).exclude(hitch_category__lt = machine.hitch_category)		# Remove Implement with different hitch_category
+					implement = implement2.exclude(drawbar_category__gt = machine.drawbar_category).exclude(drawbar_category__lt = machine.drawbar_category)# Remove Implement with different drawbar_category
 				# Selecting which field will be retrieved to fron-end
-				for each in implement3:
+				for each in implement:
 					each_result['qr_code'] = each.qr_code
 					each_result['nickname'] = each.nickname
 					each_result['photo'] = each.photo
