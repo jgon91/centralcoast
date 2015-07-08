@@ -62,6 +62,7 @@ urlpatterns = [
     url(r'^pastTaskList/$', main_views.pastTaskList, name = 'pastTaskList'),
     url(r'^validatePermission', main_views.validatePermission, name = 'validatePermission'),
     url(r'^getFilteredMachine/$', main_views.getFilteredMachine, name = 'getFilteredMachine'),
+    url(r'^validatePermission', main_views.validatePermission, name = 'validatePermission'),
 
     ### End ###
 

@@ -709,7 +709,8 @@ div.notes {
 }
 /*Modal find Tractor or Implement*/
 .findTractor{
-	width: 80%;
+	width: 90%;
+	min-width: 850px;
 	overflow-y: scroll; 
 	max-height: 85%;
 }
@@ -729,11 +730,12 @@ div.notes {
 	min-height: 400px;
 }
 .tractorFiltered{
-	width: 200px;
-	height: 200px;
+	width: 31%;
+	min-width: 200px;
+	min-height: 350px;
 	margin-right: 10px;
 	margin-bottom: 30px;
-	background-color: red;
+	background-color: #EEE;
 	float: left;
 	font-size: 20px;
 }
