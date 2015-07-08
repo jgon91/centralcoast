@@ -302,6 +302,25 @@ def getQuickUser(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+def validatePermission(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+		if request.is_ajax():
+			try:
+				employee = Employee.objects.get(id = request.user.id)
+				aux = employee.permission_level
+				result['authorized'] = False
+				if aux == 2 or aux == 3:
+					result['authorized'] = True
+				result['success'] = True
+			except Employee.DoesNotExist:
+				result['code'] = 1 #There is no shift records for this employee
+		else:
+			result['code'] = 2 #Use ajax to perform requests
+	else:
+		result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+	
 #Receive one url to a picture and changes the old url in the user profile
 @login_required
 def updatePhoto(request):
