@@ -105,11 +105,15 @@ def startShift(request):
 	result = {'success' : False}
 
 	if request.method == "POST":
-		if request.is_ajax():
+		if 	request.is_ajax():
 			try:
 				employee = Employee.objects.get(user_id = request.user.id)
+
 				now = datetime.datetime.now()
-				attendance, created = EmployeeAttendance.objects.get_or_create(employee_id = employee.id, defaults = {'date' : now, 'hour_started' : now})
+				start_date = datetime.datetime.combine(now, datetime.time.min)
+				end_date = datetime.datetime.combine(now, datetime.time.max)
+
+				attendance, created = EmployeeAttendance.objects.get_or_create(employee_id = employee.id, date__range = (start_date, end_date), defaults = {'date' : now, 'hour_started' : now})
 				if created:
 					result['success'] = True
 					result['hour_started'] = str(attendance.hour_started)
@@ -131,21 +135,29 @@ def stopShift(request):
 	if request.method == "POST":
 		if request.is_ajax():
 			try:
-				identifier = request.POST['id']
-				employee = Employee.objects.get(id = int(identifier))
+				employee = Employee.objects.get(user_id = request.user.id)
+
 				now = datetime.datetime.now()
-				attendance, created = EmployeeAttendance.objects.get_or_create(employee_id = employee, defaults = {'date' : now, 'hour_ended' : now})
-				if created:
+				start_date = datetime.datetime.combine(now, datetime.time.min)
+				end_date = datetime.datetime.combine(now, datetime.time.max)
+
+				attendance = EmployeeAttendance.objects.get(employee_id = employee, date__range = (start_date, end_date))
+				if attendance.hour_ended is None:
+					attendance.hour_ended = now
+					attendance.save()
 					result['success'] = True
 					result['hour_ended'] = str(attendance.hour_ended)
 				else:
 					result['code'] = 1 #The shift for today was already finished
+
+			except EmployeeAttendance.DoesNotExist:
+				result['code'] = 2 #You have not started your shift yet
 			except Employee.DoesNotExist:
-				result['code'] =  2 #There is no users associated with this id
+				result['code'] =  3 #There is no users associated with this id
 		else:
-			result['code'] = 3 #Use ajax to perform requests
+			result['code'] = 4 #Use ajax to perform requests
 	else:
-		result['code'] = 4 #Request was not POST
+		result['code'] = 5 #Request was not POST
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
