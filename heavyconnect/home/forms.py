@@ -50,7 +50,7 @@ class equipmentCategoryForm(forms.Form):
 
 ### Structure for EquipmentTypeForm ###
 class equipmentTypeForm(forms.Form):
-	category = forms.ForeignKey(queryset = EquipmentCategory.objects.all())
+	category = forms.ModelChoiceField(queryset = EquipmentCategory.objects.all())
 	name = forms.CharField(max_length = 25)
 ### End ###
 
@@ -336,7 +336,7 @@ class implementServiceForm(forms.Form):
 class questionForm(forms.Form):
 	description = forms.CharField(max_length = 250)
 	category = forms.IntegerField()
-	refers = forms.IntegerField(choices = ((1, 'Machine'), (2, 'Implement')))
+	refers = forms.ChoiceField(choices = ((1, 'Machine'), (2, 'Implement')))
 ### End ###
 
 ### Structure for implementServiceForm ###
@@ -344,9 +344,9 @@ class machineChecklistForm(forms.Form):
 	question = forms.ModelChoiceField(queryset = Question.objects.all())
 	qrCode = forms.ModelChoiceField(queryset = Machine.objects.all())
 	answer = forms.BooleanField()
-	note = forms.CharField(max_length = 200,blank = True)
+	note = forms.CharField(max_length = 200)
 	date = forms.DateTimeField()
-	photo = forms.URLField(max_length = 200, blank = True)
+	photo = forms.URLField(max_length = 200)
 ### End ###
 
 ### Structure for implementServiceForm ###
@@ -354,7 +354,7 @@ class implementChecklistForm(forms.Form):
 	question = forms.ModelChoiceField(queryset = Question.objects.all())
 	qrCode = forms.ModelChoiceField(queryset = Implement.objects.all())
 	answer = forms.BooleanField()
-	note = forms.CharField(max_length = 200, blank = True)
+	note = forms.CharField(max_length = 200)
 	date = forms.DateTimeField()
-	photo = forms.URLField(max_length = 200, blank = True)
+	photo = forms.URLField(max_length = 200)
 ### End ###
