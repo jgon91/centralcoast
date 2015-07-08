@@ -719,13 +719,12 @@ def loadImplementsImage(request):
 
 #Return task that are not complished until today, the number of task returned is according to the number n
 @login_required
-def retrievePedingTask(request):
+def retrievePendingTask(request):
 	result = []
 	result.append({'success' : False})
 	date1 = datetime.timedelta(days = 1) #it will work as increment to the current day
 	date2 =  datetime.datetime.now() + date1
 	if request.method == 'POST':
-		qrCode = request.POST['qr_code']
 	 	if request.is_ajax():
 			try:
 				aux = {}
@@ -736,6 +735,9 @@ def retrievePedingTask(request):
 						aux['category'] = item.task.description
 						aux['field'] = item.task.field.name
 						aux['date'] = str(item.task.date)
+						aux['task_id'] = item.task.id
+						machine = Machine.objects.filter(machine_id = TaskImplementMachine.objects.filter(task_id = item.task.id))
+						aux['qr_code'] = machine.qr_code
 						result.append(aux)
 						aux = {}
 					result[0] = {'success' : True}
