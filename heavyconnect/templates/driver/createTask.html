@@ -24,25 +24,22 @@
 					getFilteredMachine("{{ csrf_token }}", "{% url 'getFilteredMachine' %}");
 				});
 				
+				//This can be moved to another file later(script.js)
 				function getFilteredMachine(token, url){
-					//Just to test
-					var obj = getTractors();
-					var len  = obj.tractors.length;
-					//alert("Teste");
+					//alert("Teste" + $("#manufacturer").val() + "<br>" + $("#hitch_capacity").val()+ "<br>" + $("#horse_power").val() + "<br>");
 					
 					$.ajax({
 						method: "POST",
 						url: url,
-						//needs send Implement QRCode
-						data: {"csrfmiddlewaretoken": token, "manufacturer": 1, "hitch_capacity":0, "horse_power": 0, "implement_qr_code": $("#implement").val()},
+						data: {"csrfmiddlewaretoken": token, "manufacturer": $("#manufacturer").val(), "hitch_capacity": $("#hitch_capacity").val(), "horse_power": $("#horse_power").val(), "implement_qr_code": $("#implement").val()},
 						datatype: "json",
-						success: function(data, status, xhr){							
-							//$("#firstName").html(data.first_name);
-							//alert("Hey there:" + data[1].asset_number);
+						success: function(data, status, xhr){
 							var len = data.length;
 							$("#showEquipmentDiv").html("");
-							for (var i=1; i < len; i++){
-								$("#showEquipmentDiv").append("<div class='tractorFiltered'><img src='"+data[i].photo+"'><br>Id: "+ data[i].asset_number +"<br>Nickname: "+ data[i].nickname +"<br>Id: "+ data[i].asset_number +" </div>");
+							for(var j=0; j < 10; j++){
+								for (var i=1; i < len; i++){
+									$("#showEquipmentDiv").append("<div class='tractorFiltered'><img src='"+data[i].photo+"'><br>Id: "+ data[i].asset_number +"<br>Nickname: "+ data[i].nickname +"<br>Id: "+ data[i].asset_number +" </div>");
+								}
 							}
 						}
 					});
@@ -55,19 +52,7 @@
 				});
 
 			});
-			
-			function getTractors(){
 
-					var data = '{ "tractors" : [' +
-					'{ "id":"12346ABCD" , "Manufacture":"JOHN DEERE" , "Year":"2015" , "HP":"175" , "picture":"https://www.rallydev.com/sites/rallydev.com.blog/files/agileblog/2011/08/jd-tractor.jpg"},' +
-					'{ "id":"87636ABCD" , "Manufacture":"JOHN DEERE" , "Year":"2012" , "HP":"175" , "picture":"http://www.stackyard.com/news/2006/09/machinery/john_deere_6030.jpg" },' +
-					'{ "id":"87636ABCD" , "Manufacture":"Ford" , "Year":"2012" , "HP":"175" , "picture":"http://www.mbauction.com/assets/kn-turf.jpg" },' +
-					'{ "id":"33322ABCD" , "Manufacture":"JOHN DEERE" , "Year":"2005" , "HP":"40" , "picture":"http://agwired.com/wp-content/uploads/2011/06/Deere.jpg" } ]}';
-				
-					var obj = JSON.parse(data);
-					return obj;
-			}
-			
 		</script>
 	</head>
 	<body>
@@ -211,7 +196,7 @@
 					          	<h3>Filters</h3>
 					          	Manufacturers:<br>
 					          	<select id="manufacturer" class="selectFilters">
-					          		<option value="0">All</option>
+					          		<option value="">All</option>
 					          		<option value="1">JOHN DEERE</option>
 					          		<option value="2">MASSEY-FERGUSON</option>
 					          		<option value="3">NEW HOLLAND</option>
@@ -230,10 +215,10 @@
 					          	Hitch Capacity:<br>
 					          	<select id="hitch_capacity" class="selectFilters">
 					          		<option value="0">All</option>
-					          		<option>20 000 lbs or Greater</option>
-					          		<option>15 000 lbs or Greater</option>
-					          		<option>10 000 lbs or Greater</option>
-					          		<option>5 000 lbs or Greater</option>
+					          		<option value="20000">20 000 lbs or Greater</option>
+					          		<option value="15000">15 000 lbs or Greater</option>
+					          		<option value="10000">10 000 lbs or Greater</option>
+					          		<option value="5000">5 000 lbs or Greater</option>
 					          	</select>
 					          	
 					          </div>
