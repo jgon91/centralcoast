@@ -40,7 +40,7 @@ def taskflow(request):
 def createNewTask1(request):
 	form = taskForm(request.POST)
 	result = {'success' : False}
-	
+
 	if request.method == 'POST':
 		if request.is_ajax():
 			if form.is_valid():
@@ -80,7 +80,7 @@ def createNewTask2(request):
 				task = form.cleaned_data['task']
 				machine = form.cleaned_data['machine']
 				implement = form.cleaned_data['implement']
-				
+
 				try:
 					t_task = Task.objects.get(id = task.id)
 					if not t_task.accomplished:
@@ -413,6 +413,30 @@ def getEquipmentStatus(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+def updateEquipmentStatus(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+	 	if request.is_ajax():
+			try:
+				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
+				machine.status = request.POST['status']
+				implement.save()
+				result = {'success' : True}
+			except Machine.DoesNotExist:
+				try:
+					implement = Implement.objects.get(qr_code = request.POST['qr_code'])
+					implement.status = request.POST['status']
+					plement.save()
+					result = {'success' : True}
+				except Implement.DoesNotExist:
+	 				result['code'] = 1 #There is no equipment for this qr_code
+	 	else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else:
+	 	result['code'] = 3 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
 # Driver 3.2
 # Get equipment info by qr_code, which can be a machine or a implement and return it
 @login_required
@@ -644,8 +668,8 @@ def getFilteredImplement(request):
 
 
 # Driver 6.3.3.1
-# It will receive some employee qr_code, and maybe machine_qr_code and implement_qr_code, and it will 
-# return: first name, company_id, and photo; if its certification/qualification is enough for the 
+# It will receive some employee qr_code, and maybe machine_qr_code and implement_qr_code, and it will
+# return: first name, company_id, and photo; if its certification/qualification is enough for the
 # machine and implement, if they were selected.
 @login_required
 def getScannedFilteredEmployee(request):
@@ -660,7 +684,7 @@ def getScannedFilteredEmployee(request):
 		machine_qr_code = request.POST['machine_qr_code']
 
 	 	if request.is_ajax():
-	 		try:	
+	 		try:
 				# Create list of Qualifications that the employee has
 				employee_used = Employee.objects.get(qr_code = employee_qr_code)
 				emp_qualification = EmployeeQualifications.objects.filter(employee__id = employee_used.id)
@@ -683,20 +707,20 @@ def getScannedFilteredEmployee(request):
 						if each.qualification.id in emp_qualification_list:
 							if each.qualification_required > emp_qualification_level_list[str(each.qualification.id)]:
 								employee_is_able = False
-								error = 'Insuficient level for qualification: '+str(each.qualification.description)+' required by selected Implement' 
+								error = 'Insuficient level for qualification: '+str(each.qualification.description)+' required by selected Implement'
 								result.append({'error':error})
 						else:
 							employee_is_able = False
-							error = 'Missing qualification: '+str(each.qualification.description)+' required by selected Implement' 
+							error = 'Missing qualification: '+str(each.qualification.description)+' required by selected Implement'
 							result.append({'error':error})
 					# Check if the employee has all Certifications required by Implement, if it was chosen
 					imp_certification = ImplementCertification.objects.filter(implement__id = implement_used.id)
 					for each in imp_certification:
 						if not each.certification.id in emp_certification_list:
 							employee_is_able = False
-							error = 'Missing certification: '+str(each.certification.description)+' required by selected Implement' 
+							error = 'Missing certification: '+str(each.certification.description)+' required by selected Implement'
 							result.append({'error':error})
-					
+
 				# Check if the employee has all Qualifications required by Machine, if it was chosen
 				if machine_qr_code:
 					machine_used = Machine.objects.get(qr_code = machine_qr_code)
@@ -705,18 +729,18 @@ def getScannedFilteredEmployee(request):
 						if each.qualification.id in emp_qualification_list:
 							if each.qualification_required > emp_qualification_level_list[str(each.qualification.id)]:
 								employee_is_able = False
-								error = 'Insuficient level for qualification: '+str(each.qualification.description)+' required by selected Machine' 
+								error = 'Insuficient level for qualification: '+str(each.qualification.description)+' required by selected Machine'
 								result.append({'error':error})
 						else:
 							employee_is_able = False
-							error = 'Missing qualification: '+str(each.qualification.description)+' required by selected Machine' 
+							error = 'Missing qualification: '+str(each.qualification.description)+' required by selected Machine'
 							result.append({'error':error})
 					# Check if the employee has all Certifications required by Machine, if it was chosen
 					mac_certification = MachineCertification.objects.filter(machine__id = machine_used.id)
 					for each in mac_certification:
 						if not each.certification.id in emp_certification_list:
 							employee_is_able = False
-							error = 'Missing certification: '+str(each.certification.description)+' required by selected Machine' 
+							error = 'Missing certification: '+str(each.certification.description)+' required by selected Machine'
 							result.append({'error':error})
 
 				if employee_is_able == True:
