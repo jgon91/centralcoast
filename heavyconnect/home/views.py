@@ -393,8 +393,8 @@ def getEquipmentInfo(request):
 				result['status'] = machine.status
 				result['hour_cost'] = machine.hour_cost
 				result['photo'] = machine.photo
-				result['photo1'] = machine.photo
-				result['photo2'] = machine.photo
+				result['photo1'] = machine.photo1
+				result['photo2'] = machine.photo2
 				result['success'] = True
 			except Machine.DoesNotExist:
 				try:
@@ -412,8 +412,8 @@ def getEquipmentInfo(request):
 					result['status'] = implement.status
 					result['hour_cost'] = implement.hour_cost
 					result['photo'] = implement.photo
-					result['photo1'] = implement.photo
-					result['photo2'] = implement.photo
+					result['photo1'] = implement.photo1
+					result['photo2'] = implement.photo2
 					result['success'] = True
 				except Implement.DoesNotExist:
 					result['code'] = 1 #There is no equipment associated with this
@@ -431,7 +431,6 @@ def retrieveScannedMachine(request):
  		if request.is_ajax():
  			try:
 				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
-				machine = Machine.objects.get(qr_code = '1230xf')
 				result['qr_code'] = machine.qr_code
 				result['manufacture'] = machine.manufacturer_model.manufacturer.name
 				result['serial'] = machine.serial_number
@@ -456,8 +455,8 @@ def retrieveScannedMachine(request):
 				result['operator_station'] = machine.operator_station
 				result['hour_cost'] = machine.hour_cost
 				result['photo'] = machine.photo
-				result['photo1'] = machine.photo
-				result['photo2'] = machine.photo
+				result['photo1'] = machine.photo1
+				result['photo2'] = machine.photo2
 				if result['status'] is 1:
 					result['success'] = True
 				else:
@@ -794,7 +793,8 @@ def pastTaskList(request):
 							aux['implement'] = 'NONE'
 						aux['duration'] = item.hours_spent
 						aux['task_id'] = item.task.id
-						aux['category'] = item.task.description
+						aux['description'] = item.task.description
+						aux['category'] = item.task.category.description
 						aux['field'] = item.task.field.name
 						aux['date'] = str(item.task.date)
 						result.append(aux)
