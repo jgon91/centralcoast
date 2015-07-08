@@ -107,10 +107,9 @@ def startShift(request):
 	if request.method == "POST":
 		if request.is_ajax():
 			try:
-				identifier = request.POST['id']
-				employee = Employee.objects.get(id = int(identifier))
+				employee = Employee.objects.get(user_id = request.user.id)
 				now = datetime.datetime.now()
-				attendance, created = EmployeeAttendance.objects.get_or_create(employee_id = employee, defaults = {'date' : now, 'hour_started' : now})
+				attendance, created = EmployeeAttendance.objects.get_or_create(employee_id = employee.id, defaults = {'date' : now, 'hour_started' : now})
 				if created:
 					result['success'] = True
 					result['hour_started'] = str(attendance.hour_started)
