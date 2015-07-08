@@ -128,16 +128,17 @@ class Task(models.Model):
 		(1, 'Approved'),
 		(2, 'Denied'),
 		(3, 'Pending'),
+		(4, 'Setup'),
 	)
 	field = models.ForeignKey(Field)
 	category = models.ForeignKey(TaskCategory)
-	rate_cost = models.FloatField()
-	hours_spent = models.FloatField()
+	rate_cost = models.FloatField(null = True)
+	hours_spent = models.FloatField(null = True)
 	hours_prediction = models.FloatField()
 	description =  models.CharField(max_length = 500)
 	passes = models.IntegerField()
 	date = models.DateTimeField()
-	accomplished = models.BooleanField()
+	accomplished = models.BooleanField(default = False)
 	approval = models.IntegerField(choices = APPROVAL_CHOICES)
 
 	def __unicode__(self):
@@ -276,8 +277,8 @@ class EmployeeLocalization(models.Model):
 class EmployeeTask(models.Model):
 	employee = models.ForeignKey(Employee)
 	task = models.ForeignKey(Task)
-	task_init = models.DateTimeField()
-	hours_spent = models.FloatField()
+	task_init = models.DateTimeField(null = True)
+	hours_spent = models.FloatField(default = 0)
 	substitution = models.BooleanField()
 
 	def __unicode__(self):
