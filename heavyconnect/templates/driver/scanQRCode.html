@@ -10,6 +10,11 @@
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerDriver' %}");
+                $("#linkEquipmemt").click(function () {
+                    $("#linkEquipmemt").attr("href", "{% url 'equipment'%}?qr_code=" + $("#qr_code").val());
+                    alert($("#qr_code").val());
+                });
+                
 			});
 		</script>
         
@@ -23,8 +28,8 @@
                 <div class="panel-heading" style="display: inline-block;width: 100%;  text-align: center; color: white; background: #1F3801;">
                     
                     <div style="margin auto 40px;text-align: center;">
-                    	<span style="font-size: 20px">Type:  <input type="text" id="" style="color:black;"/> 
-                    		<a href="{% url 'equipment'%}"><button id="submit" title="Play" type="button" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-play"></span></button><a></a>
+                    	<span style="font-size: 20px">Type:  <input type="text" id="qr_code" style="color:black;"/> 
+                    		<a id="linkEquipmemt" href=""><button id="submit" title="Play" type="button" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-play"></span></button><a></a>
                     		or Scan QR Code: </span>
                     <select id="cameraId" class="form-control" style="display: inline-block;width: auto;"></select>
                     <button id="play" data-toggle="tooltip" title="Play" type="button" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-play"></span></button>

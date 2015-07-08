@@ -12,8 +12,19 @@
 				$("#head").load("{% url 'headerDriver' %}");
 				getLocation();
 				
-				loadEquipmentInfo("{{ csrf_token }}", "{% url 'getEquipmentInfo' %}", "123123");
-				loadEquipmentStatus("{{ csrf_token }}", "{% url 'equipmentStatus' %}", "123123"); //Broken
+				var url   = window.location.search.replace("?", "");
+				var parametersList = url.split("&");
+				var item = {}
+				
+				for(var i = 0; i < parametersList.length; i++){
+				    var parameter = parametersList[i].split("=");
+				    var key = parameter[0];
+				    var value = parameter[1];
+				    item[key] = value;
+				}
+
+				loadEquipmentInfo("{{ csrf_token }}", "{% url 'getEquipmentInfo' %}", item.qr_code);
+				loadEquipmentStatus("{{ csrf_token }}", "{% url 'equipmentStatus' %}", item.qr_code); //Broken
 				//loadEquipmentStatus("{{ csrf_token }}", "{% url 'equipmentStatus' %}", "KFJHDSKJH4"); //Ok
 				//loadEquipmentStatus("{{ csrf_token }}", "{% url 'equipmentStatus' %}", "2173"); //Attention
 
