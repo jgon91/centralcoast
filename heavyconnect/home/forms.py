@@ -43,6 +43,17 @@ class shopForm(forms.Form):
 	address = forms.CharField()
 ### End ###
 
+### Structure for EquipmentCategoryForm ###
+class equipmentCategoryForm(forms.Form):
+	name = forms.CharField(max_length = 25)
+### End ###
+
+### Structure for EquipmentTypeForm ###
+class equipmentTypeForm(forms.Form):
+	category = forms.ForeignKey(queryset = EquipmentCategory.objects.all())
+	name = forms.CharField(max_length = 25)
+### End ###
+
 ### Structure for machineForm ###
 class machineForm(forms.Form):
 	HITCH_CHOICES = (

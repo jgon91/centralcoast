@@ -1057,7 +1057,7 @@ def manufacturerFormView(request):
 		else:
 			return render(request, 'formTest.html', {'form': form})
 
-def manufacturerModelForm(request):
+def manufacturerModelFormView(request):
 	form = manufacturerModelForm(request.POST)
 	if form.is_valid():
 		return redirect('formOk')
@@ -1073,6 +1073,20 @@ def repairShopFormView(request):
 
 def shopFormView(request):
 	form = shopForm(request.POST)
+	if form.is_valid():
+		return redirect('formOk')
+	else:
+		return render(request, 'formTest.html', {'form': form})
+
+def equipmentCategoryFormView(request):
+	form = EquipmentCategoryForm(request.POST)
+	if form.is_valid():
+		return redirect('formOk')
+	else:
+		return render(request, 'formTest.html', {'form': form})
+
+def equipmentTypeFormView(request):
+	form = EquipmentTypeForm(request.POST)
 	if form.is_valid():
 		return redirect('formOk')
 	else:

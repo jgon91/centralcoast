@@ -100,5 +100,7 @@ urlpatterns = [
     url(r'^serviceFormView/$', main_views.serviceFormView, name = 'registerService'),
     url(r'^machineServiceFormView/$', main_views.machineServiceFormView, name = 'registerMachineService'),
     url(r'^implementServiceFormView/$', main_views.implementServiceFormView, name = 'registerImplementService'),
+    url(r'^equipmentCategoryFormView/$', main_views.equipmentCategoryFormView, name = 'registerEquipmentCategory'),
+    url(r'^equipmentTypeFormView/$', main_views.equipmentTypeFormView, name = 'equipmentTypeFormView'),
     ### End ###
 ]
