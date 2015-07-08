@@ -62,7 +62,6 @@ urlpatterns = [
 	url(r'^getScannedImplement/$', main_views.getScannedImplement, name = 'getScannedImplement'),
     url(r'^retrievePendingTask/$', main_views.retrievePendingTask, name = 'retrievePendingTask'),
 	url(r'^getScannedFilteredEmployee/$', main_views.getScannedFilteredEmployee, name = 'getScannedFilteredEmployee'),
-    url(r'^retrievePendingTask/$', main_views.retrievePendingTask, name = 'retrievePendingTask'),
     url(r'^retrieveMachine/$', main_views.retrieveMachine, name = 'retrieveMachine'),
 	url(r'^retrieveScannedEmployee/$', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee'),
     url(r'^continueTask/$', main_views.continueTask, name = 'continueTask'),
