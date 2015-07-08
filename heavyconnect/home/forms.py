@@ -341,8 +341,8 @@ class questionForm(forms.Form):
 
 ### Structure for implementServiceForm ###
 class machineChecklistForm(forms.Form):
-	question = forms.ForeignKey(queryset = Question.objects.all())
-	qrCode = forms.ForeignKey(queryset = Machine.objects.all())
+	question = forms.ModelChoiceField(queryset = Question.objects.all())
+	qrCode = forms.ModelChoiceField(queryset = Machine.objects.all())
 	answer = forms.BooleanField()
 	note = forms.CharField(max_length = 200,blank = True)
 	date = forms.DateTimeField()
@@ -351,8 +351,8 @@ class machineChecklistForm(forms.Form):
 
 ### Structure for implementServiceForm ###
 class implementChecklistForm(forms.Form):
-	question = forms.ForeignKey(queryset = Question.objects.all())
-	qrCode = forms.ForeignKey(queryset = Implement.objects.all())
+	question = forms.ModelChoiceField(queryset = Question.objects.all())
+	qrCode = forms.ModelChoiceField(queryset = Implement.objects.all())
 	answer = forms.BooleanField()
 	note = forms.CharField(max_length = 200, blank = True)
 	date = forms.DateTimeField()
