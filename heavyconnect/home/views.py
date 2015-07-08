@@ -156,8 +156,7 @@ def startStopBreak(request):
 	if request.method == 'POST': #check if the method used for the request was POST
 		if request.is_ajax(): #check if the request came from ajax request
 
-			identifier = request.POST['id']
-			employee = Employee.objects.get(id = int(identifier))
+			employee = Employee.objects.get(user_id = request.user.id)
 
 			now = datetime.datetime.now()
 			start_date = datetime.datetime.combine(now, datetime.time.min)
