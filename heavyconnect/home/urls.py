@@ -51,6 +51,7 @@ urlpatterns = [
     url(r'^loadMachinesImage/$', main_views.loadMachinesImage, name = 'loadMachinesImage'),
     url(r'^loadImplementsImage/$', main_views.loadImplementsImage, name = 'loadImplementsImage'),
     url(r'^startShift/$', main_views.startShift, name = 'startShift'),
+    url(r'^stopShift/$', main_views.stopShift, name = 'stopShift'),
     url(r'^equipmentStatus/$', main_views.getEquipmentStatus, name = 'equipmentStatus'),
     url(r'^startStopBreak/$', main_views.startStopBreak, name = 'startStopBreak'),
 	url(r'^getEquipmentInfo/$', main_views.getEquipmentInfo, name = 'getEquipmentInfo'),
