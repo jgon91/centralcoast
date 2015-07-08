@@ -18,9 +18,7 @@
 				});
 				//Functions filter tractors
 				$(".selectFilters").change(function(){
-					//$("#hitch_capacity").val();
-					//$("#horse_power").val();
-					//alert("Changed!!!" + $("#manufacturer").val());
+					
 					getFilteredMachine("{{ csrf_token }}", "{% url 'getFilteredMachine' %}");
 				});
 				
