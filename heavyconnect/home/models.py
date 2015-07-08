@@ -139,7 +139,7 @@ class Task(models.Model):
 	passes = models.IntegerField()
 	date = models.DateTimeField()
 	accomplished = models.BooleanField(default = False)
-	approval = models.IntegerField(choices = APPROVAL_CHOICES)
+	approval = models.IntegerField(choices = APPROVAL_CHOICES, default = 4)
 
 	def __unicode__(self):
 		return "Field Name: " + str(self.field.name) + " Category: " + str(self.category.description) + ", Hour Cost: " +  str(self.rate_cost) + ", Description: " +  str(self.description)
