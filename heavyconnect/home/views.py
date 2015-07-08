@@ -763,8 +763,20 @@ def pastTaskList(request):
 				off = int(request.POST['offset'])
 				limit =int(request.POST['limit'])
 				if off >= 0 and limit > 0:
-					tasks = EmployeeTask.objects.filter(employee__id = request.user.id, task__accomplished = False)[off:limit]
+					tasks = EmployeeTask.objects.filter(employee__user__id = request.user.id, task__accomplished = False)[off:limit]
 					for item in tasks:
+						try:
+							equipment = TaskImplementMachine.objects.get(task__id = item.task.id)
+							aux['machine'] = equipment.machine.qr_code
+						except:
+							aux['machine'] = 'NONE'
+						try:
+							implement = TaskImplementMachine.objects.get(task__id = item.task.id)
+							aux['implement'] = equipment.implement.qr_code
+						except:
+							aux['implement'] = 'NONE'
+						aux['duration'] = item.hours_spent
+						aux['task_id'] = item.task.id
 						aux['category'] = item.task.description
 						aux['field'] = item.task.field.name
 						aux['date'] = str(item.task.date)
