@@ -7,9 +7,18 @@
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerDriver' %}");
-				//getPendingTask("{{ csrf_token }}", "{% url 'driverInfo' %}");
 				getPendingTask("{{ csrf_token }}", "{% url 'retrievePedingTask' %}");
+
+				$("#btnCreateTask").click(function() {
+
+					var permission = permissionCreateTask("{{csrf_token}}", "{% url 'validatePermission' %}");
+					alert("Hey Victor" + permission);
+					return permission;
+					
+					
+				});
 			});
+
 
 			function getPendingTask(token, url) {
 
@@ -18,14 +27,36 @@
 					url : url,
 					data : {
 						"csrfmiddlewaretoken" : token,
-						"N" : 1
+						"N" : 3
 					},
 					datatype : "json",
 					success : function(data, status, xhr) {
-						//$("#firstName").html(data.first_name);
-						alert("Hey there: " + data[1].category);
+						for (var i = 1; i < 4; i++) {
+							//$("#next" + i + " .machineModel").html(data[i].machine);
+							$("#next" + i + " .fieldName").html(data[i].field);
+						};
+						
 					}
 				});
+			}
+			
+			//Functions
+			function permissionCreateTask(token, url)
+			{			
+					$.ajax({
+						method: "POST",
+						url: url,
+						dataType: "json", 
+           				data: {"csrfmiddlewaretoken" : token},
+						success: function(data, status, xhr)
+						{					 	
+						 	if(!data.authorized)
+						 	{	
+						 		alert("You do not have enough right to create a task!!" + data.authorized);
+						 	}
+					 		return data.authorized;
+						}
+					});
 			}
 		</script>
 	</head>
@@ -39,24 +70,24 @@
 				<div id="divTask">
 					<div id="pendingTask">
 						<div id="taskP">
-							PENDING TASKS
+							UPCOMING TASKS
 						</div>
 						<div class="row" style="margin: 0px;">
 							<div class="col-xs-4 col-md-4 nextBox" id="next1">
 								<span class="titleNextTask"></br>#1 First Task</span>
-								<h4></br>Taskflow:</h4>RAC4556 CAT 65D
-								<h4></br>Field:</h4>HOME RANCH 2A
+								<h4></br>Machine:</h4><span class="machineModel"></span>
+								<h4></br>Field:</h4><span class="fieldName"></span>
 								</br></br></br></br><a href="#" id="divStartNow">START NOW</a>
 							</div>
 							<div class="col-xs-4 col-md-4 nextBox" id="next2">
 								<span class="titleNextTask"></br>#2 Second Task</span>
-								<h4></br>Taskflow:</h4>RAC4556 CAT 65D
-								<h4></br>Field:</h4>HOME RANCH 2A
+								<h4></br>Machine:</h4><span class="machineModel"></span>
+								<h4></br>Field:</h4><span class="fieldName"></span>
 							</div>
 							<div class="col-xs-4 col-md-4 nextBox" id="next3">
 								<span class="titleNextTask"></br>#3 Third Task</span>
-								<h4></br>Taskflow:</h4>RAC4556 CAT 65D
-								<h4></br>Field:</h4>HOME RANCH 2A
+								<h4></br>Machine:</h4><span class="machineModel"></span>
+								<h4></br>Field:</h4><span class="fieldName"></span>
 							</div>
 						</div>
 						<!--
@@ -96,32 +127,4 @@
 		</div>
 		<footer id="foot"></footer>
 	</body>
-	<script>
-		function startNewTask() {
-
-			console.log("function called");
-			$.ajax({
-				method : "POST",
-				url : "",
-				dataType : "json",
-				data : {
-					"csrf_token" : '{{csrf_token}}'
-				},
-				success : function(data, status, xhr) {
-					if (data.success) {
-						if (data.authorized) {
-							return true;
-						} else {
-							alert("You do not have enough right to create a task!!");
-							return false;
-						}
-					}
-				}
-			});
-		}
-
-
-		$("#btnCreateTask").click(startNewTask);
-
-	</script>
 </html>
