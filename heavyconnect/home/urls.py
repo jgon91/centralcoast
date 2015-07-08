@@ -69,6 +69,7 @@ urlpatterns = [
 	url(r'^retrieveScannedEmployee', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee'),
     url(r'^validatePermission', main_views.validatePermission, name = 'validatePermission'),
 	url(r'^getAllManufacturers/$', main_views.getAllManufacturers, name = 'getAllManufacturers'),
+    url(r'^expandInfoBox', main_views.expandInfoBox, name = 'expandInfoBox'), 
     ### End ###
 
     ###Insert###
