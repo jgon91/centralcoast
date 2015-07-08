@@ -4,22 +4,22 @@
 		{% load staticfiles %}
 		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
 		<script>
+			//variables
+			
+
+			//Events
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerDriver' %}");
-				getPendingTask("{{ csrf_token }}", "{% url 'retrievePedingTask' %}");
-
-				$("#btnCreateTask").click(function() {
-
-					var permission = permissionCreateTask("{{csrf_token}}", "{% url 'validatePermission' %}");
-					alert("Hey Victor" + permission);
-					return permission;
-					
-					
+				$("#btnCreateTask").click(function() {		
+					return permissionCreateTask("{{csrf_token}}", "{% url 'validatePermission' %}", "");// true or false
 				});
+
+				getPendingTask("{{ csrf_token }}", "{% url 'retrievePedingTask' %}");
 			});
 
 
+			//Functions
 			function getPendingTask(token, url) {
 
 				$.ajax({
@@ -40,23 +40,27 @@
 				});
 			}
 			
-			//Functions
-			function permissionCreateTask(token, url)
+			
+			function permissionCreateTask(token, url, permission)
 			{			
-					$.ajax({
-						method: "POST",
-						url: url,
-						dataType: "json", 
-           				data: {"csrfmiddlewaretoken" : token},
-						success: function(data, status, xhr)
-						{					 	
-						 	if(!data.authorized)
-						 	{	
-						 		alert("You do not have enough right to create a task!!" + data.authorized);
-						 	}
-					 		return data.authorized;
-						}
-					});
+				$.ajax({
+					method: "POST",
+					url: url,
+					dataType: "json", 
+					async: false,
+       				data: {"csrfmiddlewaretoken" : token},
+					success: function(data, status, xhr)
+					{					 	
+
+					 	if(!data.authorized)
+					 	{	
+					 		alert("You do not have enough right to create a task!!");
+					 	}
+					 		permission = data.authorized;
+					}
+
+				});
+					return permission; 
 			}
 		</script>
 	</head>
