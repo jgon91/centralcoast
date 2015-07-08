@@ -730,14 +730,18 @@ def retrievePendingTask(request):
 				aux = {}
 				n = int(request.POST['N'])
 				if n > 0:
-					emploTask = EmployeeTask.objects.filter(employee__id = request.user.id, task_init__lte =  date2, task__accomplished = False)[:n]
+					aux = {}
+					emploTask = EmployeeTask.objects.filter(employee__user__id = request.user.id, task_init__lte =  date2, task__accomplished = False)[:n]
 					for item in emploTask:
 						aux['category'] = item.task.description
 						aux['field'] = item.task.field.name
 						aux['date'] = str(item.task.date)
 						aux['task_id'] = item.task.id
-						machine = Machine.objects.filter(machine_id = TaskImplementMachine.objects.filter(task_id = item.task.id))
-						aux['qr_code'] = machine.qr_code
+						try:
+							machine = Machine.objects.get(id = TaskImplementMachine.objects.filter(task_id = item.task.id))
+							aux['qr_code'] = machine.qr_code
+						except:
+							aux['qr_code'] = "NONE"
 						result.append(aux)
 						aux = {}
 					result[0] = {'success' : True}
@@ -763,7 +767,7 @@ def pastTaskList(request):
 				off = int(request.POST['offset'])
 				limit =int(request.POST['limit'])
 				if off >= 0 and limit > 0:
-					tasks = EmployeeTask.objects.filter(employee__user__id = request.user.id, task__accomplished = False)[off:limit]
+					tasks = EmployeeTask.objects.filter(employee__user__id = request.user.id, task__accomplished = True)[off:limit]
 					for item in tasks:
 						try:
 							equipment = TaskImplementMachine.objects.get(task__id = item.task.id)
