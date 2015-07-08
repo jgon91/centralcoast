@@ -703,7 +703,8 @@ def pastTaskList(request):
 							aux['implement'] = 'NONE'
 						aux['duration'] = item.hours_spent
 						aux['task_id'] = item.task.id
-						aux['category'] = item.task.description
+						aux['description'] = item.task.description
+						aux['category'] = item.task.category.description
 						aux['field'] = item.task.field.name
 						aux['date'] = str(item.task.date)
 						result.append(aux)

@@ -25,16 +25,23 @@
 								$("#task" + i + " .date").html(data[i].date.substring(0,10) + "</br>" + data[i].date.substring(10,16));
 								$("#past" + i + " .field").html(data[i].field);
 								$("#past" + i + " .category").html(data[i].category);
-								//$("#past" + i + " .machine").html(data[i].machine);
-								//$("#past" + i + " .task").html(data[i].task);
-								//$("#past" + i + " .duration").html(data[i].duration);
-								//$("#past" + i + " .implement").html(data[i].implement);
+								$("#past" + i + " .machine").html(data[i].machine);
+								$("#past" + i + " .task").html(data[i].description);
+								$("#past" + i + " .duration").html(data[i].duration + " Hours");
+								$("#past" + i + " .implement").html(data[i].implement);
+								$("#past" + i + " .task_id").html(data[i].task_id);
 							}
 							
 						}
 					});			
 			}
 		</script>
+		<style>
+			#past1 .task_id, #past2 .task_id, #past3 .task_id
+			{
+				display: none;
+			}
+		</style>
 	</head>
 	<body>
 		<header id="head"></header>
@@ -72,6 +79,7 @@
 							</br></br>TASK: <span class="task"></span>
 							</br></br>CATEGORY: <span class="category"></span>
 							</br></br>DURATION: <span class="duration"></span>
+							<span class="task_id"></span>
 						</div>
 						<div class="col-xs-4 col-md-4 pastBox" id="past2">
 							MACHINE: <span class="machine"></span>
@@ -80,6 +88,7 @@
 							</br></br>TASK: <span class="task"></span>
 							</br></br>CATEGORY: <span class="category"></span>
 							</br></br>DURATION: <span class="duration"></span>
+							<span class="task_id"></span>
 						</div>
 						<div class="col-xs-4 col-md-4 pastBox" id="past3">
 							MACHINE: <span class="machine"></span>
@@ -88,6 +97,7 @@
 							</br></br>TASK: <span class="task"></span>
 							</br></br>CATEGORY: <span class="category"></span>
 							</br></br>DURATION: <span class="duration"></span>
+							<span class="task_id"></span>
 						</div>
 					</div>
 					<div class="row">
