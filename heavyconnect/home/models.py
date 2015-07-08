@@ -31,6 +31,22 @@ class Shop(models.Model):
 	def __unicode__(self):
 		return "Contact: " + str(self.name) + "\n" + "Phone Number: " + str(self.number) + "\n" + "Address: " + str(self.address)
 
+
+class EquipmentCategory(models.Model):
+	name = models.CharField(max_length = 25)
+
+	def __unicode__(self):
+		return "name: " + str(self.name)
+
+class EquipmentType(models.Model):
+	category = models.ForeignKey(EquipmentCategory)
+	name = models.CharField(max_length = 25)
+
+	def __unicode__(self):
+		return "Name: " + str(self.name) + ", Category: " + str(self.category.name)
+
+
+
 class Machine(models.Model):
 	HITCH_CHOICES = (
 		(1, '1'),
@@ -79,6 +95,7 @@ class Machine(models.Model):
 	operator_station =  models.CharField(max_length = 1, choices = (('C', 'Cab'), ('O', 'Open')))
 	status = models.IntegerField(choices = STATUS_CHOICES, null = True)
 	hour_cost = models.FloatField()
+	equipment_type = models.ForeignKey(EquipmentType)
 	photo = models.URLField(max_length = 200)
 
 	def __unicode__(self):
@@ -104,6 +121,7 @@ class Implement(models.Model):
 	base_cost = models.FloatField()
 	hour_cost = models.FloatField()
 	status = models.IntegerField(choices = Machine.STATUS_CHOICES)
+	equipment_type = models.ForeignKey(EquipmentType)
 	photo = models.URLField(max_length = 200)
 
 	def __unicode__(self):
@@ -374,7 +392,3 @@ class ImplementChecklist(models.Model):
 
 	def __unicode__(self):
 		return "Answer: " + str(self.answer) + ", note: " + str(self.note)
-
-
-
-
