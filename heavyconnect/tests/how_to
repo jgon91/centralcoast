@@ -1,0 +1,7 @@
+#How to run the tests
+-- python manage.py test tests/
+	  1		  2		  3 	4
+1 - Python Executable
+2 - Manage file
+3 - command to run tests
+4 - Path to the test files
