@@ -45,8 +45,6 @@ class EquipmentType(models.Model):
 	def __unicode__(self):
 		return "Name: " + str(self.name) + ", Category: " + str(self.category.name)
 
-
-
 class Machine(models.Model):
 	HITCH_CHOICES = (
 		(1, '1'),
@@ -217,7 +215,6 @@ class Qualification(models.Model):
 		return "Description: " + str(self.description)
 
 class Certification(models.Model):
-	category = models.IntegerField()
 	description = models.CharField(max_length = 50)
 
 	def __unicode__(self):
