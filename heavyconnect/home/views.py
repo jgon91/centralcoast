@@ -40,6 +40,7 @@ def taskflow(request):
 def createNewTask1(request):
 	form = taskForm(request.POST)
 	result = {'success' : False}
+	
 	if request.method == 'POST':
 		if request.is_ajax():
 			if form.is_valid():
@@ -56,10 +57,11 @@ def createNewTask1(request):
 					task = Task(field = field, category = category, hours_prediction = hours_prediction, description = description, passes = passes, date = date)
 					task.save()
 					result['success'] = True
+					result['continue'] = task.id
 				except Employee.DoesNotExist:
 					result['code'] =  1 #There is no users associated with this
 			else:
-				result['code'] = 2 #No all data is valid
+				result['code'] = 2 #No all data are valid
 		else:
 			result['code'] = 3 #Use ajax to perform requests
 	else:
@@ -69,7 +71,35 @@ def createNewTask1(request):
 
 @login_required
 def createNewTask2(request):
+	form = taskImplementMachineForm(request.POST)
 	result = {'success' : False}
+
+	if request.method == 'POST':
+		if request.is_ajax():
+			if form.is_valid():
+				task = form.cleaned_data['task']
+				machine = form.cleaned_data['machine']
+				implement = form.cleaned_data['implement']
+				
+				try:
+					t_task = Task.objects.get(id = task.id)
+					if not t_task.accomplished:
+						t_task.approval = 3 #Pending
+						t_task.save()
+
+						taskIM = TaskImplementMachine(task = task, machine = machine, implement = implement)
+						taskIM.save()
+						result['success'] = True
+					else:
+						result['code'] = 1 #This task was already finished
+				except Task.DoesNotExist:
+					result['code'] = 2 #You need to create the details of the task before select machine and implement
+			else:
+				result['code'] = 3 #Not all data are valid
+		else:
+			result['code'] = 4 #Use ajax to perform requests
+	else:
+		result['code'] = 5 #Request was not POST
 
 
 	return HttpResponse(json.dumps(result),content_type='application/json')

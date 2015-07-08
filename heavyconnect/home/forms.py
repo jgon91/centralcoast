@@ -284,7 +284,6 @@ class taskImplementMachineForm(forms.Form):
 	task = forms.ModelChoiceField(queryset = Task.objects.all())
 	machine = forms.ModelChoiceField(queryset = Machine.objects.all())
 	implement = forms.ModelChoiceField(queryset = Implement.objects.all())
-	machine = forms.BooleanField(required = False)
 ### End ###
 
 ### Structure for appendixForm ###
