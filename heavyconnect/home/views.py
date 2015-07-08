@@ -945,6 +945,42 @@ def continueTask(request):
 	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+def expandInfoBox(request):
+	result.append({'success' : False})
+	if request.method = 'POST':
+		if request.is_ajax():
+			try:
+				employeeTask = EmployeeTask.objects.get(id = request.POST['id'])#request.POST['id'])
+				task = Task.objects.get(id = request.POST['id'])
+				taskImplementMachine = TaskImplementMachine.objects.get(id = request.POST['id'])
+				field = Field.objects.get(id = request.POST['id'])
+				time_now = datetime.datetime.now();
+				date = task.date
+				boolean = bool(str(time_now) > str(date))
+				print boolean
+				if bool(str(time_now) > str(date)):# == True:
+					employee = Employee.objects.get(id = employeeTask.employee_id)
+					result['employee_id'] = employeeTask.employee_id
+					result['hours_spent'] = employeeTask.hours_spent
+					result['user.id'] = employee.user.id
+					result['first_name'] = employee.user.first_name
+					result['last_name'] = employee.user.last_name
+					result['company_id'] = employee.company_id
+					result['taskImplementMachine.id'] = taskImplementMachine.id
+					result['implement.id'] = taskImplementMachine.implement.id
+					result['field.id'] = field.id
+				elif bool(str(time_now) < str(date)):
+					result['hours_prediction'] = task.hours_prediction
+				result[0] = {'success' : True}
+			except DoesNotExist:
+				result.append({'result' : 1}) #There is no Implement associated with this
+		else:
+			result.append({'result' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'result' : 3}) #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
 # @menezescode: Page only to show the form was correctly sended.
 def formOk(request):
 	return render(request, 'formOk.html')
