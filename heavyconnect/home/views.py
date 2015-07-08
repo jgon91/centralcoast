@@ -403,6 +403,8 @@ def getEquipmentInfo(request):
 				result['status'] = machine.status
 				result['hour_cost'] = machine.hour_cost
 				result['photo'] = machine.photo
+				result['photo1'] = machine.photo1
+				result['photo2'] = machine.photo2
 				result['success'] = True
 			except Machine.DoesNotExist:
 				try:
@@ -418,6 +420,8 @@ def getEquipmentInfo(request):
 					result['status'] = implement.status
 					result['hour_cost'] = implement.hour_cost
 					result['photo'] = implement.photo
+					result['photo1'] = implement.photo1
+					result['photo2'] = implement.photo2
 					result['success'] = True
 				except Implement.DoesNotExist:
 					result['code'] = 1 #There is no equipment associated with this
@@ -432,12 +436,11 @@ def getEquipmentInfo(request):
 def retrieveScannedMachine(request):
 	result = {'success' : False}
   	if request.method == 'POST':
-	 	if request.is_ajax():
-	 		try:
-		 		machine = Machine.objects.get(qr_code = request.POST['qr_code'])
-	 			models = ManufacturerModel.objects.get(manufacturer = machine.manufacturer_model.id)
-		 		manufacturers = Manufacturer.objects.get(id = models.id)
-				result['manufacture'] = manufacturers.name
+ 		if request.is_ajax():
+ 			try:
+				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
+				result['qr_code'] = machine.qr_code
+				result['manufacture'] = machine.manufacturer_model.manufacturer.name
 				result['serial'] = machine.serial_number
 				result['status'] = machine.status
 				result['model'] = models.model
@@ -458,6 +461,8 @@ def retrieveScannedMachine(request):
 				result['operator_station'] = machine.operator_station
 				result['hour_cost'] = machine.hour_cost
 				result['photo'] = machine.photo
+				result['photo1'] = machine.photo1
+				result['photo2'] = machine.photo2
 				if result['status'] is 1:
  					result['success'] = True
 			except Machine.DoesNotExist:
@@ -894,7 +899,8 @@ def pastTaskList(request):
 							aux['implement'] = 'NONE'
 						aux['duration'] = item.hours_spent
 						aux['task_id'] = item.task.id
-						aux['category'] = item.task.description
+						aux['description'] = item.task.description
+						aux['category'] = item.task.category.description
 						aux['field'] = item.task.field.name
 						aux['date'] = str(item.task.date)
 						result.append(aux)
