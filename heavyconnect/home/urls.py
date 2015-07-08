@@ -70,7 +70,7 @@ urlpatterns = [
     url(r'^validatePermission', main_views.validatePermission, name = 'validatePermission'),
 	url(r'^getAllManufacturers/$', main_views.getAllManufacturers, name = 'getAllManufacturers'),
     url(r'^expandInfoBox', main_views.expandInfoBox, name = 'expandInfoBox'),
-	url(r'^updateEquipmentStatus', main_view.updateEquipmentStatus, name = 'updateEquipmentStatus')
+	url(r'^updateEquipmentStatus', main_view.updateEquipmentStatus, name = 'updateEquipmentStatus'),
     ### End ###
 
     ###Insert###
