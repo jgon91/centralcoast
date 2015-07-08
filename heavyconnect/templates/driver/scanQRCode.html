@@ -12,7 +12,7 @@
 				$("#head").load("{% url 'headerDriver' %}");
                 $("#linkEquipmemt").click(function () {
                     $("#linkEquipmemt").attr("href", "{% url 'equipment'%}?qr_code=" + $("#qr_code").val());
-                    alert($("#qr_code").val());
+                    //alert($("#qr_code").val());
                 });
                 
 			});
