@@ -331,3 +331,30 @@ class implementServiceForm(forms.Form):
 	done = forms.BooleanField(required = False)
 	price = forms.FloatField()
 ### End ### 
+
+### Structure for implementServiceForm ###
+class questionForm(forms.Form):
+	description = forms.CharField(max_length = 250)
+	category = forms.IntegerField()
+	refers = forms.IntegerField(choices = ((1, 'Machine'), (2, 'Implement')))
+### End ###
+
+### Structure for implementServiceForm ###
+class machineChecklistForm(forms.Form):
+	question = forms.ForeignKey(queryset = Question.objects.all())
+	qrCode = forms.ForeignKey(queryset = Machine.objects.all())
+	answer = forms.BooleanField()
+	note = forms.CharField(max_length = 200,blank = True)
+	date = forms.DateTimeField()
+	photo = forms.URLField(max_length = 200, blank = True)
+### End ###
+
+### Structure for implementServiceForm ###
+class implementChecklistForm(forms.Form):
+	question = forms.ForeignKey(queryset = Question.objects.all())
+	qrCode = forms.ForeignKey(queryset = Implement.objects.all())
+	answer = forms.BooleanField()
+	note = forms.CharField(max_length = 200, blank = True)
+	date = forms.DateTimeField()
+	photo = forms.URLField(max_length = 200, blank = True)
+### End ###

@@ -1242,3 +1242,24 @@ def implementServiceFormView(request):
 		return redirect('formOk')
 	else:
 		return render(request, 'formTest.html', {'form': form})
+
+def questionFormView(request):
+	form = questionForm(request.POST)
+	if form.is_valid():
+		return redirect('formOk')
+	else:
+		return render(request, 'formTest.html', {'form': form})
+
+def machineChecklistFormView(request):
+	form = machineChecklistForm(request.POST)
+	if form.is_valid():
+		return redirect('formOk')
+	else:
+		return render(request, 'formTest.html', {'form': form})
+
+def implementChecklistFormView(request):
+	form = implementChecklistForm(request.POST)
+	if form.is_valid():
+		return redirect('formOk')
+	else:
+		return render(request, 'formTest.html', {'form': form})
