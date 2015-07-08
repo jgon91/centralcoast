@@ -87,7 +87,7 @@ class Machine(models.Model):
 	year_purchased = models.IntegerField()
 	engine_hours = models.IntegerField()
 	service_interval = models.IntegerField()
-	base_cost = models.FloatField()
+	base_cost = models.FloatField(default = 0)
 	m_type = models.CharField(max_length = 1, choices = (('T', 'Track'), ('W', 'Wheels'))) 
 	front_tires = models.CharField(max_length = 20)														
 	rear_tires = models.CharField(max_length = 20)
@@ -96,7 +96,10 @@ class Machine(models.Model):
 	status = models.IntegerField(choices = STATUS_CHOICES, null = True)
 	hour_cost = models.FloatField()
 	equipment_type = models.ForeignKey(EquipmentType)
-	photo = models.URLField(max_length = 200)
+	photo = models.URLField(max_length = 200, blank = True)
+	photo1 = models.URLField(max_length = 200, blank = True)
+	photo2 = models.URLField(max_length = 200, blank = True)
+
 
 	def __unicode__(self):
 		return "QRcode: " + str(self.qr_code) + ", Model: " + str(self.manufacturer_model.model)
@@ -122,7 +125,9 @@ class Implement(models.Model):
 	hour_cost = models.FloatField()
 	status = models.IntegerField(choices = Machine.STATUS_CHOICES)
 	equipment_type = models.ForeignKey(EquipmentType)
-	photo = models.URLField(max_length = 200)
+	photo = models.URLField(max_length = 200, blank = True)
+	photo1 = models.URLField(max_length = 200, blank = True)
+	photo2 = models.URLField(max_length = 200, blank = True)
 
 	def __unicode__(self):
 		return "QRcode: " + str(self.qr_code) + ", Model: " + str(self.manufacturer_model.model)
@@ -150,8 +155,8 @@ class Task(models.Model):
 	)
 	field = models.ForeignKey(Field)
 	category = models.ForeignKey(TaskCategory)
-	rate_cost = models.FloatField(null = True)
-	hours_spent = models.FloatField(null = True)
+	rate_cost = models.FloatField(null = True, default = 0)
+	hours_spent = models.FloatField(null = True, default = 0)
 	hours_prediction = models.FloatField()
 	description =  models.CharField(max_length = 500)
 	passes = models.IntegerField()
@@ -168,7 +173,7 @@ class Employee(models.Model):
 		(2, 'es'),
 		(3, 'en'),
 	)
-	last_task = models.ForeignKey(Task)
+	last_task = models.ForeignKey(Task,null = True, blank = True)
 	user = models.OneToOneField(User)
 	active = models.BooleanField()
 	company_id = models.CharField(max_length = 10)
@@ -178,7 +183,7 @@ class Employee(models.Model):
 	hour_cost = models.FloatField()
 	contact_number = models.CharField(max_length = 14)
 	permission_level = models.IntegerField(choices = ((1, 'Driver'), (2, 'Manager')))
-	photo = models.URLField(max_length = 200)
+	photo = models.URLField(max_length = 200, blank = True)
 
 	def __unicode__(self):
 		return  "User ID: " + str(self.user.id) + ", First Name: " + str(self.user.first_name) + ", Last Name: " + str(self.user.last_name)
@@ -295,7 +300,7 @@ class EmployeeLocalization(models.Model):
 class EmployeeTask(models.Model):
 	employee = models.ForeignKey(Employee)
 	task = models.ForeignKey(Task)
-	task_init = models.DateTimeField(null = True)
+	task_init = models.DateTimeField(null = True, blank = True)
 	hours_spent = models.FloatField(default = 0)
 	substitution = models.BooleanField()
 
