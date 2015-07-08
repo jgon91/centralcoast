@@ -470,6 +470,81 @@ def retrieveScannedMachine(request):
 
 
 
+
+# Driver 6.3.2.3
+# It will return (some) information of all machines on database.
+# The result will be in a vector of dictionaries, with the 'success' on first position.
+@login_required
+def getAllMachineInfo(request):
+	each_result = {}
+	result = []
+	result.append({'success' : False})
+	if request.method == 'POST':
+	 	if request.is_ajax():
+			try:
+				machine_tmp = Machine.objects.filter()
+				# Remove implement with status = 'broken' and status = 'quarantine'
+				machine = machine_tmp.exclude(status__gte = 3)
+				for each in machine:
+					each_result['qr_code'] = each.qr_code
+					each_result['year_purchased'] = each.year_purchased
+					each_result['nickname'] = each.nickname
+					each_result['photo'] = each.photo
+					each_result['manufacturer_model'] = each.manufacturer_model.manufacturer.name
+					each_result['asset_number'] = each.asset_number
+			 		each_result['horsepower'] = each.horsepower
+					each_result['hitch_capacity'] = each.hitch_capacity
+					each_result['status'] = each.status
+					result.append(each_result)
+					each_result = {} # I have to clean it, otherwise it will keep the same value always
+				result[0] = {'success' : True}
+			except Machine.DoesNotExist:
+				result.append({'code' : 1}) #There is no machine associated with this
+		else:
+	 		result.append({'code' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'code' : 3}) #result[0]['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+
+# Driver 6.3.2.4
+# It will return (some) information of all implements on database.
+# The result will be in a vector of dictionaries, with the 'success' on first position.
+@login_required
+def getAllImplementInfo(request):
+	each_result = {}
+	result = []
+	result.append({'success' : False})
+	if request.method == 'POST':
+	 	if request.is_ajax():
+			try:
+				implements_tmp = Implement.objects.filter()
+				# Remove implement with status = 'broken' and status = 'quarantine'
+				implements = implements_tmp.exclude(status__gte = 3)
+				for each in implements:
+					each_result['qr_code'] = each.qr_code
+					each_result['year_purchased'] = each.year_purchased
+					each_result['nickname'] = each.nickname
+					each_result['photo'] = each.photo
+					each_result['manufacturer_model'] = each.manufacturer_model.manufacturer.name
+					each_result['asset_number'] = each.asset_number
+			 		each_result['horse_power_req'] = each.horse_power_req
+					each_result['hitch_capacity_req'] = each.hitch_capacity_req
+					each_result['status'] = each.status
+					result.append(each_result)
+					each_result = {} # I have to clean it, otherwise it will keep the same value always
+				result[0] = {'success' : True}
+			except Implement.DoesNotExist:
+				result.append({'code' : 1}) #There is no machine associated with this
+		else:
+	 		result.append({'code' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'code' : 3}) #result[0]['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+
 # Driver 6.3.2.5
 # It will return the Machine filtered by some options and the Implement (if it has been chosed)
 # In the Front End, it will have choices with ids for Manufacture.
@@ -730,41 +805,6 @@ def getScannedImplement(request):
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-# Driver 6.3.2.4
-# It will return (some) information of all implements on database.
-# The result will be and vector of dictionaries, with the 'success' on first position.
-@login_required
-def getAllImplementInfo(request):
-	each_result = {}
-	result = []
-	result.append({'success' : False})
-	if not request.method == 'POST':
-	 	if not request.is_ajax():
-			try:
-				implements_tmp = Implement.objects.filter()
-				# Remove implement with status = 'broken' and status = 'quarantine'
-				implements = implements_tmp.exclude(status__gte = 3)
-				for each in implements:
-					each_result['qr_code'] = each.qr_code
-					each_result['year_purchased'] = each.year_purchased
-					each_result['nickname'] = each.nickname
-					each_result['photo'] = each.photo
-					each_result['manufacturer_model'] = each.manufacturer_model.manufacturer.name
-					each_result['asset_number'] = each.asset_number
-			 		each_result['horse_power_req'] = each.horse_power_req
-					each_result['hitch_capacity_req'] = each.hitch_capacity_req
-					each_result['status'] = each.status
-					each_result['speed_range_max'] = each.speed_range_max
-					result.append(each_result)
-					each_result = {} # I have to clean it, otherwise it will keep the same value always
-				result[0] = {'success' : True}
-			except Machine.DoesNotExist:
-				result.append({'code' : 1}) #There is no machine associated with this
-		else:
-	 		result.append({'code' : 2}) #Use ajax to perform requests
-	else:
-	 	result.append({'code' : 3}) #result[0]['code'] = 3 #Request was not POST
-	return HttpResponse(json.dumps(result),content_type='application/json')
 
 #This function gives back the picture of the refered QrCode
 @login_required
