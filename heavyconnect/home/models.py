@@ -186,7 +186,7 @@ class Employee(models.Model):
 	photo = models.URLField(max_length = 200, blank = True)
 
 	def __unicode__(self):
-		return  "User ID: " + str(self.user.id) + ", First Name: " + str(self.user.first_name) + ", Last Name: " + str(self.user.last_name)
+		return  "User ID: " + str(self.user.id) + ", First Name: " + str(self.user.first_name) + ", Last Name: " + str(self.user.last_name) + ", ID: " + str(self.id)
 
 class EmployeeWithdrawn(models.Model):
 	employee = models.ForeignKey(Employee)
