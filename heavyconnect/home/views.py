@@ -564,26 +564,22 @@ def getFilteredImplement(request):
 
 
 # Driver 6.3.3.1
-# It will receive some employee qr_code and return him/her if his status is 'OK' or 'Attention' and
-# if his/her certification/qualification is enough for the machine and implement, if they were selected.
-
-#################################################################################################
-# I just have to test cases that implement and machine are not selected... and see quah happen!!!
-#################################################################################################
-
+# It will receive some employee qr_code, and maybe machine_qr_code and implement_qr_code, and it will 
+# return: first name, company_id, and photo; if its certification/qualification is enough for the 
+# machine and implement, if they were selected.
 @login_required
 def getScannedFilteredEmployee(request):
 	result = []
 	each_result = {}
 	employee_is_able = True
 	result.append({'success' : False})
-  	if not request.method == 'POST':
+  	if request.method == 'POST':
 		# Save values from request
-		employee_qr_code = request.GET.get('employee_qr_code')
-		implement_qr_code = request.GET.get('implement_qr_code')
-		machine_qr_code = request.GET.get('machine_qr_code')
-			
-	 	if not request.is_ajax():
+		employee_qr_code = request.POST['employee_qr_code']
+		implement_qr_code = request.POST['implement_qr_code']
+		machine_qr_code = request.POST['machine_qr_code']
+
+	 	if request.is_ajax():
 	 		try:	
 				# Create list of Qualifications that the employee has
 				employee_used = Employee.objects.get(qr_code = employee_qr_code)
@@ -599,12 +595,12 @@ def getScannedFilteredEmployee(request):
 				for each in emp_certification:
 					emp_certification_list.append(each.certification.id)
 
-				# Check if the employee has all Qualifications and Certifications required by Implement, if it was chosen
-				if implement_qr_code != '':
+				# Check if the employee has all Qualifications required by Implement, if it was chosen
+				if implement_qr_code:
 					implement_used = Implement.objects.get(qr_code = implement_qr_code)
 					imp_qualification = ImplementQualification.objects.filter(implement__id = implement_used.id)
 					for each in imp_qualification:
-						if each.qualification.id in emp_qualification_list: # NOT DEVE VIR AQUI !
+						if each.qualification.id in emp_qualification_list:
 							if each.qualification_required > emp_qualification_level_list[str(each.qualification.id)]:
 								employee_is_able = False
 								error = 'Insuficient level for qualification: '+str(each.qualification.description)+' required by selected Implement' 
@@ -613,7 +609,7 @@ def getScannedFilteredEmployee(request):
 							employee_is_able = False
 							error = 'Missing qualification: '+str(each.qualification.description)+' required by selected Implement' 
 							result.append({'error':error})
-				
+					# Check if the employee has all Certifications required by Implement, if it was chosen
 					imp_certification = ImplementCertification.objects.filter(implement__id = implement_used.id)
 					for each in imp_certification:
 						if not each.certification.id in emp_certification_list:
@@ -621,8 +617,8 @@ def getScannedFilteredEmployee(request):
 							error = 'Missing certification: '+str(each.certification.description)+' required by selected Implement' 
 							result.append({'error':error})
 					
-				# Check if the employee has all Qualifications and Certifications required by Machine, if it was chosen
-				if machine_qr_code != '':
+				# Check if the employee has all Qualifications required by Machine, if it was chosen
+				if machine_qr_code:
 					machine_used = Machine.objects.get(qr_code = machine_qr_code)
 					mac_qualification = MachineQualification.objects.filter(machine__id = machine_used.id)
 					for each in mac_qualification:
@@ -635,7 +631,7 @@ def getScannedFilteredEmployee(request):
 							employee_is_able = False
 							error = 'Missing qualification: '+str(each.qualification.description)+' required by selected Machine' 
 							result.append({'error':error})
-					
+					# Check if the employee has all Certifications required by Machine, if it was chosen
 					mac_certification = MachineCertification.objects.filter(machine__id = machine_used.id)
 					for each in mac_certification:
 						if not each.certification.id in emp_certification_list:
@@ -645,6 +641,10 @@ def getScannedFilteredEmployee(request):
 
 				if employee_is_able == True:
 					result[0] = {'success' : True}
+					each_result['name'] = str(employee_used.user.first_name)
+					each_result['photo'] = employee_used.photo
+					each_result['company_id'] = employee_used.company_id
+					result.append(each_result)
 			except Machine.DoesNotExist:
 				result.append({'code' : 1}) #There is no users associated with this
 		else:
