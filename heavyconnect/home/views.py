@@ -383,6 +383,8 @@ def getEquipmentInfo(request):
 				result['manufacturer'] = machine.manufacturer_model.manufacturer.name
 				result['model'] = machine.manufacturer_model.model
 				result['asset_number'] = machine.asset_number
+				result['nickname'] = machine.nickname
+				result['qr_code'] = machine.qr_code
 				result['serial_number'] = machine.serial_number
 				result['horse_power'] = machine.horsepower
 				result['hitch_capacity'] = machine.hitch_capacity
@@ -391,12 +393,16 @@ def getEquipmentInfo(request):
 				result['status'] = machine.status
 				result['hour_cost'] = machine.hour_cost
 				result['photo'] = machine.photo
+				result['photo1'] = machine.photo
+				result['photo2'] = machine.photo
 				result['success'] = True
 			except Machine.DoesNotExist:
 				try:
 					implement = Implement.objects.get(qr_code = request.POST['qr_code'])
 					result['manufacturer'] = implement.manufacturer_model.manufacturer.name
 					result['model'] = implement.manufacturer_model.model
+					result['nickname'] = implement.nickname
+					result['qr_code'] = implement.qr_code
 					result['asset_number'] = implement.asset_number
 					result['serial_number'] = implement.serial_number
 					result['horse_power_req'] = implement.horse_power_req
@@ -406,6 +412,8 @@ def getEquipmentInfo(request):
 					result['status'] = implement.status
 					result['hour_cost'] = implement.hour_cost
 					result['photo'] = implement.photo
+					result['photo1'] = implement.photo
+					result['photo2'] = implement.photo
 					result['success'] = True
 				except Implement.DoesNotExist:
 					result['code'] = 1 #There is no equipment associated with this
@@ -420,15 +428,17 @@ def getEquipmentInfo(request):
 def retrieveScannedMachine(request):
 	result = {'success' : False}
   	if request.method == 'POST':
-	 	if request.is_ajax():
-	 		try:
-		 		machine = Machine.objects.get(qr_code = request.POST['qr_code'])
-	 			models = ManufacturerModel.objects.get(manufacturer = machine.manufacturer_model.id)
-		 		manufacturers = Manufacturer.objects.get(id = models.id)
-				result['manufacture'] = manufacturers.name
+ 		if request.is_ajax():
+ 			try:
+				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
+				machine = Machine.objects.get(qr_code = '1230xf')
+				result['qr_code'] = machine.qr_code
+				result['manufacture'] = machine.manufacturer_model.manufacturer.name
 				result['serial'] = machine.serial_number
 				result['status'] = machine.status
-				result['model'] = models.model
+				result['serial_number'] = machine.serial_number
+				result['nickname'] = machine.nickname
+				result['model'] = machine.manufacturer_model.model
 				result['asset_number'] = machine.asset_number
 				result['horsepower'] = machine.horsepower
 				result['hitch_capacity'] = machine.hitch_capacity
@@ -446,8 +456,13 @@ def retrieveScannedMachine(request):
 				result['operator_station'] = machine.operator_station
 				result['hour_cost'] = machine.hour_cost
 				result['photo'] = machine.photo
+				result['photo1'] = machine.photo
+				result['photo2'] = machine.photo
 				if result['status'] is 1:
- 					result['success'] = True
+					result['success'] = True
+				else:
+					result = {}
+					result['success'] = False
 			except Machine.DoesNotExist:
 				result['code'] = 1 #There is no users associated with this
 		else:
