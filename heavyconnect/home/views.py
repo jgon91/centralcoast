@@ -104,6 +104,24 @@ def createNewTask2(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+def startNewTask(request):
+ 	result = {'success' : False}
+ 	if request.method == 'POST':
+ 		if request.is_ajax():
+			try:
+				task = EmployeeTask.objects.get(task_id = request.POST['qr_code'])
+				now = datetime.datetime.now()
+				task.task_init = now
+				task.save()
+				result = {'success' : True} # Task updated with success
+			except Employee.DoesNotExist:
+				result['code'] =  1 # Task DoesNotExist
+ 		else:
+			result['code'] = 2 #Use ajax to perform requests
+ 	else:
+		result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
 # Receives, as argument, filter information
 # from front-end (size, manufacturer, etc) and Implement_id
 # (if chosen or NULL if not chosen). Then, retrieves all machines
@@ -420,13 +438,13 @@ def updateEquipmentStatus(request):
 			try:
 				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
 				machine.status = request.POST['status']
-				machine.save()
+				implement.save()
 				result = {'success' : True}
 			except Machine.DoesNotExist:
 				try:
 					implement = Implement.objects.get(qr_code = request.POST['qr_code'])
 					implement.status = request.POST['status']
-					implement.save()
+					plement.save()
 					result = {'success' : True}
 				except Implement.DoesNotExist:
 	 				result['code'] = 1 #There is no equipment for this qr_code
@@ -564,33 +582,6 @@ def getTaskInfo(request):
 	else:
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
-
-	
-
-# Driver 6.3.1.3
-# It will retrieve id + description of all task categories in database.
-def getAllTaskCategory(request):
-	each_result = {}
-	result = []
-	result.append({'success' : False})
-	if request.method == 'POST':
-	 	if request.is_ajax():
-			try:
-				all_task_category = TaskCategory.objects.filter()
-				for each in all_task_category:					
-					each_result['id'] = each.id
-					each_result['description'] = each.description
-					result.append(each_result)
-					each_result = {}
-				result[0] = {'success' : True}
-			except TaskCategory.DoesNotExist:
-				result.append({'code' : 1}) #There is no task associated with this
-		else:
-	 		result.append({'code' : 2}) #Use ajax to perform requests
-	else:
-	 	result.append({'code' : 3})  #Request was not POST
-	return HttpResponse(json.dumps(result),content_type='application/json')
-
 
 
 
