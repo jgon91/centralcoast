@@ -18,6 +18,7 @@
 
 				getLocation();	
 				item = getParametersUrl();
+				$("#qr_code").html(item.qr_code);
 
 				loadEquipmentInfo("{{ csrf_token }}", "{% url 'getEquipmentInfo' %}", item.qr_code);
 				loadEquipmentStatus("{{ csrf_token }}", "{% url 'equipmentStatus' %}", item.qr_code); //Broken
@@ -36,7 +37,6 @@
 					datatype: "json",
 					success: function(data, status, xhr){	 
 						if(data.success){
-							$("#qr_code").html(data.asset_number);
 							$("#manufacturer").html(data.manufacturer);
 							$("#serial_number").html(data.serial_number);
 							$("#model").html(data.model);
