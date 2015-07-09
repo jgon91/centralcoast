@@ -1146,11 +1146,11 @@ def continueTask(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 def expandInfoBox(request):
-	result.append({'success' : False})
-	if request.method = 'POST':
+	result = {'success' : False}
+	if request.method == 'POST':
 		if request.is_ajax():
 			try:
-				employeeTask = EmployeeTask.objects.get(id = request.POST['id'])#request.POST['id'])
+				employeeTask = EmployeeTask.objects.get(id = request.POST['id'])
 				task = Task.objects.get(id = request.POST['id'])
 				taskImplementMachine = TaskImplementMachine.objects.get(id = request.POST['id'])
 				field = Field.objects.get(id = request.POST['id'])
@@ -1158,7 +1158,7 @@ def expandInfoBox(request):
 				date = task.date
 				boolean = bool(str(time_now) > str(date))
 				print boolean
-				if bool(str(time_now) > str(date)):# == True:
+				if bool(str(time_now) > str(date)):
 					employee = Employee.objects.get(id = employeeTask.employee_id)
 					result['employee_id'] = employeeTask.employee_id
 					result['hours_spent'] = employeeTask.hours_spent
@@ -1173,12 +1173,33 @@ def expandInfoBox(request):
 					result['hours_prediction'] = task.hours_prediction
 				result[0] = {'success' : True}
 			except DoesNotExist:
-				result.append({'result' : 1}) #There is no Implement associated with this
+				result['code'] =  1 #There is no Implement associated with this
 		else:
-			result.append({'result' : 2}) #Use ajax to perform requests
+			result['code'] = 2 #Use ajax to perform requests
 	else:
-	 	result.append({'result' : 3}) #Request was not POST
+	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+# Create a entry on TaskImplementMachine table and insert the following fields with information from the front-end: 
+# Task_id (task_id created on last sudb-page), Machine_id, Implement_id.
+
+# Used tables: Task, TaskImplementMachine.
+# def createEntryOnTaskImplementMachine(request):
+# 	form = taskForm(request.POST)
+# 	result = {'success' : False}
+					
+# 	taskImplementMachine = Task.objects.get(id = 1)#request.POST['id'])
+# 	print "task ID: " + taskImplementMachine
+# 	machine_id = form.cleaned_data['machine_id']
+# 	print "machine ID: " + machine_id
+# 	implement_id = form.cleaned_data['implement_id']
+# 	print "implement_id: " + implement_id
+# 	taskImplementMachine = TaskImplementMachine(task_id= taskImplementMachine, machine_id = machine_id, implement_id = implement_id)
+# 	print TaskImplementMachine
+# 	# TaskImplementMachine.save()
+# 	result['success'] = True
+# 	return HttpResponse(json.dumps(result),content_type='application/json')
+
 
 
 # @menezescode: Page only to show the form was correctly sended.
