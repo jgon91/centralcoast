@@ -545,7 +545,29 @@ def retrieveScannedMachine(request):
 	 	result['code'] = 3 #Request was not POST
  	return HttpResponse(json.dumps(result),content_type='application/json')
 
-
+# Driver 6.3.1.3		
+# It will retrieve id + description of all task categories in database.		
+def getAllTaskCategory(request):		
+	each_result = {}	
+	result = []		
+	result.append({'success' : False})		
+	if request.method == 'POST':		
+	 	if request.is_ajax():		
+			try:		
+				all_task_category = TaskCategory.objects.filter()		
+				for each in all_task_category:					      		
+					each_result['id'] = each.id		
+					each_result['description'] = each.description		
+					result.append(each_result)		
+					each_result = {}		
+				result[0] = {'success' : True}		
+			except TaskCategory.DoesNotExist:		
+				result.append({'code' : 1}) #There is no task associated with this		
+		else:		
+	 		result.append({'code' : 2}) #Use ajax to perform requests		
+	else:		
+	 	result.append({'code' : 3})  #Request was not POST		
+	return HttpResponse(json.dumps(result),content_type='application/json')
 
 # Driver 6.1.1
 # Retrieve Task Information from task on the list of Pending Tasks
