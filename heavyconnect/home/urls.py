@@ -113,8 +113,9 @@ urlpatterns = [
     url(r'^implementServiceFormView/$', main_views.implementServiceFormView, name = 'registerImplementService'),
     url(r'^equipmentCategoryFormView/$', main_views.equipmentCategoryFormView, name = 'registerEquipmentCategory'),
     url(r'^equipmentTypeFormView/$', main_views.equipmentTypeFormView, name = 'equipmentTypeFormView'),
-    url(r'^questionFormView/$', main_views.questionFormView , name = 'registerQuestion'),
-    url(r'^machineChecklistFormView/$', main_views.machineChecklistFormView , name = 'registerMachineChecklist'),
-    url(r'^implementChecklistFormView/$', main_views.implementChecklistFormView , name = 'registerChecklistImplement'),
+    url(r'^questionFormView/$', main_views.questionFormView, name = 'registerQuestion'),
+    url(r'^machineChecklistFormView/$', main_views.machineChecklistFormView, name = 'registerMachineChecklist'),
+    url(r'^implementChecklistFormView/$', main_views.implementChecklistFormView, name = 'registerChecklistImplement'),
+    url(r'^breakFormView/$', main_views.breakFormView, name = 'breakFormView'),
     ### End ###
 ]

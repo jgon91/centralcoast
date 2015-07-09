@@ -1660,3 +1660,10 @@ def implementChecklistFormView(request):
 		return redirect('formOk')
 	else:
 		return render(request, 'formTest.html', {'form': form})
+
+def breakFormView(request):
+	form = breakForm(request.POST)
+	if form.is_valid():
+		return redirect('formOk')
+	else:
+		return render(request, 'formTest.html', {'form': form})
