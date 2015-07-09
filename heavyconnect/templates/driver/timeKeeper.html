@@ -7,10 +7,71 @@
 			$(document).ready(function() {
 				$("#foot").load("{%url 'footer'%}");
 				$("#head").load("{%url 'headerDriver'%}");
+				
+				$("#startShift").click(function(){
+   					startShift("{{ csrf_token }}", "{% url 'startShift' %}");
+				});
+				$(".breaks").click(function(){
+   					startStopBreak("{{ csrf_token }}", "{% url 'startStopBreak' %}", $(this).attr("id"));
+   					//alert($(this).attr("id"));
+				});
+				$("#stopShift").click(function(){
+   					stopShift("{{ csrf_token }}", "{% url 'stopShift' %}");
+				});
 			});
+			function startShift(token, url) {
+					$.ajax({
+						method: "POST",
+						url: url,
+						data: {"csrfmiddlewaretoken": token},
+						datatype: "json",
+						success: function(data, status, xhr){
+							if(data.success){
+								//alert(data.hour_started.substring(11,16));
+								$("#startShift").attr("value", data.hour_started.substring(11,16));
+								$("#startShift").attr("disabled", "disabled");
+  								$("#startShift").css('background-color', '#988173');
+  								$("#startShift").css('font-size', '25px');
+							}
+						}
+					});
+			}
+			function startStopBreak(token, url, breaks) {
+					//alert(breaks.substring(14, 15));
+					$.ajax({
+						method: "POST",
+						url: url,
+						data: {"csrfmiddlewaretoken": token,
+								"optcode": breaks.substring(14, 15)},
+						datatype: "json",
+						success: function(data, status, xhr){
+							if(data.success){
+								$("#"+breaks).attr("value", data.time.substring(11,16));
+								$("#"+breaks).attr("disabled", "disabled");
+  								$("#"+breaks).css('background-color', '#988173');
+  								$("#"+breaks).css('font-size', '25px');
+							}
+						}
+					});
+			}
+			function stopShift(token, url) {
+					$.ajax({
+						method: "POST",
+						url: url,
+						data: {"csrfmiddlewaretoken": token},
+						datatype: "json",
+						success: function(data, status, xhr){
+							if(data.success){
+								$("#stopShift").attr("value", data.hour_ended.substring(11,16));
+								$("#stopShift").attr("disabled", "disabled");
+  								$("#stopShift").css('background-color', '#988173');
+  								$("#stopShift").css('font-size', '25px');
+							}
+						}
+					});
+			}						
 		</script>
 	</head>
-
 	<body>
 		<header id="head"></header>
 		<div id="wrapper">
@@ -18,61 +79,52 @@
 				<div id="namePage">
 					TIMEKEEPER
 				</div>
-				<div>
-					<a href="{% url 'scanQRCode' %}" style="text-decoration: none;">
-					<input type="button" id="scanOther" value="SCAN MORE"/>
-					</a>
-				</div>
-
 				<img src="{% static 'img/clock.png'%}" style="margin-top: 40px;"/>
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" value="START SHIFT" class="btnGreen" />
+						<input type="button" id="startShift" value="START SHIFT" class="btnGreen"/>
 					</div>
 				</div>
 				<div class="row" class="">
 					<div class="col-xs-5 col-md-5 alignright">
-						<input type="button" value="AM BREAK" class="btnGreen " />
+						<input type="button" id="startStopBreak1" value="AM BREAK" class="btnGreen breaks"/>
 					</div>
 					<div class="col-xs-2 col-md-2	">
 						<hr style="margin-top: 20%; border: solid 1px black">
 					</div>
 					<div class="col-xs-5 col-md-5  alignLeft">
-						<input type="button" value="STOP"  class="btnRed"/>
+						<input type="button" id="startStopBreak2" value="STOP"  class="btnRed breaks"/>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-5 col-md-5 alignright">
-						<input type="button" value="LUNCH" class="btnGreen" />
+						<input type="button" id="startStopBreak3" value="LUNCH" class="btnGreen breaks"/>
 					</div>
 					<div class="col-xs-2 col-md-2">
 						<hr style="margin-top: 20%;border: solid 1px black">
 					</div>
 					<div class="col-xs-5 col-md-5 alignLeft">
-						<input type="button" value="STOP" class="btnRed" />
+						<input type="button" id="startStopBreak4" value="STOP" class="btnRed breaks"/>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-5 col-md-5 alignright">
-						<input type="button" value="PM BREAK" class="btnGreen" />
+						<input type="button" id="startStopBreak5" value="PM BREAK" class="btnGreen breaks"/>
 					</div>
 					<div class="col-xs-2 col-md-2">
 						<hr style="margin-top: 20%;border: solid 1px black">
 					</div>
 					<div class="col-xs-5 col-md-5 alignLeft">
-						<input type="button" value="STOP" class="btnRed" />
+						<input type="button" id="startStopBreak6" value="STOP" class="btnRed breaks"/>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-md-4" >
-
 					</div>
-
 				</div>
-
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" value="STOP SHIFT"  class="btnRed" />
+						<input type="button" id="stopShift" value="STOP SHIFT"  class="btnRed" />
 					</div>
 				</div>
 			</div>
