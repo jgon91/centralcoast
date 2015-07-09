@@ -74,6 +74,7 @@ urlpatterns = [
 	url(r'^getAllManufacturers/$', main_views.getAllManufacturers, name = 'getAllManufacturers'),
     url(r'^expandInfoBox', main_views.expandInfoBox, name = 'expandInfoBox'),
 	url(r'^updateEquipmentStatus', main_views.updateEquipmentStatus, name = 'updateEquipmentStatus'),
+    # url(r'^createEntryOnTaskImplementMachine/$', main_views.createEntryOnTaskImplementMachine, name = 'createEntryOnTaskImplementMachine'), 
     ### End ###
 
     ###Insert###
