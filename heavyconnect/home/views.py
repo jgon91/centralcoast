@@ -109,7 +109,7 @@ def startNewTask(request):
  	if request.method == 'POST':
  		if request.is_ajax():
 			try:
-				task = EmployeeTask.objects.get(task_id = request.POST['qr_code'])
+				task = EmployeeTask.objects.get(task_id = request.POST['task_id'])
 				now = datetime.datetime.now()
 				task.task_init = now
 				task.save()
