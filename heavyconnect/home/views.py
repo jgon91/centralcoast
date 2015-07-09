@@ -122,6 +122,25 @@ def startNewTask(request):
 		result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+def endTask(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+			if request.is_ajax():
+				try:
+					task = EmployeeTask.objects.get(task_id = request.POST['task_id'])
+					now = datetime.datetime.now()
+					task.hours_spent = now - task.task_init
+					task.save()
+					result['success'] = True
+
+				except Employee.DoesNotExist:
+				result['code'] =  1 # Task DoesNotExist
+		else:
+			result['code'] = 2 #Use ajax to perform requests
+	else:
+		result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
 # Receives, as argument, filter information
 # from front-end (size, manufacturer, etc) and Implement_id
 # (if chosen or NULL if not chosen). Then, retrieves all machines
@@ -161,7 +180,8 @@ def startShift(request):
 				start_date = datetime.datetime.combine(now, datetime.time.min)
 				end_date = datetime.datetime.combine(now, datetime.time.max)
 
-				attendance, created = EmployeeAttendance.objects.get_or_create(employee_id = employee.id, date__range = (start_date, end_date), defaults = {'date' : now, 'hour_started' : now})
+				attendance, created = EmployeeAttendance.objects.get_or_create(employee_id = employee.id, 
+					date__range = (start_date, end_date), defaults = {'date' : now, 'hour_started' : now})
 				if created:
 					result['success'] = True
 					result['hour_started'] = str(attendance.hour_started)
