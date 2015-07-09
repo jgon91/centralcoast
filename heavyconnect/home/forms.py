@@ -173,12 +173,6 @@ class employeeAttendanceForm(forms.Form):
 	date = forms.DateField()
 	hour_started = forms.TimeField()
 	hour_ended = forms.TimeField()
-	morning_break = forms.TimeField()
-	morning_break_end = forms.TimeField()
-	afternoon_break = forms.TimeField()
-	afternoon_break_end = forms.TimeField()
-	evening_break = forms.TimeField()
-	evening_break_end = forms.TimeField()
 ### End ###
 
 ### Structure for qualificationForm ###
@@ -324,14 +318,14 @@ class implementServiceForm(forms.Form):
 	price = forms.FloatField()
 ### End ### 
 
-### Structure for implementServiceForm ###
+### Structure for questionForm ###
 class questionForm(forms.Form):
 	description = forms.CharField(max_length = 250)
 	category = forms.IntegerField()
 	refers = forms.ChoiceField(choices = ((1, 'Machine'), (2, 'Implement')))
 ### End ###
 
-### Structure for implementServiceForm ###
+### Structure for machineChecklistForm ###
 class machineChecklistForm(forms.Form):
 	question = forms.ModelChoiceField(queryset = Question.objects.all())
 	qrCode = forms.ModelChoiceField(queryset = Machine.objects.all())
@@ -341,7 +335,7 @@ class machineChecklistForm(forms.Form):
 	photo = forms.URLField(max_length = 200)
 ### End ###
 
-### Structure for implementServiceForm ###
+### Structure for implementChecklistForm ###
 class implementChecklistForm(forms.Form):
 	question = forms.ModelChoiceField(queryset = Question.objects.all())
 	qrCode = forms.ModelChoiceField(queryset = Implement.objects.all())
@@ -349,4 +343,11 @@ class implementChecklistForm(forms.Form):
 	note = forms.CharField(max_length = 200)
 	date = forms.DateTimeField()
 	photo = forms.URLField(max_length = 200)
+### End ###
+
+### Structure for breakForm ###
+class breakForm(forms.Form):
+	attendance = forms.ModelChoiceField(queryset = EmployeeAttendance.objects.all())
+	start = forms.TimeField()
+	end = forms.TimeField(required = False)
 ### End ###
