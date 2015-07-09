@@ -529,6 +529,44 @@ def retrieveScannedMachine(request):
 
 
 
+# Driver 6.1.1
+# Retrieve Task Information from task on the list of Pending Tasks
+#####################################################################################
+# obs: This function is expeting just one entry on TaskImplementMachine table		#
+# for each entry Task table. However, when this change, it will be need just to 	#
+# change object.get for object.filter, and use the higher TaskImplementMachine.id 	#
+# that match with Task.id desired, since the higher TaskImplementMachine.id will 	#
+# corresponde to the last person assigned to the Task.id desired.					#
+#####################################################################################
+@login_required
+def getTaskInfo(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+		task_id = request.POST['task_id']
+	 	if request.is_ajax():
+			try: # Check if task is added on the Task table
+				task = Task.objects.get(id = task_id)
+				try: # Check if task is added on TaskImplementMachine table
+					taskImplementMachine = TaskImplementMachine.objects.get(id = task_id)
+					result['field'] = task.field.name
+					result['description'] = task.description
+					result['machine_nickname'] = taskImplementMachine.machine.nickname
+					result['machine_photo'] = taskImplementMachine.machine.photo
+					result['implement_nickname'] = taskImplementMachine.implement.nickname
+					result['implement_photo'] = taskImplementMachine.implement.photo
+					result['success'] = True
+				except TaskImplementMachine.DoesNotExist:
+					result['code'] = 1 #There is no Task associated on TaskImplementMachine table
+			except Task.DoesNotExist:
+				result['code'] = 1 #There is no Task associated on Task table
+		else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else:
+	 	result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+	
+
 
 # Driver 6.3.2.3
 # It will return (some) information of all machines on database.
@@ -716,9 +754,9 @@ def getFilteredImplement(request):
 				# And remove those implements that have different drawbar category then the selected machine
 				if machine_qr_code:
 					machine = Machine.objects.get(qr_code = machine_qr_code)
-					implement2 = implement.exclude(hitch_capacity_req__gt = machine.hitch_capacity)															# Remove Implement with more hitch_capacity req
-					implement3 = implement2.exclude(horse_power_req__gt = machine.horsepower)																# Remove Implement with more horse_power req
-					implement2 = implement3.exclude(hitch_category__gt = machine.hitch_category).exclude(hitch_category__lt = machine.hitch_category)		# Remove Implement with different hitch_category
+					implement2 = implement.exclude(hitch_capacity_req__gt = machine.hitch_capacity)		# Remove Implement with more hitch_capacity req
+					implement3 = implement2.exclude(horse_power_req__gt = machine.horsepower)			# Remove Implement with more horse_power req
+					implement2 = implement3.exclude(hitch_category__gt = machine.hitch_category).exclude(hitch_category__lt = machine.hitch_category)	# Remove Implement with different hitch_category
 					implement = implement2.exclude(drawbar_category__gt = machine.drawbar_category).exclude(drawbar_category__lt = machine.drawbar_category)# Remove Implement with different drawbar_category
 				# Selecting which field will be retrieved to fron-end
 				for each in implement:
@@ -1247,7 +1285,7 @@ def continueTask(request):
 
 def expandInfoBox(request):
 	result.append({'success' : False})
-	if request.method = 'POST':
+	if request.method == 'POST':
 		if request.is_ajax():
 			try:
 				employeeTask = EmployeeTask.objects.get(id = request.POST['id'])#request.POST['id'])

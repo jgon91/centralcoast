@@ -62,6 +62,7 @@ urlpatterns = [
 	url(r'^getScannedImplement/$', main_views.getScannedImplement, name = 'getScannedImplement'),
     url(r'^retrievePendingTask/$', main_views.retrievePendingTask, name = 'retrievePendingTask'),
 	url(r'^getScannedFilteredEmployee/$', main_views.getScannedFilteredEmployee, name = 'getScannedFilteredEmployee'),
+	url(r'^getTaskInfo/$', main_views.getTaskInfo, name = 'getTaskInfo'),
     url(r'^retrieveMachine/$', main_views.retrieveMachine, name = 'retrieveMachine'),
 	url(r'^retrieveScannedEmployee/$', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee'),
     url(r'^continueTask/$', main_views.continueTask, name = 'continueTask'),
@@ -70,7 +71,7 @@ urlpatterns = [
     url(r'^validatePermission', main_views.validatePermission, name = 'validatePermission'),
 	url(r'^getAllManufacturers/$', main_views.getAllManufacturers, name = 'getAllManufacturers'),
     url(r'^expandInfoBox', main_views.expandInfoBox, name = 'expandInfoBox'),
-	url(r'^updateEquipmentStatus', main_view.updateEquipmentStatus, name = 'updateEquipmentStatus'),
+	url(r'^updateEquipmentStatus', main_views.updateEquipmentStatus, name = 'updateEquipmentStatus'),
     ### End ###
 
     ###Insert###
