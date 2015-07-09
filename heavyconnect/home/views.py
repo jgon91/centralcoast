@@ -180,8 +180,7 @@ def startShift(request):
 				start_date = datetime.datetime.combine(now, datetime.time.min)
 				end_date = datetime.datetime.combine(now, datetime.time.max)
 
-				attendance, created = EmployeeAttendance.objects.get_or_create(employee_id = employee.id, 
-					date__range = (start_date, end_date), defaults = {'date' : now, 'hour_started' : now})
+				attendance, created = EmployeeAttendance.objects.get_or_create(employee_id = employee.id, date__range = (start_date, end_date), defaults = {'date' : now, 'hour_started' : now})
 				if created:
 					result['success'] = True
 					result['hour_started'] = str(attendance.hour_started)
