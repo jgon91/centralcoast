@@ -44,6 +44,24 @@
 
 /* End Active Page */
 
+/* Get parameters from url's */
+	function getParametersUrl(){
+		var url   = window.location.search.replace("?", "");
+		var parametersList = url.split("&");
+		var item = {};
+		
+		for(var i = 0; i < parametersList.length; i++){
+		    var parameter = parametersList[i].split("=");
+		    var key = parameter[0];
+		    var value = parameter[1];
+		    item[key] = value;
+		}
+
+		return item;
+	}
+
+/*End function getParametersUrl */
+
 /* Script checklist page */
 	function eventsCheckList() 
 	{

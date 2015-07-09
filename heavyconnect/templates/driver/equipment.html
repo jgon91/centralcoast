@@ -8,14 +8,16 @@
 		<script src="{% static 'js/script.js' %}"></script>
 		<script>
 			//variables
-			var item = {}; // Stores url's parameters
 
 			//Events
 			$(document).ready(function() {
+				var item = {}; // Stores url's parameters
+
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerDriver' %}");
-				getLocation();				
-				getParametersUrl();
+
+				getLocation();	
+				item = getParametersUrl();
 
 				loadEquipmentInfo("{{ csrf_token }}", "{% url 'getEquipmentInfo' %}", item.qr_code);
 				loadEquipmentStatus("{{ csrf_token }}", "{% url 'equipmentStatus' %}", item.qr_code); //Broken
@@ -78,19 +80,6 @@
 				$("#" + btn2).css("border-bottom", "solid 2px #434300");
 				$("#" + btn3).css("border-bottom", "solid 2px #434300");				
 			}
-
-			function getParametersUrl(){
-				var url   = window.location.search.replace("?", "");
-				var parametersList = url.split("&");
-				
-				for(var i = 0; i < parametersList.length; i++){
-				    var parameter = parametersList[i].split("=");
-				    var key = parameter[0];
-				    var value = parameter[1];
-				    item[key] = value;
-				}
-			}
-
 		</script>
 	</head>
 	<body>
