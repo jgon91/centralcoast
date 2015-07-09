@@ -44,7 +44,7 @@ urlpatterns = [
     url(r'^driverInfo/$', main_views.getDriverInformation, name = 'driverInfo'),
     url(r'^createNewTask1/$', main_views.createNewTask1, name = 'createNewTask'),
     url(r'^createNewTask2/$', main_views.createNewTask2, name = 'createNewTask'),
-	url(r'^startNewTask/$', main.views.startNewTask, name = 'startNewTask'),
+	url(r'^startNewTask/$', main_views.startNewTask, name = 'startNewTask'),
     url(r'^quickUserInfomation/$', main_views.getQuickUser, name = 'quickUser'),
     url(r'^updatePhoto/$', main_views.updatePhoto, name = 'updatePhoto'),
     url(r'^loadEquipmentImage/$', main_views.loadEquipmentImage, name = 'loadEquipmentImage'),
@@ -69,12 +69,13 @@ urlpatterns = [
 	url(r'^retrieveScannedEmployee/$', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee'),
     url(r'^continueTask/$', main_views.continueTask, name = 'continueTask'),
     url(r'^pastTaskList/$', main_views.pastTaskList, name = 'pastTaskList'),
-	url(r'^retrieveScannedEmployee', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee'),
-    url(r'^validatePermission', main_views.validatePermission, name = 'validatePermission'),
+	url(r'^retrieveScannedEmployee/$', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee'),
+    url(r'^validatePermission/$', main_views.validatePermission, name = 'validatePermission'),
 	url(r'^getAllManufacturers/$', main_views.getAllManufacturers, name = 'getAllManufacturers'),
-    url(r'^expandInfoBox', main_views.expandInfoBox, name = 'expandInfoBox'),
-	url(r'^updateEquipmentStatus', main_views.updateEquipmentStatus, name = 'updateEquipmentStatus'),
-    # url(r'^createEntryOnTaskImplementMachine/$', main_views.createEntryOnTaskImplementMachine, name = 'createEntryOnTaskImplementMachine'), 
+    url(r'^expandInfoBox/$', main_views.expandInfoBox, name = 'expandInfoBox'),
+	url(r'^updateEquipmentStatus/$', main_views.updateEquipmentStatus, name = 'updateEquipmentStatus'),
+    # url(r'^createEntryOnTaskImplementMachine/$', main_views.createEntryOnTaskImplementMachine, name = 'createEntryOnTaskImplementMachine'),
+    url(r'^endTask/$', main_views.endTask, name = 'endTask'), 
     ### End ###
 
     ###Insert###

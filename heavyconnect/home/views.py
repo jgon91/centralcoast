@@ -125,16 +125,15 @@ def startNewTask(request):
 def endTask(request):
 	result = {'success' : False}
 	if request.method == 'POST':
-			if request.is_ajax():
-				try:
-					task = EmployeeTask.objects.get(task_id = request.POST['task_id'])
-					now = datetime.datetime.now()
-					task.hours_spent = now - task.task_init
-					task.save()
-					result['success'] = True
-
-				except Employee.DoesNotExist:
-				result['code'] =  1 # Task DoesNotExist
+		if request.is_ajax():
+			try:
+				task = EmployeeTask.objects.get(task_id = request.POST['task_id'])
+				now = datetime.datetime.now()
+				task.hours_spent = now - task.task_init
+				task.save()
+				result['success'] = True
+			except Employee.DoesNotExist:
+				result['code'] = 1 #Task DoesNotExist
 		else:
 			result['code'] = 2 #Use ajax to perform requests
 	else:
