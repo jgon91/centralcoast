@@ -420,13 +420,13 @@ def updateEquipmentStatus(request):
 			try:
 				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
 				machine.status = request.POST['status']
-				implement.save()
+				machine.save()
 				result = {'success' : True}
 			except Machine.DoesNotExist:
 				try:
 					implement = Implement.objects.get(qr_code = request.POST['qr_code'])
 					implement.status = request.POST['status']
-					plement.save()
+					implement.save()
 					result = {'success' : True}
 				except Implement.DoesNotExist:
 	 				result['code'] = 1 #There is no equipment for this qr_code
