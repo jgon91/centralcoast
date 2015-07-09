@@ -198,15 +198,18 @@ class EmployeeAttendance(models.Model):
 	date = models.DateField()
 	hour_started = models.TimeField()
 	hour_ended = models.TimeField(null = True, blank = True)
-	break_one = models.TimeField(null = True, blank = True)
-	break_one_end = models.TimeField(null = True, blank = True)
-	break_two = models.TimeField(null = True, blank = True)
-	break_two_end = models.TimeField(null = True, blank = True)
-	break_three = models.TimeField(null = True, blank = True)
-	break_three_end = models.TimeField(null = True, blank = True)
+	
 
 	def __unicode__(self):
 		return "Employee: " + str(self.employee) + ", Date: " + str(self.date)
+
+class Break(models.Model):
+	attendance = models.ForeignKey(EmployeeAttendance)
+	start = models.TimeField()
+	end = models.TimeField(null = True, blank = True)
+
+	def __unicode__(self):
+		return "Employee: " + str(self.attendance.employee.user.last_name) + ", start: " + str(self.start) + ", end: " + str(self.end)
 
 class Qualification(models.Model):
 	description = models.CharField(max_length = 50)
