@@ -224,13 +224,13 @@ def stopShift(request):
 					result['code'] = 2 #The shift for today was already finished
 
 			except EmployeeAttendance.DoesNotExist:
-				result['code'] = 2 #You have not started your shift yet
+				result['code'] = 3 #You have not started your shift yet
 			except Employee.DoesNotExist:
-				result['code'] =  3 #There is no users associated with this id
+				result['code'] = 4 #There is no users associated with this id
 		else:
-			result['code'] = 4 #Use ajax to perform requests
+			result['code'] = 5 #Use ajax to perform requests
 	else:
-		result['code'] = 5 #Request was not POST
+		result['code'] = 6 #Request was not POST
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
