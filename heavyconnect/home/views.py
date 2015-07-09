@@ -135,7 +135,7 @@ def startShift(request):
 	result = {'success' : False}
 
 	if request.method == "POST":
-		if 	request.is_ajax():
+		if request.is_ajax():
 			try:
 				employee = Employee.objects.get(user_id = request.user.id)
 
@@ -172,13 +172,20 @@ def stopShift(request):
 				end_date = datetime.datetime.combine(now, datetime.time.max)
 
 				attendance = EmployeeAttendance.objects.get(employee_id = employee, date__range = (start_date, end_date))
+
+				t_break = Break.objects.filter(attendance_id = attendance).order_by('start')
+				amount = t_break.count()
+
 				if attendance.hour_ended is None:
-					attendance.hour_ended = now
-					attendance.save()
-					result['success'] = True
-					result['hour_ended'] = str(attendance.hour_ended)
+					if amount >= 3:
+						attendance.hour_ended = now
+						attendance.save()
+						result['success'] = True
+						result['hour_ended'] = str(attendance.hour_ended)
+					else:
+						result['code'] = 1 #You need to take at least tree breaks
 				else:
-					result['code'] = 1 #The shift for today was already finished
+					result['code'] = 2 #The shift for today was already finished
 
 			except EmployeeAttendance.DoesNotExist:
 				result['code'] = 2 #You have not started your shift yet
@@ -192,75 +199,77 @@ def stopShift(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 @login_required
-def startStopBreak(request):
+def startBreak(request):
 	result = {'success' : False}
 
-	if request.method == 'POST': #check if the method used for the request was POST
-		if request.is_ajax(): #check if the request came from ajax request
-
-			employee = Employee.objects.get(user_id = request.user.id)
-
-			now = datetime.datetime.now()
-			start_date = datetime.datetime.combine(now, datetime.time.min)
-			end_date = datetime.datetime.combine(now, datetime.time.max)
-
-			optcode = request.POST['optcode']
-
+	if request.method == "POST":
+		if request.is_ajax():
 			try:
-				attendance = EmployeeAttendance.objects.get(employee_id = employee.id, date__range = (start_date, end_date))
+				employee = Employee.objects.get(user_id = request.user.id)
 
-				if optcode == '1':
-					if attendance.break_one is None:
-						attendance.break_one = now
+				now = datetime.datetime.now()
+				start_date = datetime.datetime.combine(now, datetime.time.min)
+				end_date = datetime.datetime.combine(now, datetime.time.max)
+
+				attendance = EmployeeAttendance.objects.get(employee_id = employee, date__range = (start_date, end_date))
+
+				if attendance.hour_ended is None:
+					t_break = Break.objects.filter(attendance_id = attendance).order_by('-start')
+					count = t_break.count()
+
+					if count == 0 or t_break[0].end is not None:
+						t2_break = Break(attendance = attendance, start = now)
+						t2_break.save()
 						result['success'] = True
-						result['time'] = str(now)
+						result['time'] = str(t2_break.start)
 					else:
-						result['code'] = 1 #break one already started
-				elif optcode == '2':
-					if attendance.break_one_end is None:
-						attendance.break_one_end = now
-						result['success'] = True
-						result['time'] = str(now)
-					else:
-						result['code'] = 2 #break one already ended
-				elif optcode == '3':
-					if attendance.break_two is None:
-						attendance.break_two = now
-						result['success'] = True
-						result['time'] = str(now)
-					else:
-						result['code'] = 3 #break two already started
-				elif optcode == '4':
-					if attendance.break_two_end is None:
-						attendance.break_two_end = now
-						result['success'] = True
-						result['time'] = str(now)
-					else:
-						result['code'] = 4 #break two already ended
-				elif optcode == '5':
-					if attendance.break_three is None:
-						attendance.break_three = now
-						result['success'] = True
-						result['time'] = str(now)
-					else:
-						result['code'] = 5 #break three already started
-				elif optcode == '6':
-					if attendance.break_three_end is None:
-						attendance.break_three_end = now
-						result['success'] = True
-						result['time'] = str(now)
-					else:
-						result['code'] = 6 #break two already ended
+						result['code'] = 1 #You cannot start two breaks at the same time
 				else:
-					result['code'] = 7 #Invalid optcode
-
-				attendance.save()
+					result['code'] = 2 #The shift for today was already finished
 			except EmployeeAttendance.DoesNotExist:
-				result['code'] = 8 #You have not started your shift yet
+				result['code'] = 3 #You need to start a shift first
 		else:
-	 		result['code'] = 9 #Use ajax to perform requests
+			result['code'] = 4 #Use ajax to perform requests
 	else:
-		result['code'] = 10 #Request was not POST
+		result['code'] = 5 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+@login_required
+def stopBreak(request):
+	result = {'success' : False}
+
+	if request.method == "POST":
+		if request.is_ajax():
+			try:
+				employee = Employee.objects.get(user_id = request.user.id)
+
+				now = datetime.datetime.now()
+				start_date = datetime.datetime.combine(now, datetime.time.min)
+				end_date = datetime.datetime.combine(now, datetime.time.max)
+
+				attendance = EmployeeAttendance.objects.get(employee_id = employee, date__range = (start_date, end_date))
+
+				if attendance.hour_ended is None:
+					t_break = Break.objects.filter(attendance_id = attendance).order_by('-start')
+					count = t_break.count()
+
+					if (count != 0) and t_break[0].end is None:
+						t_break = t_break.get()
+						t_break.end = now
+						t_break.save()
+						result['success'] = True
+						result['time'] = str(t_break.end)
+					else:
+						result['code'] = 1 #You need to start a break first
+				else:
+					result['code'] = 2 #The shift for today was already finished
+			except EmployeeAttendance.DoesNotExist:
+				result['code'] = 3 #You need to start a shift first
+		else:
+			result['code'] = 4 #Use ajax to perform requests
+	else:
+		result['code'] = 5 #Request was not POST
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
