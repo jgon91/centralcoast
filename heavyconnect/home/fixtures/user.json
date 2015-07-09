@@ -1918,13 +1918,40 @@
    },
    {
       "fields":{
+         "codename":"add_break",
+         "name":"Can add break",
+         "content_type":42
+      },
+      "model":"auth.permission",
+      "pk":217
+   },
+   {
+      "fields":{
+         "codename":"change_break",
+         "name":"Can change break",
+         "content_type":42
+      },
+      "model":"auth.permission",
+      "pk":218
+   },
+   {
+      "fields":{
+         "codename":"delete_break",
+         "name":"Can delete break",
+         "content_type":42
+      },
+      "model":"auth.permission",
+      "pk":219
+   },
+   {
+      "fields":{
          "username":"heavy",
          "first_name":"Heavy",
          "last_name":"Connect",
          "is_active":true,
          "is_superuser":true,
          "is_staff":true,
-         "last_login":"2015-07-09T19:52:50.148Z",
+         "last_login":"2015-07-09T22:50:00.611Z",
          "groups":[
 
          ],
