@@ -305,17 +305,10 @@ class serviceCategoryForm(forms.Form):
 	service_category = forms.CharField()
 ### End ###
 
-### Structure for serviceForm ###
-class serviceForm(forms.Form):
-	category = forms.ModelChoiceField(ServiceCategory.objects.all())
-	date = forms.DateTimeField()
-	done = forms.BooleanField(required = False)
-### End ###
-
 ### Structure for machineServiceForm ### 
 class machineServiceForm(forms.Form):
 	machine = forms.ModelChoiceField(queryset = Machine.objects.all())
-	service = forms.ModelChoiceField(queryset = Service.objects.all())
+	service = forms.ModelChoiceField(queryset = ServiceCategory.objects.all())
 	description = forms.CharField()
 	done = forms.BooleanField(required = False)
 	expected_date = forms.DateTimeField()
@@ -325,7 +318,7 @@ class machineServiceForm(forms.Form):
 ### Structure for implementServiceForm ###
 class implementServiceForm(forms.Form):
 	implement = forms.ModelChoiceField(queryset = Implement.objects.all())
-	service = forms.ModelChoiceField(queryset = Service.objects.all())
+	service = forms.ModelChoiceField(queryset = ServiceCategory.objects.all())
 	description = forms.CharField()
 	expected_date = forms.DateTimeField()
 	done = forms.BooleanField(required = False)

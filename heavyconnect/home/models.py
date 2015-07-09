@@ -13,7 +13,7 @@ class ManufacturerModel(models.Model):
 	model = models.CharField(max_length = 30)
 
 	def __unicode__(self):
-		return "Model: " + str(self.model) + ", Manufacturer: " + str(self.manufacturer)
+		return str(self.manufacturer) + ", Model: " + str(self.model)
 
 class RepairShop(models.Model):
 	name = models.CharField(max_length = 20)
@@ -21,7 +21,7 @@ class RepairShop(models.Model):
 	address = models.CharField(max_length = 150)
 
 	def __unicode__(self):
-		return "Contact: " + str(self.name) + ", Phone Number: " + str(self.number) + ", Address: " + str(self.address)
+		return "Contact: " + str(self.name) + ", Address: " + str(self.address) + ", Phone Number: " + str(self.number)
 
 class Shop(models.Model):
 	name = models.CharField(max_length = 20)
@@ -29,7 +29,7 @@ class Shop(models.Model):
 	address = models.CharField(max_length = 150)
 
 	def __unicode__(self):
-		return "Contact: " + str(self.name) + "\n" + "Phone Number: " + str(self.number) + "\n" + "Address: " + str(self.address)
+		return "Contact: " + str(self.name) + ", Address: " + str(self.address) + ", Phone Number: " + str(self.number)
 
 
 class EquipmentCategory(models.Model):
@@ -69,6 +69,19 @@ class Machine(models.Model):
 		(3, 'Broken'),
 		(4, 'Quarantine'),
 	)
+	OPERATORSTATION_CHOICES = (
+		('a', 'Cab'), 
+		('b', 'Open'),
+		('c', 'Canopy'),
+	)
+	MTYPE_CHOICES = (
+		('T', 'Track'), 
+		('W', 'Wheels'),
+	)
+	STEERING_CHOICES = (
+		('M', 'Manual'), 
+		('G', 'GPS'),
+	)
 	manufacturer_model = models.ForeignKey(ManufacturerModel)
 	repair_shop = models.ForeignKey(RepairShop)
 	shop = models.ForeignKey(Shop)
@@ -86,21 +99,19 @@ class Machine(models.Model):
 	engine_hours = models.IntegerField()
 	service_interval = models.IntegerField()
 	base_cost = models.FloatField(default = 0)
-	m_type = models.CharField(max_length = 1, choices = (('T', 'Track'), ('W', 'Wheels'))) 
+	m_type = models.CharField(max_length = 1, choices = MTYPE_CHOICES) 
 	front_tires = models.CharField(max_length = 20)														
 	rear_tires = models.CharField(max_length = 20)
-	steering = models.CharField(max_length = 1, choices = (('M', 'Manual'), ('G', 'GPS')))
-	operator_station =  models.CharField(max_length = 1, choices = (('C', 'Cab'), ('O', 'Open')))
+	steering = models.CharField(max_length = 1, choices = STEERING_CHOICES)
+	operator_station = models.CharField(max_length = 1, choices = OPERATORSTATION_CHOICES)
 	status = models.IntegerField(choices = STATUS_CHOICES, null = True)
 	hour_cost = models.FloatField()
-	equipment_type = models.ForeignKey(EquipmentType)
 	photo = models.URLField(max_length = 200, blank = True)
 	photo1 = models.URLField(max_length = 200, blank = True)
 	photo2 = models.URLField(max_length = 200, blank = True)
 
-
 	def __unicode__(self):
-		return "QRcode: " + str(self.qr_code) + ", Model: " + str(self.manufacturer_model.model)
+		return "Manufacturer: " + str(self.manufacturer_model.manufacturer.name) + ", Model: " + str(self.manufacturer_model.model) + ", QRcode: " + str(self.qr_code)
 
 class Implement(models.Model):
 	manufacturer_model = models.ForeignKey(ManufacturerModel)
@@ -111,7 +122,7 @@ class Implement(models.Model):
 	asset_number = models.CharField(max_length = 15)
 	serial_number = models.CharField(max_length = 25)
 	horse_power_req = models.IntegerField()
-	hitch_capacity_req = models.IntegerField()
+	hitch_capacity_req = models.IntegerField(null = True, blank = True)
 	hitch_category = models.IntegerField(choices = Machine.HITCH_CHOICES)
 	drawbar_category = models.IntegerField(choices = Machine.DRAWBAR_CHOICES)
 	speed_range_min = models.FloatField()
@@ -128,7 +139,7 @@ class Implement(models.Model):
 	photo2 = models.URLField(max_length = 200, blank = True)
 
 	def __unicode__(self):
-		return "QRcode: " + str(self.qr_code) + ", Model: " + str(self.manufacturer_model.model)
+		return "Manufacturer: " + str(self.manufacturer_model.manufacturer.name) + ", Model: " + str(self.manufacturer_model.model) + ", QRcode: " + str(self.qr_code)
 
 class Field(models.Model):
 	name = models.CharField(max_length = 50)
@@ -184,7 +195,7 @@ class Employee(models.Model):
 	photo = models.URLField(max_length = 200, blank = True)
 
 	def __unicode__(self):
-		return  "User ID: " + str(self.user.id) + ", First Name: " + str(self.user.first_name) + ", Last Name: " + str(self.user.last_name) + ", ID: " + str(self.id)
+		return  "First Name: " + str(self.user.first_name) + ", Last Name: " + str(self.user.last_name) + ", User ID: " + str(self.user.id) + ", ID: " + str(self.id)
 
 class EmployeeWithdrawn(models.Model):
 	employee = models.ForeignKey(Employee)
@@ -333,43 +344,47 @@ class ServiceCategory(models.Model):
 	def __unicode__(self):
 		return "Service Category: " + str(self.service_category)
 
-class Service(models.Model):
-	category = models.ForeignKey(ServiceCategory)
-	date = models.DateTimeField()
-	done = models.BooleanField()
-
-	def __unicode__(self):
-		return str(self.category) + ", Date: " +  str(self.date) + ", Done: " +  str(self.done)
-
 class MachineService(models.Model):
 	machine = models.ForeignKey(Machine)
-	service = models.ForeignKey(Service)
+	service = models.ForeignKey(ServiceCategory)
 	description = models.CharField(max_length = 200)
-	done = models.BooleanField()
+	assigned_date = models.DateTimeField()
 	expected_date = models.DateTimeField()
+	accomplished_date = models.DateTimeField(null = True, blank = True)
 	price = models.FloatField()
 
 	def __unicode__(self):
-		return "Description " + str(self.description) + ", Expected Date: " +  str(self.expected_date) + ", Price:  " +  str(self.price) + ", Done: " +  str(self.done)
+		return "Description " + str(self.description) + ", Expected Date: " +  str(self.expected_date) + ", Price:  " +  str(self.price)
 
 class ImplementService(models.Model):
 	implement = models.ForeignKey(Implement)
-	service = models.ForeignKey(Service)
+	service = models.ForeignKey(ServiceCategory)
 	description = models.CharField(max_length = 200)
+	assigned_date = models.DateTimeField()
 	expected_date = models.DateTimeField()
-	done = models.BooleanField()
+	accomplished_date = models.DateTimeField(null = True, blank = True)
 	price = models.FloatField()
 
 	def __unicode__(self):
-		return "Description: " + str(self.description) + ", Expected Date: " + str(self.expected_date) + ", Price: " + str(self.price) + ", Done " + str(self.done) 
+		return "Description: " + str(self.description) + ", Expected Date: " + str(self.expected_date) + ", Price: " + str(self.price)
 
 class Question(models.Model):
+	QUESTION_CHOICES = (
+		(1, 'Before Lunch Break'),
+		(2, 'Post Lunch Pre Start'),
+		(3, 'Post Lunch Start'),
+		(4, 'End of Day Inspection'),
+	)
+	REFERS_CHOICES = (
+		(1, 'Machine'),
+		(2, 'Implement'),
+	)
 	description = models.CharField(max_length = 250)
-	category = models.IntegerField()
-	refers = models.IntegerField(choices = ((1, 'Machine'), (2, 'Implement')))
+	category = models.IntegerField(choices = QUESTION_CHOICES)
+	refers = models.IntegerField(choices = REFERS_CHOICES)
 
 	def __unicode__(self):
-		return "Description: " + str(self.description) + ", category: " + str(self.category) + ", refers: " + str(self.refers)
+		return "Description: " + str(self.description)
 
 
 class MachineChecklist(models.Model):
@@ -381,7 +396,7 @@ class MachineChecklist(models.Model):
 	photo = models.URLField(max_length = 200, blank = True)
 
 	def __unicode__(self):
-		return "Answer: " + str(self.answer) + ", note: " + str(self.note)
+		return "Machine: " + str(self.qrCode.manufacturer_model) + ", Answer: " + str(self.answer) + ", Note: " + str(self.note)
 
 
 class ImplementChecklist(models.Model):
@@ -393,4 +408,4 @@ class ImplementChecklist(models.Model):
 	photo = models.URLField(max_length = 200, blank = True)
 
 	def __unicode__(self):
-		return "Answer: " + str(self.answer) + ", note: " + str(self.note)
+		return "Answer: " + str(self.answer) + ", Note: " + str(self.note)
