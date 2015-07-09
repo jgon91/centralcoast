@@ -1152,13 +1152,19 @@ def getEmployeeSchedule(request):
 				result['photo_url'] = employee.photo
 				result['hour_started'] = str(attendance.hour_started)
 				result['hour_ended'] = str(attendance.hour_ended)
-				result['break_one'] = str(attendance.break_one)
-				result['break_one_end'] = str(attendance.break_one_end)
-				result['break_two'] = str(attendance.break_two)
-				result['break_two_end'] = str(attendance.break_two_end)
-				result['break_three'] = str(attendance.break_three)
-				result['break_three_end'] = str(attendance.break_three_end)
-				result['success'] = True
+				try:
+					breaks = Break.objects.filter(attendance_id = attendance.id).order_by('start')
+					i = 1
+					aux = "BreakStart"
+					aux2 = "BreakEnd"
+					for item in breaks:
+						index = aux + str(i)
+						result[index] = str(item.start)
+						index2 = aux2 + str(i)
+						result[index2] = str(item.end)
+						i += 1
+				except:
+					result['success'] = True
 			except EmployeeAttendance.DoesNotExist:
 				result['code'] = 1 #There is no shift records for this employee
 		else:
