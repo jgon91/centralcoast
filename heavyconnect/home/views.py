@@ -718,7 +718,6 @@ def getAllImplementInfo(request):
 def getFilteredMachine(request):
 	result = []
 	each_result = {}
-
 	result.append({'success' : False})
   	if request.method == 'POST':
 		# Save values from request
@@ -726,11 +725,31 @@ def getFilteredMachine(request):
 		hitch_capacity = request.POST['hitch_capacity']
 		horse_power = request.POST['horse_power']
 		implement_qr_code = request.POST['implement_qr_code']
-		# Set minimum values in case no filters were applied for those option
-		if hitch_capacity == '' or hitch_capacity == None:
+		# Set minimum values in case no filters were not applied for those option
+		if not hitch_capacity:
 			hitch_capacity = -1
-		if horse_power == '' or horse_power == None:
+		if not horse_power:
 			horse_power = -1
+		# Set the correct values for all status filters
+		# All status filters will receive True or False. 
+		#   - If False, it will change to the correct value on the database  (1, 2, 3, or 4)
+		#   - If True, it will still with 0
+		status_ok = 0 			
+		status_attention = 0	
+		status_broken = 0		
+		status_quarantine = 0
+		if request.POST['status_ok'] == 'False':
+			status_ok = 1
+			print "status_ok"
+		if request.POST['status_attention'] == 'False':
+			status_attention = 2
+			print "status_attention"
+		if request.POST['status_broken'] == 'False':
+			status_broken = 3
+			print "status_broken"
+		if request.POST['status_quarantine'] == 'False':
+			status_quarantine = 4
+			print "status_quarantine"
 
 	 	if request.is_ajax():
 	 		try:
@@ -739,14 +758,17 @@ def getFilteredMachine(request):
 				if manufacturer == '' or manufacturer == None:
 					machine = Machine.objects.filter(
 					hitch_capacity__gte = hitch_capacity,
-					horsepower__gte = horse_power,
-					status__lte = 2)
+					horsepower__gte = horse_power)
 				else:
 					machine = Machine.objects.filter(
 					manufacturer_model__manufacturer__id = manufacturer,
 					hitch_capacity__gte = hitch_capacity,
-					horsepower__gte = horse_power,
-					status__lte = 2)
+					horsepower__gte = horse_power)
+				# Filter the machine with the correct desired status 
+				machine = machine.exclude(status = status_ok)
+				machine = machine.exclude(status = status_attention)
+				machine = machine.exclude(status = status_broken)
+				machine = machine.exclude(status = status_quarantine)
 				# Remove those machines that doesn't support the hitch capacity required by the selected implement,
 				# Remove those machines that have different drawbar_category then the selected implement,
 				# Remove those machines that have different hitch category then the selected implement
@@ -765,6 +787,7 @@ def getFilteredMachine(request):
 					each_result['horse_power'] = each.horsepower
 					each_result['asset_number'] = each.asset_number
 					each_result['drawbar_category'] = each.drawbar_category
+					each_result['status'] = each.status
 					result.append(each_result)
 					each_result = {}
 				result[0] = {'success' : True}
