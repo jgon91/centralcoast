@@ -740,16 +740,12 @@ def getFilteredMachine(request):
 		status_quarantine = 0
 		if request.POST['status_ok'] == 'False':
 			status_ok = 1
-			print "status_ok"
 		if request.POST['status_attention'] == 'False':
 			status_attention = 2
-			print "status_attention"
 		if request.POST['status_broken'] == 'False':
 			status_broken = 3
-			print "status_broken"
 		if request.POST['status_quarantine'] == 'False':
 			status_quarantine = 4
-			print "status_quarantine"
 
 	 	if request.is_ajax():
 	 		try:
@@ -822,6 +818,22 @@ def getFilteredImplement(request):
 			hitch_capacity_req = -1
 		if horse_power_req == '' or horse_power_req == None:
 			horse_power_req = -1
+		# Set the correct values for all status filters
+		# All status filters will receive True or False. 
+		#   - If False, it will change to the correct value on the database  (1, 2, 3, or 4)
+		#   - If True, it will still with 0
+		status_ok = 0 			
+		status_attention = 0	
+		status_broken = 0		
+		status_quarantine = 0
+		if request.POST['status_ok'] == 'False':
+			status_ok = 1
+		if request.POST['status_attention'] == 'False':
+			status_attention = 2
+		if request.POST['status_broken'] == 'False':
+			status_broken = 3
+		if request.POST['status_quarantine'] == 'False':
+			status_quarantine = 4
 
 	 	if request.is_ajax():
 	 		try:
@@ -830,14 +842,17 @@ def getFilteredImplement(request):
 				if manufacturer == '' or manufacturer == None:
 					implement = Implement.objects.filter(
 					hitch_capacity_req__gte = hitch_capacity_req,
-					horse_power_req__gte = horse_power_req,
-					status__lte = 2)
+					horse_power_req__gte = horse_power_req)
 				else:
 					implement = Implement.objects.filter(
 					manufacturer_model__manufacturer__id = manufacturer,
 					hitch_capacity_req__gte = hitch_capacity_req,
-					horse_power_req__gte = horse_power_req,
-					status__lte = 2)
+					horse_power_req__gte = horse_power_req)
+				# Filter the machine with the correct desired status 
+				implement = implement.exclude(status = status_ok)
+				implement = implement.exclude(status = status_attention)
+				implement = implement.exclude(status = status_broken)
+				implement = implement.exclude(status = status_quarantine)
 				# Remove those implements that requires more hitch capacity then the selected machine can carry,
 				# Remove those implements that requires more horse_power then the selected machine have,
 				# Remove those implements that have different hitch category then the selected machine,
@@ -856,6 +871,7 @@ def getFilteredImplement(request):
 					each_result['horse_power_req'] = each.horse_power_req
 					each_result['asset_number'] = each.asset_number
 					each_result['drawbar_category'] = each.drawbar_category
+					each_result['status'] = each.status
 					result.append(each_result)
 					each_result = {}
 				result[0] = {'success' : True}
