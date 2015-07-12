@@ -291,7 +291,7 @@ def stopBreak(request):
 					count = t_break.count()
 
 					if (count != 0) and t_break[0].end is None:
-						t_break = t_break.get()
+						t_break = t_break[0]
 						t_break.end = now
 						t_break.save()
 						result['success'] = True
