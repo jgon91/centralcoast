@@ -1169,6 +1169,7 @@ def getWeekHours(id):
 	return 0
 
 #Return the information about the driver and his or her schedule
+@login_required
 def getEmployeeSchedule(request):
 	result = {'success' : False}
 
@@ -1211,6 +1212,31 @@ def getEmployeeSchedule(request):
 	else:
 	 	result['code'] = 3 #Request was not POST
 
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+@login_required
+def getEmployeeSchedulePart(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+		if request.is_ajax():
+			aux = request.POST['start_day'] #get the date in the POST request
+			aux2 = request.POST['stop_day']
+			date_start = datetime.datetime.strptime(aux, '%Y-%m-%d')
+			date_end = datetime.datetime.strptime(aux2, '%Y-%m-%d') + datetime.timedelta(days = 1)
+			emploTask = EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date__range = (date_start, date_end), task__approval__lte = 3)
+			aux = []
+			aux2 = []
+			for item in emploTask:
+				if item.task.accomplished == 0:
+					aux.append((item.task.hours_prediction,str(item.task.date),item.employee.id))
+				else:
+					aux2.append((item.task.hours_prediction,str(item.task.date),item.employee.id, item.hours_spent,str(item.task_init)))
+			result['tasks_peddings'] = aux
+			result['task_accomplished'] = aux2
+		else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else:
+	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 def getAllManufacturers(request):
