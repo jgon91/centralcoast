@@ -458,6 +458,27 @@ def getEquipmentStatus(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+@login_required
+def getQRCodeStatusForEquipment(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+	 	if request.is_ajax():
+			try:
+				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
+				result['success'] = True
+			except Machine.DoesNotExist:
+				try:
+					implement = Implement.objects.get(qr_code = request.POST['qr_code'])
+					result['success'] = True
+				except Implement.DoesNotExist:
+	 				result['code'] = 1 #There is no equipment for this qr_code
+	 	else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else:
+	 	result['code'] = 3 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
 def updateEquipmentStatus(request):
 	result = {'success' : False}
 	if request.method == 'POST':
@@ -572,28 +593,28 @@ def retrieveScannedMachine(request):
 	 	result['code'] = 3 #Request was not POST
  	return HttpResponse(json.dumps(result),content_type='application/json')
 
-# Driver 6.3.1.3		
-# It will retrieve id + description of all task categories in database.		
-def getAllTaskCategory(request):		
-	each_result = {}	
-	result = []		
-	result.append({'success' : False})		
-	if request.method == 'POST':		
-	 	if request.is_ajax():		
-			try:		
-				all_task_category = TaskCategory.objects.filter()		
-				for each in all_task_category:					      		
-					each_result['id'] = each.id		
-					each_result['description'] = each.description		
-					result.append(each_result)		
-					each_result = {}		
-				result[0] = {'success' : True}		
-			except TaskCategory.DoesNotExist:		
-				result.append({'code' : 1}) #There is no task associated with this		
-		else:		
-	 		result.append({'code' : 2}) #Use ajax to perform requests		
-	else:		
-	 	result.append({'code' : 3})  #Request was not POST		
+# Driver 6.3.1.3
+# It will retrieve id + description of all task categories in database.
+def getAllTaskCategory(request):
+	each_result = {}
+	result = []
+	result.append({'success' : False})
+	if request.method == 'POST':
+	 	if request.is_ajax():
+			try:
+				all_task_category = TaskCategory.objects.filter()
+				for each in all_task_category:
+					each_result['id'] = each.id
+					each_result['description'] = each.description
+					result.append(each_result)
+					each_result = {}
+				result[0] = {'success' : True}
+			except TaskCategory.DoesNotExist:
+				result.append({'code' : 1}) #There is no task associated with this
+		else:
+	 		result.append({'code' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'code' : 3})  #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
@@ -618,7 +639,7 @@ def getTaskInfo(request):
 				try: # Check if task is added on TaskImplementMachine table
 					taskImplementMachine = TaskImplementMachine.objects.get(id = task_id)
 					try: # Check if task is added on EmployeeTask table
-						employeeTask = EmployeeTask.objects.get(id = task_id)						
+						employeeTask = EmployeeTask.objects.get(id = task_id)
 						result['employee'] = employeeTask.employee.id
 						result['field'] = task.field.name
 						result['description'] = task.description
@@ -737,12 +758,12 @@ def getFilteredMachine(request):
 		if not horse_power:
 			horse_power = -1
 		# Set the correct values for all status filters
-		# All status filters will receive True or False. 
+		# All status filters will receive True or False.
 		#   - If False, it will change to the correct value on the database  (1, 2, 3, or 4)
 		#   - If True, it will still with 0
-		status_ok = 0 			
-		status_attention = 0	
-		status_broken = 0		
+		status_ok = 0
+		status_attention = 0
+		status_broken = 0
 		status_quarantine = 0
 		if request.POST['status_ok'] == 'False':
 			status_ok = 1
@@ -766,7 +787,7 @@ def getFilteredMachine(request):
 					manufacturer_model__manufacturer__id = manufacturer,
 					hitch_capacity__gte = hitch_capacity,
 					horsepower__gte = horse_power)
-				# Filter the machine with the correct desired status 
+				# Filter the machine with the correct desired status
 				machine = machine.exclude(status = status_ok)
 				machine = machine.exclude(status = status_attention)
 				machine = machine.exclude(status = status_broken)
@@ -825,12 +846,12 @@ def getFilteredImplement(request):
 		if horse_power_req == '' or horse_power_req == None:
 			horse_power_req = -1
 		# Set the correct values for all status filters
-		# All status filters will receive True or False. 
+		# All status filters will receive True or False.
 		#   - If False, it will change to the correct value on the database  (1, 2, 3, or 4)
 		#   - If True, it will still with 0
-		status_ok = 0 			
-		status_attention = 0	
-		status_broken = 0		
+		status_ok = 0
+		status_attention = 0
+		status_broken = 0
 		status_quarantine = 0
 		if request.POST['status_ok'] == 'False':
 			status_ok = 1
@@ -854,7 +875,7 @@ def getFilteredImplement(request):
 					manufacturer_model__manufacturer__id = manufacturer,
 					hitch_capacity_req__gte = hitch_capacity_req,
 					horse_power_req__gte = horse_power_req)
-				# Filter the machine with the correct desired status 
+				# Filter the machine with the correct desired status
 				implement = implement.exclude(status = status_ok)
 				implement = implement.exclude(status = status_attention)
 				implement = implement.exclude(status = status_broken)
@@ -1245,50 +1266,50 @@ def getEmployeeSchedulePart(request):
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-def getAllManufacturers(request):		
-	each_result = {}	
-	result = []		
-	result.append({'success' : False})		
-	if request.method == 'POST':		
-	 	if request.is_ajax():		
-			try:		
-				all_manufacturers = Manufacturer.objects.filter()		
-				for each in all_manufacturers:					      		
-					each_result['id'] = each.id		
-					each_result['name'] = each.name		
+def getAllManufacturers(request):
+	each_result = {}
+	result = []
+	result.append({'success' : False})
+	if request.method == 'POST':
+	 	if request.is_ajax():
+			try:
+				all_manufacturers = Manufacturer.objects.filter()
+				for each in all_manufacturers:
+					each_result['id'] = each.id
+					each_result['name'] = each.name
 					result.append(each_result)
-					each_result = {}		
-				result[0] = {'success' : True}		
-			except Manufacturer.DoesNotExist:		
-				result.append({'code' : 1}) #There is no task associated with this		
-		else:		
-	 		result.append({'code' : 2}) #Use ajax to perform requests		
-	else:		
-	 	result.append({'code' : 3})  #Request was not POST		
+					each_result = {}
+				result[0] = {'success' : True}
+			except Manufacturer.DoesNotExist:
+				result.append({'code' : 1}) #There is no task associated with this
+		else:
+	 		result.append({'code' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'code' : 3})  #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-def getAllFields(request):		
-	each_result = {}	
-	result = []		
-	result.append({'success' : False})		
-	if request.method == 'POST':		
-	 	if request.is_ajax():		
-			try:		
-				all_fields = Field.objects.filter()		
-				for each in all_fields:					      		
-					each_result['id'] = each.id		
+def getAllFields(request):
+	each_result = {}
+	result = []
+	result.append({'success' : False})
+	if request.method == 'POST':
+	 	if request.is_ajax():
+			try:
+				all_fields = Field.objects.filter()
+				for each in all_fields:
+					each_result['id'] = each.id
 					each_result['name'] = each.name
 					each_result['organic'] = each.organic
 					each_result['size'] = each.size
 					result.append(each_result)
-					each_result = {}		
-				result[0] = {'success' : True}		
-			except Manufacturer.DoesNotExist:		
-				result.append({'code' : 1}) #There is no task associated with this		
-		else:		
-	 		result.append({'code' : 2}) #Use ajax to perform requests		
-	else:		
-	 	result.append({'code' : 3})  #Request was not POST		
+					each_result = {}
+				result[0] = {'success' : True}
+			except Manufacturer.DoesNotExist:
+				result.append({'code' : 1}) #There is no task associated with this
+		else:
+	 		result.append({'code' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'code' : 3})  #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 def validatePermission(request):
@@ -1474,14 +1495,14 @@ def expandInfoBox(request):
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-# Create a entry on TaskImplementMachine table and insert the following fields with information from the front-end: 
+# Create a entry on TaskImplementMachine table and insert the following fields with information from the front-end:
 # Task_id (task_id created on last sudb-page), Machine_id, Implement_id.
 
 # Used tables: Task, TaskImplementMachine.
 # def createEntryOnTaskImplementMachine(request):
 # 	form = taskForm(request.POST)
 # 	result = {'success' : False}
-					
+
 # 	taskImplementMachine = Task.objects.get(id = 1)#request.POST['id'])
 # 	print "task ID: " + taskImplementMachine
 # 	machine_id = form.cleaned_data['machine_id']
