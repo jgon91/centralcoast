@@ -1267,21 +1267,28 @@ def getAllManufacturers(request):
 	 	result.append({'code' : 3})  #Request was not POST		
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-def getAllFields(request):
-	result = []
-	result.append({'success' : False})
-	if request.method == 'POST':
-		if request.is_ajax:
-			try:
-				fields = Field.objects.all()
-				result.append(str(fields))
-			except Manufacture.DoesNotExist:
-				result.append({'code' : 1}) #There is no field on the database
-		else:
-			result.append({'code': 2}) #result[0]['code'] = 2 #request is not ajax
-	else:
-		result.append({'code' : 3}) #result[0]['code'] = 3 #Request was not POST
-
+def getAllFields(request):		
+	each_result = {}	
+	result = []		
+	result.append({'success' : False})		
+	if request.method == 'POST':		
+	 	if request.is_ajax():		
+			try:		
+				all_fields = Field.objects.filter()		
+				for each in all_fields:					      		
+					each_result['id'] = each.id		
+					each_result['name'] = each.name
+					each_result['organic'] = each.organic
+					each_result['size'] = each.size
+					result.append(each_result)
+					each_result = {}		
+				result[0] = {'success' : True}		
+			except Manufacturer.DoesNotExist:		
+				result.append({'code' : 1}) #There is no task associated with this		
+		else:		
+	 		result.append({'code' : 2}) #Use ajax to perform requests		
+	else:		
+	 	result.append({'code' : 3})  #Request was not POST		
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 def validatePermission(request):
