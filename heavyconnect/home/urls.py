@@ -11,7 +11,7 @@ from . import viewsCRUD as CRUD
 #Example: url(r'^ /$', main_views., name = ''),
 
 urlpatterns = [
-	url(r'^$', main_views.home, name='home'),
+    url(r'^$', main_views.home, name='home'),
     url(r'^login/$', main_views.login, name='login'),
     url(r'^logout/$', main_views.logout, name='logout'),
     url(r'^profile/$', main_views.profile, name='profile'),
@@ -38,12 +38,12 @@ urlpatterns = [
     url(r'^getEmployeeLocation/$', main_views.getEmployeeLocation, name = 'getEmployeeLocation'),
     url(r'^formTEST/$', main_views.manufacturerForm, name='registerManufacturer'),
 
-
-    
     ### Functions ###
     url(r'^employeeLocation/$', main_views.getEmployeeLocation, name = 'employeeLocation'),
     url(r'^employeeSchedule/$', main_views.getEmployeeSchedule, name = 'employeeSchedule'),
     url(r'^driverInfo/$', main_views.getDriverInformation, name = 'driverInfo'),
+    url(r'^createNewTask1/$', main_views.createNewTask1, name = 'createNewTask'),
+    url(r'^createNewTask2/$', main_views.createNewTask2, name = 'createNewTask'),
     url(r'^startNewTask/$', main_views.startNewTask, name = 'startNewTask'),
     url(r'^quickUserInfomation/$', main_views.getQuickUser, name = 'quickUser'),
     url(r'^updatePhoto/$', main_views.updatePhoto, name = 'updatePhoto'),
@@ -52,19 +52,34 @@ urlpatterns = [
     url(r'^loadImplementsImage/$', main_views.loadImplementsImage, name = 'loadImplementsImage'),
     url(r'^startShift/$', main_views.startShift, name = 'startShift'),
     url(r'^stopShift/$', main_views.stopShift, name = 'stopShift'),
+    url(r'^startBreak/$', main_views.startBreak, name = 'startBreak'),
+    url(r'^stopBreak/$', main_views.stopBreak, name = 'stopBreak'),
     url(r'^equipmentStatus/$', main_views.getEquipmentStatus, name = 'equipmentStatus'),
-    url(r'^startStopBreak/$', main_views.startStopBreak, name = 'startStopBreak'),
-	url(r'^getEquipmentInfo/$', main_views.getEquipmentInfo, name = 'getEquipmentInfo'),
+    url(r'^getAllImplementInfo/$', main_views.getAllImplementInfo, name = 'getAllImplementInfo'),
+    url(r'^getAllMachineInfo/$', main_views.getAllMachineInfo, name = 'getAllMachineInfo'),
+    url(r'^getEquipmentInfo/$', main_views.getEquipmentInfo, name = 'getEquipmentInfo'),
     url(r'^retrieveScannedMachine/$', main_views.retrieveScannedMachine, name = 'retrieveScannedMachine'),
+    url(r'^getFilteredMachine/$', main_views.getFilteredMachine, name = 'getFilteredMachine'),
+    url(r'^getFilteredImplement/$', main_views.getFilteredImplement, name = 'getFilteredImplement'),
+    url(r'^getScannedImplement/$', main_views.getScannedImplement, name = 'getScannedImplement'),
     url(r'^retrievePendingTask/$', main_views.retrievePendingTask, name = 'retrievePendingTask'),
+    url(r'^getScannedFilteredEmployee/$', main_views.getScannedFilteredEmployee, name = 'getScannedFilteredEmployee'),
+    url(r'^getAllTaskCategory/$', main_views.getAllTaskCategory, name = 'getAllTaskCategory'),
+    url(r'^getTaskInfo/$', main_views.getTaskInfo, name = 'getTaskInfo'),
     url(r'^retrieveMachine/$', main_views.retrieveMachine, name = 'retrieveMachine'),
-	url(r'^retrieveScannedEmployee/$', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee'),
+    url(r'^retrieveScannedEmployee/$', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee'),
     url(r'^continueTask/$', main_views.continueTask, name = 'continueTask'),
     url(r'^pastTaskList/$', main_views.pastTaskList, name = 'pastTaskList'),
-    url(r'^validatePermission', main_views.validatePermission, name = 'validatePermission'),
-    url(r'^getFilteredMachine/$', main_views.getFilteredMachine, name = 'getFilteredMachine'),
-    url(r'^validatePermission', main_views.validatePermission, name = 'validatePermission'),
-
+    url(r'^retrieveScannedEmployee/$', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee'),
+    url(r'^validatePermission/$', main_views.validatePermission, name = 'validatePermission'),
+    url(r'^getAllManufacturers/$', main_views.getAllManufacturers, name = 'getAllManufacturers'),
+    url(r'^expandInfoBox/$', main_views.expandInfoBox, name = 'expandInfoBox'),
+    url(r'^updateEquipmentStatus/$', main_views.updateEquipmentStatus, name = 'updateEquipmentStatus'),
+    url(r'^getEmployeeSchedulePart/$', main_views.getEmployeeSchedulePart, name = 'getEmployeeSchedulePart'),
+    url(r'^getAllFields/$', main_views.getAllFields, name = 'getAllFields'),
+    # url(r'^createEntryOnTaskImplementMachine/$', main_views.createEntryOnTaskImplementMachine, name = 'createEntryOnTaskImplementMachine'),
+    url(r'^endTask/$', main_views.endTask, name = 'endTask'),
+    utl(r'^checkqrcode/$', main.getQRCodeStatusForEquipment, name = 'getQRCodeStatusForEquipment'),
     ### End ###
 
     ###Insert###
@@ -74,7 +89,7 @@ urlpatterns = [
     ### Froms ###
     url(r'^formOk/$', main_views.formOk, name = 'formOk'),
     url(r'^manufacturerFormView/$', main_views.manufacturerFormView, name='registerManufacturer'),
-    url(r'^manufacturerModelFormView/$', main_views.manufacturerModelFormView, name = 'registerManufacturerModel'),
+    url(r'^manufacturerModelFormView/$', main_views.manufacturerFormView, name = 'registerManufacturerModel'),
     url(r'^repairShopFormView/$', main_views.repairShopFormView, name = 'registerRepairShop'),
     url(r'^shopFormView/$', main_views.shopFormView, name = 'registerShop'),
     url(r'^machineFormView/$', main_views.machineFormView, name = 'registerMachine'),
@@ -99,5 +114,11 @@ urlpatterns = [
     url(r'^serviceFormView/$', main_views.serviceFormView, name = 'registerService'),
     url(r'^machineServiceFormView/$', main_views.machineServiceFormView, name = 'registerMachineService'),
     url(r'^implementServiceFormView/$', main_views.implementServiceFormView, name = 'registerImplementService'),
+    url(r'^equipmentCategoryFormView/$', main_views.equipmentCategoryFormView, name = 'registerEquipmentCategory'),
+    url(r'^equipmentTypeFormView/$', main_views.equipmentTypeFormView, name = 'equipmentTypeFormView'),
+    url(r'^questionFormView/$', main_views.questionFormView, name = 'registerQuestion'),
+    url(r'^machineChecklistFormView/$', main_views.machineChecklistFormView, name = 'registerMachineChecklist'),
+    url(r'^implementChecklistFormView/$', main_views.implementChecklistFormView, name = 'registerChecklistImplement'),
+    url(r'^breakFormView/$', main_views.breakFormView, name = 'breakFormView'),
     ### End ###
 ]

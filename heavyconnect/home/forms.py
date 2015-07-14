@@ -9,6 +9,9 @@
 
 from django import forms
 from django.contrib.auth.models import User
+
+import datetime
+
 from home.models import * 
 
 class loginForm(forms.Form):
@@ -38,6 +41,17 @@ class shopForm(forms.Form):
 	name = forms.CharField()
 	number = forms.CharField()
 	address = forms.CharField()
+### End ###
+
+### Structure for EquipmentCategoryForm ###
+class equipmentCategoryForm(forms.Form):
+	name = forms.CharField(max_length = 25)
+### End ###
+
+### Structure for EquipmentTypeForm ###
+class equipmentTypeForm(forms.Form):
+	category = forms.ModelChoiceField(queryset = EquipmentCategory.objects.all())
+	name = forms.CharField(max_length = 25)
 ### End ###
 
 ### Structure for machineForm ###
@@ -80,6 +94,7 @@ class machineForm(forms.Form):
 	manufacturer_model = forms.ModelChoiceField(queryset = ManufacturerModel.objects.all())
 	repair_shop = forms.ModelChoiceField(queryset = RepairShop.objects.all())
 	shop = forms.ModelChoiceField(queryset = Shop.objects.all())
+	equipment_type = forms.ModelChoiceField(queryset = EquipmentType.objects.all())
 	nickname = forms.CharField(max_length = 20)
 	qr_code = forms.CharField(max_length = 10)
 	asset_number = forms.CharField(max_length = 15)
@@ -109,6 +124,7 @@ class implementForm(forms.Form):
 	manufacturer_model = forms.ModelChoiceField(queryset = ManufacturerModel.objects.all())
 	repair_shop = forms.ModelChoiceField(queryset = RepairShop.objects.all())
 	shop = forms.ModelChoiceField(queryset = Shop.objects.all())
+	equipment_type = forms.ModelChoiceField(queryset = EquipmentType.objects.all())
 	nickname = forms.CharField(max_length = 20)
 	qr_code = forms.CharField()
 	asset_number = forms.CharField()
@@ -139,7 +155,8 @@ class employeeForm(forms.Form):
 		(2, 'es'),
 		(3, 'en'),
 	)
-	#user = forms.OneToOneField(User) Users are only created on the database
+	last_task = forms.ModelChoiceField(queryset = Task.objects.all())
+	active = forms.BooleanField()
 	company_id = forms.CharField()
 	language = forms.ChoiceField(choices = LANGUAGE_CHOICES)
 	qr_code = forms.CharField()
@@ -156,12 +173,6 @@ class employeeAttendanceForm(forms.Form):
 	date = forms.DateField()
 	hour_started = forms.TimeField()
 	hour_ended = forms.TimeField()
-	morning_break = forms.TimeField()
-	morning_break_end = forms.TimeField()
-	afternoon_break = forms.TimeField()
-	afternoon_break_end = forms.TimeField()
-	evening_break = forms.TimeField()
-	evening_break_end = forms.TimeField()
 ### End ###
 
 ### Structure for qualificationForm ###
@@ -232,17 +243,19 @@ class taskForm(forms.Form):
 		(1, 'Approved'),
 		(2, 'Denied'),
 		(3, 'Pending'),
+		(4, 'Setup'),
 	)
 	field = forms.ModelChoiceField(queryset = Field.objects.all())
-	t_type = forms.CharField()
-	rate_cost = forms.FloatField()
-	hours_spent = forms.FloatField()
+	category = forms.ModelChoiceField(queryset = TaskCategory.objects.all())
+	rate_cost = forms.FloatField(required = False)
+	hours_spent = forms.FloatField(required = False)
 	hours_prediction = forms.FloatField()
 	description =  forms.CharField()
 	passes = forms.IntegerField()
-	date = forms.DateTimeField()
+	date = forms.DateTimeField(widget=forms.DateTimeInput(format="%Y-%m-%d"))
+	time = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))
 	accomplished = forms.BooleanField(required = False)
-	approval = forms.ChoiceField(choices = APPROVAL_CHOICES)
+	approval = forms.ChoiceField(choices = APPROVAL_CHOICES,required = False)
 ### End ###
 
 ### Structure for taskCategoryForm ###
@@ -265,7 +278,6 @@ class taskImplementMachineForm(forms.Form):
 	task = forms.ModelChoiceField(queryset = Task.objects.all())
 	machine = forms.ModelChoiceField(queryset = Machine.objects.all())
 	implement = forms.ModelChoiceField(queryset = Implement.objects.all())
-	machine = forms.BooleanField(required = False)
 ### End ###
 
 ### Structure for appendixForm ###
@@ -286,17 +298,10 @@ class serviceCategoryForm(forms.Form):
 	service_category = forms.CharField()
 ### End ###
 
-### Structure for serviceForm ###
-class serviceForm(forms.Form):
-	category = forms.ModelChoiceField(ServiceCategory.objects.all())
-	date = forms.DateTimeField()
-	done = forms.BooleanField(required = False)
-### End ###
-
 ### Structure for machineServiceForm ### 
 class machineServiceForm(forms.Form):
 	machine = forms.ModelChoiceField(queryset = Machine.objects.all())
-	service = forms.ModelChoiceField(queryset = Service.objects.all())
+	service = forms.ModelChoiceField(queryset = ServiceCategory.objects.all())
 	description = forms.CharField()
 	done = forms.BooleanField(required = False)
 	expected_date = forms.DateTimeField()
@@ -306,9 +311,43 @@ class machineServiceForm(forms.Form):
 ### Structure for implementServiceForm ###
 class implementServiceForm(forms.Form):
 	implement = forms.ModelChoiceField(queryset = Implement.objects.all())
-	service = forms.ModelChoiceField(queryset = Service.objects.all())
+	service = forms.ModelChoiceField(queryset = ServiceCategory.objects.all())
 	description = forms.CharField()
 	expected_date = forms.DateTimeField()
 	done = forms.BooleanField(required = False)
 	price = forms.FloatField()
 ### End ### 
+
+### Structure for questionForm ###
+class questionForm(forms.Form):
+	description = forms.CharField(max_length = 250)
+	category = forms.IntegerField()
+	refers = forms.ChoiceField(choices = ((1, 'Machine'), (2, 'Implement')))
+### End ###
+
+### Structure for machineChecklistForm ###
+class machineChecklistForm(forms.Form):
+	question = forms.ModelChoiceField(queryset = Question.objects.all())
+	qrCode = forms.ModelChoiceField(queryset = Machine.objects.all())
+	answer = forms.BooleanField()
+	note = forms.CharField(max_length = 200)
+	date = forms.DateTimeField()
+	photo = forms.URLField(max_length = 200)
+### End ###
+
+### Structure for implementChecklistForm ###
+class implementChecklistForm(forms.Form):
+	question = forms.ModelChoiceField(queryset = Question.objects.all())
+	qrCode = forms.ModelChoiceField(queryset = Implement.objects.all())
+	answer = forms.BooleanField()
+	note = forms.CharField(max_length = 200)
+	date = forms.DateTimeField()
+	photo = forms.URLField(max_length = 200)
+### End ###
+
+### Structure for breakForm ###
+class breakForm(forms.Form):
+	attendance = forms.ModelChoiceField(queryset = EmployeeAttendance.objects.all())
+	start = forms.TimeField()
+	end = forms.TimeField(required = False)
+### End ###
