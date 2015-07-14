@@ -596,6 +596,8 @@ def getAllTaskCategory(request):
 	 	result.append({'code' : 3})  #Request was not POST		
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+
+
 # Driver 6.1.1
 # Retrieve Task Information from task on the list of Pending Tasks
 #####################################################################################
@@ -608,22 +610,27 @@ def getAllTaskCategory(request):
 @login_required
 def getTaskInfo(request):
 	result = {'success' : False}
-	if request.method == 'POST':
-		task_id = request.POST['task_id']
-	 	if request.is_ajax():
+	if not request.method == 'POST':
+		task_id = request.GET.get('task_id')
+	 	if not request.is_ajax():
 			try: # Check if task is added on the Task table
 				task = Task.objects.get(id = task_id)
 				try: # Check if task is added on TaskImplementMachine table
 					taskImplementMachine = TaskImplementMachine.objects.get(id = task_id)
-					result['field'] = task.field.name
-					result['description'] = task.description
-					result['machine_nickname'] = taskImplementMachine.machine.nickname
-					result['machine_photo'] = taskImplementMachine.machine.photo
-					result['implement_nickname'] = taskImplementMachine.implement.nickname
-					result['implement_photo'] = taskImplementMachine.implement.photo
-					result['success'] = True
+					try: # Check if task is added on EmployeeTask table
+						employeeTask = EmployeeTask.objects.get(id = task_id)						
+						result['employee'] = employeeTask.employee.id
+						result['field'] = task.field.name
+						result['description'] = task.description
+						result['machine_nickname'] = taskImplementMachine.machine.nickname
+						result['machine_photo'] = taskImplementMachine.machine.photo
+						result['implement_nickname'] = taskImplementMachine.implement.nickname
+						result['implement_photo'] = taskImplementMachine.implement.photo
+						result['success'] = True
+					except EmployeeTask.DoesNotExist:
+						result['code'] = 111 #There is no Task associated on EmployeeTask table
 				except TaskImplementMachine.DoesNotExist:
-					result['code'] = 1 #There is no Task associated on TaskImplementMachine table
+					result['code'] = 11 #There is no Task associated on TaskImplementMachine table
 			except Task.DoesNotExist:
 				result['code'] = 1 #There is no Task associated on Task table
 		else:
@@ -631,7 +638,6 @@ def getTaskInfo(request):
 	else:
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
-
 
 
 
