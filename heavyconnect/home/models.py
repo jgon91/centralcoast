@@ -209,6 +209,7 @@ class EmployeeAttendance(models.Model):
 	date = models.DateField()
 	hour_started = models.TimeField()
 	hour_ended = models.TimeField(null = True, blank = True)
+	signature = models.CharField(max_length = 5000, null = True, blank = True)
 	
 
 	def __unicode__(self):
@@ -230,7 +231,7 @@ class Qualification(models.Model):
 
 class Certification(models.Model):
 	description = models.CharField(max_length = 50)
-	year = models.IntegerField()
+	year = models.IntegerField(null = True, blank = True)
 
 	def __unicode__(self):
 		return  "Description: " + str(self.description)
