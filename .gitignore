@@ -2,4 +2,3 @@ venv/
 *.pyc
 heavyconnect/db.sqlite3
 heavyconnect/heavyconnect/settings.py
-heavyconnect/home/migrations
