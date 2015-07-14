@@ -8,7 +8,6 @@ from django.utils.dateformat import DateFormat
 from django.template.loader import render_to_string
 from django.db import transaction
 
-
 import json
 import datetime
 
@@ -1246,21 +1245,26 @@ def getEmployeeSchedulePart(request):
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-def getAllManufacturers(request):
-	result = []
-	result.append({'success' : False})
-	if request.method == 'POST':
-		if request.is_ajax:
-			try:
-				manufacturers = Manufacturer.objects.all()
-				result.append(str(manufacturers))
-			except Manufacture.DoesNotExist:
-				result.append({'code' : 1}) #There is no manufacture on the database
-		else:
-			result.append({'code': 2}) #result[0]['code'] = 2 #request is not ajax
-	else:
-		result.append({'code' : 3}) #result[0]['code'] = 3 #Request was not POST
-
+def getAllManufacturers(request):		
+	each_result = {}	
+	result = []		
+	result.append({'success' : False})		
+	if request.method == 'POST':		
+	 	if request.is_ajax():		
+			try:		
+				all_manufacturers = Manufacturer.objects.filter()		
+				for each in all_manufacturers:					      		
+					each_result['id'] = each.id		
+					each_result['name'] = each.name		
+					result.append(each_result)
+					each_result = {}		
+				result[0] = {'success' : True}		
+			except Manufacturer.DoesNotExist:		
+				result.append({'code' : 1}) #There is no task associated with this		
+		else:		
+	 		result.append({'code' : 2}) #Use ajax to perform requests		
+	else:		
+	 	result.append({'code' : 3})  #Request was not POST		
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 def getAllFields(request):
