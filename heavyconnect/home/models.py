@@ -70,16 +70,16 @@ class Machine(models.Model):
 		(4, 'Quarantine'),
 	)
 	OPERATORSTATION_CHOICES = (
-		('a', 'Cab'), 
+		('a', 'Cab'),
 		('b', 'Open'),
 		('c', 'Canopy'),
 	)
 	MTYPE_CHOICES = (
-		('T', 'Track'), 
+		('T', 'Track'),
 		('W', 'Wheels'),
 	)
 	STEERING_CHOICES = (
-		('M', 'Manual'), 
+		('M', 'Manual'),
 		('G', 'GPS'),
 	)
 	manufacturer_model = models.ForeignKey(ManufacturerModel)
@@ -99,8 +99,8 @@ class Machine(models.Model):
 	engine_hours = models.IntegerField()
 	service_interval = models.IntegerField()
 	base_cost = models.FloatField(default = 0)
-	m_type = models.CharField(max_length = 1, choices = MTYPE_CHOICES) 
-	front_tires = models.CharField(max_length = 20)														
+	m_type = models.CharField(max_length = 1, choices = MTYPE_CHOICES)
+	front_tires = models.CharField(max_length = 20)
 	rear_tires = models.CharField(max_length = 20)
 	steering = models.CharField(max_length = 1, choices = STEERING_CHOICES)
 	operator_station = models.CharField(max_length = 1, choices = OPERATORSTATION_CHOICES)
@@ -128,7 +128,7 @@ class Implement(models.Model):
 	speed_range_min = models.FloatField()
 	speed_range_max = models.FloatField()
 	year_purchased = models.IntegerField()
-	implement_hours = models.IntegerField()	
+	implement_hours = models.IntegerField()
 	service_interval = models.IntegerField()
 	base_cost = models.FloatField()
 	hour_cost = models.FloatField()
@@ -209,7 +209,7 @@ class EmployeeAttendance(models.Model):
 	date = models.DateField()
 	hour_started = models.TimeField()
 	hour_ended = models.TimeField(null = True, blank = True)
-	
+
 
 	def __unicode__(self):
 		return "Employee: " + str(self.employee) + ", Date: " + str(self.date)
