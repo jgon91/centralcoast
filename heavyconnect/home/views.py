@@ -215,6 +215,7 @@ def stopShift(request):
 				if attendance.hour_ended is None:
 					if amount >= 3:
 						attendance.hour_ended = now
+						attendence.signature = request.POST['signature']
 						attendance.save()
 						result['success'] = True
 						result['hour_ended'] = str(attendance.hour_ended)
