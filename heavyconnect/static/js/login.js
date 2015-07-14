@@ -1,14 +1,13 @@
 function process_login() {
-	console.log("function called")
+	console.log("function called");
 	$.ajax({
 		method: "POST",
 		url: "login/",
 		data: $('#login-form').serialize(),
 		success: function(data, status, xhr){
 			//if(data.success){
-			alert();
-			if(true){
-				
+				alert(data.code);
+			if(data.success){
 				location.reload();
 			} else if (data.code == 1){
 				$("#errorMessage").html("User Inactive. Call your manager.");

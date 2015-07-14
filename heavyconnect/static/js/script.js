@@ -1,3 +1,35 @@
+//SCRIPT LOGIN PAGE***
+function process_login() {
+	$.ajax({
+		method: "POST",
+		url: "login/",
+		data: $('#login-form').serialize(),
+		success: function(data, status, xhr){
+			if(data.success){
+				location.reload();
+			} else if (data.code == 1){
+				$("#errorMessage").html("User Inactive. Call your manager.");
+				$("#errorMessage").attr("class", "fade in");
+				$("#errorMessage").css('display', 'block');
+			} else if (data.code == 2){
+				$("#errorMessage").html("Wrong Username/Password.");
+				$("#errorMessage").attr("class", "fade in");
+				$("#errorMessage").css('display', 'block');
+			} else if (data.code == 3){
+				$("#errorMessage").html("Enter the username and password.");
+				$("#errorMessage").attr("class", "fade in");
+				$("#errorMessage").css('display', 'block');
+			} else if (data.code == 4 || data.code == 5){
+				$("#errorMessage").html("Error. Please, contact the suport.");
+				$("#errorMessage").attr("class", "fade in");
+				$("#errorMessage").css('display', 'block');
+			}
+		}
+	});
+}
+//END SCRIPT LOGIN PAGE
+
+
 
 /* Script Profile 
 	function getUserInformation(token) {

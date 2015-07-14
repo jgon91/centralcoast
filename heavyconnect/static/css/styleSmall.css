@@ -1,0 +1,314 @@
+/*** General Begin ***/
+	
+body {
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+	padding: 0px;
+	font-family: Helvetica, arial;
+}
+#wrapper {
+	text-align: center;
+	width: 100%;
+	min-width: 640px;
+	height: 100%;
+	padding: 0px;
+	margin: 0px;
+}
+#content {
+	width: 100%;
+	min-width: 640px;
+}
+footer {
+	color: white;
+	width: 100%;
+	background: #434343;
+	position: fixed;
+	bottom: 0px;
+	padding: 2px;
+	text-align: center;
+}
+.namePage {
+	float: left;
+	color: #4C6A2A;
+	font-weight: 600;
+	margin-left: 2%;
+}
+.row {
+	width: 100%;
+	min-width: 640px;
+	margin: 0px;
+}
+/*** General End ***/
+
+/*** Login Begin ***/
+#login {
+	margin-top: 20px;
+}
+#loginTable {
+	margin: auto;
+}
+.input_login {
+	width: 180px;
+	height: 30px;
+	margin: 0px;
+	margin-bottom: 5px;
+}
+.icnLogin {
+	margin-bottom: 10px;
+}
+#btn_login {
+	background: url('../imgSmall/buttons/loginBtn.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 100%;
+	width: 212px;
+	height: 33px;
+	border: none;
+	padding: 0px;
+	border-radius: 7px;
+	box-shadow: 2px 2px 5px gray;
+}
+#btn_login:hover {
+	background: url('../imgSmall/buttons/loginBtnHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+.input_login[type=text] {
+	padding: 7px;
+	border: 2px solid #809256;
+	border-radius: 7px;
+	font-weight: bold;
+	color: black;
+	font-weight: bold;
+	font-size: 100%;
+	text-align: center;
+}
+.input_login[type=password] {
+	padding: 7px;
+	border: 2px solid #809256;
+	border-radius: 7px;
+	font-weight: bold;
+	color: black;
+	font-weight: bold;
+	font-size: 100%;
+	text-align: center;
+}
+#errorMessage {
+	font-size: 12px;
+	background: #F2DEDE;
+	color: #A94442;
+	padding: 6px;
+	font-weight: 700;
+	margin-top: 5px;
+	display: none;
+	border-radius: 5px;
+	border: 1px solid #A94442;
+}
+/*** Login End ***/
+
+/*** Header Home Begin ***/
+#top {
+	background-color: #1F3801;
+	height: 60px;
+	width: 100%;
+	min-width: 640px;
+	text-align: left;
+	margin: 0 auto;
+	padding: 0px;
+}
+#menuTop {
+	height: 60px;
+	margin: 0px;
+	padding: 0px;
+	margin-left: 2.5px;
+}
+#logoHome {
+	width: 170px;
+	height: 55px;
+	margin-top: 2.5px;
+}
+#userImg {
+	background: url('../imgSmall/buttons/userPicture.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 55px;
+	height: 55px;
+	margin-right: 2.5px;
+	margin-top: 2.5px;
+	float: right;
+	border: none;
+}
+#userImg:hover {
+	background: url('../imgSmall/buttons/userPictureHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#logOff {
+	background: url('../imgSmall/buttons/logoff.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 55px;
+	height: 55px;
+	margin-right: 2.5px;
+	margin-top: 2.5px;
+	float: right;
+	border: none;
+}
+#logOff:hover {
+	background: url('../imgSmall/buttons/logoffHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+/*** Header Home End ***/
+
+/*** Header Driver Begin ***/
+.btnTop {
+	width: 55px;
+	height: 55px;
+	margin-top: 2.5px;
+	margin-left: -2.5px;
+	border: none;
+}
+#btnHomeUp {
+	background: url('../imgSmall/buttons/btnHomeTop.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnHomeUp:hover {
+	background: url('../imgSmall/buttons/btnHomeTopHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnEquipmentUp {
+	background: url('../imgSmall/buttons/btnEquipmentTop.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnEquipmentUp:hover {
+	background: url('../imgSmall/buttons/btnEquipmentTopHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTaskflowUp {
+	background: url('../imgSmall/buttons/btnTaskflowTop.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTaskflowUp:hover {
+	background: url('../imgSmall/buttons/btnTaskflowTopHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnSchedulerUp {
+	background: url('../imgSmall/buttons/btnSchedulerTop.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnSchedulerUp:hover {
+	background: url('../imgSmall/buttons/btnSchedulerTopHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTimerkeeperUp {
+	background: url('../imgSmall/buttons/btnTimekeeperTop.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTimerkeeperUp:hover {
+	background: url('../imgSmall/buttons/btnTimekeeperTopHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+/*** Header Driver End ***/
+
+/*** Home Begin ***/
+.btnMain {
+	width: 105px;
+	height: 105px;
+	border: none;
+	border-radius: 8px;
+	box-shadow: 2px 2px 5px gray;
+}
+#driverMenu{
+	margin: auto;
+	text-align: center;
+	width: 80%;
+	margin-top: 10%;
+}
+#btnEquipment {
+	background: url('../imgSmall/buttons/equipment.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnEquipment:hover {
+	background: url('../imgSmall/buttons/equipmentHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTaskflow {
+	background: url('../imgSmall/buttons/taskflow.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTaskflow:hover {
+	background: url('../imgSmall/buttons/taskflowHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnScheduler {
+	background: url('../imgSmall/buttons/scheduler.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnScheduler:hover {
+	background: url('../imgSmall/buttons/schedulerHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTimerkeeper {
+	background: url('../imgSmall/buttons/timekeeper.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTimerkeeper:hover {
+	background: url('../imgSmall/buttons/timekeeperHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#backgroundFooter {
+	background-size: 100% 100%;
+	width: 100%;
+	min-width: 640px;
+	position: fixed;
+	bottom: 0;
+}
+/*** Home End ***/
+
+/*** Timekeeper Begin ***/
+#startShift {
+	border-radius: 7px;
+	border: none;
+	box-shadow: 2px 2px 5px gray;
+	background-color: #809B21;
+	height: 50px;
+	width: 200px;
+	color: white;
+}
+#stopShift {
+	border-radius: 7px;
+	border: none;
+	box-shadow: 2px 2px 5px gray;
+	background-color: #BB341A;
+	height: 50px;
+	width: 200px;
+	color: white;
+	margin-top: 10px;
+}
+.btnGreen {
+	border-radius: 7px;
+	border: none;
+	box-shadow: 2px 2px 5px gray;
+	background-color: #809B21;
+	height: 40px;
+	width: 200px;
+	color: white;
+	margin-top: 10px;
+}
+.btnRed {
+	border-radius: 7px;
+	border: none;
+	box-shadow: 2px 2px 5px gray;
+	background-color: #BB341A;
+	height: 40px;
+	width: 200px;
+	color: white;
+	margin-top: 10px;
+}
+.btnGreen:hover {
+	color: black;
+}
+.btnRed:hover {
+	color: black;
+}
+.btnColTime {
+	padding: 0px;
+}
+/*** Timekeeper End ***/
+
