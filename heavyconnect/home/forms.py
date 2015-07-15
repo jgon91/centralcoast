@@ -239,23 +239,29 @@ class employeeLocalizationForm(forms.Form):
 
 ### taskForm ###
 class taskForm(forms.Form):
-	APPROVAL_CHOICES = (
-		(1, 'Approved'),
-		(2, 'Denied'),
-		(3, 'Pending'),
-		(4, 'Setup'),
+	STATUS_CHOICES = (
+		(1, 'Setup'),
+		(2, 'Pending'),
+		(3, 'Approved'),
+		(4, 'Denied'),
+		(5, 'Ongoing'),
+		(6, 'Paused'),
+		(7, 'Finished'),
 	)
 	field = forms.ModelChoiceField(queryset = Field.objects.all())
 	category = forms.ModelChoiceField(queryset = TaskCategory.objects.all())
 	rate_cost = forms.FloatField(required = False)
-	hours_spent = forms.FloatField(required = False)
+	date_assigned = forms.DateTimeField(required = True)
 	hours_prediction = forms.FloatField()
-	description =  forms.CharField()
+	description = forms.CharField()
 	passes = forms.IntegerField()
-	date = forms.DateTimeField(widget=forms.DateTimeInput(format="%Y-%m-%d"))
-	time = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))
-	accomplished = forms.BooleanField(required = False)
-	approval = forms.ChoiceField(choices = APPROVAL_CHOICES,required = False)
+	task_init = forms.DateTimeField(required = True)
+	task_end = forms.DateTimeField(required = True)
+	hours_spent = forms.FloatField(required = False)
+	pause_start = forms.DateTimeField(required = True)
+	pause_end = forms.DateTimeField(required = True)
+	pause_total = forms.FloatField(required = True)
+	status = forms.ChoiceField(choices = STATUS_CHOICES,required = True)
 ### End ###
 
 ### Structure for taskCategoryForm ###
@@ -267,10 +273,9 @@ class taskCategoryForm(forms.Form):
 class employeeTaskForm(forms.Form):
 	employee = forms.ModelChoiceField(queryset = Employee.objects.all())
 	task = forms.ModelChoiceField(queryset = Task.objects.all())
-	category = forms.ModelChoiceField(queryset = TaskCategory.objects.all())
-	task_init = forms.DateField()
 	hours_spent = forms.FloatField()
-	substitution = forms.BooleanField(required = False)
+	start_time = forms.DateTimeField(required = True)
+	end_time = forms.DateTimeField(required = True)
 ### End ###
 
 ### Structure for taskImplementMachineForm ##
