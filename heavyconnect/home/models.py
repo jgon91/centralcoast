@@ -156,22 +156,29 @@ class TaskCategory(models.Model):
 		return "ID: " + str(self.id) + ", Category: " + str(self.description)
 
 class Task(models.Model):
-	APPROVAL_CHOICES = (
-		(1, 'Approved'),
-		(2, 'Denied'),
-		(3, 'Pending'),
-		(4, 'Setup'),
+	STATUS_CHOICES = (
+		(1, 'Setup'),
+		(2, 'Pending'),
+		(3, 'Approved'),
+		(4, 'Denied'),
+		(5, 'Ongoing'),
+		(6, 'Paused'),
+		(7, 'Finished'),
 	)
 	field = models.ForeignKey(Field)
 	category = models.ForeignKey(TaskCategory)
 	rate_cost = models.FloatField(null = True, default = 0)
-	hours_spent = models.FloatField(null = True, default = 0)
+	date_assigned = models.DateTimeField(null = True)
 	hours_prediction = models.FloatField()
 	description =  models.CharField(max_length = 500)
 	passes = models.IntegerField()
-	date = models.DateTimeField()
-	accomplished = models.BooleanField(default = False)
-	approval = models.IntegerField(choices = APPROVAL_CHOICES, default = 4)
+	task_init = models.DateTimeField(null = True, blank = True)
+	task_end = models.DateTimeField(null = True, blank = True)
+	hours_spent = models.FloatField(null = True, default = 0)
+	pause_start = models.DateTimeField(null = True, blank = True)
+	pause_end = models.DateTimeField(null = True, blank = True)
+	pause_total = models.FloatField(null = True, blank = True)
+	status = models.IntegerField(choices = STATUS_CHOICES, default = 1)
 
 	def __unicode__(self):
 		return "Field Name: " + str(self.field.name) + " Category: " + str(self.category.description) + ", Hour Cost: " +  str(self.rate_cost) + ", Description: " +  str(self.description)
@@ -313,20 +320,28 @@ class EmployeeLocalization(models.Model):
 class EmployeeTask(models.Model):
 	employee = models.ForeignKey(Employee)
 	task = models.ForeignKey(Task)
-	task_init = models.DateTimeField(null = True, blank = True)
+	start_time = models.DateTimeField(null = True, blank = True)
+	end_time = models.DateTimeField(null = True, blank = True)
 	hours_spent = models.FloatField(default = 0)
-	substitution = models.BooleanField()
 
 	def __unicode__(self):
-		return "Employee ID: " + str(self.employee.id) + ", Task Begin: " +  str(self.task_init) + " Hours Spent: " +  str(self.hours_spent)
+		return "Employee ID: " + str(self.employee.id) + ", Task Begin: " +  str(self.start_time) + " Hours Spent: " +  str(self.hours_spent)
 
-class TaskImplementMachine(models.Model):
+class MachineTask(models.Model):
+	task = models.ForeignKey(Task)
+	machine = models.ForeignKey(Machine)
+	employee_task = models.ForeignKey(EmployeeTask)
+
+	def __unicode__(self):
+		return "Task ID: " + str(self.task.id) + ", Machine ID: " +  str(self.machine.id) + ", Employee Task ID:" +  str(self.employee_task.id)
+
+class ImplementTask(models.Model):
 	task = models.ForeignKey(Task)
 	machine = models.ForeignKey(Machine)
 	implement = models.ForeignKey(Implement)
 
 	def __unicode__(self):
-		return "Task ID: " + str(self.task.id) + ", Machine ID: " +  str(self.machine.id) + ", Implement ID:" +  str(self.implement.id)
+		return "Task ID: " + str(self.task.id) + ", Machine ID: " +  str(self.machine.id) + ", Implement:" +  str(self.implement.id)
 
 class Appendix(models.Model):
 	a_type =  models.CharField(max_length = 20)
