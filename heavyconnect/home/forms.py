@@ -329,6 +329,7 @@ class questionForm(forms.Form):
 class machineChecklistForm(forms.Form):
 	question = forms.ModelChoiceField(queryset = Question.objects.all())
 	qrCode = forms.ModelChoiceField(queryset = Machine.objects.all())
+	employee = forms.ModelChoiceField(queryset = Employee.objects.all())
 	answer = forms.BooleanField()
 	note = forms.CharField(max_length = 200)
 	date = forms.DateTimeField()
@@ -339,6 +340,7 @@ class machineChecklistForm(forms.Form):
 class implementChecklistForm(forms.Form):
 	question = forms.ModelChoiceField(queryset = Question.objects.all())
 	qrCode = forms.ModelChoiceField(queryset = Implement.objects.all())
+	employee = forms.ModelChoiceField(queryset = Employee.objects.all())
 	answer = forms.BooleanField()
 	note = forms.CharField(max_length = 200)
 	date = forms.DateTimeField()

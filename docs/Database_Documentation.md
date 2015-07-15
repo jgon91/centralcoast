@@ -243,6 +243,7 @@ Question
 MachineChecklist
 	question				Question identification number - FOREIGN KEY
 	qrCode					QRCode referent of the equipment -  FOREIGN KEY
+	employee 				Reference for employee - FOREIGN KEY
 	answer 					If the answer is positive or negative - BOOLEAN
 	note					Description of the problem -	CHARFIELD(200) NULL
 	date					Date of the service - DATE 
@@ -251,6 +252,7 @@ MachineChecklist
 ImplementChecklist
 	question				Question identification number - FOREIGN KEY
 	qrCode					QRCode referent of the equipment - FOREIGN KEY
+	employee 				Reference for employee - FOREIGN KEY
 	answer 					If the answer is positive or negative - BOOLEAN
 	note					Description of the problem -	CHARFIELD(200) NULL
 	date					Date of the service - DATE 
