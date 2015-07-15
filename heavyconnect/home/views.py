@@ -212,9 +212,9 @@ def stopShift(request):
 				amount = t_break.count()
 
 				if attendance.hour_ended is None:
-					if amount >= 3:
+					if amount >= 3 and t_break[2].end is not None:
 						attendance.hour_ended = now
-						attendence.signature = request.POST['signature']
+						#attendence.signature = request.POST['signature']
 						attendance.save()
 						result['success'] = True
 						result['hour_ended'] = str(attendance.hour_ended)
@@ -1197,18 +1197,20 @@ def getWeekHours(id):
 
 #Return the information about the driver and his or her schedule
 @login_required
+#Return the information about the driver and his or her schedule
 def getEmployeeSchedule(request):
 	result = {'success' : False}
 
 	if request.method == 'POST':
 		if request.is_ajax():
-			qrc = request.POST['qr_code']
-			employee = Employee.objects.get(qr_code = qrc)
+
+			employee = Employee.objects.get(user_id = request.user.id)
 
 			#creating the data range for the day, generating the 00:00:00 and the 23:59:59 of the current day
 			now = datetime.datetime.now()
 			start_date = datetime.datetime.combine(now, datetime.time.min)
 			end_date = datetime.datetime.combine(now, datetime.time.max)
+
 			try:
 				attendance = EmployeeAttendance.objects.get(employee_id = employee.id, date__range = (start_date, end_date))
 				result['first_name'] = employee.user.first_name
@@ -1219,19 +1221,14 @@ def getEmployeeSchedule(request):
 				result['photo_url'] = employee.photo
 				result['hour_started'] = str(attendance.hour_started)
 				result['hour_ended'] = str(attendance.hour_ended)
-				try:
-					breaks = Break.objects.filter(attendance_id = attendance.id).order_by('start')
-					i = 1
-					aux = "BreakStart"
-					aux2 = "BreakEnd"
-					for item in breaks:
-						index = aux + str(i)
-						result[index] = str(item.start)
-						index2 = aux2 + str(i)
-						result[index2] = str(item.end)
-						i += 1
-				except:
-					result['success'] = True
+				breaks = Break.objects.filter(attendance_id = attendance.id).order_by('start').values()
+				
+				temp = []
+				for item in breaks:
+					temp.append((str(item['start']),str(item['end'])))
+
+				result['breaks'] = temp
+				result['success'] = True
 			except EmployeeAttendance.DoesNotExist:
 				result['code'] = 1 #There is no shift records for this employee
 		else:

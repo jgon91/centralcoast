@@ -79,7 +79,7 @@ urlpatterns = [
     url(r'^getAllFields/$', main_views.getAllFields, name = 'getAllFields'),
     # url(r'^createEntryOnTaskImplementMachine/$', main_views.createEntryOnTaskImplementMachine, name = 'createEntryOnTaskImplementMachine'),
     url(r'^endTask/$', main_views.endTask, name = 'endTask'),
-    utl(r'^checkqrcode/$', main.getQRCodeStatusForEquipment, name = 'getQRCodeStatusForEquipment'),
+    url(r'^checkqrcode/$', main_views.getQRCodeStatusForEquipment, name = 'getQRCodeStatusForEquipment'),
     ### End ###
 
     ###Insert###
