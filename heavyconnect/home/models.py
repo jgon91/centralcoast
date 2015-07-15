@@ -395,6 +395,7 @@ class Question(models.Model):
 class MachineChecklist(models.Model):
 	question = models.ForeignKey(Question)
 	qrCode = models.ForeignKey(Machine)
+	employee = models.ForeignKey(Employee, null = True, blank = True)
 	answer = models.BooleanField()
 	note = models.CharField(max_length = 200,blank = True)
 	date = models.DateTimeField()
@@ -407,6 +408,7 @@ class MachineChecklist(models.Model):
 class ImplementChecklist(models.Model):
 	question = models.ForeignKey(Question)
 	qrCode = models.ForeignKey(Implement)
+	employee = models.ForeignKey(Employee, null = True, blank = True)
 	answer = models.BooleanField()
 	note = models.CharField(max_length = 200, blank = True)
 	date = models.DateTimeField()

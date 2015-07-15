@@ -346,10 +346,10 @@ def login(request):
 						result['success'] = True
 					else:
 						result['code'] = 1 #This user is not active in the system
- 				else:
- 					result['code'] = 2 #Wrong password or username
- 			else:
- 				result['code'] = 3 #Invalid form
+				else:
+					result['code'] = 2 #Wrong password or username
+			else:
+				result['code'] = 3 #Invalid form
 		else:
 			result['code'] = 4 #Use ajax to perform requests
 	else:
@@ -364,6 +364,7 @@ def getDriverInformation(request):
 	if request.method == 'POST':
 		if request.is_ajax():
 			try:
+				# Attention: This function is using the USER.ID instead of the Employee.ID
 				employee =  Employee.objects.get(user_id = request.user.id)
 				result['first_name'] = employee.user.first_name
 				result['last_name'] = employee.user.last_name
@@ -371,13 +372,13 @@ def getDriverInformation(request):
 				result['qr_code'] = employee.qr_code
 				result['hire_date'] = str(employee.start_date)
 				result['utilization'] = 0
-				result['hours_today'] = getHoursToday(employee.id)
-				result['hours_week'] = getWeekHours(employee.id)
+				result['hours_today'] = getHoursToday(employee.id, datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')) # Salles changed it in order to keep the function working with the function
+				result['hours_week'] = getHoursWeek(employee.id, datetime.date.today())
 				result['success'] = True
 			except DoesNotExist:
 				result['code'] = 1 #There is no users associated with this
 		else:
-	 		result['code'] = 2 #Use ajax to perform requests
+			result['code'] = 2 #Use ajax to perform requests
 	else:
 		result['code'] = 3 #Request was not POST
 
@@ -446,6 +447,27 @@ def getEquipmentStatus(request):
 				try:
 					implement = Implement.objects.get(qr_code = request.POST['qr_code'])
 					result['status'] = implement.status
+					result['success'] = True
+				except Implement.DoesNotExist:
+	 				result['code'] = 1 #There is no equipment for this qr_code
+	 	else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else:
+	 	result['code'] = 3 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+@login_required
+def getQRCodeStatusForEquipment(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+	 	if request.is_ajax():
+			try:
+				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
+				result['success'] = True
+			except Machine.DoesNotExist:
+				try:
+					implement = Implement.objects.get(qr_code = request.POST['qr_code'])
 					result['success'] = True
 				except Implement.DoesNotExist:
 	 				result['code'] = 1 #There is no equipment for this qr_code
@@ -570,28 +592,28 @@ def retrieveScannedMachine(request):
 	 	result['code'] = 3 #Request was not POST
  	return HttpResponse(json.dumps(result),content_type='application/json')
 
-# Driver 6.3.1.3		
-# It will retrieve id + description of all task categories in database.		
-def getAllTaskCategory(request):		
-	each_result = {}	
-	result = []		
-	result.append({'success' : False})		
-	if request.method == 'POST':		
-	 	if request.is_ajax():		
-			try:		
-				all_task_category = TaskCategory.objects.filter()		
-				for each in all_task_category:					      		
-					each_result['id'] = each.id		
-					each_result['description'] = each.description		
-					result.append(each_result)		
-					each_result = {}		
-				result[0] = {'success' : True}		
-			except TaskCategory.DoesNotExist:		
-				result.append({'code' : 1}) #There is no task associated with this		
-		else:		
-	 		result.append({'code' : 2}) #Use ajax to perform requests		
-	else:		
-	 	result.append({'code' : 3})  #Request was not POST		
+# Driver 6.3.1.3
+# It will retrieve id + description of all task categories in database.
+def getAllTaskCategory(request):
+	each_result = {}
+	result = []
+	result.append({'success' : False})
+	if request.method == 'POST':
+	 	if request.is_ajax():
+			try:
+				all_task_category = TaskCategory.objects.filter()
+				for each in all_task_category:
+					each_result['id'] = each.id
+					each_result['description'] = each.description
+					result.append(each_result)
+					each_result = {}
+				result[0] = {'success' : True}
+			except TaskCategory.DoesNotExist:
+				result.append({'code' : 1}) #There is no task associated with this
+		else:
+	 		result.append({'code' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'code' : 3})  #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
@@ -616,7 +638,7 @@ def getTaskInfo(request):
 				try: # Check if task is added on TaskImplementMachine table
 					taskImplementMachine = TaskImplementMachine.objects.get(id = task_id)
 					try: # Check if task is added on EmployeeTask table
-						employeeTask = EmployeeTask.objects.get(id = task_id)						
+						employeeTask = EmployeeTask.objects.get(id = task_id)
 						result['employee'] = employeeTask.employee.id
 						result['field'] = task.field.name
 						result['description'] = task.description
@@ -735,12 +757,12 @@ def getFilteredMachine(request):
 		if not horse_power:
 			horse_power = -1
 		# Set the correct values for all status filters
-		# All status filters will receive True or False. 
+		# All status filters will receive True or False.
 		#   - If False, it will change to the correct value on the database  (1, 2, 3, or 4)
 		#   - If True, it will still with 0
-		status_ok = 0 			
-		status_attention = 0	
-		status_broken = 0		
+		status_ok = 0
+		status_attention = 0
+		status_broken = 0
 		status_quarantine = 0
 		if request.POST['status_ok'] == 'False':
 			status_ok = 1
@@ -764,7 +786,7 @@ def getFilteredMachine(request):
 					manufacturer_model__manufacturer__id = manufacturer,
 					hitch_capacity__gte = hitch_capacity,
 					horsepower__gte = horse_power)
-				# Filter the machine with the correct desired status 
+				# Filter the machine with the correct desired status
 				machine = machine.exclude(status = status_ok)
 				machine = machine.exclude(status = status_attention)
 				machine = machine.exclude(status = status_broken)
@@ -823,12 +845,12 @@ def getFilteredImplement(request):
 		if horse_power_req == '' or horse_power_req == None:
 			horse_power_req = -1
 		# Set the correct values for all status filters
-		# All status filters will receive True or False. 
+		# All status filters will receive True or False.
 		#   - If False, it will change to the correct value on the database  (1, 2, 3, or 4)
 		#   - If True, it will still with 0
-		status_ok = 0 			
-		status_attention = 0	
-		status_broken = 0		
+		status_ok = 0
+		status_attention = 0
+		status_broken = 0
 		status_quarantine = 0
 		if request.POST['status_ok'] == 'False':
 			status_ok = 1
@@ -852,7 +874,7 @@ def getFilteredImplement(request):
 					manufacturer_model__manufacturer__id = manufacturer,
 					hitch_capacity_req__gte = hitch_capacity_req,
 					horse_power_req__gte = horse_power_req)
-				# Filter the machine with the correct desired status 
+				# Filter the machine with the correct desired status
 				implement = implement.exclude(status = status_ok)
 				implement = implement.exclude(status = status_attention)
 				implement = implement.exclude(status = status_broken)
@@ -1115,7 +1137,7 @@ def retrievePendingTask(request):
 	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-#Return
+#Return task already accomplished
 @login_required
 def pastTaskList(request):
 	result = []
@@ -1159,18 +1181,77 @@ def pastTaskList(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
-def getHoursToday(id):
-	# now = datetime.datetime.now()
-	# attendance = EmployeeAttendance.objects.get(employee_id = id)
+# change back:
+# parametro request, voltar para employee_id, date_entry
+# retirar os GET
 
-	# if attendance.break_one is None:
-	# 	delta = now - attendance.hour_started
-	# elif
-	#date__range = (datetime.datetime.combine(now, datetime.time.min),datetime.datetime.combine(now, datetime.time.max))
-	return 0
+def getHoursToday(employee_id, date_entry):
+	realDate = datetime.datetime.strptime(date_entry, '%Y-%m-%d %H:%M:%S')
+	start_date = datetime.datetime.combine(realDate, datetime.time.min)
+	end_date = datetime.datetime.combine(realDate, datetime.time.max)
+	employeeAttendance = EmployeeAttendance.objects.filter(employee_id = employee_id, date__range = (end_date,start_date)).order_by('date')
+	count = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #counter to keep all the worked hours
+	midnight = datetime.timedelta(hours = 23, minutes = 59, seconds = 59) # it is used when the hours changed from one day to another
+	keeper = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #this variable will keep the last break. It is useful when the shift is not done
+	keeper2 =  datetime.timedelta(hours = 0, minutes = 0, seconds = 0) # when the break is on another day
+	count2 = 0          #this variable will keep track of which interration I am. It will help with the bug of break without shift end
+	for item in employeeAttendance:
+		breaks = Break.objects.filter(attendance__id = item.id) 
+		aux = datetime.timedelta(hours = 0, minutes = 0, seconds = 0)
+		lenght = len(breaks) 
+		count2 = 0  
+		addition = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #addition works to add the time of the last break on the count. It is because the lastbreak should not be counted on if the attendance has the end value none
+		for doc in breaks:
+			docStart = datetime.timedelta(hours = doc.start.hour, minutes = doc.start.minute, seconds = doc.start.second)
+			if docStart > keeper: #keeps the bigger break start
+				keeper = docStart
+			elif docStart < itemStart and docStart > keeper2: # if the bigger break is on another day
+				keeper2 = docStart
+			if doc.end != None and doc.end >= doc.start:
+				aux += datetime.timedelta(hours = doc.end.hour, minutes = doc.end.minute, seconds = doc.end.second) - docStart
+				if count2 == lenght-1:
+					addition = datetime.timedelta(hours = doc.end.hour, minutes = doc.end.minute, seconds = doc.end.second) - docStart
+			elif doc.end != None:
+				aux += datetime.timedelta(hours = doc.end.hour, minutes = doc.end.minute, seconds = doc.end.second) + (midnight -  docStart)
+				if count2 == lenght-1:
+					addition = datetime.timedelta(hours = doc.end.hour, minutes = doc.end.minute, seconds = doc.end.second) - docStart
+		itemStart = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second)
+		if item.hour_ended != None: #this if will treat if the attendance does not have the end field proprely filled 
+			if item.hour_ended >= item.hour_started:
+				count += (datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second) - itemStart) - aux
+			else:  #if the end time is in another day
+				count += (datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second) + (midnight - itemStart)) - aux
+		elif keeper2 > datetime.timedelta(hours = 0, minutes = 0, seconds = 0): # if the keeper2 is changed means that the shift crossed midnight
+			count += keeper2 - datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) - aux + addition
+		else:
+			count += keeper - datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) - aux + addition
+			count2 += 1 
+	
+	return str(count)
 
-def getWeekHours(id):
-	return 0
+
+# This function call getHoursToday() for each day in the week of the desired day passed as argument
+# It requries a employee_id and any day of the week, and the function will check all days of that week. 
+# Obs: A week is defined as starting at Sunday 00:00:00 and ending at next Saturday at 23:59:59
+def getHoursWeek(employeeid, desired_date):
+	hours_worked_week = datetime.timedelta(hours=0, minutes=0, seconds=0)
+	today = datetime.date.today()
+	begin_of_week = today.isoweekday()
+	if begin_of_week == 7: # Avoid calculate wrong week when desired_day is a Sunday
+		begin_of_week = 0
+	first_week_day = desired_date - datetime.timedelta(days=begin_of_week) # Last Sunday's
+	last_week_day = desired_date - datetime.timedelta(days=begin_of_week, weeks=-1	) # Next Sunday's
+
+	attendance = EmployeeAttendance.objects.filter(employee_id = employeeid)
+	for each in attendance:
+		if each.date >= first_week_day and each.date < last_week_day:		
+			hours_today = getHoursToday(employeeid, str(each.date)+' 00:00:00') # getHoursToday expects [%Y-%M-%D %h:%m:%s] format
+			times = hours_today.split(':')
+			hours_worked_today = datetime.timedelta(hours=int(times[0]), minutes=int(times[1]), seconds=int(times[2]))
+			hours_worked_week = hours_worked_week + hours_worked_today
+	return str(hours_worked_week)
+
+
 
 #Return the information about the driver and his or her schedule
 @login_required
@@ -1179,38 +1260,41 @@ def getEmployeeSchedule(request):
 
 	if request.method == 'POST':
 		if request.is_ajax():
-			qrc = request.POST['qr_code']
-			employee = Employee.objects.get(qr_code = qrc)
-
-			#creating the data range for the day, generating the 00:00:00 and the 23:59:59 of the current day
-			now = datetime.datetime.now()
-			start_date = datetime.datetime.combine(now, datetime.time.min)
-			end_date = datetime.datetime.combine(now, datetime.time.max)
 			try:
-				attendance = EmployeeAttendance.objects.get(employee_id = employee.id, date__range = (start_date, end_date))
-				result['first_name'] = employee.user.first_name
-				result['last_name'] = employee.user.last_name
-				result['qr_code'] = employee.qr_code
-				result['contact_number'] = employee. contact_number
-				result['permission_level'] = employee.permission_level
-				result['photo_url'] = employee.photo
-				result['hour_started'] = str(attendance.hour_started)
-				result['hour_ended'] = str(attendance.hour_ended)
+				qrc = request.POST['qr_code']
+				employee = Employee.objects.get(qr_code = qrc)
+
+				# creating the data range for the day, generating the 00:00:00 and the 23:59:59 of the current day
+				now = datetime.datetime.now()
+				start_date = datetime.datetime.combine(now, datetime.time.min)
+				end_date = datetime.datetime.combine(now, datetime.time.max)
 				try:
-					breaks = Break.objects.filter(attendance_id = attendance.id).order_by('start')
-					i = 1
-					aux = "BreakStart"
-					aux2 = "BreakEnd"
-					for item in breaks:
-						index = aux + str(i)
-						result[index] = str(item.start)
-						index2 = aux2 + str(i)
-						result[index2] = str(item.end)
-						i += 1
-				except:
-					result['success'] = True
-			except EmployeeAttendance.DoesNotExist:
-				result['code'] = 1 #There is no shift records for this employee
+					attendance = EmployeeAttendance.objects.get(employee_id = employee.id, date__range = (start_date, end_date))
+					result['first_name'] = employee.user.first_name
+					result['last_name'] = employee.user.last_name
+					result['qr_code'] = employee.qr_code
+					result['contact_number'] = employee. contact_number
+					result['permission_level'] = employee.permission_level
+					result['photo_url'] = employee.photo
+					result['hour_started'] = str(attendance.hour_started)
+					result['hour_ended'] = str(attendance.hour_ended)
+					try:
+						breaks = Break.objects.filter(attendance_id = attendance.id).order_by('start')
+						i = 1
+						aux = "BreakStart"
+						aux2 = "BreakEnd"
+						for item in breaks:
+							index = aux + str(i)
+							result[index] = str(item.start)
+							index2 = aux2 + str(i)
+							result[index2] = str(item.end)
+							i += 1
+					except:
+						result['success'] = True
+				except EmployeeAttendance.DoesNotExist:
+					result['code'] = 1 #There is no shift records for this employee
+			except Employee.DoesNotExist:
+				result['code'] = 1 #there is no employ for this QRCODE
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
 	else:
@@ -1244,37 +1328,49 @@ def getEmployeeSchedulePart(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 def getAllManufacturers(request):
+	each_result = {}
 	result = []
 	result.append({'success' : False})
 	if request.method == 'POST':
-		if request.is_ajax:
+	 	if request.is_ajax():
 			try:
-				manufacturers = Manufacturer.objects.all()
-				result.append(str(manufacturers))
-			except Manufacture.DoesNotExist:
-				result.append({'code' : 1}) #There is no manufacture on the database
+				all_manufacturers = Manufacturer.objects.filter()
+				for each in all_manufacturers:
+					each_result['id'] = each.id
+					each_result['name'] = each.name
+					result.append(each_result)
+					each_result = {}
+				result[0] = {'success' : True}
+			except Manufacturer.DoesNotExist:
+				result.append({'code' : 1}) #There is no task associated with this
 		else:
-			result.append({'code': 2}) #result[0]['code'] = 2 #request is not ajax
+	 		result.append({'code' : 2}) #Use ajax to perform requests
 	else:
-		result.append({'code' : 3}) #result[0]['code'] = 3 #Request was not POST
-
+	 	result.append({'code' : 3})  #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 def getAllFields(request):
+	each_result = {}
 	result = []
 	result.append({'success' : False})
 	if request.method == 'POST':
-		if request.is_ajax:
+	 	if request.is_ajax():
 			try:
-				fields = Field.objects.all()
-				result.append(str(fields))
-			except Manufacture.DoesNotExist:
-				result.append({'code' : 1}) #There is no field on the database
+				all_fields = Field.objects.filter()
+				for each in all_fields:
+					each_result['id'] = each.id
+					each_result['name'] = each.name
+					each_result['organic'] = each.organic
+					each_result['size'] = each.size
+					result.append(each_result)
+					each_result = {}
+				result[0] = {'success' : True}
+			except Manufacturer.DoesNotExist:
+				result.append({'code' : 1}) #There is no task associated with this
 		else:
-			result.append({'code': 2}) #result[0]['code'] = 2 #request is not ajax
+	 		result.append({'code' : 2}) #Use ajax to perform requests
 	else:
-		result.append({'code' : 3}) #result[0]['code'] = 3 #Request was not POST
-
+	 	result.append({'code' : 3})  #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 def validatePermission(request):
@@ -1571,14 +1667,14 @@ def expandInfoBox(request):
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-# Create a entry on TaskImplementMachine table and insert the following fields with information from the front-end: 
+# Create a entry on TaskImplementMachine table and insert the following fields with information from the front-end:
 # Task_id (task_id created on last sudb-page), Machine_id, Implement_id.
 
 # Used tables: Task, TaskImplementMachine.
 # def createEntryOnTaskImplementMachine(request):
 # 	form = taskForm(request.POST)
 # 	result = {'success' : False}
-					
+
 # 	taskImplementMachine = Task.objects.get(id = 1)#request.POST['id'])
 # 	print "task ID: " + taskImplementMachine
 # 	machine_id = form.cleaned_data['machine_id']
