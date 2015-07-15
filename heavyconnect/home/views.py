@@ -367,7 +367,7 @@ def getDriverInformation(request):
 	# 	if request.is_ajax():
 	# 		try:
 	# employee =  Employee.objects.get(user_id = request.user.id)
-	employee =  Employee.objects.get(user_id = 1)
+	employee =  Employee.objects.get(user_id = 6)
 	result['first_name'] = employee.user.first_name
 	result['last_name'] = employee.user.last_name
 	result['company_id'] = employee.company_id
@@ -375,7 +375,7 @@ def getDriverInformation(request):
 	result['hire_date'] = str(employee.start_date)
 	result['utilization'] = 0
 	result['hours_today'] = getHoursToday(employee.id, datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')) # Salles changed it in order to keep the function working with the function
-	result['hours_week'] = getWeekHours(employee.id)
+	result['hours_week'] = getHoursWeek(employee.id, datetime.date.today())
 	result['success'] = True
 	# 		except DoesNotExist:
 	# 			result['code'] = 1 #There is no users associated with this
@@ -1183,6 +1183,10 @@ def pastTaskList(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
+# change back:
+# parametro request, voltar para employee_id, date_entry
+# retirar os GET
+
 def getHoursToday(employee_id, date_entry):
 	realDate = datetime.datetime.strptime(date_entry, '%Y-%m-%d %H:%M:%S')
 	start_date = datetime.datetime.combine(realDate, datetime.time.min)
@@ -1224,11 +1228,32 @@ def getHoursToday(employee_id, date_entry):
 		else:
 			count += keeper - datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) - aux + addition
 			count2 += 1 
+	
 	return str(count)
 
 
-def getWeekHours(id):
-	return 0
+# This function call getHoursToday() for each day in the week of the desired day passed as argument
+# It requries a employee_id and any day of the week, and the function will check all days of that week. 
+# Obs: A week is defined as starting at Sunday 00:00:00 and ending at next Saturday at 23:59:59
+def getHoursWeek(employeeid, desired_date):
+	hours_worked_week = datetime.timedelta(hours=0, minutes=0, seconds=0)
+	today = datetime.date.today()
+	begin_of_week = today.isoweekday()
+	if begin_of_week == 7: # Avoid calculate wrong week when desired_day is a Sunday
+		begin_of_week = 0
+	first_week_day = desired_date - datetime.timedelta(days=begin_of_week) # Last Sunday's
+	last_week_day = desired_date - datetime.timedelta(days=begin_of_week, weeks=-1	) # Next Sunday's
+
+	attendance = EmployeeAttendance.objects.filter(employee_id = employeeid)
+	for each in attendance:
+		if each.date >= first_week_day and each.date < last_week_day:		
+			hours_today = getHoursToday(employeeid, str(each.date)+' 00:00:00') # getHoursToday expects [%Y-%M-%D %h:%m:%s] format
+			times = hours_today.split(':')
+			hours_worked_today = datetime.timedelta(hours=int(times[0]), minutes=int(times[1]), seconds=int(times[2]))
+			hours_worked_week = hours_worked_week + hours_worked_today
+	return str(hours_worked_week)
+
+
 
 #Return the information about the driver and his or her schedule
 @login_required
