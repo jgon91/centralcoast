@@ -1,13 +1,10 @@
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
-
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, render_to_response
 from django.utils.dateformat import DateFormat
-
 from django.template.loader import render_to_string
-from django.db import transaction
-
+from django.core.mail import EmailMessage
 
 import json
 import datetime
@@ -1299,11 +1296,122 @@ def validatePermission(request):
 		result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+def timeKeeperReportAux(attendance, finished):
+	result = u''
+	employee = Employee.objects.get(id = attendance['employee_id'])
+	breaks = Break.objects.filter(attendance = attendance['id']).order_by('start')
+
+	count = 1
+
+	result += u'\tName: ' + employee.user.first_name + u' ' + employee.user.last_name + u' \t\tID: ' + employee.company_id + u'\n'
+	result += u'\t\tStarted shift: ' + attendance['hour_started'].strftime("%I:%M %p") + u'\n'
+  	
+	if finished:
+		if breaks.count() == 0:
+			result += u'No breaks reported!\n'
+		else:
+			for b in breaks:
+				result += u'\t\t\tBreak ' + str(count) + u': ' + b.start.strftime("%I:%M %p") + u' - '
+				if b.end is None:
+					result += u'Not provided\n' 
+				else:
+					now = datetime.datetime.now()
+					delta = datetime.datetime.combine(now, b.end) - datetime.datetime.combine(now, b.start)
+					result += b.end.strftime("%I:%M %p") + u' (' + u'{0:.2f}'.format(delta.total_seconds()/60) + u' minutes(s))\n'
+				count += 1
+		result += u'\t\tEnded shift: ' + attendance['hour_ended'].strftime("%I:%M %p") + u'\n'
+	else:
+		count = breaks.count()
+
+		if count == 0:
+			result += u'\t\t\tNo breaks reported yet.\n'
+		else:
+			temp = []
+			first = True
+			for b in reversed(breaks):
+				temp2 = u'\t\t\tBreak ' + str(count) + u': ' + b.start.strftime("%I:%M %p") + u' - '
+				if first:
+					if b.end is None:
+						temp2 += u'Ongoing or Not provided\n'
+					else:
+						now = datetime.datetime.now()
+						delta = datetime.datetime.combine(now, b.end) - datetime.datetime.combine(now, b.start)
+						temp2 += b.end.strftime("%I:%M %p") + u' (' + u'{0:.2f}'.format(delta.total_seconds()/60) + u' minute(s))\n'
+					first = False
+				else:
+					if b.end is None:
+						temp2 += u'Not provided\n'
+					else:
+						now = datetime.datetime.now()
+						delta = datetime.datetime.combine(now, b.end) - datetime.datetime.combine(now, b.start)
+						temp2 += b.end.strftime("%I:%M %p") + u' (' + u'{0:.2f}'.format(delta.total_seconds()/60) + u' minute(s))\n'
+				temp.append(temp2)
+				count -= 1
+
+			for t in reversed(temp):
+				result += t
+
+		result += u'\t\tEnded shift: Ongoing or Not provided\n'
+	return result
+
+#This function generates a report for the timekeeper for the current day
+#This function will also generate the body of the e-mail 
+def timeKeeperReport(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+		if request.is_ajax():
+
+			#Creating the data range to filter the attendaces
+			now = datetime.datetime.now()
+			start_date = datetime.datetime.combine(now, datetime.time.min)
+
+			attendances = EmployeeAttendance.objects.filter(date__range = (start_date, now))
+			#Building the body of the e-mail
+			message = u'Heavy Connect TimeKeeper Report\n'
+			message += u'You report includes information of ' + str(attendances.count()) + u' employees.\n'
+			message += u'The period of time covered in this report starts at ' + start_date.strftime("%m/%d/%Y %I:%M %p") + u' and ends at ' + now.strftime("%m/%d/%Y %I:%M %p") + '.\n'
+
+			finished = []
+			unfinished = []
+			
+			#Splitting the attendance entries between finished and unfinished
+			for attendance in attendances.values():
+				if attendance['hour_ended'] is None:
+					unfinished.append(attendance)
+				else:
+					finished.append(attendance)
+
+			count = 1
+			message += u'--------------------Ongoing Shifts (or not provided)--------------------\n'
+			for i in unfinished:
+				message += u'Employee ' + str(count) + ':'
+				message += timeKeeperReportAux(i,False)
+				message += '\n'
+				count += 1
+
+			message += u'----------------------------Complete Shifts-----------------------------\n'
+			for j in finished:
+				message += u'Employee ' + str(count) + ':'
+				message += timeKeeperReportAux(j,True)
+				message += '\n'
+				count += 1
+
+			subject = 'Heavy Connect TimeKeeper Report - ' + now.strftime("%m/%d/%Y")
+			recipients = request.POST['recipients']
+			email = EmailMessage(subject = subject, body = message, to = recipients, from_email = 'customersupport@heavyconnect.com', )
+			if email.send(fail_silently=True) >= 1:
+				result['success'] = True
+
+		else:
+			result['code'] = 2 #Use ajax to perform requests
+	else:
+		result['code'] = 3 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
 
 def logout(request):
 	auth_logout(request)
 	return redirect('home')
-
 
 @login_required
 def driver(request):

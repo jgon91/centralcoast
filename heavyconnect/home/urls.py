@@ -77,7 +77,8 @@ urlpatterns = [
 	url(r'^updateEquipmentStatus/$', main_views.updateEquipmentStatus, name = 'updateEquipmentStatus'),
     url(r'^getEmployeeSchedulePart/$', main_views.getEmployeeSchedulePart, name = 'getEmployeeSchedulePart'),
     # url(r'^createEntryOnTaskImplementMachine/$', main_views.createEntryOnTaskImplementMachine, name = 'createEntryOnTaskImplementMachine'),
-    url(r'^endTask/$', main_views.endTask, name = 'endTask'), 
+    url(r'^endTask/$', main_views.endTask, name = 'endTask'),
+    url(r'^timeKeeperReport/$', main_views.timeKeeperReport, name = 'timeKeeperReport'),
     ### End ###
 
     ###Insert###
