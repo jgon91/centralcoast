@@ -550,47 +550,7 @@ def getEquipmentInfo(request):
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-#This function givew back the Machine information, big part of them
-@login_required
-def retrieveScannedMachine(request):
-	result = {'success' : False}
-  	if request.method == 'POST':
- 		if request.is_ajax():
- 			try:
-				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
-				result['qr_code'] = machine.qr_code
-				result['manufacture'] = machine.manufacturer_model.manufacturer.name
-				result['serial'] = machine.serial_number
-				result['status'] = machine.status
-				result['model'] = models.model
-				result['asset_number'] = machine.asset_number
-				result['horsepower'] = machine.horsepower
-				result['hitch_capacity'] = machine.hitch_capacity
-				result['hitch_category'] = machine.hitch_category
-				result['drawbar_category'] = machine.drawbar_category
-				result['speed_range_min'] = machine.speed_range_min
-				result['speed_range_max'] = machine.speed_range_max
-				result['year_purchased'] = machine.year_purchased
-				result['engine_hours'] = machine.engine_hours
-				result['base_cost'] = machine.base_cost
-				result['m_type'] = machine.m_type
-				result['front_tires'] = machine.front_tires
-				result['rear_tires'] = machine.rear_tires
-				result['steering'] = machine.steering
-				result['operator_station'] = machine.operator_station
-				result['hour_cost'] = machine.hour_cost
-				result['photo'] = machine.photo
-				result['photo1'] = machine.photo1
-				result['photo2'] = machine.photo2
-				if result['status'] is 1:
- 					result['success'] = True
-			except Machine.DoesNotExist:
-				result['code'] = 1 #There is no users associated with this
-		else:
-	 		result['code'] = 2 #Use ajax to perform requests
-	else:
-	 	result['code'] = 3 #Request was not POST
- 	return HttpResponse(json.dumps(result),content_type='application/json')
+
 
 # Driver 6.3.1.3
 # It will retrieve id + description of all task categories in database.
@@ -653,6 +613,81 @@ def getTaskInfo(request):
 					result['code'] = 11 #There is no Task associated on TaskImplementMachine table
 			except Task.DoesNotExist:
 				result['code'] = 1 #There is no Task associated on Task table
+		else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else:
+	 	result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+
+# Driver 6.3.2.1
+#This function givew back the Machine information, big part of them
+@login_required
+def retrieveScannedMachine(request):
+	result = {'success' : False}
+  	if request.method == 'POST':
+ 		if request.is_ajax():
+ 			try:
+				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
+				result['qr_code'] = machine.qr_code
+				result['manufacture'] = machine.manufacturer_model.manufacturer.name
+				result['serial'] = machine.serial_number
+				result['status'] = machine.status
+				result['model'] = models.model
+				result['asset_number'] = machine.asset_number
+				result['horsepower'] = machine.horsepower
+				result['hitch_capacity'] = machine.hitch_capacity
+				result['hitch_category'] = machine.hitch_category
+				result['drawbar_category'] = machine.drawbar_category
+				result['speed_range_min'] = machine.speed_range_min
+				result['speed_range_max'] = machine.speed_range_max
+				result['year_purchased'] = machine.year_purchased
+				result['engine_hours'] = machine.engine_hours
+				result['base_cost'] = machine.base_cost
+				result['m_type'] = machine.m_type
+				result['front_tires'] = machine.front_tires
+				result['rear_tires'] = machine.rear_tires
+				result['steering'] = machine.steering
+				result['operator_station'] = machine.operator_station
+				result['hour_cost'] = machine.hour_cost
+				result['photo'] = machine.photo
+				result['photo1'] = machine.photo1
+				result['photo2'] = machine.photo2
+				if result['status'] is 1:
+ 					result['success'] = True
+			except Machine.DoesNotExist:
+				result['code'] = 1 #There is no users associated with this
+		else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else:
+	 	result['code'] = 3 #Request was not POST
+ 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+
+# Driver 6.3.2.2
+# Just retrieve a Implement according with qr_code passed as argument
+@login_required
+def getScannedImplement(request):
+	result = {'success' : False}
+  	if request.method == 'POST':
+	 	if request.is_ajax():
+			try:
+				implement = Implement.objects.get(qr_code = request.POST['qr_code'])
+				result['qr_code'] = implement.qr_code
+				result['nickname'] = implement.nickname
+				result['year_purchased'] = implement.year_purchased
+				result['photo'] = implement.photo
+				result['manufacturer_model'] = implement.manufacturer_model.manufacturer.name
+				result['asset_number'] = implement.asset_number
+		 		result['horse_power_req'] = implement.horse_power_req
+				result['hitch_capacity_req'] = implement.hitch_capacity_req
+				result['status'] = implement.status
+				result['speed_range_max'] = implement.speed_range_max
+				result['success'] = True
+			except Implement.DoesNotExist:
+				result['code'] = 1 #There is no users associated with this
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
 	else:
@@ -1003,36 +1038,6 @@ def getScannedFilteredEmployee(request):
  	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
-
-
-
-# Driver 6.3.2.2
-# Just retrieve a Implement according with qr_code passed as argument
-@login_required
-def getScannedImplement(request):
-	result = {'success' : False}
-  	if request.method == 'POST':
-	 	if request.is_ajax():
-			try:
-				implement = Implement.objects.get(qr_code = request.POST['qr_code'])
-				result['qr_code'] = implement.qr_code
-				result['nickname'] = implement.nickname
-				result['year_purchased'] = implement.year_purchased
-				result['photo'] = implement.photo
-				result['manufacturer_model'] = implement.manufacturer_model.manufacturer.name
-				result['asset_number'] = implement.asset_number
-		 		result['horse_power_req'] = implement.horse_power_req
-				result['hitch_capacity_req'] = implement.hitch_capacity_req
-				result['status'] = implement.status
-				result['speed_range_max'] = implement.speed_range_max
-				result['success'] = True
-			except Implement.DoesNotExist:
-				result['code'] = 1 #There is no users associated with this
-		else:
-	 		result['code'] = 2 #Use ajax to perform requests
-	else:
-	 	result['code'] = 3 #Request was not POST
-	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
 #This function gives back the picture of the refered QrCode
