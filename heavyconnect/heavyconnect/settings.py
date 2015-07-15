@@ -81,14 +81,14 @@ WSGI_APPLICATION = 'heavyconnect.wsgi.application'
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'dfd1ar1g1pkfaj',                      # Or path to database file if using sqlite3.
-        'USER': 'rkiksnnaapqcxp',                      # Not used with sqlite3.
-        'PASSWORD': '9ij7FaF__HliRgBMBIe6WYZor_',                  # Not used with sqlite3.
-        'HOST': 'ec2-54-83-36-176.compute-1.amazonaws.com',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
-    }
+   'default': {
+       'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+       'NAME': 'd1s6n1u3qgoqrc',                      # Or path to database file if using sqlite3.
+       'USER': 'ezlbhdoafnhwpe',                      # Not used with sqlite3.
+       'PASSWORD': 'WFBvlJ2rgCcZoPwIGRZsmS77S2',                  # Not used with sqlite3.
+       'HOST': 'ec2-54-197-238-19.compute-1.amazonaws.com',                      # Set to empty string for localhost. Not used with sqlite3.
+       'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
+   }
 }
 
 
@@ -119,8 +119,6 @@ LOCALE_PATHS = (
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
-
-STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
 
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, '../static').replace('\\','/'),

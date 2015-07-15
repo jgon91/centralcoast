@@ -44,6 +44,7 @@ footer {
 /*** Login Begin ***/
 #login {
 	margin-top: 20px;
+	margin-bottom: 50px;
 }
 #loginTable {
 	margin: auto;
@@ -102,6 +103,7 @@ footer {
 	display: none;
 	border-radius: 5px;
 	border: 1px solid #A94442;
+	margin-bottom: -50px;
 }
 /*** Login End ***/
 
