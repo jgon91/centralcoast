@@ -348,10 +348,10 @@ def login(request):
 						result['success'] = True
 					else:
 						result['code'] = 1 #This user is not active in the system
- 				else:
- 					result['code'] = 2 #Wrong password or username
- 			else:
- 				result['code'] = 3 #Invalid form
+				else:
+					result['code'] = 2 #Wrong password or username
+			else:
+				result['code'] = 3 #Invalid form
 		else:
 			result['code'] = 4 #Use ajax to perform requests
 	else:
@@ -363,9 +363,9 @@ def login(request):
 def getDriverInformation(request):
 	result = {'success' : False}
 
-	 if request.method == 'POST':
-	 	if request.is_ajax():
-	 		try:
+	if request.method == 'POST':
+		if request.is_ajax():
+			try:
 				# Attention: This function is using the USER.ID instead of the Employee.ID
 				employee =  Employee.objects.get(user_id = request.user.id)
 				result['first_name'] = employee.user.first_name
@@ -377,12 +377,12 @@ def getDriverInformation(request):
 				result['hours_today'] = getHoursToday(employee.id, datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')) # Salles changed it in order to keep the function working with the function
 				result['hours_week'] = getHoursWeek(employee.id, datetime.date.today())
 				result['success'] = True
-	 		except DoesNotExist:
-	 			result['code'] = 1 #There is no users associated with this
-	 	else:
-	  		result['code'] = 2 #Use ajax to perform requests
-	 else:
-	 	result['code'] = 3 #Request was not POST
+			except DoesNotExist:
+				result['code'] = 1 #There is no users associated with this
+		else:
+			result['code'] = 2 #Use ajax to perform requests
+	else:
+		result['code'] = 3 #Request was not POST
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
