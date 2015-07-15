@@ -364,25 +364,26 @@ def login(request):
 def getDriverInformation(request):
 	result = {'success' : False}
 
-	if request.method == 'POST':
-		if request.is_ajax():
-			try:
-				employee =  Employee.objects.get(user_id = request.user.id)
-				result['first_name'] = employee.user.first_name
-				result['last_name'] = employee.user.last_name
-				result['company_id'] = employee.company_id
-				result['qr_code'] = employee.qr_code
-				result['hire_date'] = str(employee.start_date)
-				result['utilization'] = 0
-				result['hours_today'] = getHoursToday(employee.id)
-				result['hours_week'] = getWeekHours(employee.id)
-				result['success'] = True
-			except DoesNotExist:
-				result['code'] = 1 #There is no users associated with this
-		else:
-	 		result['code'] = 2 #Use ajax to perform requests
-	else:
-		result['code'] = 3 #Request was not POST
+	# if request.method == 'POST':
+	# 	if request.is_ajax():
+	# 		try:
+	# employee =  Employee.objects.get(user_id = request.user.id)
+	employee =  Employee.objects.get(user_id = 1)
+	result['first_name'] = employee.user.first_name
+	result['last_name'] = employee.user.last_name
+	result['company_id'] = employee.company_id
+	result['qr_code'] = employee.qr_code
+	result['hire_date'] = str(employee.start_date)
+	result['utilization'] = 0
+	result['hours_today'] = getHoursToday(employee.id, datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')) # Salles changed it in order to keep the function working with the function
+	result['hours_week'] = getWeekHours(employee.id)
+	result['success'] = True
+	# 		except DoesNotExist:
+	# 			result['code'] = 1 #There is no users associated with this
+	# 	else:
+	#  		result['code'] = 2 #Use ajax to perform requests
+	# else:
+	# 	result['code'] = 3 #Request was not POST
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
@@ -1118,7 +1119,7 @@ def retrievePendingTask(request):
 	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-#Return
+#Return task already accomplished
 @login_required
 def pastTaskList(request):
 	result = []
@@ -1162,15 +1163,49 @@ def pastTaskList(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
-def getHoursToday(id):
-	# now = datetime.datetime.now()
-	# attendance = EmployeeAttendance.objects.get(employee_id = id)
+def getHoursToday(employee_id, date_entry):
+	realDate = datetime.datetime.strptime(date_entry, '%Y-%m-%d %H:%M:%S')
+	start_date = datetime.datetime.combine(realDate, datetime.time.min)
+	end_date = datetime.datetime.combine(realDate, datetime.time.max)
+	employeeAttendance = EmployeeAttendance.objects.filter(employee_id = employee_id, date__range = (end_date,start_date)).order_by('date')
+	count = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #counter to keep all the worked hours
+	midnight = datetime.timedelta(hours = 23, minutes = 59, seconds = 59) # it is used when the hours changed from one day to another
+	keeper = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #this variable will keep the last break. It is useful when the shift is not done
+	keeper2 =  datetime.timedelta(hours = 0, minutes = 0, seconds = 0) # when the break is on another day
+	count2 = 0          #this variable will keep track of which interration I am. It will help with the bug of break without shift end
+	for item in employeeAttendance:
+		breaks = Break.objects.filter(attendance__id = item.id) 
+		aux = datetime.timedelta(hours = 0, minutes = 0, seconds = 0)
+		lenght = len(breaks) 
+		count2 = 0  
+		addition = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #addition works to add the time of the last break on the count. It is because the lastbreak should not be counted on if the attendance has the end value none
+		for doc in breaks:
+			docStart = datetime.timedelta(hours = doc.start.hour, minutes = doc.start.minute, seconds = doc.start.second)
+			if docStart > keeper: #keeps the bigger break start
+				keeper = docStart
+			elif docStart < itemStart and docStart > keeper2: # if the bigger break is on another day
+				keeper2 = docStart
+			if doc.end != None and doc.end >= doc.start:
+				aux += datetime.timedelta(hours = doc.end.hour, minutes = doc.end.minute, seconds = doc.end.second) - docStart
+				if count2 == lenght-1:
+					addition = datetime.timedelta(hours = doc.end.hour, minutes = doc.end.minute, seconds = doc.end.second) - docStart
+			elif doc.end != None:
+				aux += datetime.timedelta(hours = doc.end.hour, minutes = doc.end.minute, seconds = doc.end.second) + (midnight -  docStart)
+				if count2 == lenght-1:
+					addition = datetime.timedelta(hours = doc.end.hour, minutes = doc.end.minute, seconds = doc.end.second) - docStart
+		itemStart = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second)
+		if item.hour_ended != None: #this if will treat if the attendance does not have the end field proprely filled 
+			if item.hour_ended >= item.hour_started:
+				count += (datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second) - itemStart) - aux
+			else:  #if the end time is in another day
+				count += (datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second) + (midnight - itemStart)) - aux
+		elif keeper2 > datetime.timedelta(hours = 0, minutes = 0, seconds = 0): # if the keeper2 is changed means that the shift crossed midnight
+			count += keeper2 - datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) - aux + addition
+		else:
+			count += keeper - datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) - aux + addition
+			count2 += 1 
+	return str(count)
 
-	# if attendance.break_one is None:
-	# 	delta = now - attendance.hour_started
-	# elif
-	#date__range = (datetime.datetime.combine(now, datetime.time.min),datetime.datetime.combine(now, datetime.time.max))
-	return 0
 
 def getWeekHours(id):
 	return 0
@@ -1182,38 +1217,41 @@ def getEmployeeSchedule(request):
 
 	if request.method == 'POST':
 		if request.is_ajax():
-			qrc = request.POST['qr_code']
-			employee = Employee.objects.get(qr_code = qrc)
-
-			#creating the data range for the day, generating the 00:00:00 and the 23:59:59 of the current day
-			now = datetime.datetime.now()
-			start_date = datetime.datetime.combine(now, datetime.time.min)
-			end_date = datetime.datetime.combine(now, datetime.time.max)
 			try:
-				attendance = EmployeeAttendance.objects.get(employee_id = employee.id, date__range = (start_date, end_date))
-				result['first_name'] = employee.user.first_name
-				result['last_name'] = employee.user.last_name
-				result['qr_code'] = employee.qr_code
-				result['contact_number'] = employee. contact_number
-				result['permission_level'] = employee.permission_level
-				result['photo_url'] = employee.photo
-				result['hour_started'] = str(attendance.hour_started)
-				result['hour_ended'] = str(attendance.hour_ended)
+				qrc = request.POST['qr_code']
+				employee = Employee.objects.get(qr_code = qrc)
+
+				# creating the data range for the day, generating the 00:00:00 and the 23:59:59 of the current day
+				now = datetime.datetime.now()
+				start_date = datetime.datetime.combine(now, datetime.time.min)
+				end_date = datetime.datetime.combine(now, datetime.time.max)
 				try:
-					breaks = Break.objects.filter(attendance_id = attendance.id).order_by('start')
-					i = 1
-					aux = "BreakStart"
-					aux2 = "BreakEnd"
-					for item in breaks:
-						index = aux + str(i)
-						result[index] = str(item.start)
-						index2 = aux2 + str(i)
-						result[index2] = str(item.end)
-						i += 1
-				except:
-					result['success'] = True
-			except EmployeeAttendance.DoesNotExist:
-				result['code'] = 1 #There is no shift records for this employee
+					attendance = EmployeeAttendance.objects.get(employee_id = employee.id, date__range = (start_date, end_date))
+					result['first_name'] = employee.user.first_name
+					result['last_name'] = employee.user.last_name
+					result['qr_code'] = employee.qr_code
+					result['contact_number'] = employee. contact_number
+					result['permission_level'] = employee.permission_level
+					result['photo_url'] = employee.photo
+					result['hour_started'] = str(attendance.hour_started)
+					result['hour_ended'] = str(attendance.hour_ended)
+					try:
+						breaks = Break.objects.filter(attendance_id = attendance.id).order_by('start')
+						i = 1
+						aux = "BreakStart"
+						aux2 = "BreakEnd"
+						for item in breaks:
+							index = aux + str(i)
+							result[index] = str(item.start)
+							index2 = aux2 + str(i)
+							result[index2] = str(item.end)
+							i += 1
+					except:
+						result['success'] = True
+				except EmployeeAttendance.DoesNotExist:
+					result['code'] = 1 #There is no shift records for this employee
+			except Employee.DoesNotExist:
+				result['code'] = 1 #there is no employ for this QRCODE
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
 	else:
