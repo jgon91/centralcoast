@@ -621,8 +621,9 @@ def getTaskInfo(request):
 
 
 
-# Driver 6.3.2.1
-#This function givew back the Machine information, big part of them
+
+# This function givew back the Machine information, big part of them
+# This function will be used on Equipment Page (not TaskFlow page)
 @login_required
 def retrieveScannedMachine(request):
 	result = {'success' : False}
@@ -666,28 +667,56 @@ def retrieveScannedMachine(request):
 
 
 
+
+
 # Driver 6.3.2.2
 # Just retrieve a Implement according with qr_code passed as argument
 @login_required
 def getScannedImplement(request):
 	result = {'success' : False}
+	implement_is_valid = True
   	if request.method == 'POST':
-	 	if request.is_ajax():
+	 	if request.is_ajax():	
 			try:
 				implement = Implement.objects.get(qr_code = request.POST['qr_code'])
-				result['qr_code'] = implement.qr_code
-				result['nickname'] = implement.nickname
-				result['year_purchased'] = implement.year_purchased
-				result['photo'] = implement.photo
-				result['manufacturer_model'] = implement.manufacturer_model.manufacturer.name
-				result['asset_number'] = implement.asset_number
-		 		result['horse_power_req'] = implement.horse_power_req
-				result['hitch_capacity_req'] = implement.hitch_capacity_req
-				result['status'] = implement.status
-				result['speed_range_max'] = implement.speed_range_max
-				result['success'] = True
+				# Check if Machine was chosed. If yes, check its compatibility with implement.
+				machine_qr_code = request.POST['machine_qr_code']
+				if machine_qr_code:
+					try:
+						machine = Machine.objects.get(qr_code = machine_qr_code)
+						if machine.hitch_capacity < implement.hitch_capacity_req:
+							implement_is_valid = False
+							result['error'] = 'Machine does not have enough hitch capacity'
+						if machine.horsepower < implement.horse_power_req:
+							implement_is_valid = False
+							result['error'] = 'Machine does not have enough horse power'
+						if machine.hitch_category != implement.hitch_category:
+							implement_is_valid = False
+							result['error'] = 'Machine does not have the same hitch category'
+						if machine.drawbar_category != implement.drawbar_category:
+							implement_is_valid = False
+							result['error'] = 'Machine does not have the same drawbar category'
+					except Machine.DoesNotExist:
+						result['code'] = 1 #There is no machine associated
+					
+				# if Implement is compatible with machine (or if machine wasn't chosen),
+				# save the desireble implement data and retrieve it.
+				if implement_is_valid == True:
+					result['qr_code'] = implement.qr_code
+					result['nickname'] = implement.nickname
+					result['year_purchased'] = implement.year_purchased
+					result['photo'] = implement.photo
+					result['manufacturer_model'] = implement.manufacturer_model.manufacturer.name
+					result['asset_number'] = implement.asset_number
+			 		result['horse_power_req'] = implement.horse_power_req
+					result['hitch_capacity_req'] = implement.hitch_capacity_req
+					result['status'] = implement.status
+					result['speed_range_max'] = implement.speed_range_max
+					result['success'] = True
+				else:
+					result['code'] = 1 # Machine chosen early doesn't support scanned Implement.
 			except Implement.DoesNotExist:
-				result['code'] = 1 #There is no users associated with this
+				result['code'] = 1 #There is no implement associated with this
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
 	else:
@@ -827,7 +856,7 @@ def getFilteredMachine(request):
 				machine = machine.exclude(status = status_broken)
 				machine = machine.exclude(status = status_quarantine)
 				# Remove those machines that doesn't support the hitch capacity required by the selected implement,
-				# Remove those machines that have different drawbar_category then the selected implement,
+				# Remove those machines that doesn't support the horsepower required by the selected implement
 				# Remove those machines that have different hitch category then the selected implement
 				# And remove those machines that have different drawbar category then the selected implement
 				if implement_qr_code:
