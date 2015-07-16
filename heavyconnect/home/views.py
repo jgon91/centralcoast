@@ -621,8 +621,9 @@ def getTaskInfo(request):
 
 
 
-# Driver 6.3.2.1
-#This function givew back the Machine information, big part of them
+
+# This function givew back the Machine information, big part of them
+# This function will be used on Equipment Page (not TaskFlow page)
 @login_required
 def retrieveScannedMachine(request):
 	result = {'success' : False}
@@ -666,28 +667,111 @@ def retrieveScannedMachine(request):
 
 
 
+# Driver 6.3.2.1
+# Just retrieve a Machine according with qr_code passed as argument. And check if implement is compatible, if it was chosen.
+@login_required
+def getScannedMachine(request):
+	result = {'success' : False}
+	machine_is_valid = True
+  	if request.method == 'POST':
+	 	if request.is_ajax():	
+			try:
+				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
+				# Check if Implement was chosed. If yes, check its compatibility with machine.
+				implement_qr_code = request.POST['implement_qr_code']
+				if implement_qr_code:
+					try:
+						implement = Implement.objects.get(qr_code = implement_qr_code)
+						if machine.hitch_capacity < implement.hitch_capacity_req:
+							machine_is_valid = False
+							result['error1'] = 'Machine does not have enough hitch capacity for this Implement'
+						if machine.horsepower < implement.horse_power_req:
+							machine_is_valid = False
+							result['error2'] = 'Machine does not have enough horse power for this Implement'
+						if machine.hitch_category != implement.hitch_category:
+							machine_is_valid = False
+							result['error3'] = 'Machine does not have the same hitch category of Implement'
+						if machine.drawbar_category != implement.drawbar_category:
+							machine_is_valid = False
+							result['error4'] = 'Machine does not have the same drawbar category of Implement'
+					except Implement.DoesNotExist:
+						result['error'] = 'Implement do not found' #There is no machine associated
+				# if Machine is compatible with implement (or if implement wasn't chosen),
+				# save the desireble machine's data and return it to front end.
+				if machine_is_valid == True:
+					result['qr_code'] = machine.qr_code
+					result['nickname'] = machine.nickname
+					result['year_purchased'] = machine.year_purchased
+					result['photo'] = machine.photo
+					result['manufacturer_model'] = machine.manufacturer_model.manufacturer.name
+					result['asset_number'] = machine.asset_number
+			 		result['horse_power'] = machine.horsepower
+					result['hitch_capacity'] = machine.hitch_capacity
+					result['status'] = machine.status
+					result['speed_range_max'] = machine.speed_range_max
+					result['success'] = True
+				else:
+					result['code'] = 1 # Implement chosen early doesn't support scanned Machine.
+			except Machine.DoesNotExist:
+				result['code'] = 1 #There is no Machine associated
+		else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else:
+	 	result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+
+
+
 # Driver 6.3.2.2
-# Just retrieve a Implement according with qr_code passed as argument
+# Just retrieve a Implement according with qr_code passed as argument. And check if machine is compatible, if it was chosen.
 @login_required
 def getScannedImplement(request):
 	result = {'success' : False}
+	implement_is_valid = True
   	if request.method == 'POST':
-	 	if request.is_ajax():
+	 	if request.is_ajax():	
 			try:
 				implement = Implement.objects.get(qr_code = request.POST['qr_code'])
-				result['qr_code'] = implement.qr_code
-				result['nickname'] = implement.nickname
-				result['year_purchased'] = implement.year_purchased
-				result['photo'] = implement.photo
-				result['manufacturer_model'] = implement.manufacturer_model.manufacturer.name
-				result['asset_number'] = implement.asset_number
-		 		result['horse_power_req'] = implement.horse_power_req
-				result['hitch_capacity_req'] = implement.hitch_capacity_req
-				result['status'] = implement.status
-				result['speed_range_max'] = implement.speed_range_max
-				result['success'] = True
+				# Check if Machine was chosed. If yes, check its compatibility with implement.
+				machine_qr_code = request.POST['machine_qr_code']
+				if machine_qr_code:
+					try:
+						machine = Machine.objects.get(qr_code = machine_qr_code)
+						if machine.hitch_capacity < implement.hitch_capacity_req:
+							implement_is_valid = False
+							result['error1'] = 'Implement requires more hitch capacity than Machine supports'
+						if machine.horsepower < implement.horse_power_req:
+							implement_is_valid = False
+							result['error2'] = 'Implement requires more horse power than Machine supports'
+						if machine.hitch_category != implement.hitch_category:
+							implement_is_valid = False
+							result['error3'] = 'Implement does not have the same hitch category of Machine'
+						if machine.drawbar_category != implement.drawbar_category:
+							implement_is_valid = False
+							result['error4'] = 'Implement does not have the same drawbar category of Machine'
+					except Machine.DoesNotExist:
+						result['error'] = 'Machine do not found' #There is no machine associated
+					
+				# if Implement is compatible with machine (or if machine wasn't chosen),
+				# save the desireble implement data and return it to front end.
+				if implement_is_valid == True:
+					result['qr_code'] = implement.qr_code
+					result['nickname'] = implement.nickname
+					result['year_purchased'] = implement.year_purchased
+					result['photo'] = implement.photo
+					result['manufacturer_model'] = implement.manufacturer_model.manufacturer.name
+					result['asset_number'] = implement.asset_number
+			 		result['horse_power_req'] = implement.horse_power_req
+					result['hitch_capacity_req'] = implement.hitch_capacity_req
+					result['status'] = implement.status
+					result['speed_range_max'] = implement.speed_range_max
+					result['success'] = True
+				else:
+					result['code'] = 1 # Machine chosen early doesn't support scanned Implement.
 			except Implement.DoesNotExist:
-				result['code'] = 1 #There is no users associated with this
+				result['code'] = 1 #There is no implement associated with this
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
 	else:
@@ -827,7 +911,7 @@ def getFilteredMachine(request):
 				machine = machine.exclude(status = status_broken)
 				machine = machine.exclude(status = status_quarantine)
 				# Remove those machines that doesn't support the hitch capacity required by the selected implement,
-				# Remove those machines that have different drawbar_category then the selected implement,
+				# Remove those machines that doesn't support the horsepower required by the selected implement
 				# Remove those machines that have different hitch category then the selected implement
 				# And remove those machines that have different drawbar category then the selected implement
 				if implement_qr_code:
