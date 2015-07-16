@@ -481,16 +481,18 @@ def getQRCodeStatusForEquipment(request):
 def updateEquipmentStatus(request):
 	result = {'success' : False}
 	if request.method == 'POST':
+		machine_qr_code = request.POST['qr_code']
+		new_status = request.POST['status']
 	 	if request.is_ajax():
 			try:
-				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
-				machine.status = request.POST['status']
+				machine = Machine.objects.get(qr_code = machine_qr_code)
+				machine.status = new_status
 				machine.save()
 				result = {'success' : True}
 			except Machine.DoesNotExist:
 				try:
-					implement = Implement.objects.get(qr_code = request.POST['qr_code'])
-					implement.status = request.POST['status']
+					implement = Implement.objects.get(qr_code = machine_qr_code)
+					implement.status = new_status
 					implement.save()
 					result = {'success' : True}
 				except Implement.DoesNotExist:
