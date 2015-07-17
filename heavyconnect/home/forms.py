@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 
 import datetime
 
-from home.models import * 
+from home.models import *
 
 class loginForm(forms.Form):
 	username = forms.CharField()
@@ -110,7 +110,7 @@ class machineForm(forms.Form):
 	service_interval = forms.IntegerField()
 	base_cost = forms.FloatField()
 	m_type = forms.ChoiceField(choices = MTYPE_CHOICES)
-	front_tires = forms.CharField(max_length = 20)														
+	front_tires = forms.CharField(max_length = 20)
 	rear_tires = forms.CharField(max_length = 20)
 	steering = forms.ChoiceField(choices = STEERING_CHOICES)
 	operator_station = forms.ChoiceField(choices = OPERATORSTATION_CHOICES)
@@ -136,7 +136,7 @@ class implementForm(forms.Form):
 	speed_range_min = forms.FloatField()
 	speed_range_max = forms.FloatField()
 	year_purchased = forms.IntegerField()
-	implement_hours = forms.IntegerField()	
+	implement_hours = forms.IntegerField()
 	service_interval = forms.IntegerField()
 	base_cost = forms.FloatField()
 	hour_cost = forms.FloatField()
@@ -281,13 +281,6 @@ class employeeTaskForm(forms.Form):
 	end_time = forms.DateTimeField(required = True)
 ### End ###
 
-### Structure for taskImplementMachineForm ##
-class taskImplementMachineForm(forms.Form):
-	task = forms.ModelChoiceField(queryset = Task.objects.all())
-	machine = forms.ModelChoiceField(queryset = Machine.objects.all())
-	implement = forms.ModelChoiceField(queryset = Implement.objects.all())
-### End ###
-
 ### Structure for appendixForm ###
 class appendixForm(forms.Form):
 	a_type = forms.CharField()
@@ -306,7 +299,7 @@ class serviceCategoryForm(forms.Form):
 	service_category = forms.CharField()
 ### End ###
 
-### Structure for machineServiceForm ### 
+### Structure for machineServiceForm ###
 class machineServiceForm(forms.Form):
 	machine = forms.ModelChoiceField(queryset = Machine.objects.all())
 	service = forms.ModelChoiceField(queryset = ServiceCategory.objects.all())
@@ -324,7 +317,7 @@ class implementServiceForm(forms.Form):
 	expected_date = forms.DateTimeField()
 	done = forms.BooleanField(required = False)
 	price = forms.FloatField()
-### End ### 
+### End ###
 
 ### Structure for questionForm ###
 class questionForm(forms.Form):
