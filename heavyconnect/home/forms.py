@@ -240,28 +240,22 @@ class employeeLocalizationForm(forms.Form):
 ### taskForm ###
 class taskForm(forms.Form):
 	STATUS_CHOICES = (
-		(1, 'Setup'),
-		(2, 'Pending'),
-		(3, 'Approved'),
-		(4, 'Denied'),
-		(5, 'Ongoing'),
-		(6, 'Paused'),
-		(7, 'Finished'),
+		(1, 'Pending'),
+		(2, 'Approved'),
+		(3, 'Denied'),
+		(4, 'Ongoing'),
+		(5, 'Paused'),
+		(6, 'Finished'),
 	)
 	field = forms.ModelChoiceField(queryset = Field.objects.all())
 	category = forms.ModelChoiceField(queryset = TaskCategory.objects.all())
-	rate_cost = forms.FloatField(required = False)
-	date_assigned = forms.DateTimeField(required = True)
+	date = forms.DateTimeField(required = True)
+	time = forms.TimeField(required = True)
 	hours_prediction = forms.FloatField()
 	description = forms.CharField()
 	passes = forms.IntegerField()
-	task_init = forms.DateTimeField(required = True)
-	task_end = forms.DateTimeField(required = True)
-	hours_spent = forms.FloatField(required = False)
-	pause_start = forms.DateTimeField(required = True)
-	pause_end = forms.DateTimeField(required = True)
-	pause_total = forms.FloatField(required = True)
-	status = forms.ChoiceField(choices = STATUS_CHOICES,required = True)
+	machine = forms.ModelChoiceField(queryset = Machine.objects.all())
+	implement = forms.ModelChoiceField(queryset = Implement.objects.all())
 ### End ###
 
 ### Structure for taskCategoryForm ###

@@ -34,15 +34,18 @@ def taskflow(request):
 	return render(request, 'taskflow.html')
 
 @login_required
-def createNewTask1(request):
+def createNewTask(request):
 	form = taskForm(request.POST)
 	result = {'success' : False}
 
 	if request.method == 'POST':
-		if request.is_ajax():
+		if not request.is_ajax():
 			if form.is_valid():
 				try:
+					#Getting the employee that are logged in
 					employee = Employee.objects.get(user_id = request.user.id)
+
+					#Extracting the fields from the form
 					field = form.cleaned_data['field']
 					category = form.cleaned_data['category']
 					hours_prediction = float(form.cleaned_data['hours_prediction'])
@@ -50,54 +53,37 @@ def createNewTask1(request):
 					passes = int(form.cleaned_data['passes'])
 					time = form.cleaned_data['time']
 					date = form.cleaned_data['date']
+					machine = form.cleaned_data['machine']
+					implement = form.cleaned_data['implement']
+
+					#Creating Task
 					date = date + datetime.timedelta(hours = time.hour, minutes = time.minute)
-					task = Task(field = field, category = category, hours_prediction = hours_prediction, description = description, passes = passes, date = date)
-					task.save()
-					result['success'] = True
-					result['continue'] = task.id
-				except Employee.DoesNotExist:
-					result['code'] =  1 #There is no users associated with this
-			else:
-				result['code'] = 2 #No all data are valid
-		else:
-			result['code'] = 3 #Use ajax to perform requests
-	else:
-		result['code'] = 4 #Request was not POST
+					task, created = Task.objects.get_or_create(field = field, category = category, hours_prediction = hours_prediction, description = description, passes = passes, date_assigned = date)
+					if created:
+						#Creating association between Employee and Task
+						empTask = EmployeeTask(employee = employee, task = task)
+						empTask.save()
+						
+						#Creating association between Machine and Task
+						macTask = MachineTask(task = task, machine = machine, employee_task = empTask)
+						macTask.save()
 
-	return HttpResponse(json.dumps(result),content_type='application/json')
+						#Creating association between Implement and Task
+						impTask = ImplementTask(task = task, machine = machine, implement = implement)
+						impTask.save()
 
-@login_required
-def createNewTask2(request):
-	form = taskImplementMachineForm(request.POST)
-	result = {'success' : False}
-
-	if request.method == 'POST':
-		if request.is_ajax():
-			if form.is_valid():
-				task = form.cleaned_data['task']
-				machine = form.cleaned_data['machine']
-				implement = form.cleaned_data['implement']
-
-				try:
-					t_task = Task.objects.get(id = task.id)
-					if not t_task.accomplished:
-						t_task.approval = 3 #Pending
-						t_task.save()
-
-						taskIM = TaskImplementMachine(task = task, machine = machine, implement = implement)
-						taskIM.save()
 						result['success'] = True
 					else:
-						result['code'] = 1 #This task was already finished
-				except Task.DoesNotExist:
-					result['code'] = 2 #You need to create the details of the task before select machine and implement
+						result['code'] = 1 #The shift for today was already created
+				except Employee.DoesNotExist:
+					result['code'] =  2 #There is no users associated with this
 			else:
-				result['code'] = 3 #Not all data are valid
+				result['code'] = 3 #No all data are valid
+				result['errors'] = form.errors
 		else:
 			result['code'] = 4 #Use ajax to perform requests
 	else:
 		result['code'] = 5 #Request was not POST
-
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
