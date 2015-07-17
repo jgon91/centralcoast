@@ -157,13 +157,12 @@ class TaskCategory(models.Model):
 
 class Task(models.Model):
 	STATUS_CHOICES = (
-		(1, 'Setup'),
-		(2, 'Pending'),
-		(3, 'Approved'),
-		(4, 'Denied'),
-		(5, 'Ongoing'),
-		(6, 'Paused'),
-		(7, 'Finished'),
+		(1, 'Pending'),
+		(2, 'Approved'),
+		(3, 'Denied'),
+		(4, 'Ongoing'),
+		(5, 'Paused'),
+		(6, 'Finished'),
 	)
 	field = models.ForeignKey(Field)
 	category = models.ForeignKey(TaskCategory)
