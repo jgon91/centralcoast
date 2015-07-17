@@ -336,7 +336,7 @@ class MachineTask(models.Model):
 
 class ImplementTask(models.Model):
 	task = models.ForeignKey(Task)
-	machine = models.ForeignKey(Machine)
+	machine = models.ForeignKey(MachineTask)
 	implement = models.ForeignKey(Implement)
 
 	def __unicode__(self):
