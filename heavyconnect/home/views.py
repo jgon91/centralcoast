@@ -569,38 +569,42 @@ def getAllTaskCategory(request):
 # Driver 6.1.1
 # Retrieve Task Information from task on the list of Pending Tasks
 #####################################################################################
-# obs: This function is expeting just one entry on TaskImplementMachine table		#
-# for each entry Task table. However, when this change, it will be need just to 	#
-# change object.get for object.filter, and use the higher TaskImplementMachine.id 	#
-# that match with Task.id desired, since the higher TaskImplementMachine.id will 	#
+# obs: This function is expeting just one employee for each Task. No continues of   #
+# past task are supported now. However, when this change, it will be needed just to #
+# change object.get for object.filter, and use the higher index on each table   	#
+# that match with Task.id desired, since the higher foreing key for Task will   	#
 # corresponde to the last person assigned to the Task.id desired.					#
 #####################################################################################
 @login_required
 def getTaskInfo(request):
 	result = {'success' : False}
-	if not request.method == 'POST':
-		task_id = request.GET.get('task_id')
-	 	if not request.is_ajax():
+	if request.method == 'POST':
+		task_id = request.POST['task_id']
+	 	if request.is_ajax():
 			try: # Check if task is added on the Task table
 				task = Task.objects.get(id = task_id)
-				try: # Check if task is added on TaskImplementMachine table
-					taskImplementMachine = TaskImplementMachine.objects.get(id = task_id)
-					try: # Check if task is added on EmployeeTask table
-						employeeTask = EmployeeTask.objects.get(id = task_id)
-						result['employee'] = employeeTask.employee.id
-						result['field'] = task.field.name
-						result['description'] = task.description
-						result['machine_nickname'] = taskImplementMachine.machine.nickname
-						result['machine_photo'] = taskImplementMachine.machine.photo
-						result['implement_nickname'] = taskImplementMachine.implement.nickname
-						result['implement_photo'] = taskImplementMachine.implement.photo
-						result['success'] = True
-					except EmployeeTask.DoesNotExist:
-						result['code'] = 111 #There is no Task associated on EmployeeTask table
-				except TaskImplementMachine.DoesNotExist:
-					result['code'] = 11 #There is no Task associated on TaskImplementMachine table
+				try: # Check if task is added on MachineTask table
+					machineTask = MachineTask.objects.get(task__id = task_id)
+					try: # Check if task is added on ImplementTask table
+						implementTask = ImplementTask.objects.get(task__id = task_id)
+						try: # Check if task is added on EmployeeTask table
+							employeeTask = EmployeeTask.objects.get(task__id = task_id)
+							result['employee'] = str(employeeTask.employee.user.first_name)+' '+str(employeeTask.employee.user.last_name)
+							result['field'] = task.field.name
+							result['description'] = task.description
+							result['machine_nickname'] = machineTask.machine.nickname
+							result['machine_photo'] = machineTask.machine.photo
+							result['implement_nickname'] = implementTask.implement.nickname
+							result['implement_photo'] = implementTask.implement.photo
+							result['success'] = True
+						except EmployeeTask.DoesNotExist:
+							result['error4'] = 'Assigned employee not found for this task' #No Task associated on EmployeeTask table
+					except ImplementTask.DoesNotExist:
+						result['error3'] = 'Assigned implement not found for this task' #No Task associated on ImplementTask table
+				except MachineTask.DoesNotExist:
+					result['error2'] = 'Assigned machine not found for this task' #No Task associated on MachineTask table
 			except Task.DoesNotExist:
-				result['code'] = 1 #There is no Task associated on Task table
+				result['error1'] = 'Task not found' #There is no Task associated on Task table
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
 	else:
