@@ -55,7 +55,7 @@ def createNewTask(request):
 					date = form.cleaned_data['date']
 					machine = form.cleaned_data['machine']
 					implement = form.cleaned_data['implement']
-
+					implement2 = form.cleaned_data['implement2']
 					#Creating Task
 					date = date + datetime.timedelta(hours = time.hour, minutes = time.minute)
 					task, created = Task.objects.get_or_create(field = field, category = category, hours_prediction = hours_prediction, description = description, passes = passes, date_assigned = date)
@@ -69,12 +69,17 @@ def createNewTask(request):
 						macTask.save()
 
 						#Creating association between Implement and Task
-						impTask = ImplementTask(task = task, machine = machine, implement = implement)
+						impTask = ImplementTask(task = task, machine_task = macTask, implement = implement)
 						impTask.save()
+
+						if implement2 is not None:
+							#Creating association between Implement2 and Task
+							impTask2 = ImplementTask(task = task, machine_task = macTask, implement = implement2)
+							impTask2.save()
 
 						result['success'] = True
 					else:
-						result['code'] = 1 #The shift for today was already created
+						result['code'] = 1 #This task was already created
 				except Employee.DoesNotExist:
 					result['code'] =  2 #There is no users associated with this
 			else:

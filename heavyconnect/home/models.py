@@ -336,11 +336,11 @@ class MachineTask(models.Model):
 
 class ImplementTask(models.Model):
 	task = models.ForeignKey(Task)
-	machine = models.ForeignKey(MachineTask)
+	machine_task = models.ForeignKey(MachineTask)
 	implement = models.ForeignKey(Implement)
 
 	def __unicode__(self):
-		return "Task ID: " + str(self.task.id) + ", Machine ID: " +  str(self.machine.id) + ", Implement:" +  str(self.implement.id)
+		return "Task ID: " + str(self.task.id) + ", Machine ID: " +  str(self.machine_task.id) + ", Implement:" +  str(self.implement.id)
 
 class Appendix(models.Model):
 	a_type =  models.CharField(max_length = 20)
