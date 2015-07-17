@@ -63,7 +63,7 @@ def createNewTask(request):
 						#Creating association between Employee and Task
 						empTask = EmployeeTask(employee = employee, task = task)
 						empTask.save()
-						
+
 						#Creating association between Machine and Task
 						macTask = MachineTask(task = task, machine = machine, employee_task = empTask)
 						macTask.save()
@@ -671,7 +671,7 @@ def getScannedMachine(request):
 	result = {'success' : False}
 	machine_is_valid = True
   	if request.method == 'POST':
-	 	if request.is_ajax():	
+	 	if request.is_ajax():
 			try:
 				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
 				# Check if Implement was chosed. If yes, check its compatibility with machine.
@@ -728,7 +728,7 @@ def getScannedImplement(request):
 	result = {'success' : False}
 	implement_is_valid = True
   	if request.method == 'POST':
-	 	if request.is_ajax():	
+	 	if request.is_ajax():
 			try:
 				implement = Implement.objects.get(qr_code = request.POST['qr_code'])
 				# Check if Machine was chosed. If yes, check its compatibility with implement.
@@ -750,7 +750,7 @@ def getScannedImplement(request):
 							result['error4'] = 'Implement does not have the same drawbar category of Machine'
 					except Machine.DoesNotExist:
 						result['error'] = 'Machine do not found' #There is no machine associated
-					
+
 				# if Implement is compatible with machine (or if machine wasn't chosen),
 				# save the desireble implement data and return it to front end.
 				if implement_is_valid == True:
@@ -1282,10 +1282,10 @@ def getHoursToday(employee_id, date_entry):
 	keeper2 =  datetime.timedelta(hours = 0, minutes = 0, seconds = 0) # when the break is on another day
 	count2 = 0          #this variable will keep track of which interration I am. It will help with the bug of break without shift end
 	for item in employeeAttendance:
-		breaks = Break.objects.filter(attendance__id = item.id) 
+		breaks = Break.objects.filter(attendance__id = item.id)
 		aux = datetime.timedelta(hours = 0, minutes = 0, seconds = 0)
-		lenght = len(breaks) 
-		count2 = 0  
+		lenght = len(breaks)
+		count2 = 0
 		addition = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #addition works to add the time of the last break on the count. It is because the lastbreak should not be counted on if the attendance has the end value none
 		for doc in breaks:
 			docStart = datetime.timedelta(hours = doc.start.hour, minutes = doc.start.minute, seconds = doc.start.second)
@@ -1302,7 +1302,7 @@ def getHoursToday(employee_id, date_entry):
 				if count2 == lenght-1:
 					addition = datetime.timedelta(hours = doc.end.hour, minutes = doc.end.minute, seconds = doc.end.second) - docStart
 		itemStart = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second)
-		if item.hour_ended != None: #this if will treat if the attendance does not have the end field proprely filled 
+		if item.hour_ended != None: #this if will treat if the attendance does not have the end field proprely filled
 			if item.hour_ended >= item.hour_started:
 				count += (datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second) - itemStart) - aux
 			else:  #if the end time is in another day
@@ -1311,13 +1311,13 @@ def getHoursToday(employee_id, date_entry):
 			count += keeper2 - datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) - aux + addition
 		else:
 			count += keeper - datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) - aux + addition
-			count2 += 1 
-	
+			count2 += 1
+
 	return str(count)
 
 
 # This function call getHoursToday() for each day in the week of the desired day passed as argument
-# It requries a employee_id and any day of the week, and the function will check all days of that week. 
+# It requries a employee_id and any day of the week, and the function will check all days of that week.
 # Obs: A week is defined as starting at Sunday 00:00:00 and ending at next Saturday at 23:59:59
 def getHoursWeek(employeeid, desired_date):
 	hours_worked_week = datetime.timedelta(hours=0, minutes=0, seconds=0)
@@ -1330,7 +1330,7 @@ def getHoursWeek(employeeid, desired_date):
 
 	attendance = EmployeeAttendance.objects.filter(employee_id = employeeid)
 	for each in attendance:
-		if each.date >= first_week_day and each.date < last_week_day:		
+		if each.date >= first_week_day and each.date < last_week_day:
 			hours_today = getHoursToday(employeeid, str(each.date)+' 00:00:00') # getHoursToday expects [%Y-%M-%D %h:%m:%s] format
 			times = hours_today.split(':')
 			hours_worked_today = datetime.timedelta(hours=int(times[0]), minutes=int(times[1]), seconds=int(times[2]))
@@ -1487,7 +1487,7 @@ def timeKeeperReportAux(attendance, finished):
 
 	result += u'\tName: ' + employee.user.first_name + u' ' + employee.user.last_name + u' \t\tID: ' + employee.company_id + u'\n'
 	result += u'\t\tStarted shift: ' + attendance['hour_started'].strftime("%I:%M %p") + u'\n'
-  	
+
 	if finished:
 		if breaks.count() == 0:
 			result += u'No breaks reported!\n'
@@ -1495,7 +1495,7 @@ def timeKeeperReportAux(attendance, finished):
 			for b in breaks:
 				result += u'\t\t\tBreak ' + str(count) + u': ' + b.start.strftime("%I:%M %p") + u' - '
 				if b.end is None:
-					result += u'Not provided\n' 
+					result += u'Not provided\n'
 				else:
 					now = datetime.datetime.now()
 					delta = datetime.datetime.combine(now, b.end) - datetime.datetime.combine(now, b.start)
@@ -1537,7 +1537,7 @@ def timeKeeperReportAux(attendance, finished):
 	return result
 
 #This function generates a report for the timekeeper for the current day
-#This function will also generate the body of the e-mail 
+#This function will also generate the body of the e-mail
 def timeKeeperReport(request):
 	result = {'success' : False}
 	if request.method == 'POST':
@@ -1555,7 +1555,7 @@ def timeKeeperReport(request):
 
 			finished = []
 			unfinished = []
-			
+
 			#Splitting the attendance entries between finished and unfinished
 			for attendance in attendances.values():
 				if attendance['hour_ended'] is None:
@@ -1948,13 +1948,6 @@ def taskCategoryFormView(request):
 		return render(request, 'formTest.html', {'form': form})
 def employeeTaskFormView(request):
 	form = employeeTaskForm(request.POST)
-	if form.is_valid():
-		return redirect('formOk')
-	else:
-		return render(request, 'formTest.html', {'form': form})
-
-def taskImplementMachineFormView(request):
-	form = taskImplementMachineForm(request.POST)
 	if form.is_valid():
 		return redirect('formOk')
 	else:
