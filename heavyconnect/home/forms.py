@@ -256,6 +256,15 @@ class taskForm(forms.Form):
 	passes = forms.IntegerField()
 	machine = forms.ModelChoiceField(queryset = Machine.objects.all())
 	implement = forms.ModelChoiceField(queryset = Implement.objects.all())
+	implement2 = forms.ModelChoiceField(queryset = Implement.objects.all(), required = False)
+
+	def clean_implement2(self):
+		if self.cleaned_data['implement2'] is None:
+			return None
+		elif self.cleaned_data['implement2'].id != self.cleaned_data['implement'].id:
+			return self.cleaned_data['implement2']
+		else:
+			raise forms.ValidationError("The second implement cannot be the same as the first!")
 ### End ###
 
 ### Structure for taskCategoryForm ###

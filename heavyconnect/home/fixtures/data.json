@@ -834,7 +834,34 @@
    },
    {
       "fields":{
-         "machine":1,
+         "task":1,
+         "employee_task":1,
+         "machine":1
+      },
+      "model":"home.machinetask",
+      "pk":1
+   },
+   {
+      "fields":{
+         "task":2,
+         "employee_task":2,
+         "machine":2
+      },
+      "model":"home.machinetask",
+      "pk":2
+   },
+   {
+      "fields":{
+         "task":3,
+         "employee_task":3,
+         "machine":3
+      },
+      "model":"home.machinetask",
+      "pk":3
+   },
+   {
+      "fields":{
+         "machine_task":1,
          "implement":1,
          "task":1
       },
@@ -843,7 +870,7 @@
    },
    {
       "fields":{
-         "machine":2,
+         "machine_task":2,
          "implement":8,
          "task":2
       },
@@ -852,7 +879,7 @@
    },
    {
       "fields":{
-         "machine":3,
+         "machine_task":3,
          "implement":9,
          "task":3
       },
