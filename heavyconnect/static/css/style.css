@@ -937,14 +937,7 @@ div.notes {
 	margin: 0px;
 	margin-left: 10px;
 }
-.numButton {
-	width: 68px;
-	height: 68px;
-	background-color: #E1DFAB;
-	color: black;
-	padding: 18px;
-	font-size: 22px;
-}
+
 .numButton:hover {
 	background: #44670F;	
 }

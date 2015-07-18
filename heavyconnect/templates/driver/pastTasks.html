@@ -20,7 +20,7 @@
 						datatype: "json",
 						success: function(data, status, xhr){		
 									
-							for (var i = 1; i < 4; i++) 
+							for (var i = 1; i < (data.length+1); i++) 
 							{
 								$("#task" + i + " .date").html(data[i].date.substring(0,10) + "</br>" + data[i].date.substring(10,16));
 								$("#past" + i + " .field").html(data[i].field);
