@@ -6,7 +6,6 @@
 		<script>
 			//variables
 			
-
 			//Events
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
@@ -17,8 +16,7 @@
 
 				getPendingTask("{{ csrf_token }}", "{% url 'retrievePendingTask' %}");
 			});
-
-
+			
 			//Functions
 			function getPendingTask(token, url) {
 
@@ -39,12 +37,9 @@
 							$("#next" + i + " .fieldName").html(data[i].field);
 							$("#next" + i + " .category").html(data[i].category);
 						};
-						
 					}
 				});
 			}
-			
-			
 			function permissionCreateTask(token, url, permission){			
 				$.ajax({
 					method: "POST",
@@ -54,84 +49,61 @@
        				data: {"csrfmiddlewaretoken" : token},
 					success: function(data, status, xhr)
 					{					 	
-
 					 	if(!data.authorized)
 					 	{	
 					 		alert("You do not have enough right to create a task!!");
 					 	}
 					 		permission = data.authorized;
 					}
-
 				});
 					return permission; 
 			}
-
 		</script>
 	</head>
 	<body>
 		<header id="head"></header>
 		<div id="wrapper">
 			<div id="content">
-				<div id="namePage">
-					TASKFLOW
+				<div class="namePage">
+					<img src="{% static 'imgSmall/clock.png' %}"/>
+					HC TASKFLOW
 				</div>
 				<div id="divTask">
-					<div id="pendingTask">
-						<div id="taskP">
-							UPCOMING TASKS
+					Scheduled Tasks
+					<div class="row">
+						<div class="col-xs-4 col-md-4 nextBox" id="next1">
+							<span class="titleNextTask"><h2>#1</h2></span>
+							<h2><span class="machineModel">></span></h2>
+							<h3>Field</h3><h4><span class="fieldName"></span></h4>
+							<a href="#" id="moreInfo">More Info</a>
 						</div>
-						<div class="row" style="margin: 0px;">
-							<div class="col-xs-4 col-md-4 nextBox" id="next1" style="padding-bottom:10px;">
-								<span class="titleNextTask"></br>#1 First Task</span>
-								<h4><strong>Machine:</strong></h5><span class="machineModel"></span>
-								<h4><strong>Field:</strong></h5><span class="fieldName"></span>
-								<h4><strong>Category:</strong></h5><span class="category"></span>
-								</br></br></br><a href="" id="divStartNow">START NOW</a>
-							</div>
-							<div class="col-xs-4 col-md-4 nextBox" id="next2" style="padding-bottom:10px;">
-								<span class="titleNextTask"></br>#2 Second Task</span>
-								<h4><strong>Machine:</strong></h5><span class="machineModel"></span>
-								<h4><strong>Field:</strong></h5><span class="fieldName"></span>
-								<h4><strong>Category:</strong></h5><span class="category"></span>
-							</div>
-							<div class="col-xs-4 col-md-4 nextBox" id="next3" style="padding-bottom:10px;">
-								<span class="titleNextTask"></br>#3 Third Task</span>
-								<h4><strong>Machine:</strong></h5><span class="machineModel"></span>
-								<h4><strong>Field:</strong></h5><span class="fieldName"></span>
-								<h4><strong>Category:</strong></h5><span class="category"></span>
-							</div>
+						<div class="col-xs-4 col-md-4 nextBox" id="next2">
+							<span class="titleNextTask"><h2>#1</h2></span>
+							<h2><span class="machineModel">></span></h2>
+							<h3>Field</h3><h4><span class="fieldName"></span></h4>
+							<a href="#" id="moreInfo">More Info</a>
 						</div>
-						<!--
-						<a href="{% url 'startTask' %}" id="last1" style="text-decoration: none;">
-						<div class="lastClass">Disk 3 passes N-W - Ranch 1 Block 1.
-						</div></a>
-						<a href="{% url 'startTask' %}" id="last2" style="text-decoration: none;">
-						<div class="lastClass">Disk 4 passes S-N - Ranch 3 Block 3.
-						</div></a>
-						<a href="{% url 'startTask' %}" id="last3" style="text-decoration: none;">
-						<div class="lastClass">Disk 2 passes N-E - Ranch 6 Block 5.
-						</div></a>
-						<a href="{% url 'startTask' %}" id="last4" style="text-decoration: none;">
-						<div class="lastClass">Disk 4 passes W-E - Ranch 9 Block 8.
-						</div></a>
-						-->
+						<div class="col-xs-4 col-md-4 nextBox" id="next3">
+							<span class="titleNextTask"><h2>#1</h2></span>
+							<h2><span class="machineModel">></span></h2>
+							<h3>Field</h3><h4><span class="fieldName"></span></h4>
+							<a href="#" id="moreInfo">More Info</a>
+						</div>
 					</div>
-					<div id="divCreateTask">
-						<a href="{% url 'createTask' %}">
-						<input type="button" id="btnCreateTask" />
-						</a>
+					<div class="row">
+						<div class="col-xs-4 col-md-4 colTasks">
+							<a href="{% url 'pastTasks' %}">
+							<input type="button" id="btnPastTasks" class="btnsTasks"/>
+							</a>
+						</div>
+						<div class="col-xs-4 col-md-4 colTasks">
+						</div>
+						<div class="col-xs-4 col-md-4 colTasks">
+							<a href="{% url 'createTask' %}">
+							<input type="button" id="btnCreateTask" class="btnsTasks"/>
+							</a>
+						</div>
 					</div>
-					<div id="divLastTask">
-						<a href="{% url 'pastTasks' %}">
-						<input type="button" id="btnLastTasks" />
-						</a>
-					</div>
-					<div id="divGoScheduler">
-						<a href="{% url 'schedule' %}">
-						<input type="button" id="btnGoScheduler" />
-						</a>
-					</div>
-
 				</div>
 			</div>
 			<div id="clearBoth"></div>
