@@ -1185,6 +1185,9 @@ def loadImplementsImage(request):
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+
+
+
 #Return task that are not complished until today, the number of task returned is according to the number n
 @login_required
 def retrievePendingTask(request):
@@ -1199,22 +1202,42 @@ def retrievePendingTask(request):
 				n = int(request.POST['N'])
 				if n > 0:
 					aux = {}
-					emploTask = EmployeeTask.objects.filter(employee__user__id = request.user.id, task_init__lte =  date2, task__accomplished = False)[:n]
-					for item in emploTask:
+					# Filter EmployeeTask by user, date and status task != Finished
+					emploTask   =  EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date_assigned__lte = date2, task__status__lt = 6)[:n]
+					invalidTasks = EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date_assigned__lte = date2, task__status = 4)
+					emploTaskList = []
+					# Filter again EmployeeTask removing task with status = Ongoing
+					for each in emploTask:
+						if not each in invalidTasks:
+							emploTaskList.append(each)
+						
+					for item in emploTaskList:
 						aux['category'] = item.task.description
 						aux['field'] = item.task.field.name
-						aux['date'] = str(item.task.date)
+						aux['date'] = str(item.task.date_assigned)
 						aux['task_id'] = item.task.id
+						aux['employee_id'] = item.employee.id
+						aux['employee_first_name'] = item.employee.user.first_name
+						aux['employee_last_name'] = item.employee.user.last_name
 						try:
-							machine = Machine.objects.get(id = TaskImplementMachine.objects.filter(task_id = item.task.id))
-							aux['qr_code'] = machine.qr_code
-						except:
-							aux['qr_code'] = "NONE"
+							machineTask = MachineTask.objects.get(task__id = item.task.id)
+							aux['machine_model'] = machineTask.machine.manufacturer_model.model
+							aux['machine_nickname'] = machineTask.machine.nickname
+							aux['machine_id'] = machineTask.machine.id
+						except MachineTask.DoesNotExist:
+							aux['machine_id'] = "NONE"
+						try:
+							implementTask = ImplementTask.objects.get(task__id = item.task.id)
+							aux['implement_model'] = implementTask.implement.manufacturer_model.model
+							aux['implement_nickname'] = implementTask.implement.nickname
+							aux['implement_id'] = implementTask.implement.id
+						except ImplementTask.DoesNotExist:
+							aux['implement_id'] = "NONE"
 						result.append(aux)
 						aux = {}
 					result[0] = {'success' : True}
 				else:
-					result.append({'result' : 11})#Index is invalid
+					result.append({'result' : 1})#Index is invalid
 			except EmployeeTask.DoesNotExist:
 				result.append({'result' : 1})#There is no Implement associated with this
 		else:
