@@ -39,6 +39,9 @@ footer {
 	min-width: 640px;
 	margin: 0px;
 }
+input[type=button]{
+	border: none;
+}
 /*** General End ***/
 
 /*** Login Begin ***/
@@ -420,45 +423,48 @@ footer {
 	background: #434343;
 	text-align: left;
 	margin: auto;
-	width: 40%;
+	width: 38%;
+	height: 140px;
 	font-size: 12px;
 	padding-top: 10px;
 	padding-bottom: 10px;
 	line-height: 25px;
+	overflow: auto;
 }
 .btnPastTasks{
-	margin-top: 70px;
+	margin-top: 60px;
 	margin-left: 0%;
 	margin-right: 0%;
 	width: 9%;
 }
 #past1 {
-	margin-left: 0%;
+	margin-left: 2%;
 	margin-right: 2%;
 }
-#past3 {
-	float: right;
+#past2 {
+	float: left;
 	
 }
 .btnBackAdv{
 	background: url('../imgSmall/buttons/yes.png') no-repeat top left;
 	background-size: 100% 100%;
-	width: 30px;
+	width: 40px;
 	border-radius: 10px;
+	color: white;
 }
 #btnReturn {
-	background: url('../imgSmall/buttons/yes.png') no-repeat top left;
+	background: url('../imgSmall/buttons/btnPastTasks.png') no-repeat top left;
 	background-size: 100% 100%;
 	width: 100px;
 	height: 30px;
 }
 .blockBtnReturn{
-	padding-top: 5px;
-	padding-bottom: 5px;
+	padding-top: 10px;
+	padding-bottom: 30px;
 	margin-left: 0%;
 }
 #task1{
-	margin-right: 85px;
+	margin-right: 75px;
 }
 #task2{
 	margin-right: 190px;

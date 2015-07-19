@@ -3,41 +3,98 @@
 	<head>
 		{% load staticfiles %}
 		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
+		<link rel="stylesheet" type="text/css" href="{% static 'css/styleSmall.css' %}">
 		<script>
+
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerDriver' %}");
 
-				getLastTasks("{{csrf_token}}", "{% url 'pastTaskList' %}");	
+				var offset = 0;
+
+				getLastTasks("{{csrf_token}}", "{% url 'pastTaskList' %}", offset, false, 7);	
+
+				$("#btnBack").click(function(){
+					offset = upgradePastBox(this.id, offset, 7);
+				});
+
+				$("#btnForward").click(function(){
+					offset = upgradePastBox(this.id, offset, 7);
+				});
+
 			});
 
-			function getLastTasks(token, url) {
+			function upgradePastBox(btn, offset, limit) {
+				$(".pastBox").fadeOut(1000);
+				$(".dateTasks").fadeOut(1000);
 				
-					$.ajax({
-						method: "POST",
-						url: url,
-						data: {"csrfmiddlewaretoken": token, "offset": 0, "limit": 3 },
-						datatype: "json",
-						success: function(data, status, xhr){		
-									
-							for (var i = 1; i < (data.length+1); i++) 
+				if(btn == "btnBack" && offset >= 0){
+					offset++;
+					getLastTasks("{{csrf_token}}", "{% url 'pastTaskList' %}", offset, true, 7);
+				}else if(btn == "btnForward" && offset >= 2){ 
+					offset -= 2;
+					getLastTasks("{{csrf_token}}", "{% url 'pastTaskList' %}", offset, true, 7);
+				}else{
+					alert("There is no past task to be displayed");
+				}
+				$(".dateTasks").fadeIn(3000);
+				$(".pastBox").fadeIn(3000);
+
+				return offset;
+			}
+
+			function getLastTasks(token, url, offset, async, limit) {			
+			//alert(offset);	
+				$.ajax({
+					method: "POST",
+					url: url,
+					async: async,
+					data: {"csrfmiddlewaretoken": token, "offset": offset, "limit": limit},
+					datatype: "json",
+					success: function(data, status, xhr){		
+						//alert(data.length);	
+						if(offset < limit){
+							$("#btnBack").attr("disabled", false);
+						}
+						if(offset >= (limit-1)){
+							alert("There is no past task to be displayed");
+							$("#btnBack").attr("disabled", true);
+						}
+						else{
+							var months = ["Jan","Feb","Mar","Apr","May","Jun","July","Aug","Sep","Oct","Nov","Dec"];
+							for (var i = 1; i < 3; i++) 
 							{
-								$("#task" + i + " .date").html(data[i].date.substring(0,10) + "</br>" + data[i].date.substring(10,16));
+								$("#task" + i + " .hour").html(formatAMPM(data[i].date));
+								$("#task" + i + " .date").html(data[i].date.substring(8,10) + " " +months[parseInt(data[i].date.substring(6, 7))].toUpperCase());
 								$("#past" + i + " .field").html(data[i].field);
 								$("#past" + i + " .category").html(data[i].category);
-								$("#past" + i + " .machine").html(data[i].machine);
+								$("#past" + i + " .machine").html(data[i].machine_model);
 								$("#past" + i + " .task").html(data[i].description);
 								$("#past" + i + " .duration").html(data[i].duration + " Hours");
-								$("#past" + i + " .implement").html(data[i].implement);
+								$("#past" + i + " .implement").html(data[i].implement_model);
 								$("#past" + i + " .task_id").html(data[i].task_id);
 							}
-							
 						}
-					});			
+						
+					}
+				});			
 			}
+
+			function formatAMPM(date) {
+				var d = new Date(date);
+				var hours = d.getHours();
+				var minutes = d.getMinutes();
+				var ampm = hours >= 12 ? 'PM' : 'AM';
+				hours = hours % 12;
+				hours = hours ? hours : 12; // the hour '0' should be '12'
+				minutes = minutes < 10 ? '0'+minutes : minutes;
+				var strTime = hours + ':' + minutes + ' ' + ampm;
+				return strTime;
+			}
+
 		</script>
 		<style>
-			#past1 .task_id, #past2 .task_id, #past3 .task_id
+			#past1 .task_id, #past2 .task_id
 			{
 				display: none;
 			}
@@ -54,14 +111,14 @@
 					<div class="row">
 						<div class="col-xs-4 col-md-4 dateTasks">
 							<div id="task1">
-								<span class="date">22 July</span>
-								<span class="hour">10:30 AM</span>
+								<span class="date"></span>
+								<span class="hour"></span>
 							</div>
 						</div>
 						<div class="col-xs-4 col-md-4 dateTasks">
 							<div id="task2">
-								<span class="date">22 July</span>
-								<span class="hour">10:30 AM</span>
+								<span class="date"></span>
+								<span class="hour"></span>
 							</div>
 						</div>
 					</div>
@@ -93,7 +150,7 @@
 					</div>
 					<div class="row">
 						<div class="col-xs-2 col-md-2 blockBtnReturn">
-							<div><a href="{% url 'taskFlow' %}"><input type="button" id="btnReturn" value="RETURN" /></a></div>
+							<div><a href="{% url 'taskFlow' %}"><input type="button" id="btnReturn" value="" /></a></div>
 						</div>
 					</div>
 				</div>
