@@ -1200,10 +1200,12 @@ def retrievePendingTask(request):
 			try:
 				aux = {}
 				n = int(request.POST['N'])
+				off = int(request.POST['offset'])
+				limit =int(request.POST['limit'])
 				if n > 0:
 					aux = {}
 					# Filter EmployeeTask by user, date and status task != Finished
-					emploTask   =  EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date_assigned__lte = date2, task__status__lt = 6)[:n]
+					emploTask   =  EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date_assigned__lte = date2, task__status__lt = 6)[off:limit]
 					invalidTasks = EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date_assigned__lte = date2, task__status = 4)
 					emploTaskList = []
 					# Filter again EmployeeTask removing task with status = Ongoing
@@ -1246,6 +1248,64 @@ def retrievePendingTask(request):
 	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+
+
+#Return task that are not complished until today, the number of task returned is according to the number n
+@login_required
+def pastTaskList(request):
+	result = []
+	result.append({'success' : False})
+	if request.method == 'POST':
+	 	if request.is_ajax():
+			try:				
+				aux = {}
+				off = int(request.POST['offset'])
+				limit =int(request.POST['limit'])
+				n = int(request.POST['N'])
+				if n > 0:
+					aux = {}
+					# Filter EmployeeTask by user, date and status task != Finished
+					emploTask   =  EmployeeTask.objects.filter(employee__user__id = request.user.id, task__status = 6)[off:limit]
+					for item in emploTaskList:
+						aux['category'] = item.task.description
+						aux['field'] = item.task.field.name
+						aux['date'] = str(item.task.date_assigned)
+						aux['task_id'] = item.task.id
+						aux['employee_id'] = item.employee.id
+						aux['employee_first_name'] = item.employee.user.first_name
+						aux['employee_last_name'] = item.employee.user.last_name
+						try:
+							machineTask = MachineTask.objects.get(task__id = item.task.id)
+							aux['machine_model'] = machineTask.machine.manufacturer_model.model
+							aux['machine_nickname'] = machineTask.machine.nickname
+							aux['machine_id'] = machineTask.machine.id
+						except MachineTask.DoesNotExist:
+							aux['machine_id'] = "NONE"
+						try:
+							implementTask = ImplementTask.objects.get(task__id = item.task.id)
+							aux['implement_model'] = implementTask.implement.manufacturer_model.model
+							aux['implement_nickname'] = implementTask.implement.nickname
+							aux['implement_id'] = implementTask.implement.id
+						except ImplementTask.DoesNotExist:
+							aux['implement_id'] = "NONE"
+						result.append(aux)
+						aux = {}
+					result[0] = {'success' : True}
+				else:
+					result.append({'result' : 1})#Index is invalid
+			except EmployeeTask.DoesNotExist:
+				result.append({'result' : 1})#There is no Implement associated with this
+		else:
+	 		result.append({'result' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'result' : 3}) #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+
+
+
+'''
 #Return task already accomplished
 @login_required
 def pastTaskList(request):
@@ -1288,7 +1348,7 @@ def pastTaskList(request):
 	else:
 	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
-
+'''
 
 # change back:
 # parametro request, voltar para employee_id, date_entry
