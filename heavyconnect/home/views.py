@@ -1181,7 +1181,6 @@ def pastTaskList(request):
 	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-
 def getHoursToday(id):
 	# now = datetime.datetime.now()
 	# attendance = EmployeeAttendance.objects.get(employee_id = id)

@@ -400,3 +400,76 @@ footer {
 	display: none;
 }
 /*** Check list End ***/
+
+/*** Past Tasks Begin ***/
+
+.divPast {
+	text-align: center;
+	width: 80%;
+	margin: auto;
+	min-width: 800px;
+	margin-top: 60px;
+	color: black;
+	padding: 0px;
+	padding-top: 5px;
+	font-size: 30px;
+	text-align: center;
+}
+.pastBox {
+	color: white;
+	background: #434343;
+	text-align: left;
+	margin: auto;
+	width: 40%;
+	font-size: 12px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	line-height: 25px;
+}
+.btnPastTasks{
+	margin-top: 70px;
+	margin-left: 0%;
+	margin-right: 0%;
+	width: 9%;
+}
+#past1 {
+	margin-left: 0%;
+	margin-right: 2%;
+}
+#past3 {
+	float: right;
+	
+}
+.btnBackAdv{
+	background: url('../imgSmall/buttons/yes.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 30px;
+	border-radius: 10px;
+}
+#btnReturn {
+	background: url('../imgSmall/buttons/yes.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 100px;
+	height: 30px;
+}
+.blockBtnReturn{
+	padding-top: 5px;
+	padding-bottom: 5px;
+	margin-left: 0%;
+}
+#task1{
+	margin-right: 85px;
+}
+#task2{
+	margin-right: 190px;
+}
+.dateTasks{
+	font-size: 20px;
+	float: left;
+	padding: 0px;
+	width: 50%;
+}
+.hour{
+	font-size: 12px;
+}
+/*** Past Tasks End ***/

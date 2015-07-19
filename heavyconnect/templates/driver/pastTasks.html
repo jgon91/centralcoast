@@ -47,62 +47,53 @@
 		<header id="head"></header>
 		<div id="wrapper">
 			<div id="content">
-				<div id="namePage" style="opacity: 0.5;">
-					TASKFLOW
-				</div>
-				<div id="namePage" style="width: 110px;">
-					PAST TASKS
-				</div>
+				<div class="namePage" style="padding-top: 15px;">
+					HC PAST TASKS
+				</div></br></br>
 				<div id="divPast">
 					<div class="row">
-						<div class="col-xs-4 col-md-4">
+						<div class="col-xs-4 col-md-4 dateTasks">
 							<div id="task1">
-								<span class="date"></span>
+								<span class="date">22 July</span>
+								<span class="hour">10:30 AM</span>
 							</div>
 						</div>
-						<div class="col-xs-4 col-md-4">
+						<div class="col-xs-4 col-md-4 dateTasks">
 							<div id="task2">
-								<span class="date"></span>
-							</div>
-						</div>
-						<div class="col-xs-4 col-md-4">
-							<div id="task3">
-								<span class="date"></span>
+								<span class="date">22 July</span>
+								<span class="hour">10:30 AM</span>
 							</div>
 						</div>
 					</div>
 					<div class="row" style="margin: 0px;">
+						<div class="col-xs-2 col-md-2 btnPastTasks">
+							<input type="button" id="btnBack" value="B" class="btnBackAdv">
+						</div>
 						<div class="col-xs-4 col-md-4 pastBox" id="past1">
 							MACHINE: <span class="machine"></span>
-							</br></br>IMPLEMENT: <span class="implement" ></span>
-							</br></br>FIELD: <span class="field" ></span>
-							</br></br>TASK: <span class="task"></span>
-							</br></br>CATEGORY: <span class="category"></span>
-							</br></br>DURATION: <span class="duration"></span>
+							</br>IMPLEMENT: <span class="implement" ></span>
+							</br>FIELD: <span class="field" ></span>
+							</br>TASK: <span class="task"></span>
+							</br>CATEGORY: <span class="category"></span>
+							</br>DURATION: <span class="duration"></span>
 							<span class="task_id"></span>
 						</div>
 						<div class="col-xs-4 col-md-4 pastBox" id="past2">
 							MACHINE: <span class="machine"></span>
-							</br></br>IMPLEMENT: <span class="implement" ></span>
-							</br></br>FIELD: <span class="field" ></span>
-							</br></br>TASK: <span class="task"></span>
-							</br></br>CATEGORY: <span class="category"></span>
-							</br></br>DURATION: <span class="duration"></span>
+							</br>IMPLEMENT: <span class="implement" ></span>
+							</br>FIELD: <span class="field" ></span>
+							</br>TASK: <span class="task"></span>
+							</br>CATEGORY: <span class="category"></span>
+							</br>DURATION: <span class="duration"></span>
 							<span class="task_id"></span>
 						</div>
-						<div class="col-xs-4 col-md-4 pastBox" id="past3">
-							MACHINE: <span class="machine"></span>
-							</br></br>IMPLEMENT: <span class="implement" ></span>
-							</br></br>FIELD: <span class="field" ></span>
-							</br></br>TASK: <span class="task"></span>
-							</br></br>CATEGORY: <span class="category"></span>
-							</br></br>DURATION: <span class="duration"></span>
-							<span class="task_id"></span>
+						<div class="col-xs-2 col-md-2 btnPastTasks">
+							<input type="button" id="btnForward" value="A" class="btnBackAdv">
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-12 col-md-12">
-							<div><a href="{% url 'schedule' %}"><input type="button" id="btnSchedulePast" /></a></div>
+						<div class="col-xs-2 col-md-2 blockBtnReturn">
+							<div><a href="{% url 'taskFlow' %}"><input type="button" id="btnReturn" value="RETURN" /></a></div>
 						</div>
 					</div>
 				</div>
