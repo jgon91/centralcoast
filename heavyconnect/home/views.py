@@ -1,12 +1,10 @@
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
-
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, render_to_response
 from django.utils.dateformat import DateFormat
-
 from django.template.loader import render_to_string
-from django.db import transaction
+from django.core.mail import EmailMessage
 
 import json
 import datetime
@@ -36,15 +34,18 @@ def taskflow(request):
 	return render(request, 'taskflow.html')
 
 @login_required
-def createNewTask1(request):
+def createNewTask(request):
 	form = taskForm(request.POST)
 	result = {'success' : False}
 
 	if request.method == 'POST':
-		if request.is_ajax():
+		if not request.is_ajax():
 			if form.is_valid():
 				try:
+					#Getting the employee that are logged in
 					employee = Employee.objects.get(user_id = request.user.id)
+
+					#Extracting the fields from the form
 					field = form.cleaned_data['field']
 					category = form.cleaned_data['category']
 					hours_prediction = float(form.cleaned_data['hours_prediction'])
@@ -52,54 +53,42 @@ def createNewTask1(request):
 					passes = int(form.cleaned_data['passes'])
 					time = form.cleaned_data['time']
 					date = form.cleaned_data['date']
+					machine = form.cleaned_data['machine']
+					implement = form.cleaned_data['implement']
+					implement2 = form.cleaned_data['implement2']
+					#Creating Task
 					date = date + datetime.timedelta(hours = time.hour, minutes = time.minute)
-					task = Task(field = field, category = category, hours_prediction = hours_prediction, description = description, passes = passes, date = date)
-					task.save()
-					result['success'] = True
-					result['continue'] = task.id
-				except Employee.DoesNotExist:
-					result['code'] =  1 #There is no users associated with this
-			else:
-				result['code'] = 2 #No all data are valid
-		else:
-			result['code'] = 3 #Use ajax to perform requests
-	else:
-		result['code'] = 4 #Request was not POST
+					task, created = Task.objects.get_or_create(field = field, category = category, hours_prediction = hours_prediction, description = description, passes = passes, date_assigned = date)
+					if created:
+						#Creating association between Employee and Task
+						empTask = EmployeeTask(employee = employee, task = task)
+						empTask.save()
 
-	return HttpResponse(json.dumps(result),content_type='application/json')
+						#Creating association between Machine and Task
+						macTask = MachineTask(task = task, machine = machine, employee_task = empTask)
+						macTask.save()
 
-@login_required
-def createNewTask2(request):
-	form = taskImplementMachineForm(request.POST)
-	result = {'success' : False}
+						#Creating association between Implement and Task
+						impTask = ImplementTask(task = task, machine_task = macTask, implement = implement)
+						impTask.save()
 
-	if request.method == 'POST':
-		if request.is_ajax():
-			if form.is_valid():
-				task = form.cleaned_data['task']
-				machine = form.cleaned_data['machine']
-				implement = form.cleaned_data['implement']
+						if implement2 is not None:
+							#Creating association between Implement2 and Task
+							impTask2 = ImplementTask(task = task, machine_task = macTask, implement = implement2)
+							impTask2.save()
 
-				try:
-					t_task = Task.objects.get(id = task.id)
-					if not t_task.accomplished:
-						t_task.approval = 3 #Pending
-						t_task.save()
-
-						taskIM = TaskImplementMachine(task = task, machine = machine, implement = implement)
-						taskIM.save()
 						result['success'] = True
 					else:
-						result['code'] = 1 #This task was already finished
-				except Task.DoesNotExist:
-					result['code'] = 2 #You need to create the details of the task before select machine and implement
+						result['code'] = 1 #This task was already created
+				except Employee.DoesNotExist:
+					result['code'] =  2 #There is no users associated with this
 			else:
-				result['code'] = 3 #Not all data are valid
+				result['code'] = 3 #No all data are valid
+				result['errors'] = form.errors
 		else:
 			result['code'] = 4 #Use ajax to perform requests
 	else:
 		result['code'] = 5 #Request was not POST
-
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
@@ -212,9 +201,9 @@ def stopShift(request):
 				amount = t_break.count()
 
 				if attendance.hour_ended is None:
-					if amount >= 3 and t_break[2].end is not None:
+					if amount >= 3:
 						attendance.hour_ended = now
-						#attendence.signature = request.POST['signature']
+						attendence.signature = request.POST['signature']
 						attendance.save()
 						result['success'] = True
 						result['hour_ended'] = str(attendance.hour_ended)
@@ -348,10 +337,10 @@ def login(request):
 						result['success'] = True
 					else:
 						result['code'] = 1 #This user is not active in the system
- 				else:
- 					result['code'] = 2 #Wrong password or username
- 			else:
- 				result['code'] = 3 #Invalid form
+				else:
+					result['code'] = 2 #Wrong password or username
+			else:
+				result['code'] = 3 #Invalid form
 		else:
 			result['code'] = 4 #Use ajax to perform requests
 	else:
@@ -366,6 +355,7 @@ def getDriverInformation(request):
 	if request.method == 'POST':
 		if request.is_ajax():
 			try:
+				# Attention: This function is using the USER.ID instead of the Employee.ID
 				employee =  Employee.objects.get(user_id = request.user.id)
 				result['first_name'] = employee.user.first_name
 				result['last_name'] = employee.user.last_name
@@ -373,13 +363,13 @@ def getDriverInformation(request):
 				result['qr_code'] = employee.qr_code
 				result['hire_date'] = str(employee.start_date)
 				result['utilization'] = 0
-				result['hours_today'] = getHoursToday(employee.id)
-				result['hours_week'] = getWeekHours(employee.id)
+				result['hours_today'] = getHoursToday(employee.id, datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')) # Salles changed it in order to keep the function working with the function
+				result['hours_week'] = getHoursWeek(employee.id, datetime.date.today())
 				result['success'] = True
 			except DoesNotExist:
 				result['code'] = 1 #There is no users associated with this
 		else:
-	 		result['code'] = 2 #Use ajax to perform requests
+			result['code'] = 2 #Use ajax to perform requests
 	else:
 		result['code'] = 3 #Request was not POST
 
@@ -482,16 +472,18 @@ def getQRCodeStatusForEquipment(request):
 def updateEquipmentStatus(request):
 	result = {'success' : False}
 	if request.method == 'POST':
+		machine_qr_code = request.POST['qr_code']
+		new_status = request.POST['status']
 	 	if request.is_ajax():
 			try:
-				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
-				machine.status = request.POST['status']
+				machine = Machine.objects.get(qr_code = machine_qr_code)
+				machine.status = new_status
 				machine.save()
 				result = {'success' : True}
 			except Machine.DoesNotExist:
 				try:
-					implement = Implement.objects.get(qr_code = request.POST['qr_code'])
-					implement.status = request.POST['status']
+					implement = Implement.objects.get(qr_code = machine_qr_code)
+					implement.status = new_status
 					implement.save()
 					result = {'success' : True}
 				except Implement.DoesNotExist:
@@ -551,7 +543,84 @@ def getEquipmentInfo(request):
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-#This function givew back the Machine information, big part of them
+
+
+# Driver 6.3.1.3
+# It will retrieve id + description of all task categories in database.
+def getAllTaskCategory(request):
+	each_result = {}
+	result = []
+	result.append({'success' : False})
+	if request.method == 'POST':
+	 	if request.is_ajax():
+			try:
+				all_task_category = TaskCategory.objects.filter()
+				for each in all_task_category:
+					each_result['id'] = each.id
+					each_result['description'] = each.description
+					result.append(each_result)
+					each_result = {}
+				result[0] = {'success' : True}
+			except TaskCategory.DoesNotExist:
+				result.append({'code' : 1}) #There is no task associated with this
+		else:
+	 		result.append({'code' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'code' : 3})  #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+
+# Driver 6.1.1
+# Retrieve Task Information from task on the list of Pending Tasks
+#####################################################################################
+# obs: This function is expeting just one employee for each Task. No continues of   #
+# past task are supported now. However, when this change, it will be needed just to #
+# change object.get for object.filter, and use the higher index on each table   	#
+# that match with Task.id desired, since the higher foreing key for Task will   	#
+# corresponde to the last person assigned to the Task.id desired.					#
+#####################################################################################
+@login_required
+def getTaskInfo(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+		task_id = request.POST['task_id']
+	 	if request.is_ajax():
+			try: # Check if task is added on the Task table
+				task = Task.objects.get(id = task_id)
+				try: # Check if task is added on MachineTask table
+					machineTask = MachineTask.objects.get(task__id = task_id)
+					try: # Check if task is added on ImplementTask table
+						implementTask = ImplementTask.objects.get(task__id = task_id)
+						try: # Check if task is added on EmployeeTask table
+							employeeTask = EmployeeTask.objects.get(task__id = task_id)
+							result['employee'] = str(employeeTask.employee.user.first_name)+' '+str(employeeTask.employee.user.last_name)
+							result['field'] = task.field.name
+							result['description'] = task.description
+							result['machine_nickname'] = machineTask.machine.nickname
+							result['machine_photo'] = machineTask.machine.photo
+							result['implement_nickname'] = implementTask.implement.nickname
+							result['implement_photo'] = implementTask.implement.photo
+							result['success'] = True
+						except EmployeeTask.DoesNotExist:
+							result['error4'] = 'Assigned employee not found for this task' #No Task associated on EmployeeTask table
+					except ImplementTask.DoesNotExist:
+						result['error3'] = 'Assigned implement not found for this task' #No Task associated on ImplementTask table
+				except MachineTask.DoesNotExist:
+					result['error2'] = 'Assigned machine not found for this task' #No Task associated on MachineTask table
+			except Task.DoesNotExist:
+				result['error1'] = 'Task not found' #There is no Task associated on Task table
+		else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else:
+	 	result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+
+
+# This function givew back the Machine information, big part of them
+# This function will be used on Equipment Page (not TaskFlow page)
 @login_required
 def retrieveScannedMachine(request):
 	result = {'success' : False}
@@ -593,67 +662,113 @@ def retrieveScannedMachine(request):
 	 	result['code'] = 3 #Request was not POST
  	return HttpResponse(json.dumps(result),content_type='application/json')
 
-# Driver 6.3.1.3
-# It will retrieve id + description of all task categories in database.
-def getAllTaskCategory(request):
-	each_result = {}
-	result = []
-	result.append({'success' : False})
-	if request.method == 'POST':
+
+
+# Driver 6.3.2.1
+# Just retrieve a Machine according with qr_code passed as argument. And check if implement is compatible, if it was chosen.
+@login_required
+def getScannedMachine(request):
+	result = {'success' : False}
+	machine_is_valid = True
+  	if request.method == 'POST':
 	 	if request.is_ajax():
 			try:
-				all_task_category = TaskCategory.objects.filter()
-				for each in all_task_category:
-					each_result['id'] = each.id
-					each_result['description'] = each.description
-					result.append(each_result)
-					each_result = {}
-				result[0] = {'success' : True}
-			except TaskCategory.DoesNotExist:
-				result.append({'code' : 1}) #There is no task associated with this
+				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
+				# Check if Implement was chosed. If yes, check its compatibility with machine.
+				implement_qr_code = request.POST['implement_qr_code']
+				if implement_qr_code:
+					try:
+						implement = Implement.objects.get(qr_code = implement_qr_code)
+						if machine.hitch_capacity < implement.hitch_capacity_req:
+							machine_is_valid = False
+							result['error1'] = 'Machine does not have enough hitch capacity for this Implement'
+						if machine.horsepower < implement.horse_power_req:
+							machine_is_valid = False
+							result['error2'] = 'Machine does not have enough horse power for this Implement'
+						if machine.hitch_category != implement.hitch_category:
+							machine_is_valid = False
+							result['error3'] = 'Machine does not have the same hitch category of Implement'
+						if machine.drawbar_category != implement.drawbar_category:
+							machine_is_valid = False
+							result['error4'] = 'Machine does not have the same drawbar category of Implement'
+					except Implement.DoesNotExist:
+						result['error'] = 'Implement do not found' #There is no machine associated
+				# if Machine is compatible with implement (or if implement wasn't chosen),
+				# save the desireble machine's data and return it to front end.
+				if machine_is_valid == True:
+					result['qr_code'] = machine.qr_code
+					result['nickname'] = machine.nickname
+					result['year_purchased'] = machine.year_purchased
+					result['photo'] = machine.photo
+					result['manufacturer_model'] = machine.manufacturer_model.manufacturer.name
+					result['asset_number'] = machine.asset_number
+			 		result['horse_power'] = machine.horsepower
+					result['hitch_capacity'] = machine.hitch_capacity
+					result['status'] = machine.status
+					result['speed_range_max'] = machine.speed_range_max
+					result['success'] = True
+				else:
+					result['code'] = 1 # Implement chosen early doesn't support scanned Machine.
+			except Machine.DoesNotExist:
+				result['code'] = 1 #There is no Machine associated
 		else:
-	 		result.append({'code' : 2}) #Use ajax to perform requests
+	 		result['code'] = 2 #Use ajax to perform requests
 	else:
-	 	result.append({'code' : 3})  #Request was not POST
+	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
 
-# Driver 6.1.1
-# Retrieve Task Information from task on the list of Pending Tasks
-#####################################################################################
-# obs: This function is expeting just one entry on TaskImplementMachine table		#
-# for each entry Task table. However, when this change, it will be need just to 	#
-# change object.get for object.filter, and use the higher TaskImplementMachine.id 	#
-# that match with Task.id desired, since the higher TaskImplementMachine.id will 	#
-# corresponde to the last person assigned to the Task.id desired.					#
-#####################################################################################
+
+
+# Driver 6.3.2.2
+# Just retrieve a Implement according with qr_code passed as argument. And check if machine is compatible, if it was chosen.
 @login_required
-def getTaskInfo(request):
+def getScannedImplement(request):
 	result = {'success' : False}
-	if not request.method == 'POST':
-		task_id = request.GET.get('task_id')
-	 	if not request.is_ajax():
-			try: # Check if task is added on the Task table
-				task = Task.objects.get(id = task_id)
-				try: # Check if task is added on TaskImplementMachine table
-					taskImplementMachine = TaskImplementMachine.objects.get(id = task_id)
-					try: # Check if task is added on EmployeeTask table
-						employeeTask = EmployeeTask.objects.get(id = task_id)
-						result['employee'] = employeeTask.employee.id
-						result['field'] = task.field.name
-						result['description'] = task.description
-						result['machine_nickname'] = taskImplementMachine.machine.nickname
-						result['machine_photo'] = taskImplementMachine.machine.photo
-						result['implement_nickname'] = taskImplementMachine.implement.nickname
-						result['implement_photo'] = taskImplementMachine.implement.photo
-						result['success'] = True
-					except EmployeeTask.DoesNotExist:
-						result['code'] = 111 #There is no Task associated on EmployeeTask table
-				except TaskImplementMachine.DoesNotExist:
-					result['code'] = 11 #There is no Task associated on TaskImplementMachine table
-			except Task.DoesNotExist:
-				result['code'] = 1 #There is no Task associated on Task table
+	implement_is_valid = True
+  	if request.method == 'POST':
+	 	if request.is_ajax():
+			try:
+				implement = Implement.objects.get(qr_code = request.POST['qr_code'])
+				# Check if Machine was chosed. If yes, check its compatibility with implement.
+				machine_qr_code = request.POST['machine_qr_code']
+				if machine_qr_code:
+					try:
+						machine = Machine.objects.get(qr_code = machine_qr_code)
+						if machine.hitch_capacity < implement.hitch_capacity_req:
+							implement_is_valid = False
+							result['error1'] = 'Implement requires more hitch capacity than Machine supports'
+						if machine.horsepower < implement.horse_power_req:
+							implement_is_valid = False
+							result['error2'] = 'Implement requires more horse power than Machine supports'
+						if machine.hitch_category != implement.hitch_category:
+							implement_is_valid = False
+							result['error3'] = 'Implement does not have the same hitch category of Machine'
+						if machine.drawbar_category != implement.drawbar_category:
+							implement_is_valid = False
+							result['error4'] = 'Implement does not have the same drawbar category of Machine'
+					except Machine.DoesNotExist:
+						result['error'] = 'Machine do not found' #There is no machine associated
+
+				# if Implement is compatible with machine (or if machine wasn't chosen),
+				# save the desireble implement data and return it to front end.
+				if implement_is_valid == True:
+					result['qr_code'] = implement.qr_code
+					result['nickname'] = implement.nickname
+					result['year_purchased'] = implement.year_purchased
+					result['photo'] = implement.photo
+					result['manufacturer_model'] = implement.manufacturer_model.manufacturer.name
+					result['asset_number'] = implement.asset_number
+			 		result['horse_power_req'] = implement.horse_power_req
+					result['hitch_capacity_req'] = implement.hitch_capacity_req
+					result['status'] = implement.status
+					result['speed_range_max'] = implement.speed_range_max
+					result['success'] = True
+				else:
+					result['code'] = 1 # Machine chosen early doesn't support scanned Implement.
+			except Implement.DoesNotExist:
+				result['code'] = 1 #There is no implement associated with this
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
 	else:
@@ -793,7 +908,7 @@ def getFilteredMachine(request):
 				machine = machine.exclude(status = status_broken)
 				machine = machine.exclude(status = status_quarantine)
 				# Remove those machines that doesn't support the hitch capacity required by the selected implement,
-				# Remove those machines that have different drawbar_category then the selected implement,
+				# Remove those machines that doesn't support the horsepower required by the selected implement
 				# Remove those machines that have different hitch category then the selected implement
 				# And remove those machines that have different drawbar category then the selected implement
 				if implement_qr_code:
@@ -1006,36 +1121,6 @@ def getScannedFilteredEmployee(request):
 
 
 
-
-# Driver 6.3.2.2
-# Just retrieve a Implement according with qr_code passed as argument
-@login_required
-def getScannedImplement(request):
-	result = {'success' : False}
-  	if request.method == 'POST':
-	 	if request.is_ajax():
-			try:
-				implement = Implement.objects.get(qr_code = request.POST['qr_code'])
-				result['qr_code'] = implement.qr_code
-				result['nickname'] = implement.nickname
-				result['year_purchased'] = implement.year_purchased
-				result['photo'] = implement.photo
-				result['manufacturer_model'] = implement.manufacturer_model.manufacturer.name
-				result['asset_number'] = implement.asset_number
-		 		result['horse_power_req'] = implement.horse_power_req
-				result['hitch_capacity_req'] = implement.hitch_capacity_req
-				result['status'] = implement.status
-				result['speed_range_max'] = implement.speed_range_max
-				result['success'] = True
-			except Implement.DoesNotExist:
-				result['code'] = 1 #There is no users associated with this
-		else:
-	 		result['code'] = 2 #Use ajax to perform requests
-	else:
-	 	result['code'] = 3 #Request was not POST
-	return HttpResponse(json.dumps(result),content_type='application/json')
-
-
 #This function gives back the picture of the refered QrCode
 @login_required
 def loadEquipmentImage(request):
@@ -1100,6 +1185,9 @@ def loadImplementsImage(request):
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+
+
+
 #Return task that are not complished until today, the number of task returned is according to the number n
 @login_required
 def retrievePendingTask(request):
@@ -1114,22 +1202,42 @@ def retrievePendingTask(request):
 				n = int(request.POST['N'])
 				if n > 0:
 					aux = {}
-					emploTask = EmployeeTask.objects.filter(employee__user__id = request.user.id, task_init__lte =  date2, task__accomplished = False)[:n]
-					for item in emploTask:
+					# Filter EmployeeTask by user, date and status task != Finished
+					emploTask   =  EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date_assigned__lte = date2, task__status__lt = 6)[:n]
+					invalidTasks = EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date_assigned__lte = date2, task__status = 4)
+					emploTaskList = []
+					# Filter again EmployeeTask removing task with status = Ongoing
+					for each in emploTask:
+						if not each in invalidTasks:
+							emploTaskList.append(each)
+						
+					for item in emploTaskList:
 						aux['category'] = item.task.description
 						aux['field'] = item.task.field.name
-						aux['date'] = str(item.task.date)
+						aux['date'] = str(item.task.date_assigned)
 						aux['task_id'] = item.task.id
+						aux['employee_id'] = item.employee.id
+						aux['employee_first_name'] = item.employee.user.first_name
+						aux['employee_last_name'] = item.employee.user.last_name
 						try:
-							machine = Machine.objects.get(id = TaskImplementMachine.objects.filter(task_id = item.task.id))
-							aux['qr_code'] = machine.qr_code
-						except:
-							aux['qr_code'] = "NONE"
+							machineTask = MachineTask.objects.get(task__id = item.task.id)
+							aux['machine_model'] = machineTask.machine.manufacturer_model.model
+							aux['machine_nickname'] = machineTask.machine.nickname
+							aux['machine_id'] = machineTask.machine.id
+						except MachineTask.DoesNotExist:
+							aux['machine_id'] = "NONE"
+						try:
+							implementTask = ImplementTask.objects.get(task__id = item.task.id)
+							aux['implement_model'] = implementTask.implement.manufacturer_model.model
+							aux['implement_nickname'] = implementTask.implement.nickname
+							aux['implement_id'] = implementTask.implement.id
+						except ImplementTask.DoesNotExist:
+							aux['implement_id'] = "NONE"
 						result.append(aux)
 						aux = {}
 					result[0] = {'success' : True}
 				else:
-					result.append({'result' : 11})#Index is invalid
+					result.append({'result' : 1})#Index is invalid
 			except EmployeeTask.DoesNotExist:
 				result.append({'result' : 1})#There is no Implement associated with this
 		else:
@@ -1138,7 +1246,7 @@ def retrievePendingTask(request):
 	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-#Return
+#Return task already accomplished
 @login_required
 def pastTaskList(request):
 	result = []
@@ -1181,55 +1289,121 @@ def pastTaskList(request):
 	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-def getHoursToday(id):
-	# now = datetime.datetime.now()
-	# attendance = EmployeeAttendance.objects.get(employee_id = id)
 
-	# if attendance.break_one is None:
-	# 	delta = now - attendance.hour_started
-	# elif
-	#date__range = (datetime.datetime.combine(now, datetime.time.min),datetime.datetime.combine(now, datetime.time.max))
-	return 0
+# change back:
+# parametro request, voltar para employee_id, date_entry
+# retirar os GET
 
-def getWeekHours(id):
-	return 0
+def getHoursToday(employee_id, date_entry):
+	realDate = datetime.datetime.strptime(date_entry, '%Y-%m-%d %H:%M:%S')
+	start_date = datetime.datetime.combine(realDate, datetime.time.min)
+	end_date = datetime.datetime.combine(realDate, datetime.time.max)
+	employeeAttendance = EmployeeAttendance.objects.filter(employee_id = employee_id, date__range = (end_date,start_date)).order_by('date')
+	count = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #counter to keep all the worked hours
+	midnight = datetime.timedelta(hours = 23, minutes = 59, seconds = 59) # it is used when the hours changed from one day to another
+	keeper = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #this variable will keep the last break. It is useful when the shift is not done
+	keeper2 =  datetime.timedelta(hours = 0, minutes = 0, seconds = 0) # when the break is on another day
+	count2 = 0          #this variable will keep track of which interration I am. It will help with the bug of break without shift end
+	for item in employeeAttendance:
+		breaks = Break.objects.filter(attendance__id = item.id)
+		aux = datetime.timedelta(hours = 0, minutes = 0, seconds = 0)
+		lenght = len(breaks)
+		count2 = 0
+		addition = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #addition works to add the time of the last break on the count. It is because the lastbreak should not be counted on if the attendance has the end value none
+		for doc in breaks:
+			docStart = datetime.timedelta(hours = doc.start.hour, minutes = doc.start.minute, seconds = doc.start.second)
+			if docStart > keeper: #keeps the bigger break start
+				keeper = docStart
+			elif docStart < itemStart and docStart > keeper2: # if the bigger break is on another day
+				keeper2 = docStart
+			if doc.end != None and doc.end >= doc.start:
+				aux += datetime.timedelta(hours = doc.end.hour, minutes = doc.end.minute, seconds = doc.end.second) - docStart
+				if count2 == lenght-1:
+					addition = datetime.timedelta(hours = doc.end.hour, minutes = doc.end.minute, seconds = doc.end.second) - docStart
+			elif doc.end != None:
+				aux += datetime.timedelta(hours = doc.end.hour, minutes = doc.end.minute, seconds = doc.end.second) + (midnight -  docStart)
+				if count2 == lenght-1:
+					addition = datetime.timedelta(hours = doc.end.hour, minutes = doc.end.minute, seconds = doc.end.second) - docStart
+		itemStart = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second)
+		if item.hour_ended != None: #this if will treat if the attendance does not have the end field proprely filled
+			if item.hour_ended >= item.hour_started:
+				count += (datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second) - itemStart) - aux
+			else:  #if the end time is in another day
+				count += (datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second) + (midnight - itemStart)) - aux
+		elif keeper2 > datetime.timedelta(hours = 0, minutes = 0, seconds = 0): # if the keeper2 is changed means that the shift crossed midnight
+			count += keeper2 - datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) - aux + addition
+		else:
+			count += keeper - datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) - aux + addition
+			count2 += 1
+
+	return str(count)
+
+
+# This function call getHoursToday() for each day in the week of the desired day passed as argument
+# It requries a employee_id and any day of the week, and the function will check all days of that week.
+# Obs: A week is defined as starting at Sunday 00:00:00 and ending at next Saturday at 23:59:59
+def getHoursWeek(employeeid, desired_date):
+	hours_worked_week = datetime.timedelta(hours=0, minutes=0, seconds=0)
+	today = datetime.date.today()
+	begin_of_week = today.isoweekday()
+	if begin_of_week == 7: # Avoid calculate wrong week when desired_day is a Sunday
+		begin_of_week = 0
+	first_week_day = desired_date - datetime.timedelta(days=begin_of_week) # Last Sunday's
+	last_week_day = desired_date - datetime.timedelta(days=begin_of_week, weeks=-1	) # Next Sunday's
+
+	attendance = EmployeeAttendance.objects.filter(employee_id = employeeid)
+	for each in attendance:
+		if each.date >= first_week_day and each.date < last_week_day:
+			hours_today = getHoursToday(employeeid, str(each.date)+' 00:00:00') # getHoursToday expects [%Y-%M-%D %h:%m:%s] format
+			times = hours_today.split(':')
+			hours_worked_today = datetime.timedelta(hours=int(times[0]), minutes=int(times[1]), seconds=int(times[2]))
+			hours_worked_week = hours_worked_week + hours_worked_today
+	return str(hours_worked_week)
+
+
 
 #Return the information about the driver and his or her schedule
 @login_required
-#Return the information about the driver and his or her schedule
 def getEmployeeSchedule(request):
 	result = {'success' : False}
 
 	if request.method == 'POST':
 		if request.is_ajax():
-
-			employee = Employee.objects.get(user_id = request.user.id)
-
-			#creating the data range for the day, generating the 00:00:00 and the 23:59:59 of the current day
-			now = datetime.datetime.now()
-			start_date = datetime.datetime.combine(now, datetime.time.min)
-			end_date = datetime.datetime.combine(now, datetime.time.max)
-
 			try:
-				attendance = EmployeeAttendance.objects.get(employee_id = employee.id, date__range = (start_date, end_date))
-				result['first_name'] = employee.user.first_name
-				result['last_name'] = employee.user.last_name
-				result['qr_code'] = employee.qr_code
-				result['contact_number'] = employee. contact_number
-				result['permission_level'] = employee.permission_level
-				result['photo_url'] = employee.photo
-				result['hour_started'] = str(attendance.hour_started)
-				result['hour_ended'] = str(attendance.hour_ended)
-				breaks = Break.objects.filter(attendance_id = attendance.id).order_by('start').values()
-				
-				temp = []
-				for item in breaks:
-					temp.append((str(item['start']),str(item['end'])))
+				qrc = request.POST['qr_code']
+				employee = Employee.objects.get(qr_code = qrc)
 
-				result['breaks'] = temp
-				result['success'] = True
-			except EmployeeAttendance.DoesNotExist:
-				result['code'] = 1 #There is no shift records for this employee
+				# creating the data range for the day, generating the 00:00:00 and the 23:59:59 of the current day
+				now = datetime.datetime.now()
+				start_date = datetime.datetime.combine(now, datetime.time.min)
+				end_date = datetime.datetime.combine(now, datetime.time.max)
+				try:
+					attendance = EmployeeAttendance.objects.get(employee_id = employee.id, date__range = (start_date, end_date))
+					result['first_name'] = employee.user.first_name
+					result['last_name'] = employee.user.last_name
+					result['qr_code'] = employee.qr_code
+					result['contact_number'] = employee. contact_number
+					result['permission_level'] = employee.permission_level
+					result['photo_url'] = employee.photo
+					result['hour_started'] = str(attendance.hour_started)
+					result['hour_ended'] = str(attendance.hour_ended)
+					try:
+						breaks = Break.objects.filter(attendance_id = attendance.id).order_by('start')
+						i = 1
+						aux = "BreakStart"
+						aux2 = "BreakEnd"
+						for item in breaks:
+							index = aux + str(i)
+							result[index] = str(item.start)
+							index2 = aux2 + str(i)
+							result[index2] = str(item.end)
+							i += 1
+					except:
+						result['success'] = True
+				except EmployeeAttendance.DoesNotExist:
+					result['code'] = 1 #There is no shift records for this employee
+			except Employee.DoesNotExist:
+				result['code'] = 1 #there is no employ for this QRCODE
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
 	else:
@@ -1239,28 +1413,53 @@ def getEmployeeSchedule(request):
 
 @login_required
 def getEmployeeSchedulePart(request):
-	result = {'success' : False}
+	result = {}
+	result['success'] = False
 	if request.method == 'POST':
 		if request.is_ajax():
 			aux = request.POST['start_day'] #get the date in the POST request
 			aux2 = request.POST['stop_day']
 			date_start = datetime.datetime.strptime(aux, '%Y-%m-%d')
 			date_end = datetime.datetime.strptime(aux2, '%Y-%m-%d') + datetime.timedelta(days = 1)
-			emploTask = EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date__range = (date_start, date_end), task__approval__lte = 3)
+			date_end = datetime.datetime.combine(date_end, datetime.time.max)
+			emploTask = EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date_assigned__range = (date_start, date_end))
 			aux = []
 			aux2 = []
 			for item in emploTask:
-				if item.task.accomplished == 0:
-					aux.append((item.task.hours_prediction,str(item.task.date),item.employee.id))
+				if item.task.status != 6:
+					auxHour = int(item.task.hours_prediction)
+					auxMin = float(item.task.hours_prediction - auxHour) * 60
+					data_prediction = item.task.date_assigned + datetime.timedelta(hours = auxHour, minutes = auxMin)
+					equipment = getTaskImplementMachine(item.task.id, item.id)
+					aux.append((str(item.task.date_assigned), str(data_prediction),item.employee.id, equipment, item.task.category.description, item.task.description, item.task.field.name, item.task.status))
 				else:
-					aux2.append((item.task.hours_prediction,str(item.task.date),item.employee.id, item.hours_spent,str(item.task_init)))
+					equipment = getTaskImplementMachine(item.task.id, item.id)
+					aux2.append((str(item.task.date_assigned),str(item.task.task_end),item.employee.id,equipment, item.hours_spent, item.task.category.description, item.task.description, item.task.field.name, item.task.status))
 			result['tasks_peddings'] = aux
 			result['task_accomplished'] = aux2
+			result['success'] = True
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
 	else:
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+def getTaskImplementMachine(taskId,EmploTaskId):
+	result = {}
+	implement = ImplementTask.objects.filter(task = taskId, machine_task__employee_task__id = EmploTaskId)
+	tmp = []
+	flag = 0
+	for item in implement:
+		if flag == 0:
+			result['machine'] = item.machine_task.machine.qr_code
+			flag += 1
+		tmp.append(item.implement.qr_code)
+	result['implement'] = tmp
+	return result
+
+
+
+
 
 def getAllManufacturers(request):
 	each_result = {}
@@ -1327,11 +1526,122 @@ def validatePermission(request):
 		result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+def timeKeeperReportAux(attendance, finished):
+	result = u''
+	employee = Employee.objects.get(id = attendance['employee_id'])
+	breaks = Break.objects.filter(attendance = attendance['id']).order_by('start')
+
+	count = 1
+
+	result += u'\tName: ' + employee.user.first_name + u' ' + employee.user.last_name + u' \t\tID: ' + employee.company_id + u'\n'
+	result += u'\t\tStarted shift: ' + attendance['hour_started'].strftime("%I:%M %p") + u'\n'
+
+	if finished:
+		if breaks.count() == 0:
+			result += u'No breaks reported!\n'
+		else:
+			for b in breaks:
+				result += u'\t\t\tBreak ' + str(count) + u': ' + b.start.strftime("%I:%M %p") + u' - '
+				if b.end is None:
+					result += u'Not provided\n'
+				else:
+					now = datetime.datetime.now()
+					delta = datetime.datetime.combine(now, b.end) - datetime.datetime.combine(now, b.start)
+					result += b.end.strftime("%I:%M %p") + u' (' + u'{0:.2f}'.format(delta.total_seconds()/60) + u' minutes(s))\n'
+				count += 1
+		result += u'\t\tEnded shift: ' + attendance['hour_ended'].strftime("%I:%M %p") + u'\n'
+	else:
+		count = breaks.count()
+
+		if count == 0:
+			result += u'\t\t\tNo breaks reported yet.\n'
+		else:
+			temp = []
+			first = True
+			for b in reversed(breaks):
+				temp2 = u'\t\t\tBreak ' + str(count) + u': ' + b.start.strftime("%I:%M %p") + u' - '
+				if first:
+					if b.end is None:
+						temp2 += u'Ongoing or Not provided\n'
+					else:
+						now = datetime.datetime.now()
+						delta = datetime.datetime.combine(now, b.end) - datetime.datetime.combine(now, b.start)
+						temp2 += b.end.strftime("%I:%M %p") + u' (' + u'{0:.2f}'.format(delta.total_seconds()/60) + u' minute(s))\n'
+					first = False
+				else:
+					if b.end is None:
+						temp2 += u'Not provided\n'
+					else:
+						now = datetime.datetime.now()
+						delta = datetime.datetime.combine(now, b.end) - datetime.datetime.combine(now, b.start)
+						temp2 += b.end.strftime("%I:%M %p") + u' (' + u'{0:.2f}'.format(delta.total_seconds()/60) + u' minute(s))\n'
+				temp.append(temp2)
+				count -= 1
+
+			for t in reversed(temp):
+				result += t
+
+		result += u'\t\tEnded shift: Ongoing or Not provided\n'
+	return result
+
+#This function generates a report for the timekeeper for the current day
+#This function will also generate the body of the e-mail
+def timeKeeperReport(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+		if request.is_ajax():
+
+			#Creating the data range to filter the attendaces
+			now = datetime.datetime.now()
+			start_date = datetime.datetime.combine(now, datetime.time.min)
+
+			attendances = EmployeeAttendance.objects.filter(date__range = (start_date, now))
+			#Building the body of the e-mail
+			message = u'Heavy Connect TimeKeeper Report\n'
+			message += u'You report includes information of ' + str(attendances.count()) + u' employees.\n'
+			message += u'The period of time covered in this report starts at ' + start_date.strftime("%m/%d/%Y %I:%M %p") + u' and ends at ' + now.strftime("%m/%d/%Y %I:%M %p") + '.\n'
+
+			finished = []
+			unfinished = []
+
+			#Splitting the attendance entries between finished and unfinished
+			for attendance in attendances.values():
+				if attendance['hour_ended'] is None:
+					unfinished.append(attendance)
+				else:
+					finished.append(attendance)
+
+			count = 1
+			message += u'--------------------Ongoing Shifts (or not provided)--------------------\n'
+			for i in unfinished:
+				message += u'Employee ' + str(count) + ':'
+				message += timeKeeperReportAux(i,False)
+				message += '\n'
+				count += 1
+
+			message += u'----------------------------Complete Shifts-----------------------------\n'
+			for j in finished:
+				message += u'Employee ' + str(count) + ':'
+				message += timeKeeperReportAux(j,True)
+				message += '\n'
+				count += 1
+
+			subject = 'Heavy Connect TimeKeeper Report - ' + now.strftime("%m/%d/%Y")
+			recipients = request.POST['recipients']
+			email = EmailMessage(subject = subject, body = message, to = recipients, from_email = 'customersupport@heavyconnect.com', )
+			if email.send(fail_silently=True) >= 1:
+				result['success'] = True
+
+		else:
+			result['code'] = 2 #Use ajax to perform requests
+	else:
+		result['code'] = 3 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
 
 def logout(request):
 	auth_logout(request)
 	return redirect('home')
-
 
 @login_required
 def driver(request):
@@ -1529,12 +1839,10 @@ Just a quick explanation on how to test forms:
 	            return HttpResponseRedirect('/thanks/') # Redirect after POST
 	    else:
 	        form = ContactForm() # An unbound form
-
 	    return render(request, 'THEPAGEYOUWANTTOBERETURNED.html', {
 	        'form': form,
 	    })
 </menezescode>
-
 @menezescode: 	Those are the forms. At the current point 06/22/2015,
 				each view does nothgin besides render the page and redirect
 				to a different page (formOk) if it's correct and reload the page
@@ -1686,13 +1994,6 @@ def taskCategoryFormView(request):
 		return render(request, 'formTest.html', {'form': form})
 def employeeTaskFormView(request):
 	form = employeeTaskForm(request.POST)
-	if form.is_valid():
-		return redirect('formOk')
-	else:
-		return render(request, 'formTest.html', {'form': form})
-
-def taskImplementMachineFormView(request):
-	form = taskImplementMachineForm(request.POST)
 	if form.is_valid():
 		return redirect('formOk')
 	else:

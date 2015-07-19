@@ -176,30 +176,37 @@ TaskCategory
 	description				Category of task - CHARFIELD(30)
 
 Task
-	field					Id of task - INT FOREIGN KEY FROM FIELD
-	category				Task category - INT FOREIGN KEY
-	rate_cost				Cost of the task per hour - FLOAT 
-	hours_spent				Hours spent on the task - FLOAT
-	hours_prediction		How many hours it supposed take - FLOAT
-	description				Task description - CHARFIELD(500)
-	passes					Number of passes - INT
-	t_date					the date that this task was assigned - Date
-	accomplished			if the task is done - BOOLEAN
-	approval				Does the task have manager approval - Choices
+	field					Id of the field where the task will be performed - ForeignKey(Field)
+	category				Task category - ForeignKey(TaskCategory)
+	rate_cost				Cost of the task per hour - FloatField
+	date_assigned			The date that this task was assigned - DateTimeField
+	hours_prediction		How many hours it supposed take - FloatField
+	description				Task description - CharField(max_length = 500)
+	passes					Number of passes - IntegerField
+	task_init				Actual time when the task was started - DateTimeField
+	task_end				When the task was finished - DateTimeField
+	status					Store the current status of the machine - IntegerField(choices)
+	hours_spent				Hours spent on the task - FloatField
+	pause_start				Store the start of a pause in the task - DateTimeField
+	pause_end				Store the end of a pause that was started - DateTimeField
+	pause_total				Total time of pauses - FloatField
 
 EmployeeTask
-	employee				Employee ID - INT FOREIGN KEY
-	task					Task ID - INT 	COMPOSITE FOREIGN KEY
-	task_init				Task initiation - DATE (UNIX_TIMESTAMP(now()))
-	task_end				Keep the hour that the employee finished his work on the 
-	task - 					DATE(UNIX_TIMESTAMP(now()))
-	task_track				This field will be used to calculate the hours spent in task - DATE(UNIX_TIMESTAMP(now()))
-	hours_spent				Hours spent in this task- SMALLINT
-	substituition			Substituition happened? - BOOLEAN
-TaskImplementMachine
-	task					Task ID - INT 	FOREIGN KEY
-	machine					Machine ID - INT FOREIGN KEY
-	implement				Implement ID - INT COMPOSITE KEY
+	employee				Id of the employee performing the task - ForeignKey(Employee)
+	task					Task to be performed - ForeignKey(Task)
+	hours_spent				Hours spent by the employee in this task - FloatField
+	start_time				Employee task initiation time - DateTimeField
+	end_time				Employee task end time - DateTimeField
+
+MachineTask
+	task					Id of the task to be performed by the machine - ForeignKey(Task)
+	machine					Id of the machine performing the task - ForeignKey(Machine)
+	employee_task			Id of the EmployeeTask that will be using the machine and performing the task - ForeignKey(EmployeeTask)
+
+ImplementTask
+	task					Id of the task to be performed by the implement - ForeignKey(Task)
+	machine					Id of the machine using the implement - ForeignKey(Machine)
+	implement_id			Id of the Implement that will be used by the machine - ForeignKey(EmployeeTask)	
 
 Appendix
 	type					Type of appendix- CHARFIELD(20) e.g (fertilizer)-(pesticides)-(NONE)
@@ -243,6 +250,7 @@ Question
 MachineChecklist
 	question				Question identification number - FOREIGN KEY
 	qrCode					QRCode referent of the equipment -  FOREIGN KEY
+	employee 				Reference for employee - FOREIGN KEY
 	answer 					If the answer is positive or negative - BOOLEAN
 	note					Description of the problem -	CHARFIELD(200) NULL
 	date					Date of the service - DATE 
@@ -251,6 +259,7 @@ MachineChecklist
 ImplementChecklist
 	question				Question identification number - FOREIGN KEY
 	qrCode					QRCode referent of the equipment - FOREIGN KEY
+	employee 				Reference for employee - FOREIGN KEY
 	answer 					If the answer is positive or negative - BOOLEAN
 	note					Description of the problem -	CHARFIELD(200) NULL
 	date					Date of the service - DATE 
