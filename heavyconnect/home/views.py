@@ -1413,28 +1413,53 @@ def getEmployeeSchedule(request):
 
 @login_required
 def getEmployeeSchedulePart(request):
-	result = {'success' : False}
+	result = {}
+	result['success'] = False
 	if request.method == 'POST':
 		if request.is_ajax():
 			aux = request.POST['start_day'] #get the date in the POST request
 			aux2 = request.POST['stop_day']
 			date_start = datetime.datetime.strptime(aux, '%Y-%m-%d')
 			date_end = datetime.datetime.strptime(aux2, '%Y-%m-%d') + datetime.timedelta(days = 1)
-			emploTask = EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date__range = (date_start, date_end), task__approval__lte = 3)
+			date_end = datetime.datetime.combine(date_end, datetime.time.max)
+			emploTask = EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date_assigned__range = (date_start, date_end))
 			aux = []
 			aux2 = []
 			for item in emploTask:
-				if item.task.accomplished == 0:
-					aux.append((item.task.hours_prediction,str(item.task.date),item.employee.id))
+				if item.task.status != 6:
+					auxHour = int(item.task.hours_prediction)
+					auxMin = float(item.task.hours_prediction - auxHour) * 60
+					data_prediction = item.task.date_assigned + datetime.timedelta(hours = auxHour, minutes = auxMin)
+					equipment = getTaskImplementMachine(item.task.id, item.id)
+					aux.append((str(item.task.date_assigned), str(data_prediction),item.employee.id, equipment, item.task.category.description, item.task.description, item.task.field.name, item.task.status))
 				else:
-					aux2.append((item.task.hours_prediction,str(item.task.date),item.employee.id, item.hours_spent,str(item.task_init)))
+					equipment = getTaskImplementMachine(item.task.id, item.id)
+					aux2.append((str(item.task.date_assigned),str(item.task.task_end),item.employee.id,equipment, item.hours_spent, item.task.category.description, item.task.description, item.task.field.name, item.task.status))
 			result['tasks_peddings'] = aux
 			result['task_accomplished'] = aux2
+			result['success'] = True
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
 	else:
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+def getTaskImplementMachine(taskId,EmploTaskId):
+	result = {}
+	implement = ImplementTask.objects.filter(task = taskId, machine_task__employee_task__id = EmploTaskId)
+	tmp = []
+	flag = 0
+	for item in implement:
+		if flag == 0:
+			result['machine'] = item.machine_task.machine.qr_code
+			flag += 1
+		tmp.append(item.implement.qr_code)
+	result['implement'] = tmp
+	return result
+
+
+
+
 
 def getAllManufacturers(request):
 	each_result = {}
