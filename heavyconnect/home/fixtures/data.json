@@ -399,12 +399,16 @@
          "passes":4,
          "rate_cost":100.0,
          "description":"do not enter if standing water present",
+         "task_end":null,
+         "status":1,
+         "pause_total":null,
          "field":1,
-         "accomplished":true,
          "hours_spent":10.0,
+         "pause_start":null,
+         "pause_end":null,
          "hours_prediction":10.0,
-         "date":"2015-07-01T22:46:18Z",
-         "approval":1
+         "date_assigned":null,
+         "task_init":null
       },
       "model":"home.task",
       "pk":1
@@ -415,12 +419,16 @@
          "passes":5,
          "rate_cost":100.0,
          "description":"do not enter if standing water present",
+         "task_end":null,
+         "status":1,
+         "pause_total":null,
          "field":2,
-         "accomplished":true,
          "hours_spent":10.0,
+         "pause_start":null,
+         "pause_end":null,
          "hours_prediction":9.0,
-         "date":"2015-07-01T23:02:16Z",
-         "approval":1
+         "date_assigned":null,
+         "task_init":null
       },
       "model":"home.task",
       "pk":2
@@ -431,12 +439,16 @@
          "passes":1,
          "rate_cost":65.0,
          "description":"make sure all nozzles cleaned with water after task completed",
+         "task_end":null,
+         "status":1,
+         "pause_total":null,
          "field":3,
-         "accomplished":false,
          "hours_spent":10.0,
+         "pause_start":null,
+         "pause_end":null,
          "hours_prediction":6.0,
-         "date":"2015-07-01T23:02:44Z",
-         "approval":3
+         "date_assigned":null,
+         "task_init":null
       },
       "model":"home.task",
       "pk":3
@@ -494,6 +506,23 @@
    },
    {
       "fields":{
+         "contact_number":"00000000000000",
+         "language":1,
+         "photo":"",
+         "qr_code":"0000000000",
+         "company_id":"0000000000",
+         "last_task":null,
+         "active":true,
+         "permission_level":1,
+         "hour_cost":0.0,
+         "start_date":"2015-07-15",
+         "user":3
+      },
+      "model":"home.employee",
+      "pk":4
+   },
+   {
+      "fields":{
          "employee":3,
          "date":"2015-07-08"
       },
@@ -504,6 +533,7 @@
       "fields":{
          "employee":1,
          "date":"2015-07-01",
+         "signature":null,
          "hour_started":"06:00:00",
          "hour_ended":"16:00:00"
       },
@@ -514,6 +544,7 @@
       "fields":{
          "employee":2,
          "date":"2015-07-01",
+         "signature":null,
          "hour_started":"06:03:00",
          "hour_ended":"16:15:00"
       },
@@ -524,6 +555,7 @@
       "fields":{
          "employee":3,
          "date":"2015-07-01",
+         "signature":null,
          "hour_started":"06:28:00",
          "hour_ended":"15:50:00"
       },
@@ -573,21 +605,24 @@
    },
    {
       "fields":{
-         "description":"Organic"
+         "description":"Organic",
+         "year":null
       },
       "model":"home.certification",
       "pk":2
    },
    {
       "fields":{
-         "description":"Food Safety"
+         "description":"Food Safety",
+         "year":null
       },
       "model":"home.certification",
       "pk":3
    },
    {
       "fields":{
-         "description":"Customer Relationship Management"
+         "description":"Customer Relationship Management",
+         "year":null
       },
       "model":"home.certification",
       "pk":4
@@ -767,10 +802,10 @@
    {
       "fields":{
          "employee":1,
+         "start_time":null,
          "task":1,
-         "task_init":"2015-07-08T23:03:15Z",
-         "hours_spent":0.0,
-         "substitution":false
+         "end_time":"2015-07-08T23:03:15Z",
+         "hours_spent":0.0
       },
       "model":"home.employeetask",
       "pk":1
@@ -778,10 +813,10 @@
    {
       "fields":{
          "employee":2,
+         "start_time":null,
          "task":2,
-         "task_init":"2015-07-08T23:03:31Z",
-         "hours_spent":4.0,
-         "substitution":false
+         "end_time":"2015-07-08T23:03:31Z",
+         "hours_spent":4.0
       },
       "model":"home.employeetask",
       "pk":2
@@ -789,39 +824,66 @@
    {
       "fields":{
          "employee":3,
+         "start_time":null,
          "task":3,
-         "task_init":"2015-07-08T23:03:41Z",
-         "hours_spent":5.0,
-         "substitution":true
+         "end_time":"2015-07-08T23:03:41Z",
+         "hours_spent":5.0
       },
       "model":"home.employeetask",
       "pk":3
    },
    {
       "fields":{
-         "machine":1,
-         "implement":1,
-         "task":1
+         "task":1,
+         "employee_task":1,
+         "machine":1
       },
-      "model":"home.taskimplementmachine",
+      "model":"home.machinetask",
       "pk":1
    },
    {
       "fields":{
-         "machine":2,
-         "implement":8,
-         "task":2
+         "task":2,
+         "employee_task":2,
+         "machine":2
       },
-      "model":"home.taskimplementmachine",
+      "model":"home.machinetask",
       "pk":2
    },
    {
       "fields":{
-         "machine":3,
+         "task":3,
+         "employee_task":3,
+         "machine":3
+      },
+      "model":"home.machinetask",
+      "pk":3
+   },
+   {
+      "fields":{
+         "machine_task":1,
+         "implement":1,
+         "task":1
+      },
+      "model":"home.implementtask",
+      "pk":1
+   },
+   {
+      "fields":{
+         "machine_task":2,
+         "implement":8,
+         "task":2
+      },
+      "model":"home.implementtask",
+      "pk":2
+   },
+   {
+      "fields":{
+         "machine_task":3,
          "implement":9,
          "task":3
       },
-      "model":"home.taskimplementmachine",
+      "model":"home.implementtask",
       "pk":3
    },
    {
@@ -929,11 +991,12 @@
    },
    {
       "fields":{
+         "answer":true,
          "date":"2015-07-09T20:07:34Z",
          "photo":"",
          "question":1,
          "note":"",
-         "answer":true,
+         "employee":null,
          "qrCode":1
       },
       "model":"home.machinechecklist",
@@ -941,11 +1004,12 @@
    },
    {
       "fields":{
+         "answer":true,
          "date":"2015-07-09T22:29:06Z",
          "photo":"",
          "question":2,
          "note":"",
-         "answer":true,
+         "employee":null,
          "qrCode":9
       },
       "model":"home.implementchecklist",

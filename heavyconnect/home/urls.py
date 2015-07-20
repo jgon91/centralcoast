@@ -40,11 +40,10 @@ urlpatterns = [
 
     ### Functions ###
     url(r'^employeeLocation/$', main_views.getEmployeeLocation, name = 'employeeLocation'),
-    url(r'^employeeSchedule/$', main_views.getEmployeeSchedule, name = 'employeeSchedule'),
+    url(r'^getEmployeeShifts/$', main_views.getEmployeeShifts, name = 'getEmployeeShifts'),
     url(r'^driverInfo/$', main_views.getDriverInformation, name = 'driverInfo'),
-    url(r'^createNewTask1/$', main_views.createNewTask1, name = 'createNewTask'),
-    url(r'^createNewTask2/$', main_views.createNewTask2, name = 'createNewTask'),
-    url(r'^startNewTask/$', main_views.startNewTask, name = 'startNewTask'),
+    url(r'^createNewTask/$', main_views.createNewTask, name = 'createNewTask'),
+	url(r'^startNewTask/$', main_views.startNewTask, name = 'startNewTask'),
     url(r'^quickUserInfomation/$', main_views.getQuickUser, name = 'quickUser'),
     url(r'^updatePhoto/$', main_views.updatePhoto, name = 'updatePhoto'),
     url(r'^loadEquipmentImage/$', main_views.loadEquipmentImage, name = 'loadEquipmentImage'),
@@ -59,9 +58,10 @@ urlpatterns = [
     url(r'^getAllMachineInfo/$', main_views.getAllMachineInfo, name = 'getAllMachineInfo'),
     url(r'^getEquipmentInfo/$', main_views.getEquipmentInfo, name = 'getEquipmentInfo'),
     url(r'^retrieveScannedMachine/$', main_views.retrieveScannedMachine, name = 'retrieveScannedMachine'),
-    url(r'^getFilteredMachine/$', main_views.getFilteredMachine, name = 'getFilteredMachine'),
-    url(r'^getFilteredImplement/$', main_views.getFilteredImplement, name = 'getFilteredImplement'),
-    url(r'^getScannedImplement/$', main_views.getScannedImplement, name = 'getScannedImplement'),
+	url(r'^getFilteredMachine/$', main_views.getFilteredMachine, name = 'getFilteredMachine'),
+	url(r'^getFilteredImplement/$', main_views.getFilteredImplement, name = 'getFilteredImplement'),
+	url(r'^getScannedImplement/$', main_views.getScannedImplement, name = 'getScannedImplement'),
+	url(r'^getScannedMachine/$', main_views.getScannedMachine, name = 'getScannedMachine'),
     url(r'^retrievePendingTask/$', main_views.retrievePendingTask, name = 'retrievePendingTask'),
     url(r'^getScannedFilteredEmployee/$', main_views.getScannedFilteredEmployee, name = 'getScannedFilteredEmployee'),
     url(r'^getAllTaskCategory/$', main_views.getAllTaskCategory, name = 'getAllTaskCategory'),
@@ -79,7 +79,8 @@ urlpatterns = [
     url(r'^getAllFields/$', main_views.getAllFields, name = 'getAllFields'),
     # url(r'^createEntryOnTaskImplementMachine/$', main_views.createEntryOnTaskImplementMachine, name = 'createEntryOnTaskImplementMachine'),
     url(r'^endTask/$', main_views.endTask, name = 'endTask'),
-    url(r'^checkqrcode/$', main_views.getQRCodeStatusForEquipment, name = 'getQRCodeStatusForEquipment'),
+    url(r'^timeKeeperReport/$', main_views.timeKeeperReport, name = 'timeKeeperReport'),
+	url(r'^getQRCodeStatusForEquipment/$', main_views.getQRCodeStatusForEquipment, name = 'getQRCodeStatusForEquipment'),
     ### End ###
 
     ###Insert###
@@ -107,7 +108,7 @@ urlpatterns = [
     url(r'^taskFormView/$', main_views.taskFormView, name = 'registerTask'),
     url(r'^taskCategoryFormView/$', main_views.taskCategoryFormView, name = 'registerTaskCategory'),
     url(r'^employeeTaskFormView/$', main_views.employeeTaskFormView, name = 'registerEmployeeTask'),
-    url(r'^taskImplementMachineFormView/$', main_views.taskImplementMachineFormView, name = 'registerTaskImplementMachine'),
+    #url(r'^taskImplementMachineFormView/$', main_views.taskImplementMachineFormView, name = 'registerTaskImplementMachine'),
     url(r'^appendixFormView/$', main_views.appendixFormView, name = 'registerAppendix'),
     url(r'^appendixTaskFormView/$', main_views.appendixTaskFormView, name = 'registerAppendixTask'),
     url(r'^serviceCategoryFormView/$', main_views.serviceCategoryFormView, name = 'registerServiceCategory'),
