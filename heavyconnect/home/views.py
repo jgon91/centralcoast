@@ -1473,37 +1473,57 @@ def getEmployeeSchedule(request):
 
 @login_required
 def getEmployeeSchedulePart(request):
-	result = {}
-	result['success'] = False
-	if request.method == 'POST':
+	result = []
+	if request.method == 'GET':
 		if request.is_ajax():
-			aux = request.POST['start_day'] #get the date in the POST request
-			aux2 = request.POST['stop_day']
+			aux = request.GET['start'] #get the date in the POST request
+			aux2 = request.GET['end']
 			date_start = datetime.datetime.strptime(aux, '%Y-%m-%d')
 			date_end = datetime.datetime.strptime(aux2, '%Y-%m-%d') + datetime.timedelta(days = 1)
 			date_end = datetime.datetime.combine(date_end, datetime.time.max)
 			emploTask = EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date_assigned__range = (date_start, date_end))
-			aux = []
-			aux2 = []
 			for item in emploTask:
 				if item.task.status != 6:
+					aux = {}
 					auxHour = int(item.task.hours_prediction)
 					auxMin = float(item.task.hours_prediction - auxHour) * 60
 					data_prediction = item.task.date_assigned + datetime.timedelta(hours = auxHour, minutes = auxMin)
 					equipment = getTaskImplementMachine(item.task.id, item.id)
-					aux.append((str(item.task.date_assigned), str(data_prediction),item.employee.id, equipment, item.task.category.description, item.task.description, item.task.field.name, item.task.status))
+					aux['start'] = str(item.task.date_assigned)
+					aux['end'] = str(data_prediction)
+					aux['description'] = item.task.description
+					aux['field'] = item.task.field.name
+					aux['category'] =  item.task.category.description
+					# aux['equipment'] = equipment
+					if len(equipment['implement']) > 0:
+						aux['machine'] = equipment['machine']
+						aux['implement'] = equipment['implement']
+					else:
+						aux['machine'] = []
+						aux['implement'] = []
+					result.append(aux)
 				else:
+					aux = {}
+					aux['start'] = str(item.task.date_assigned)
+					aux['end'] = str(item.task.task_end)
+					aux['description'] = item.task.description
+					aux['field'] = item.task.field.name
+					aux['category'] =  item.task.category.description
 					equipment = getTaskImplementMachine(item.task.id, item.id)
-					aux2.append((str(item.task.date_assigned),str(item.task.task_end),item.employee.id,equipment, item.hours_spent, item.task.category.description, item.task.description, item.task.field.name, item.task.status))
-			result['tasks_peddings'] = aux
-			result['task_accomplished'] = aux2
-			result['success'] = True
+					if len(equipment['implement']) > 0:
+						aux['machine'] = equipment['machine']
+						aux['implement'] = equipment['implement']
+					else:
+						aux['machine'] = []
+						aux['implement'] = []
+					result.append(aux)
 		else:
-	 		result['code'] = 2 #Use ajax to perform requests
+	 		result.append({'code' : 2}) #Use ajax to perform requests
 	else:
-	 	result['code'] = 3 #Request was not POST
+	 	result.append({'code' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+#This function will return all implement and one machine of the certain employtask
 def getTaskImplementMachine(taskId,EmploTaskId):
 	result = {}
 	implement = ImplementTask.objects.filter(task = taskId, machine_task__employee_task__id = EmploTaskId)
