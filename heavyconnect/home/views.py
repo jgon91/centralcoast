@@ -39,7 +39,7 @@ def createNewTask(request):
 	result = {'success' : False}
 
 	if request.method == 'POST':
-		if not request.is_ajax():
+		if request.is_ajax():
 			if form.is_valid():
 				try:
 					#Getting the employee that are logged in
@@ -1285,17 +1285,18 @@ def pastTaskList(request):
 							aux['machine_nickname'] = machineTask.machine.nickname
 							aux['machine_id'] = machineTask.machine.id
 						except MachineTask.DoesNotExist:
-							aux['machine_id'] = "NONE"
+							aux['machine_id'] = None
 						try:
 							implementTask = ImplementTask.objects.get(task__id = item.task.id)
 							aux['implement_model'] = implementTask.implement.manufacturer_model.model
 							aux['implement_nickname'] = implementTask.implement.nickname
 							aux['implement_id'] = implementTask.implement.id
 						except ImplementTask.DoesNotExist:
-							aux['implement_id'] = "NONE"
+							aux['implement_id'] = None
+
 						result.append(aux)
 						aux = {}
-					result[0] = {'success' : True}
+					result['success'] = True
 				else:
 					result.append({'result' : 1})#Index is invalid
 			except EmployeeTask.DoesNotExist:
@@ -1329,12 +1330,12 @@ def pastTaskList(request):
 							equipment = TaskImplementMachine.objects.get(task__id = item.task.id)
 							aux['machine'] = equipment.machine.qr_code
 						except:
-							aux['machine'] = 'NONE'
+							aux['machine'] = None
 						try:
 							implement = TaskImplementMachine.objects.get(task__id = item.task.id)
 							aux['implement'] = equipment.implement.qr_code
 						except:
-							aux['implement'] = 'NONE'
+							aux['implement'] = None
 						aux['duration'] = item.hours_spent
 						aux['task_id'] = item.task.id
 						aux['description'] = item.task.description
@@ -1429,46 +1430,39 @@ def getHoursWeek(employeeid, desired_date):
 
 #Return the information about the driver and his or her schedule
 @login_required
-def getEmployeeSchedule(request):
+def getEmployeeShifts(request):
 	result = {'success' : False}
 
 	if request.method == 'POST':
 		if request.is_ajax():
-			try:
-				qrc = request.POST['qr_code']
-				employee = Employee.objects.get(qr_code = qrc)
 
-				# creating the data range for the day, generating the 00:00:00 and the 23:59:59 of the current day
-				now = datetime.datetime.now()
-				start_date = datetime.datetime.combine(now, datetime.time.min)
-				end_date = datetime.datetime.combine(now, datetime.time.max)
-				try:
-					attendance = EmployeeAttendance.objects.get(employee_id = employee.id, date__range = (start_date, end_date))
-					result['first_name'] = employee.user.first_name
-					result['last_name'] = employee.user.last_name
-					result['qr_code'] = employee.qr_code
-					result['contact_number'] = employee. contact_number
-					result['permission_level'] = employee.permission_level
-					result['photo_url'] = employee.photo
+			employee = Employee.objects.get(user_id = request.user.id)
+
+			try:
+				attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('date').first()
+				result['first_name'] = employee.user.first_name
+				result['last_name'] = employee.user.last_name
+				result['qr_code'] = employee.qr_code
+				result['contact_number'] = employee. contact_number
+				result['permission_level'] = employee.permission_level
+				result['photo_url'] = employee.photo
+
+				if attendance is None:
+					result['hour_started'] = ''
+					result['hour_ended'] = ''
+				else:
 					result['hour_started'] = str(attendance.hour_started)
 					result['hour_ended'] = str(attendance.hour_ended)
-					try:
-						breaks = Break.objects.filter(attendance_id = attendance.id).order_by('start')
-						i = 1
-						aux = "BreakStart"
-						aux2 = "BreakEnd"
-						for item in breaks:
-							index = aux + str(i)
-							result[index] = str(item.start)
-							index2 = aux2 + str(i)
-							result[index2] = str(item.end)
-							i += 1
-					except:
-						result['success'] = True
-				except EmployeeAttendance.DoesNotExist:
-					result['code'] = 1 #There is no shift records for this employee
-			except Employee.DoesNotExist:
-				result['code'] = 1 #there is no employ for this QRCODE
+					breaks = Break.objects.filter(attendance_id = attendance.id).order_by('start').values()
+					
+					temp = []
+					for item in breaks:
+						temp.append((str(item['start']),str(item['end'])))
+
+					result['breaks'] = temp
+				result['success'] = True
+			except EmployeeAttendance.DoesNotExist:
+				result['code'] = 1 #There is no shift records for this employee
 		else:
 	 		result['code'] = 2 #Use ajax to perform requests
 	else:

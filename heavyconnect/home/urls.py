@@ -40,7 +40,7 @@ urlpatterns = [
 
     ### Functions ###
     url(r'^employeeLocation/$', main_views.getEmployeeLocation, name = 'employeeLocation'),
-    url(r'^employeeSchedule/$', main_views.getEmployeeSchedule, name = 'employeeSchedule'),
+    url(r'^getEmployeeShifts/$', main_views.getEmployeeShifts, name = 'getEmployeeShifts'),
     url(r'^driverInfo/$', main_views.getDriverInformation, name = 'driverInfo'),
     url(r'^createNewTask/$', main_views.createNewTask, name = 'createNewTask'),
 	url(r'^startNewTask/$', main_views.startNewTask, name = 'startNewTask'),
