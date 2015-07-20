@@ -98,10 +98,14 @@ function process_login() {
 	function eventsCheckList() 
 	{
 		//Variables
-		var answer1 = 9; var answer2 = 9; var answer3 = 9; var answer4 = 9; var answer5 = 9;
+		var answer1 = undefined, 
+			answer2 = undefined,
+			answer3 = undefined,
+			answer4 = undefined, 
+			answer5 = undefined;
 		
 		$("#q1").css("border", "solid 5px #FFF");
-		$("#q1").css("padding", "10px");
+		//$("#q1").css("padding", "18px");
 		
 		// Events
 		$("input[name=q1]:radio").change(function(){
@@ -164,8 +168,9 @@ function process_login() {
 		$("#q4").css("border", ""); $("#checkList4").hide();
 		$("#q5").css("border", ""); $("#checkList5").hide();
 		$("#" + checkedList).fadeIn(500);
+		$("#" + checkedList).css("display", "block");
 		$("#" + question).css("border", "solid 5px #FFF");
-		$("#" + question).css("padding", "10px");
+		//$("#" + question).css("padding", "18px");
 	}
 	
 	function questionChecked(question) 
