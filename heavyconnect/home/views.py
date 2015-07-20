@@ -1350,6 +1350,49 @@ def pastTaskList(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 '''
 
+
+# Get Employee current Task information if he is doing some task at the moment.
+# Retrieve what Field he is and what Machine and Implement he is using
+def getEmployeeCurrentTaskInfo(request):
+	result = {}
+	result['success'] = False
+	if request.method == 'POST':
+		employee_id = request.POST['employee_id']
+	 	if request.is_ajax():
+			try:				
+				employeeTask = EmployeeTask.objects.get(employee__id = employee_id, task__status = 4)# Return Ongoing task of requested Employee
+				result['task_id'] = employeeTask.task.id
+				result['task_description'] = employeeTask.task.category.description
+				result['field'] = employeeTask.task.field.name
+				result['success'] = True
+				try:
+					machineTask = MachineTask.objects.get(task__id = employeeTask.task.id)
+					result['machine_id'] = machineTask.machine.id
+					result['machine_photo'] = machineTask.machine.photo
+					result['machine_model'] = machineTask.machine.manufacturer_model.manufacturer.name
+					result['machine_nickname'] = machineTask.machine.nickname
+				except MachineTask.DoesNotExist:
+					aux['machine_id'] = "NONE"
+				try:
+					implementTask = ImplementTask.objects.get(task__id = employeeTask.task.id)
+					result['implement_id'] = implementTask.implement.id
+					result['implement_photo'] = implementTask.implement.photo
+					result['implement_model'] = implementTask.implement.manufacturer_model.manufacturer.name
+					result['implement_nickname'] = implementTask.implement.nickname
+				except ImplementTask.DoesNotExist:
+					aux['implement_id'] = "NONE"
+			except EmployeeTask.DoesNotExist:
+				result['code'] = 1#There is no Implement associated with this
+		else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else:
+	 	result['code'] = 3  #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+
+
+
 # change back:
 # parametro request, voltar para employee_id, date_entry
 # retirar os GET
