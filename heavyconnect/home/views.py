@@ -1205,7 +1205,7 @@ def retrievePendingTask(request):
 				if n > 0:
 					aux = {}
 					# Filter EmployeeTask by user, date and status task != Finished
-					emploTask   =  EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date_assigned__lte = date2, task__status__lt = 6)[off:limit]
+					emploTask   =  EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date_assigned__lte = date2, task__status__lt = 6)[off:limit+off]
 					invalidTasks = EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date_assigned__lte = date2, task__status = 4)
 					emploTaskList = []
 					# Filter again EmployeeTask removing task with status = Ongoing
@@ -1260,16 +1260,21 @@ def pastTaskList(request):
 			try:				
 				aux = {}
 				off = int(request.POST['offset'])
-				limit =int(request.POST['limit'])
+				limit = int(request.POST['limit'])
 				n = int(request.POST['N'])
 				if n > 0:
 					aux = {}
 					# Filter EmployeeTask by user, date and status task != Finished
-					emploTask   =  EmployeeTask.objects.filter(employee__user__id = request.user.id, task__status = 6)[off:limit]
-					for item in emploTaskList:
+					emploTask   =  EmployeeTask.objects.filter(employee__user__id = request.user.id, task__status = 6)[off:limit+off]
+					for item in emploTask:
 						aux['category'] = item.task.description
 						aux['field'] = item.task.field.name
 						aux['date'] = str(item.task.date_assigned)
+						aux['description'] = item.task.description
+						duration = datetime.timedelta( hours = item.task.task_end.hour - item.task.task_init.hour, 
+												minutes = item.task.task_end.minute - item.task.task_init.minute, 	
+												seconds=item.task.task_end.second - item.task.task_init.second)
+						aux['duration'] = str(duration)[8:] # Remove the "-1 day" that appears, I don't know why.
 						aux['task_id'] = item.task.id
 						aux['employee_id'] = item.employee.id
 						aux['employee_first_name'] = item.employee.user.first_name
