@@ -38,6 +38,9 @@ footer {
 	width: 100%;
 	margin: 0px;
 }
+.both {
+	clear: both;
+}
 /*** General End ***/
 
 /*** Login Begin ***/
@@ -328,139 +331,95 @@ footer {
 /*** Timekeeper End ***/
 
 /*** Taskflow Begin ***/
-#divTask {
-	width: 90%;
+.pendingTasks {
+	width: 100%;
 	min-width: 640px;
 	margin: auto;
-	color: #809A22;
-	font-size: 30px;
 }
 .nextBox {
-	border-radius: 20px;
+	border-radius: 10px;
 	box-shadow: 2px 2px 5px gray;
 	color: white;
-	margin: auto;
-	width: 32%;
+	width: 31%;
 	font-size: 15px;
 	padding-bottom: 10px;
-	min-height: 200px;
+	min-height: 170px;
+}
+.titleNextTask {
+	font-size: 25px;
+	font-weight: 700;
 }
 #next1 {
 	background: url('../imgSmall/buttons/next1.png') no-repeat top left;
 	background-size: 100% 100%;
+	margin-left: 1%;
 }
 #next2 {
 	background: url('../imgSmall/buttons/next2.png') no-repeat top left;
 	background-size: 100% 100%;
-	margin-left: 2%;
-	margin-right: 2%;
+	color: #434343;
+	margin-left: 2.5%;
+	margin-right: 2.5%;
 }
 #next3 {
 	background: url('../imgSmall/buttons/next2.png') no-repeat top left;
-	background-size: 100% 100%;
+	background-size: 100% 100%;	
+	color: #434343;
 	float: right;
+	margin-right: 1%;
 }
 #moreInfo {
 	text-decoration: none;
 	color: white;
 	font-style: italic;
 }
-.colTasks {
-	margin: auto;
-	width: 33.333%;
+#moreInfo2 {
+	text-decoration: none;
+	color: #4F7316;
+	font-style: italic;
 }
-.btnsTasks {
+.btnPastNextTask {
 	width: 100%;
+	min-width: 640px;
 	margin: auto;
+}
+.colTasks {
+	width: 31%%;
+	padding: 0px;
+	margin-top: 4px;
+	margin-bottom: 5px;
+}
+#colPast {
+	margin-left: 1%;
+}
+#colCreate {
+	float: right;
+	margin-right: 1%;
 }
 #btnPastTasks {
 	background: url('../imgSmall/buttons/btnPastTasks.png') no-repeat top left;
 	background-size: 100% 100%;
+	width: 195px;
+	height: 55px;
+	border-radius: 10px;
+	box-shadow: 2px 2px 5px gray;
+	color: white;
+	font-weight: 700;
+	text-align: right;
+	font-size: 18px;
 }
 #btnCreateTask {
 	background: url('../imgSmall/buttons/btnCreateTask.png') no-repeat top left;
 	background-size: 100% 100%;
-}
-/*#taskP {
-	padding-left: 20px;
-	padding-top: 10px;
-	font-weight: bold;
-	background: #4F7219;
+	width: 195px;
 	height: 55px;
-	text-align: left;
+	border-radius: 10px;
+	box-shadow: 2px 2px 5px gray;
+	color: #353945;
+	font-weight: 700;
+	text-align: right;
+	font-size: 18px;
 }
-#pendingTask {
-	width: calc(100% - 220px);
-	float: left;
-	height: 309px;
-	margin-right: 15px;
-	font-size: 27px;
-	margin-bottom: 15px;
-	text-align: center;
-}
-.titleNextTask {
-	font-size: 23px;
-	font-weight: bold;
-}
-#divStartNow {
-	text-decoration: none;
-	color: white;
-	font-size: 25px;
-	font-weight: bold;
-	margin-top: 900px;
-}
-#divStartNow:hover {
-	color: #434343;
-}
-.nextBox {
-	color: white;
-	background: #809A21;
-	margin: auto;
-	width: 32%;
-	font-size: 14px;
-	line-height: 15px;
-	padding: 5px;
-	height: 275px;
-}
-#next2 {
-	margin-left: 2%;
-	margin-right: 2%;
-	background: #E0E0A7;
-	color: #4C4C49;
-}
-#next3 {
-	float: right;
-	background: #E0E0A7;
-	color: #4C4C49;
-}
-#divCreateTask {
-	margin-bottom: 10px;
-}
-#divGoScheduler {
-	margin-top: -74.5px;
-}
-#btnCreateTask {
-	background: url('../img/buttons/createNewTask.png') no-repeat top left;
-	background-size: 100% 100%;
-	width: 200px;
-	height: 200px;
-}
-#btnGoScheduler {
-	background: url('../img/buttons/scheduleTaskflow.png') no-repeat top left;
-	background-size: 100% 100%;
-	width: calc(100% - 220px);
-	height: 70px;
-}
-#btnGoScheduler:hover {
-	background: url('../img/buttons/scheduleTaskflowHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}
-#btnLastTasks {
-	background: url('../img/buttons/lastTasks.png') no-repeat top left;
-	background-size: 100% 100%;
-	width: 200px;
-	height: 200px;
-}*/
 /*** Taskflow End ***/
 
 

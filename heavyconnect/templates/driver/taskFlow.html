@@ -19,7 +19,6 @@
 			
 			//Functions
 			function getPendingTask(token, url) {
-
 				$.ajax({
 					method : "POST",
 					url : url,
@@ -29,7 +28,8 @@
 					},
 					datatype : "json",
 					success : function(data, status, xhr) {
-						for (var i = 1; i < 4; i++) {
+						alert(data.length);
+						for (var i = 1; i < data.length; i++) {
 							if(i == 1){
 								$("#divStartNow").attr("href", "{% url 'startTask'%}?task_id=" + data[i].task_id);
 							}
@@ -65,48 +65,45 @@
 		<div id="wrapper">
 			<div id="content">
 				<div class="namePage">
-					<img src="{% static 'imgSmall/clock.png' %}"/>
-					HC TASKFLOW
+					<img src="{% static 'imgSmall/clock.png' %}"/>HC TASKFLOW
 				</div>
-				<div id="divTask">
-					Scheduled Tasks
-					<div class="row">
-						<div class="col-xs-4 col-md-4 nextBox" id="next1">
-							<span class="titleNextTask"><h2>#1</h2></span>
-							<h2><span class="machineModel">></span></h2>
-							<h3>Field</h3><h4><span class="fieldName"></span></h4>
-							<a href="#" id="moreInfo">More Info</a>
-						</div>
-						<div class="col-xs-4 col-md-4 nextBox" id="next2">
-							<span class="titleNextTask"><h2>#1</h2></span>
-							<h2><span class="machineModel">></span></h2>
-							<h3>Field</h3><h4><span class="fieldName"></span></h4>
-							<a href="#" id="moreInfo">More Info</a>
-						</div>
-						<div class="col-xs-4 col-md-4 nextBox" id="next3">
-							<span class="titleNextTask"><h2>#1</h2></span>
-							<h2><span class="machineModel">></span></h2>
-							<h3>Field</h3><h4><span class="fieldName"></span></h4>
-							<a href="#" id="moreInfo">More Info</a>
-						</div>
+				<!--<span id="titleTask">Scheduled Tasks</span>-->
+				<div class="both"></div>
+				<div class="row pendingTasks">
+					<div class="col-xs-4 col-md-4 nextBox" id="next1">
+						<span class="titleNextTask">#1</span><br>
+						<span class="machineModel"></span>
+						<h4>Field</h4><span class="fieldName"></span><br>
+						<a href="#" id="moreInfo">More Info</a>
 					</div>
-					<div class="row">
-						<div class="col-xs-4 col-md-4 colTasks">
-							<a href="{% url 'pastTasks' %}">
-							<input type="button" id="btnPastTasks" class="btnsTasks"/>
-							</a>
-						</div>
-						<div class="col-xs-4 col-md-4 colTasks">
-						</div>
-						<div class="col-xs-4 col-md-4 colTasks">
-							<a href="{% url 'createTask' %}">
-							<input type="button" id="btnCreateTask" class="btnsTasks"/>
-							</a>
-						</div>
+					<div class="col-xs-4 col-md-4 nextBox" id="next2">
+						<span class="titleNextTask">#2</span><br>
+						<span class="machineModel"></span>
+						<h4>Field</h4><span class="fieldName"></span><br>
+						<a href="#" id="moreInfo2">More Info</a>
+					</div>
+					<div class="col-xs-4 col-md-4 nextBox" id="next3">
+						<span class="titleNextTask">#3</span><br>
+						<span class="machineModel"></span>
+						<h4>Field</h4><span class="fieldName"></span><br>
+						<a href="#" id="moreInfo2">More Info</a>
+					</div>
+				</div>
+				<div class="row btnPastNextTask">
+					<div class="col-xs-4 col-md-4 colTasks" id="colPast">
+						<a href="{% url 'pastTasks' %}">
+						<input type="button" value="Past Tasks   " id="btnPastTasks" class="btnsTasks"/>
+						</a>
+					</div>
+					<div class="col-xs-4 col-md-4 colTasks">
+					</div>
+					<div class="col-xs-4 col-md-4 colTasks" id="colCreate">
+						<a href="{% url 'createTask' %}">
+						<input type="button" value="Create Task" id="btnCreateTask" class="btnsTasks"/>
+						</a>
 					</div>
 				</div>
 			</div>
-			<div id="clearBoth"></div>
 		</div>
 		<footer id="foot"></footer>
 	</body>
