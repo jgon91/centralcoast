@@ -1,5 +1,4 @@
 /*** General Begin ***/
-	
 body {
 	height: 100%;
 	width: 100%;
@@ -32,7 +31,14 @@ footer {
 	float: left;
 	color: #4C6A2A;
 	font-weight: 600;
-	margin-left: 10px;
+	margin-left: 5px;
+}
+.namePageCenter {
+	float: center;
+	color: #809A21;
+	font-weight: 600;
+	margin-top: 5px;
+	font-size: 20px;
 }
 .row {
 	width: 100%;
@@ -358,12 +364,19 @@ input[type=button]{
 	background-size: 100% 100%;
 	margin-left: 1%;
 }
+#next1:hover {
+	background: url('../imgSmall/buttons/next1Hover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
 #next2 {
 	background: url('../imgSmall/buttons/next2.png') no-repeat top left;
 	background-size: 100% 100%;
 	color: #434343;
 	margin-left: 2.5%;
 	margin-right: 2.5%;
+}#next2:hover {
+	background: url('../imgSmall/buttons/next1Hover.png') no-repeat top left;
+	background-size: 100% 100%;
 }
 #next3 {
 	background: url('../imgSmall/buttons/next2.png') no-repeat top left;
@@ -371,6 +384,10 @@ input[type=button]{
 	color: #434343;
 	float: right;
 	margin-right: 1%;
+}
+#next3:hover {
+	background: url('../imgSmall/buttons/next1Hover.png') no-repeat top left;
+	background-size: 100% 100%;
 }
 .moreInfo {
 	text-decoration: none;
@@ -392,8 +409,8 @@ input[type=button]{
 .colTasks {
 	width: 31%%;
 	padding: 0px;
-	margin-top: 4px;
-	margin-bottom: 5px;
+	margin-top: 7px;
+	margin-bottom: 10px;
 }
 #colPast {
 	margin-left: 1%;
@@ -414,6 +431,10 @@ input[type=button]{
 	text-align: right;
 	font-size: 18px;
 }
+#btnPastTasks:hover {
+	background: url('../imgSmall/buttons/btnPastTasksHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
 #btnCreateTask {
 	background: url('../imgSmall/buttons/btnCreateTask.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -425,6 +446,11 @@ input[type=button]{
 	font-weight: 700;
 	text-align: right;
 	font-size: 18px;
+}
+#btnCreateTask:hover {
+	background: url('../imgSmall/buttons/btnCreateTaskHover.png') no-repeat top left;
+	background-size: 100% 100%;
+	color: white;
 }
 .pendingTasks a {
 	font-style: normal;
@@ -442,7 +468,7 @@ input[type=button]{
 	font-weight: 700;
 }
 #btnStartTask {
-	background: url('../imgSmall/buttons/startShift.png') no-repeat top left;
+	background: url('../imgSmall/buttons/startNow.png') no-repeat top left;
 	background-size: 100% 100%;
 	width: 140px;
 	height: 40px;
@@ -456,8 +482,12 @@ input[type=button]{
 	color: white;
 	font-size: 20px;
 }
+#btnStartTask:hover {
+	background: url('../imgSmall/buttons/startNowHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
 .closeTask {
-	background: url('../imgSmall/buttons/stopbreak.png') no-repeat top left;
+	background: url('../imgSmall/buttons/esc.png') no-repeat top left;
 	background-size: 100% 100%;
 	width: 50px;
 	height: 50px;
@@ -467,9 +497,13 @@ input[type=button]{
 	box-shadow: -1px 1px 7px gray;
 	margin: 0px;
 	padding: 0px;
-	font-size: 35px;
+	/*font-size: 35px;
 	color: white;
-	font-weight: 700;
+	font-weight: 700;*/
+}
+.closeTask:hover {
+	background: url('../imgSmall/buttons/escHover.png') no-repeat top left;
+	background-size: 100% 100%;
 }
 .infoTask {
 	text-align: left;
@@ -489,7 +523,6 @@ input[type=button]{
 	height: 40px;
 	background-color: #E1DFAB;
 	color: black;
-	
 	font-size: 15px;
 }
 #hoursButton {
@@ -497,7 +530,6 @@ input[type=button]{
 	height: 40px;
 	color: black;
 	background-color: #E1DFAB;
-	
 	font-size: 15px;
 }
 .questions {
@@ -559,7 +591,6 @@ input[type=button]{
 /*** Check list End ***/
 
 /*** Past Tasks Begin ***/
-
 .divPast {
 	text-align: center;
 	width: 80%;
@@ -585,7 +616,7 @@ input[type=button]{
 	line-height: 25px;
 	overflow: auto;
 }
-.btnPastTasks{
+.btnPastTasks {
 	margin-top: 50px;
 	margin-left: 0%;
 	margin-right: 0%;
@@ -597,15 +628,14 @@ input[type=button]{
 }
 #past2 {
 	float: left;
-	
 }
-#btnBack{
+#btnBack {
 	background: url('../imgSmall/buttons/backPastTasks.png') no-repeat top left;
 }
-#btnForward{
+#btnForward {
 	background: url('../imgSmall/buttons/nextPastTasks.png') no-repeat top left;
 }
-.btnBackAdv{
+.btnBackAdv {
 	background-size: 100% 100%;
 	width: 34px;
 	border-radius: 10px;
@@ -621,30 +651,30 @@ input[type=button]{
 	padding-left: 30px;
 	color: white;
 }
-.blockBtnReturn{
+.blockBtnReturn {
 	padding-top: 10px;
 	padding-bottom: 20px;
 	margin-left: 0%;
 }
-#task2{
+#task2 {
 	margin-right: 65px;
 }
-#task1{
+#task1 {
 	margin-right: 190px;
 }
-.dateTasks{
+.dateTasks {
 	font-size: 20px;
 	float: left;
 	padding: 0px;
 	width: 50%;
 }
-.hour{
+.hour {
 	font-size: 12px;
 }
 /*** Past Tasks End ***/
 
-/*** Scan QR-Code Begin***/
-#play{
+/*** Scan QR-Code Begin ***/
+#play {
 	background: url('../imgSmall/buttons/scan.png') no-repeat top left;
 	background-size: 100% 100%;
 	width: 161px;
@@ -653,14 +683,13 @@ input[type=button]{
 	padding-left: 60px;
 	color: white;
 }
-
-.panel-primary{
+.panel-primary {
     height: 320px;
 }
-#QR-Code{
+#QR-Code {
     padding-top: 15px;                
 }
-#submit{
+#submit {
     width: 60px;
     height: 35px;
     margin-bottom: 0px;
@@ -676,10 +705,11 @@ input[type=button]{
     -moz-box-shadow: inset 2px 2px 2px 0px #dddddd;
     box-shadow: inset 2px 2px 2px 0px #dddddd;
 }
-.btn-success{
+.btn-success {
     border-color: none;
 }
 /*** Scan QR-Code End ***/
+
 /*** Create Task Begin ***/
 #contentCreateTask {
 	width: 80%;
@@ -692,10 +722,10 @@ input[type=button]{
 	border-radius: 20px 20px 0px 0px;
 	box-shadow: 0px 5px 10px black;
 }
-#contentCreateTask .nav{
+#contentCreateTask .nav {
 	margin-bottom: 7px;
 }
-.inputCreateTask{
+.inputCreateTask {
 	width: 100%;
 	height: 35px;
 	font-size: 20px;
@@ -704,14 +734,14 @@ input[type=button]{
 	border-radius: 10px 10px 10px 10px;
 	margin-bottom: 10px;
 }
-.imgCreateTask{
+.imgCreateTask {
 	width: 110px;
 	height: 110px;
 	margin-left: -10px;	
 	margin-top: 10px;
 	border-radius: 10px 10px 10px 10px;
 }
-.descriptionTask{
+.descriptionTask {
 	width: 100%;
 	height: 70px;
 	font-size: 20px;
@@ -721,20 +751,17 @@ input[type=button]{
 	margin-bottom: 10px;
 	padding: 5px;
 }
-
-.alignCenterPage{
+.alignCenterPage {
 	margin-top: 40px;
 }
-
-.textCreateTask{
+.textCreateTask {
 	font-size: 18px;
 	text-align: right;
 	color: #809A21;
 	font-weight: bold;
 	line-height: 35px;
 }
-
-#AddImplement{
+#AddImplement {
 	background: url('../imgSmall/buttons/addImplement.png') no-repeat top left;
 	background-size: 100% 100%;
 	width: 140px;
@@ -747,11 +774,11 @@ input[type=button]{
 	border: none;
 	color: white;
 }
-#AddImplement:hover{
+#AddImplement:hover {
 	background: url('../imgSmall/buttons/addImplementHover.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-.findEquipment{
+.findEquipment {
 	background: url('../imgSmall/buttons/search.png') no-repeat top left;
 	background-size: 100% 100%;
 	min-width: 120px;
@@ -766,11 +793,11 @@ input[type=button]{
 	font-size: 18px;
 	font-weight: bold;
 }
-.findEquipment:hover{
+.findEquipment:hover {
 	background: url('../imgSmall/buttons/searchHover.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-.scanEquipment{
+.scanEquipment {
 	background: url('../imgSmall/buttons/scan.png') no-repeat top left;
 	background-size: 100% 100%;
 	min-width: 120px;
@@ -785,7 +812,7 @@ input[type=button]{
 	font-size: 18px;
 	font-weight: bold;
 }
-.scanEquipment:hover{
+.scanEquipment:hover {
 	background: url('../imgSmall/buttons/scanHover.png') no-repeat top left;
 	background-size: 100% 100%;
 }
@@ -809,7 +836,6 @@ input[type=button]{
 	background: url('../imgSmall/buttons/nextHover.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-
 .prevTab {
 	background: url('../imgSmall/buttons/prev.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -829,56 +855,55 @@ input[type=button]{
 	background: url('../imgSmall/buttons/backHover.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-
-/*Nav tabs*/
+	/* Nav tabs */
 .nav>li {
 	width: 100px;
 	font-weight: bold;
 }
-/*Tabs status begin*/
-.nav>li>a{
+	/* Tabs status begin */
+.nav>li>a {
 	color: white;
 	background-color: #989898;
 	border-radius: 10px 10px 0px 0px;
 }
-.tabError{
+.tabError {
 	background-color: red;
 }
-.nav>li>a.tabSucess{
+.nav>li>a.tabSucess {
 	background-color: #4F7219;
 	color: white;
 }
-/*Tabs status end*/
-.findTractor{
+	/*	Tabs status end */
+.findTractor {
 	width: 90%;
 	min-width: 300px;
 	overflow-y: scroll; 
 	max-height: 85%;
 }
-#filterDiv{
+#filterDiv {
 	width: 20%;
 	border-right: 2px solid grey;
 	float: left;
 	min-height: 300px;
 }
-#filterDiv h3{
+#filterDiv h3 {
 	margin-top: 0px;	
 }
-.selectFilters{
+.selectFilters {
 	font-size: 20px;
 	width: 90%;
 }
-.showEquipmentDiv{
+.showEquipmentDiv {
 	width: 79%;
 	float:right;
 	min-height: 400px;
 }
-.showImplementDiv{
+.showImplementDiv {
 	width: 79%;
 	float:right;
 	min-height: 400px;
 }
-.tractorFiltered{
+.tractorFiltered {
 	width: 31%;
 	min-width: 200px;
 	min-height: 300px;
@@ -888,44 +913,42 @@ input[type=button]{
 	float: left;
 	font-size: 20px;
 }
-.tractorFiltered img{
+.tractorFiltered img {
 	width: 200px;
 	height: 200px;
 }
-/** Create Task End ***/
+/*** Create Task End ***/
 
 /*** Start CSS Scheduler page ***/
-
-#cal{
+#cal {
 	width: 90%;
 	height: 200px;
 	margin: auto;
 }
-#cal h2{
+#cal h2 {
 	font-size: 18px;
 }
 .fc-button {
 	width: 60px;
 	height: 10px;
 }
-.fc-toolbar{
+.fc-toolbar {
 	margin-bottom: 2px;
 }
-.fc-time span{
+.fc-time span {
 	font-size: 14px;
 }
-.fc-event .fc-bg{
+.fc-event .fc-bg {
 	border: solid black 2px;
 }
-/*400px in the PC*/
-.fc-scroller{
+	/* 400px in the PC */
+.fc-scroller {
 	height: 250px !important;
 }
 /*** End CSS Scheduler page ***/
 
 /*** Start Task Begin ***/
-
-.btnCreateTask{
+.btnCreateTask {
 	background: url('../imgSmall/buttons/break.png') no-repeat top left;
 	background-size: 100% 100%;
 	color: white;

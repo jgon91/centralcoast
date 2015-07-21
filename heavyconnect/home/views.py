@@ -33,7 +33,6 @@ def updatedDate(request):
 def taskflow(request):
 	return render(request, 'taskflow.html')
 
-@login_required
 def createNewTask(request):
 	form = taskForm(request.POST)
 	result = {'success' : False}
@@ -1587,12 +1586,10 @@ def validatePermission(request):
 	if request.method == 'POST':
 		if request.is_ajax():
 			try:
-				employee = Employee.objects.get(id = request.user.id)
-				aux = employee.permission_level
-				result['authorized'] = False
-				if aux == 2 or aux == 3:
-					result['authorized'] = True
-				result['success'] = True
+				employee = Employee.objects.get(user = request.user)
+				
+				if employee.permission_level == 2:
+					result['success'] = True
 			except Employee.DoesNotExist:
 				result['code'] = 1 #There is no shift records for this employee
 		else:
@@ -1793,6 +1790,10 @@ def fleet(request):
 @login_required
 def equipmentManager(request):
     return render(request, 'manager/equipment.html')
+
+@login_required
+def map(request):
+    return render(request, 'manager/map.html')
 
 @login_required
 def profileManager(request):

@@ -2,6 +2,7 @@
 <html lang="en">
 	<head>
 		{% load staticfiles %}
+		{% load i18n %}
 		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
 		<link rel="stylesheet" type="text/css" href="{% static 'css/styleSmall.css' %}">
 		<script>
@@ -65,6 +66,7 @@
 			}
 
 			function permissionCreateTask(token, url, permission) {
+				console.log(url)
 				$.ajax({
 					method : "POST",
 					url : url,
@@ -74,11 +76,11 @@
 						"csrfmiddlewaretoken" : token
 					},
 					success : function(data, status, xhr) {
-						//alert(data.authorized);
-						if (!data.authorized) {
+						//console.log(data)
+						if (!data.success) {
 							alert("You do not have enough right to create a task!!");
 						}
-						permission = data.authorized;
+						permission = data.success;
 					}
 				});
 				return permission;
@@ -90,7 +92,7 @@
 		<div id="wrapper">
 			<div id="content">
 				<div class="namePage">
-					<img src="{% static 'imgSmall/clock.png' %}"/>HC TASKFLOW
+					<img src="{% static 'imgSmall/iconTaskflow.png' %}"/>{% trans 'HC TASKFLOW' %}
 				</div>
 				<!--<span id="titleTask">Scheduled Tasks</span>-->
 				<div class="both"></div>
@@ -100,28 +102,27 @@
 						<span class="titleNextTask">#1</span>
 						<br>
 						<span class="machineModel"></span>
-						<h4>Field</h4><span class="fieldName"></span>
+						<h4>{% trans 'Field' %}</h4><span class="fieldName"></span>
 						<br>
-						<span class="plusInfo" id="moreInfo1"> More Info </span>
-						
+						<span class="plusInfo" id="moreInfo1">{% trans 'More Info' %}</span>
 					</div> </a>
 					<a href="#" id="moreInfo2" class="moreInfo">
 					<div class="col-xs-4 col-md-4 nextBox" id="next2">
 						<span class="titleNextTask">#2</span>
 						<br>
 						<span class="machineModel"></span>
-						<h4>Field</h4><span class="fieldName"></span>
+						<h4>{% trans 'Field' %}</h4><span class="fieldName"></span>
 						<br>
-						<span class="plusInfo"> More Info </span>
+						<span class="plusInfo">{% trans 'More Info' %}</span>
 					</div> </a>
 					<a href="#" id="moreInfo3" class="moreInfo">
 					<div class="col-xs-4 col-md-4 nextBox" id="next3">
 						<span class="titleNextTask">#3</span>
 						<br>
 						<span class="machineModel"></span>
-						<h4>Field</h4><span class="fieldName"></span>
+						<h4>{% trans 'Field' %}</h4><span class="fieldName"></span>
 						<br>
-						<span class="plusInfo"> More Info </span>
+						<span class="plusInfo">{% trans 'More Info' %}</span>
 					</div> </a>
 				</div>
 				<div class="row btnPastNextTask">
@@ -143,22 +144,20 @@
 						<!-- Modal content-->
 						<div class="modal-content modalTask">
 							<button type="button" class="closeTask" data-dismiss="modal">
-								X
 							</button>
 							<span id="dataMoreInfo"></span>
 							<div class="modal-body infoTask">
-								IMPLEMENT: <span id="implementNameMoreInfo" class="infoModalTask"></span>
+								{% trans 'IMPLEMENT' %}: <span id="implementNameMoreInfo" class="infoModalTask"></span>
 								'<span id="implementIdMoreInfo" class="infoModalTask"></span>
 								(<span id="implementModelMoreInfo" class="infoModalTask"></span>)
 								<br>
-								TRACTOR: "<span id="tractorNameMoreInfo" class="infoModalTask"></span>" <span id="tractorIdMoreInfo" class="infoModalTask"></span>
+								{% trans 'TRACTOR' %}: "<span id="tractorNameMoreInfo" class="infoModalTask"></span>" <span id="tractorIdMoreInfo" class="infoModalTask"></span>
 								(<span id="tractorModelMoreInfo" class="infoModalTask"></span>)
 								<br>
-								EMPLOYEE: <span id="employeeFirstMoreInfo" class="infoModalTask"></span>
+								{% trans 'EMPLOYEE' %}: <span id="employeeFirstMoreInfo" class="infoModalTask"></span>
 								<span id="employeeLastMoreInfo" class="infoModalTask"></span>
 								<br>
-								FIELD: <span id="fieldMoreInfo" class="infoModalTask"></span>
-								<input type="hidden" class="task_id">
+								{% trans 'FIELD' %}: <span id="fieldMoreInfo" class="infoModalTask"></span>
 								<!--br>ESTIMATED HOURS: <span id="hoursMoreInfo" class="infoModalTask"></span>-->
 							</div>
 							<a id="linkStartTask" href="">
