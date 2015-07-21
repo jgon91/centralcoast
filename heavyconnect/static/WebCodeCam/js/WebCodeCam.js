@@ -24,12 +24,12 @@ qr-decoder (qrcodelib.js) -> https://github.com/LazarSoft/jsqrcode
 		defaults = {
 			ReadQRCode: true,
 			ReadBarecode: true,
-			width: 320,
-			height: 240,
+			width: 200,
+			height: 200,
 			videoSource: {
 				id: true,
-				maxWidth: 640,
-				maxHeight: 480
+				maxWidth: 240,
+				maxHeight: 240
 			},
 			flipVertical: false,
 			flipHorizontal: false,

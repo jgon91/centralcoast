@@ -2,42 +2,103 @@
 <html lang="en">
 	<head>
 		{% load staticfiles %}
+		{% load i18n %}
 		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
+		<link rel="stylesheet" type="text/css" href="{% static 'css/styleSmall.css' %}">
 		<script>
+			//Variables
+			var offset = 0;
+
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerDriver' %}");
+				getLastTasks("{{csrf_token}}", "{% url 'pastTaskList' %}", offset, false);	
 
-				getLastTasks("{{csrf_token}}", "{% url 'pastTaskList' %}");	
+				$("#btnBack").click(function(){
+					upgradePastBox(this.id);
+				});
+
+				$("#btnForward").click(function(){
+					if(offset == 0){
+						alert("{% trans 'There is no past task to be displayed' %}");
+						//$("#btnForward").attr("disabled", true);
+					}
+					else{
+						//$("#btnForward").attr("disabled", false);
+						upgradePastBox(this.id, offset);
+					}
+				});
+
 			});
 
-			function getLastTasks(token, url) {
+			function upgradePastBox(btn){
 				
-					$.ajax({
-						method: "POST",
-						url: url,
-						data: {"csrfmiddlewaretoken": token, "offset": 0, "limit": 3 },
-						datatype: "json",
-						success: function(data, status, xhr){		
-									
-							for (var i = 1; i < (data.length+1); i++) 
-							{
-								$("#task" + i + " .date").html(data[i].date.substring(0,10) + "</br>" + data[i].date.substring(10,16));
-								$("#past" + i + " .field").html(data[i].field);
-								$("#past" + i + " .category").html(data[i].category);
-								$("#past" + i + " .machine").html(data[i].machine);
-								$("#past" + i + " .task").html(data[i].description);
-								$("#past" + i + " .duration").html(data[i].duration + " Hours");
-								$("#past" + i + " .implement").html(data[i].implement);
-								$("#past" + i + " .task_id").html(data[i].task_id);
-							}
-							
-						}
-					});			
+				if(btn == "btnBack" && offset >= 0){
+					offset += 2;
+					getLastTasks("{{csrf_token}}", "{% url 'pastTaskList' %}", false);
+				}else if(btn == "btnForward" && offset >= 2){ 
+					offset -= 2;
+					getLastTasks("{{csrf_token}}", "{% url 'pastTaskList' %}", false);
+				}
+
 			}
+
+			function getLastTasks(token, url, async) {			
+			//alert(offset);	
+				$.ajax({
+					method: "POST",
+					url: url,
+					async: async,
+					data: {"csrfmiddlewaretoken": token, "offset": offset, "limit": 2},
+					datatype: "json",
+					success: function(data, status, xhr){		
+					//alert(data.length);
+						if (data.length < 2){
+							//$("#btnBack").attr("disabled", true);
+							offset -= 2;
+							alert("{% trans 'There is no past task to be displayed' %}");
+						}
+						else{
+							var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+							$(".pastBox").fadeOut(5);
+							$(".dateTasks").fadeOut(5);
+							$(".dateTasks").fadeIn(1000);
+							$(".pastBox").fadeIn(1000);
+							for (var i = 1; i < data.length; i++) 
+							{	
+								//alert(data.length);
+								$("#task" + i + " .hour").html(formatAMPM(data[i].date));
+								$("#task" + i + " .date").html(data[i].date.substring(8,10) + " " +months[parseInt(data[i].date.substring(6, 7))-1].toUpperCase());
+								$("#past" + i + " .field").html(data[i].field);
+								$("#past" + i + " .category").html(data[i].description);
+								$("#past" + i + " .machine").html(data[i].machine_model);
+								$("#past" + i + " .task").html(data[i].category);
+								$("#past" + i + " .duration").html(data[i].duration + " Hours");
+								$("#past" + i + " .implement").html(data[i].implement_model);
+								$("#past" + i + " .task_id").html(data[i].task_id);
+							}		
+								
+						}		
+					}
+				});			
+			}
+
+			function formatAMPM(date) {
+				var d = new Date(date);
+				var hours = d.getHours();
+				var minutes = d.getMinutes();
+				var ampm = hours >= 12 ? 'PM' : 'AM';
+				hours = hours % 12;
+				hours = hours ? hours : 12; // the hour '0' should be '12'
+				hours = hours < 10 ? '0'+hours : hours;
+				minutes = minutes < 10 ? '0'+minutes : minutes;
+				var strTime = hours + ':' + minutes + ' ' + ampm;
+				return strTime;
+			}
+
 		</script>
 		<style>
-			#past1 .task_id, #past2 .task_id, #past3 .task_id
+			#past1 .task_id, #past2 .task_id
 			{
 				display: none;
 			}
@@ -47,62 +108,53 @@
 		<header id="head"></header>
 		<div id="wrapper">
 			<div id="content">
-				<div id="namePage" style="opacity: 0.5;">
-					TASKFLOW
-				</div>
-				<div id="namePage" style="width: 110px;">
-					PAST TASKS
-				</div>
+				<div class="namePage" style="padding-top: 15px;">
+					{% trans 'HC PAST TASKS' %}
+				</div></br></br>
 				<div id="divPast">
 					<div class="row">
-						<div class="col-xs-4 col-md-4">
+						<div class="col-xs-4 col-md-4 dateTasks">
 							<div id="task1">
 								<span class="date"></span>
+								<span class="hour"></span>
 							</div>
 						</div>
-						<div class="col-xs-4 col-md-4">
+						<div class="col-xs-4 col-md-4 dateTasks">
 							<div id="task2">
 								<span class="date"></span>
-							</div>
-						</div>
-						<div class="col-xs-4 col-md-4">
-							<div id="task3">
-								<span class="date"></span>
+								<span class="hour"></span>
 							</div>
 						</div>
 					</div>
 					<div class="row" style="margin: 0px;">
+						<div class="col-xs-2 col-md-2 btnPastTasks">
+							<input type="button" id="btnBack" class="btnBackAdv">
+						</div>
 						<div class="col-xs-4 col-md-4 pastBox" id="past1">
-							MACHINE: <span class="machine"></span>
-							</br></br>IMPLEMENT: <span class="implement" ></span>
-							</br></br>FIELD: <span class="field" ></span>
-							</br></br>TASK: <span class="task"></span>
-							</br></br>CATEGORY: <span class="category"></span>
-							</br></br>DURATION: <span class="duration"></span>
+							<strong>{% trans 'MACHINE' %}: </strong><span class="machine"></span>
+							<strong></br>{% trans 'IMPLEMENT' %}: </strong></strong><span class="implement" ></span>
+							<strong></br>{% trans 'FIELD' %}: </strong><span class="field" ></span>
+							<strong></br>{% trans 'TASK' %}: </strong><span class="task"></span>
+							<strong></br>{% trans 'CATEGORY' %}: </strong><span class="category"></span>
+							<strong></br>{% trans 'DURATION' %}: </strong><span class="duration"></span>
 							<span class="task_id"></span>
 						</div>
 						<div class="col-xs-4 col-md-4 pastBox" id="past2">
-							MACHINE: <span class="machine"></span>
-							</br></br>IMPLEMENT: <span class="implement" ></span>
-							</br></br>FIELD: <span class="field" ></span>
-							</br></br>TASK: <span class="task"></span>
-							</br></br>CATEGORY: <span class="category"></span>
-							</br></br>DURATION: <span class="duration"></span>
+							<strong>{% trans 'MACHINE' %}: </strong><span class="machine"></span>
+							<strong></br>{% trans 'IMPLEMENT' %}: </strong><span class="implement" ></span>
+							<strong></br>{% trans 'FIELD' %}: </strong><span class="field" ></span>
+							<strong></br>{% trans 'TASK' %}: </strong><span class="task"></span>
+							<strong></br>{% trans 'CATEGORY' %}: </strong><span class="category"></span>
+							<strong></br>{% trans 'DURATION' %}: </strong><span class="duration"></span>
 							<span class="task_id"></span>
 						</div>
-						<div class="col-xs-4 col-md-4 pastBox" id="past3">
-							MACHINE: <span class="machine"></span>
-							</br></br>IMPLEMENT: <span class="implement" ></span>
-							</br></br>FIELD: <span class="field" ></span>
-							</br></br>TASK: <span class="task"></span>
-							</br></br>CATEGORY: <span class="category"></span>
-							</br></br>DURATION: <span class="duration"></span>
-							<span class="task_id"></span>
+						<div class="col-xs-2 col-md-2 btnPastTasks">
+							<input type="button" id="btnForward" class="btnBackAdv">
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-12 col-md-12">
-							<div><a href="{% url 'schedule' %}"><input type="button" id="btnSchedulePast" /></a></div>
+						<div class="col-xs-2 col-md-2 blockBtnReturn">
+							<div><a href="{% url 'taskFlow' %}"><input type="button" value="{% trans 'RETURN' %}" id="btnReturn" /></a></div>
 						</div>
 					</div>
 				</div>

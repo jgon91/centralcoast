@@ -1200,7 +1200,7 @@ def retrievePendingTask(request):
 			try:
 				aux = {}
 				off = int(request.POST['offset'])
-				limit =int(request.POST['limit'])	
+				limit = int(request.POST['limit'])
 				# Filter EmployeeTask by user, date and status task != Finished
 				emploTask   =  EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date_assigned__lte = date2, task__status__lt = 6)[off:limit+off]
 				invalidTasks = EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date_assigned__lte = date2, task__status = 4)
@@ -1226,6 +1226,8 @@ def retrievePendingTask(request):
 					except MachineTask.DoesNotExist:
 						aux['machine_id'] = "NONE"
 					try:
+						# For now, this function just accept ONE implement per task
+						# objects.get() has to be changed to objects.filter() later
 						implementTask = ImplementTask.objects.get(task__id = item.task.id)
 						aux['implement_model'] = implementTask.implement.manufacturer_model.model
 						aux['implement_nickname'] = implementTask.implement.nickname
@@ -1256,44 +1258,42 @@ def pastTaskList(request):
 				aux = {}
 				off = int(request.POST['offset'])
 				limit = int(request.POST['limit'])
-				n = int(request.POST['N'])
-				if n > 0:
+				# Filter EmployeeTask by user, date and status task != Finished
+				emploTask   =  EmployeeTask.objects.order_by('-end_time').filter(employee__user__id = request.user.id, task__status = 6)[off:limit+off]
+				print emploTask
+				for item in emploTask:
+					aux['category'] = item.task.description
+					aux['field'] = item.task.field.name
+					aux['date'] = str(item.task.date_assigned)
+					aux['description'] = item.task.description
+					# Calculate the duratio of the task based on EmployeeTask table (not in Task table)
+					duration = datetime.timedelta( hours = item.end_time.hour - item.start_time.hour, 
+													minutes = item.end_time.minute - item.start_time.minute, 	
+													seconds=item.end_time.second - item.start_time.second)
+					aux['duration'] = str(duration)
+					aux['task_id'] = item.task.id
+					aux['employee_id'] = item.employee.id
+					aux['employee_first_name'] = item.employee.user.first_name
+					aux['employee_last_name'] = item.employee.user.last_name
+					try:
+						machineTask = MachineTask.objects.get(task__id = item.task.id)
+						aux['machine_model'] = machineTask.machine.manufacturer_model.model
+						aux['machine_nickname'] = machineTask.machine.nickname
+						aux['machine_id'] = machineTask.machine.id
+					except MachineTask.DoesNotExist:
+						aux['machine_id'] = "NONE"
+					try:
+						# For now, this function just accept ONE implement per task
+						# objects.get() has to be changed to objects.filter() later
+						implementTask = ImplementTask.objects.get(task__id = item.task.id)
+						aux['implement_model'] = implementTask.implement.manufacturer_model.model
+						aux['implement_nickname'] = implementTask.implement.nickname
+						aux['implement_id'] = implementTask.implement.id
+					except ImplementTask.DoesNotExist:
+						aux['implement_id'] = "NONE"
+					result.append(aux)
 					aux = {}
-					# Filter EmployeeTask by user, date and status task != Finished
-					emploTask   =  EmployeeTask.objects.filter(employee__user__id = request.user.id, task__status = 6)[off:limit+off]
-					for item in emploTask:
-						aux['category'] = item.task.description
-						aux['field'] = item.task.field.name
-						aux['date'] = str(item.task.date_assigned)
-						aux['description'] = item.task.description
-						duration = datetime.timedelta( hours = item.task.task_end.hour - item.task.task_init.hour, 
-												minutes = item.task.task_end.minute - item.task.task_init.minute, 	
-												seconds=item.task.task_end.second - item.task.task_init.second)
-						aux['duration'] = str(duration)[8:] # Remove the "-1 day" that appears, I don't know why.
-						aux['task_id'] = item.task.id
-						aux['employee_id'] = item.employee.id
-						aux['employee_first_name'] = item.employee.user.first_name
-						aux['employee_last_name'] = item.employee.user.last_name
-						try:
-							machineTask = MachineTask.objects.get(task__id = item.task.id)
-							aux['machine_model'] = machineTask.machine.manufacturer_model.model
-							aux['machine_nickname'] = machineTask.machine.nickname
-							aux['machine_id'] = machineTask.machine.id
-						except MachineTask.DoesNotExist:
-							aux['machine_id'] = None
-						try:
-							implementTask = ImplementTask.objects.get(task__id = item.task.id)
-							aux['implement_model'] = implementTask.implement.manufacturer_model.model
-							aux['implement_nickname'] = implementTask.implement.nickname
-							aux['implement_id'] = implementTask.implement.id
-						except ImplementTask.DoesNotExist:
-							aux['implement_id'] = None
-
-						result.append(aux)
-						aux = {}
-					result['success'] = True
-				else:
-					result.append({'result' : 1})#Index is invalid
+				result[0] = {'success' : True}
 			except EmployeeTask.DoesNotExist:
 				result.append({'result' : 1})#There is no Implement associated with this
 		else:
@@ -1350,6 +1350,49 @@ def pastTaskList(request):
 	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 '''
+
+
+# Get Employee current Task information if he is doing some task at the moment.
+# Retrieve what Field he is and what Machine and Implement he is using
+def getEmployeeCurrentTaskInfo(request):
+	result = {}
+	result['success'] = False
+	if request.method == 'POST':
+		employee_id = request.POST['employee_id']
+	 	if request.is_ajax():
+			try:				
+				employeeTask = EmployeeTask.objects.get(employee__id = employee_id, task__status = 4)# Return Ongoing task of requested Employee
+				result['task_id'] = employeeTask.task.id
+				result['task_description'] = employeeTask.task.category.description
+				result['field'] = employeeTask.task.field.name
+				result['success'] = True
+				try:
+					machineTask = MachineTask.objects.get(task__id = employeeTask.task.id)
+					result['machine_id'] = machineTask.machine.id
+					result['machine_photo'] = machineTask.machine.photo
+					result['machine_model'] = machineTask.machine.manufacturer_model.manufacturer.name
+					result['machine_nickname'] = machineTask.machine.nickname
+				except MachineTask.DoesNotExist:
+					aux['machine_id'] = "NONE"
+				try:
+					implementTask = ImplementTask.objects.get(task__id = employeeTask.task.id)
+					result['implement_id'] = implementTask.implement.id
+					result['implement_photo'] = implementTask.implement.photo
+					result['implement_model'] = implementTask.implement.manufacturer_model.manufacturer.name
+					result['implement_nickname'] = implementTask.implement.nickname
+				except ImplementTask.DoesNotExist:
+					aux['implement_id'] = "NONE"
+			except EmployeeTask.DoesNotExist:
+				result['code'] = 1#There is no Implement associated with this
+		else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else:
+	 	result['code'] = 3  #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+
+
 
 # change back:
 # parametro request, voltar para employee_id, date_entry
@@ -1588,7 +1631,6 @@ def validatePermission(request):
 			try:
 				employee = Employee.objects.get(id = request.user.id)
 				aux = employee.permission_level
-				print aux
 				result['authorized'] = False
 				if aux == 2 or aux == 3:
 					result['authorized'] = True
