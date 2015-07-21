@@ -356,7 +356,7 @@ class breakForm(forms.Form):
 ### End ###
 
 ### Structire for beaconForm ###
-class beaconForm(form.Form):
+class beaconForm(forms.Form):
 	beacon = forms.CharField(max_length = 10)
 	longitude = forms.FloatField()
 	latitude = forms.FloatField()
