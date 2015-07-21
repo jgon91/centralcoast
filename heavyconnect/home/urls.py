@@ -83,6 +83,7 @@ urlpatterns = [
     url(r'^timeKeeperReport/$', main_views.timeKeeperReport, name = 'timeKeeperReport'),
 	url(r'^getQRCodeStatusForEquipment/$', main_views.getQRCodeStatusForEquipment, name = 'getQRCodeStatusForEquipment'),
 	url(r'^getFilteredEquipment/$', main_views.getFilteredEquipment, name = 'getFilteredEquipment'),
+    url(r'^beaconUpdate/$', main_views.beaconUpdate, name = 'beaconUpdate'),
     ### End ###
 
     ###Insert###
