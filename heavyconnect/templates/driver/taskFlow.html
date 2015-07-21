@@ -3,6 +3,7 @@
 	<head>
 		{% load staticfiles %}
 		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
+		<link rel="stylesheet" type="text/css" href="{% static 'css/styleSmall.css' %}">
 		<script>
 			//variables
 			var taskMoreInfo;
@@ -15,6 +16,9 @@
 					return permissionCreateTask("{{csrf_token}}", "{% url 'validatePermission' %}", "");
 					// true or false
 				});
+				$(".moreInfo").click(function() {
+					$("#linkStartTask").attr("href", "{% url 'startTask'%}?task_id=" + taskMoreInfo[parseInt(this.id.substring(8, 9))].task_id);
+                });
 				getPendingTask("{{ csrf_token }}", "{% url 'retrievePendingTask' %}");
 				$(".moreInfo").click(function() {
 					$('.infoModalTask').html('');
@@ -53,6 +57,7 @@
 							$("#next" + i + " .machineModel").html(data[i].machine_nickname);
 							$("#next" + i + " .fieldName").html(data[i].field);
 							$("#next" + i + " .category").html(data[i].category);
+							$("#next" + i + " .task_id").html(data[i].task_id);
 						};
 						taskMoreInfo = data;
 					}
@@ -98,6 +103,7 @@
 						<h4>Field</h4><span class="fieldName"></span>
 						<br>
 						<span class="plusInfo" id="moreInfo1"> More Info </span>
+						
 					</div> </a>
 					<a href="#" id="moreInfo2" class="moreInfo">
 					<div class="col-xs-4 col-md-4 nextBox" id="next2">
@@ -152,9 +158,10 @@
 								<span id="employeeLastMoreInfo" class="infoModalTask"></span>
 								<br>
 								FIELD: <span id="fieldMoreInfo" class="infoModalTask"></span>
+								<input type="hidden" class="task_id">
 								<!--br>ESTIMATED HOURS: <span id="hoursMoreInfo" class="infoModalTask"></span>-->
 							</div>
-							<a href="{% url 'startTask' %}">
+							<a id="linkStartTask" href="">
 							<input type="button" value="Start" id="btnStartTask" />
 							</a>
 							<div class="both"></div>

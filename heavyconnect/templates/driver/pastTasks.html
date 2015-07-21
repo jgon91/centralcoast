@@ -59,6 +59,7 @@
 							alert("{% trans 'There is no past task to be displayed' %}");
 						}
 						else{
+							//alert(data.length);
 							var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 							$(".pastBox").fadeOut(5);
 							$(".dateTasks").fadeOut(5);
@@ -115,8 +116,8 @@
 					<div class="row">
 						<div class="col-xs-4 col-md-4 dateTasks">
 							<div id="task1">
-								<span class="date"></span>
-								<span class="hour"></span>
+								<span class="date">&nbsp</span>
+								<span class="hour">&nbsp</span>
 							</div>
 						</div>
 						<div class="col-xs-4 col-md-4 dateTasks">
