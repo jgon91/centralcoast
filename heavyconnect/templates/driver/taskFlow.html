@@ -74,7 +74,7 @@
 						"csrfmiddlewaretoken" : token
 					},
 					success : function(data, status, xhr) {
-						alert(data.authorized);
+						//alert(data.authorized);
 						if (!data.authorized) {
 							alert("You do not have enough right to create a task!!");
 						}

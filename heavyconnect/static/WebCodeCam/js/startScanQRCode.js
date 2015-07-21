@@ -17,13 +17,19 @@ function startScan(decoder, si, sl, sQ, sv, sp, spAll, url, machine, implement) 
 						document.location = url.val() + text;
 					}
 					if($("#machineBtn").val() == 1){
-						machine.val(text);
-						$('#scanQRCodeMachine').modal("hide");
+						machine.val(text);//Create Task
+						$('#machineScannedQRCode').val(text);// Start Task
+						$('#scanQRCode').modal("hide");
 						$("#implementBtn").val(0);
+						//check machine in start task page
+						checkMachine = checkQRCode("machineTab", $("#machineSelectedStart").val(), $("#machineScannedQRCode").val());
 					}if($("#implementBtn").val() == 1){
-						implement.val(text);
-						$('#scanQRCodeMachine').modal("hide");
+						implement.val(text);// Create Task
+						$('#implementScannedQRCode').val(text);// Start Task
+						$('#scanQRCode').modal("hide");
 						$("#machineBtn").val(0);
+						//check implment in start task page
+						checkImplement = checkQRCode("implementTab", $("#implementSelectedStart").val(), $("#implementScannedQRCode").val());
 					}
 					 //document.location="#";
 					sl.fadeOut(150, function() {

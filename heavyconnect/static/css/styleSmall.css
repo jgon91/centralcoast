@@ -829,7 +829,7 @@ input[type=button]{
 	padding-right: 25px;
 }
 .prevTab:hover {
-	background: url('../imgSmall/buttons/prevHover.png') no-repeat top left;
+	background: url('../imgSmall/buttons/backHover.png') no-repeat top left;
 	background-size: 100% 100%;
 }
 
@@ -925,3 +925,13 @@ input[type=button]{
 	height: 250px !important;
 }
 /*** End CSS Scheduler page ***/
+
+/*** Start Task Begin ***/
+
+.btnCreateTask{
+	background: url('../imgSmall/buttons/break.png') no-repeat top left;
+	background-size: 100% 100%;
+	color: white;
+	width: 120px;
+	font-size: 16px;
+}

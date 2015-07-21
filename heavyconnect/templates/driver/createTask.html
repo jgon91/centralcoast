@@ -47,14 +47,6 @@
 						$("#fieldTab").removeClass("tabSucess");
 					}
 				});
-
-				$("#field").change(function(){
-					if($(this).val() != -1){
-						$("#fieldTab").addClass("tabSucess");
-					}else{
-						$("#fieldTab").removeClass("tabSucess");
-					}
-				});
 				//Time
 				$("#date, #time, #hours_prediction").change(function(){
 					if($("#date").val() != "" && $("#time").val() != "" && $("#hours_prediction").val() != ""){
