@@ -502,8 +502,12 @@ def getEquipmentInfo(request):
 	result = {'success' : False}
 	if request.method == 'POST':
 	 	if request.is_ajax():
+			date = datetime.datetime.now()
+			start_date = datetime.datetime.combine(date, datetime.time.min)
+			end_date = datetime.datetime.combine(date, datetime.time.max)
+			qr_code = request.POST['qr_code']
 			try:
-				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
+				machine = Machine.objects.get(qr_code = qr_code)
 				result['manufacturer'] = machine.manufacturer_model.manufacturer.name
 				result['model'] = machine.manufacturer_model.model
 				result['asset_number'] = machine.asset_number
@@ -517,10 +521,24 @@ def getEquipmentInfo(request):
 				result['photo'] = machine.photo
 				result['photo1'] = machine.photo1
 				result['photo2'] = machine.photo2
+				emploTask = EmployeeTask.objects.filter(task__status = 4, start_time__range = (start_date,end_date)).order_by('-start_time') #just task active and with the today date
+				control = 0
+				for item in emploTask:
+					implement = ImplementTask.objects.filter(task__id = item.task.id, machine_task__machine__id = machine.id).order_by('-machine_task__employee_task__start_time')
+					if len(implement) != 0:
+						temp = []
+						for doc in implement:
+							temp.append((doc.implement.equipment_type.name))
+							if control < doc.machine_task.id:
+								control = doc.machine_task.id
+								result['employee'] = doc.machine_task.employee_task.employee.user.first_name + " " + doc.machine_task.employee_task.employee.user.last_name
+								result['task'] = doc.task.category.description
+						result['implement'] = temp
+						break
 				result['success'] = True
 			except Machine.DoesNotExist:
 				try:
-					implement = Implement.objects.get(qr_code = request.POST['qr_code'])
+					implement = Implement.objects.get(qr_code = qr_code)
 					result['manufacturer'] = implement.manufacturer_model.manufacturer.name
 					result['model'] = implement.manufacturer_model.model
 					result['asset_number'] = implement.asset_number
@@ -534,6 +552,23 @@ def getEquipmentInfo(request):
 					result['photo'] = implement.photo
 					result['photo1'] = implement.photo1
 					result['photo2'] = implement.photo2
+					emploTask = EmployeeTask.objects.filter(task__status = 4, start_time__range = (start_date,end_date)).order_by('-start_time') #just task active and with the today date
+					control = 0
+					for item in emploTask:
+						impementTask = ImplementTask.objects.filter(task__id = item.task.id, implement__id = implement.id).order_by('-machine_task__employee_task__start_time')[:1]
+						for item2 in impementTask:	
+							impleTask = ImplementTask.objects.filter(machine_task__id = item2.machine_task.id)
+							if len(impleTask) != 0:
+								temp = []
+								for doc in impleTask:
+									if implement.id != doc.implement.id:
+										temp.append((doc.implement.equipment_type.name))
+									if control < doc.machine_task.id:
+										control = doc.machine_task.id
+										result['machine'] = doc.machine_task.machine.qr_code
+										result['employee'] = doc.machine_task.employee_task.employee.user.first_name + " " + doc.machine_task.employee_task.employee.user.last_name
+										result['task'] = doc.task.category.description
+								result['implement'] = temp
 					result['success'] = True
 				except Implement.DoesNotExist:
 					result['code'] = 1 #There is no equipment associated with this
