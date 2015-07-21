@@ -432,7 +432,7 @@ input[type=button]{
 	overflow: auto;
 }
 .btnPastTasks{
-	margin-top: 60px;
+	margin-top: 50px;
 	margin-left: 0%;
 	margin-right: 0%;
 	width: 9%;
@@ -445,26 +445,35 @@ input[type=button]{
 	float: left;
 	
 }
+#btnBack{
+	background: url('../imgSmall/buttons/backPastTasks.png') no-repeat top left;
+}
+#btnForward{
+	background: url('../imgSmall/buttons/nextPastTasks.png') no-repeat top left;
+}
 .btnBackAdv{
-	background: url('../imgSmall/buttons/yes.png') no-repeat top left;
 	background-size: 100% 100%;
-	width: 40px;
+	width: 34px;
 	border-radius: 10px;
+	height: 34px;
 	color: white;
+	font-size: 20px;
 }
 #btnReturn {
-	background: url('../imgSmall/buttons/btnPastTasks.png') no-repeat top left;
+	background: url('../imgSmall/buttons/returnPastTasks.png') no-repeat top left;
 	background-size: 100% 100%;
-	width: 100px;
-	height: 30px;
+	width: 161px;
+	height: 40px;
+	padding-left: 30px;
+	color: white;
 }
 .blockBtnReturn{
 	padding-top: 10px;
-	padding-bottom: 30px;
+	padding-bottom: 20px;
 	margin-left: 0%;
 }
 #task1{
-	margin-right: 75px;
+	margin-right: 65px;
 }
 #task2{
 	margin-right: 190px;

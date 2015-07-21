@@ -1216,9 +1216,6 @@ def retrievePendingTask(request):
 						aux['field'] = item.task.field.name
 						aux['date'] = str(item.task.date_assigned)
 						aux['task_id'] = item.task.id
-						aux['employee_id'] = item.employee.id
-						aux['employee_first_name'] = item.employee.user.first_name
-						aux['employee_last_name'] = item.employee.user.last_name
 						try:
 							machineTask = MachineTask.objects.get(task__id = item.task.id)
 							aux['machine_model'] = machineTask.machine.manufacturer_model.model
@@ -1260,27 +1257,20 @@ def pastTaskList(request):
 				if limit > 0:
 					aux = {}
 					# Filter EmployeeTask by user, date and status task != Finished
-					emploTask = EmployeeTask.objects.filter(employee__user__id = request.user.id, task__status = 6)[off:limit]
+					emploTask = EmployeeTask.objects.filter(employee__user__id = request.user.id, task__status = 6)[off:limit+off]
 					for item in emploTask:
 						aux['category'] = item.task.description
 						aux['field'] = item.task.field.name
 						aux['date'] = str(item.task.date_assigned)
-						aux['task_id'] = item.task.id
-						aux['employee_id'] = item.employee.id
-						aux['employee_first_name'] = item.employee.user.first_name
-						aux['employee_last_name'] = item.employee.user.last_name
+						aux['task_id'] = item.task.id						
 						try:
 							machineTask = MachineTask.objects.get(task__id = item.task.id)
-							aux['machine_model'] = machineTask.machine.manufacturer_model.model
-							aux['machine_nickname'] = machineTask.machine.nickname
-							aux['machine_id'] = machineTask.machine.id
+							aux['machine_model'] = machineTask.machine.manufacturer_model.model							
 						except MachineTask.DoesNotExist:
 							aux['machine_id'] = "NONE"
 						try:
 							implementTask = ImplementTask.objects.get(task__id = item.task.id)
-							aux['implement_model'] = implementTask.implement.manufacturer_model.model
-							aux['implement_nickname'] = implementTask.implement.nickname
-							aux['implement_id'] = implementTask.implement.id
+							aux['implement_model'] = implementTask.implement.manufacturer_model.model							
 						except ImplementTask.DoesNotExist:
 							aux['implement_id'] = "NONE"
 						result.append(aux)
