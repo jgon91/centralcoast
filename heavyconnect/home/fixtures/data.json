@@ -168,6 +168,130 @@
    },
    {
       "fields":{
+         "latitude":36.743614,
+         "longitude":-121.663742
+      },
+      "model":"home.gps",
+      "pk":1
+   },
+   {
+      "fields":{
+         "latitude":36.407641,
+         "longitude":-121.355035
+      },
+      "model":"home.gps",
+      "pk":2
+   },
+   {
+      "fields":{
+         "latitude":36.703841,
+         "longitude":-121.730706
+      },
+      "model":"home.gps",
+      "pk":3
+   },
+   {
+      "fields":{
+         "latitude":-36.6541388,
+         "longitude":-121.7994307
+      },
+      "model":"home.gps",
+      "pk":4
+   },
+   {
+      "fields":{
+         "latitude":-36.7041388,
+         "longitude":-121.8094307
+      },
+      "model":"home.gps",
+      "pk":5
+   },
+   {
+      "fields":{
+         "latitude":-36.7045389,
+         "longitude":-121.7894307
+      },
+      "model":"home.gps",
+      "pk":6
+   },
+   {
+      "fields":{
+         "latitude":-36.7042388,
+         "longitude":-121.8093307
+      },
+      "model":"home.gps",
+      "pk":7
+   },
+   {
+      "fields":{
+         "beacon_serial":"3244",
+         "refers":1
+      },
+      "model":"home.beacon",
+      "pk":1
+   },
+   {
+      "fields":{
+         "beacon_serial":"6246",
+         "refers":1
+      },
+      "model":"home.beacon",
+      "pk":2
+   },
+   {
+      "fields":{
+         "beacon_serial":"3245",
+         "refers":2
+      },
+      "model":"home.beacon",
+      "pk":3
+   },
+   {
+      "fields":{
+         "beacon_serial":"6245",
+         "refers":2
+      },
+      "model":"home.beacon",
+      "pk":4
+   },
+   {
+      "fields":{
+         "timestamp":"2015-07-21T19:31:31Z",
+         "beacon":2,
+         "gps":4
+      },
+      "model":"home.beacongps",
+      "pk":1
+   },
+   {
+      "fields":{
+         "timestamp":"2015-07-21T19:33:08Z",
+         "beacon":1,
+         "gps":5
+      },
+      "model":"home.beacongps",
+      "pk":2
+   },
+   {
+      "fields":{
+         "timestamp":"2015-07-21T19:36:02Z",
+         "beacon":3,
+         "gps":6
+      },
+      "model":"home.beacongps",
+      "pk":3
+   },
+   {
+      "fields":{
+         "timestamp":"2015-07-21T19:36:46Z",
+         "beacon":3,
+         "gps":7
+      },
+      "model":"home.beacongps",
+      "pk":4
+   },
+   {
+      "fields":{
          "shop":1,
          "hitch_category":6,
          "photo":"",
@@ -186,6 +310,7 @@
          "hour_cost":50.0,
          "status":1,
          "speed_range_max":6.0,
+         "beacon":null,
          "year_purchased":2013,
          "front_tires":"30",
          "rear_tires":"30",
@@ -219,6 +344,7 @@
          "hour_cost":45.0,
          "status":3,
          "speed_range_max":6.0,
+         "beacon":2,
          "year_purchased":2009,
          "front_tires":"25",
          "rear_tires":"25",
@@ -252,6 +378,7 @@
          "hour_cost":8.0,
          "status":2,
          "speed_range_max":11.0,
+         "beacon":1,
          "year_purchased":2012,
          "front_tires":"12.4R24",
          "rear_tires":"18.4R30",
@@ -289,6 +416,7 @@
          "repair_shop":2,
          "equipment_type":1,
          "service_interval":500,
+         "beacon":null,
          "drawbar_category":4
       },
       "model":"home.implement",
@@ -318,6 +446,7 @@
          "repair_shop":2,
          "equipment_type":1,
          "service_interval":500,
+         "beacon":4,
          "drawbar_category":6
       },
       "model":"home.implement",
@@ -347,6 +476,7 @@
          "repair_shop":2,
          "equipment_type":1,
          "service_interval":500,
+         "beacon":3,
          "drawbar_category":3
       },
       "model":"home.implement",
@@ -452,6 +582,26 @@
       },
       "model":"home.task",
       "pk":3
+   },
+   {
+      "fields":{
+         "category":1,
+         "passes":6,
+         "rate_cost":0.0,
+         "description":"This is just a simple description",
+         "task_end":null,
+         "status":1,
+         "pause_total":null,
+         "field":1,
+         "hours_spent":0.0,
+         "pause_start":null,
+         "pause_end":null,
+         "hours_prediction":5.0,
+         "date_assigned":"2015-07-07T00:06:00Z",
+         "task_init":null
+      },
+      "model":"home.task",
+      "pk":5
    },
    {
       "fields":{
@@ -561,6 +711,17 @@
       },
       "model":"home.employeeattendance",
       "pk":3
+   },
+   {
+      "fields":{
+         "employee":4,
+         "date":"2015-07-17",
+         "signature":"",
+         "hour_started":"16:59:29",
+         "hour_ended":null
+      },
+      "model":"home.employeeattendance",
+      "pk":4
    },
    {
       "fields":{
@@ -723,30 +884,6 @@
    },
    {
       "fields":{
-         "latitude":36.743614,
-         "longitude":-121.663742
-      },
-      "model":"home.gps",
-      "pk":1
-   },
-   {
-      "fields":{
-         "latitude":36.407641,
-         "longitude":-121.355035
-      },
-      "model":"home.gps",
-      "pk":2
-   },
-   {
-      "fields":{
-         "latitude":36.703841,
-         "longitude":-121.730706
-      },
-      "model":"home.gps",
-      "pk":3
-   },
-   {
-      "fields":{
          "field":1,
          "gps":1
       },
@@ -834,57 +971,95 @@
    },
    {
       "fields":{
-         "task":1,
+         "employee":4,
+         "start_time":null,
+         "task":5,
+         "end_time":null,
+         "hours_spent":0.0
+      },
+      "model":"home.employeetask",
+      "pk":5
+   },
+   {
+      "fields":{
+         "machine":1,
          "employee_task":1,
-         "machine":1
-      },
-      "model":"home.machinetask",
-      "pk":1
-   },
-   {
-      "fields":{
-         "task":2,
-         "employee_task":2,
-         "machine":2
-      },
-      "model":"home.machinetask",
-      "pk":2
-   },
-   {
-      "fields":{
-         "task":3,
-         "employee_task":3,
-         "machine":3
-      },
-      "model":"home.machinetask",
-      "pk":3
-   },
-   {
-      "fields":{
-         "machine_task":1,
-         "implement":1,
          "task":1
       },
+      "model":"home.machinetask",
+      "pk":1
+   },
+   {
+      "fields":{
+         "machine":2,
+         "employee_task":2,
+         "task":2
+      },
+      "model":"home.machinetask",
+      "pk":2
+   },
+   {
+      "fields":{
+         "machine":3,
+         "employee_task":3,
+         "task":3
+      },
+      "model":"home.machinetask",
+      "pk":3
+   },
+   {
+      "fields":{
+         "machine":1,
+         "employee_task":5,
+         "task":5
+      },
+      "model":"home.machinetask",
+      "pk":5
+   },
+   {
+      "fields":{
+         "implement":1,
+         "task":1,
+         "machine_task":1
+      },
       "model":"home.implementtask",
       "pk":1
    },
    {
       "fields":{
-         "machine_task":2,
          "implement":8,
-         "task":2
+         "task":2,
+         "machine_task":2
       },
       "model":"home.implementtask",
       "pk":2
    },
    {
       "fields":{
-         "machine_task":3,
          "implement":9,
-         "task":3
+         "task":3,
+         "machine_task":3
       },
       "model":"home.implementtask",
       "pk":3
+   },
+   {
+      "fields":{
+         "implement":1,
+         "task":5,
+         "machine_task":5
+      },
+      "model":"home.implementtask",
+      "pk":4
+   },
+   {
+      "fields":{
+         "implement":8,
+         "task":5,
+         "machine_task":5
+      },
+      "model":"home.implementtask",
+      "pk":5
    },
    {
       "fields":{

@@ -45,6 +45,37 @@ class EquipmentType(models.Model):
 	def __unicode__(self):
 		return "Name: " + str(self.name) + ", Category: " + str(self.category.name)
 
+class GPS(models.Model):
+	latitude = models.FloatField()
+	longitude = models.FloatField()
+
+	def __unicode__(self):
+		return "Latitude: " +str(self.latitude) + " " +  "Longitude: " +str(self.longitude)
+
+### DEMO ###
+class Beacon(models.Model):
+	REFERS_CHOICES = (
+		(1, 'Machine'),
+		(2, 'Implement'),
+	)
+
+	beacon_serial = models.CharField(max_length=10, null = True)
+	refers = models.IntegerField(choices = REFERS_CHOICES)
+
+	def __unicode__(self):
+		if self.refers == 1:
+			return 'Machine Beacon: serial = ' + self.beacon_serial
+		else:
+			return 'Implement Beacon: serial = ' + self.beacon_serial
+### DEMO ###
+
+### DEMO ###		
+class BeaconGPS(models.Model):
+	beacon = models.ForeignKey(Beacon)
+	gps = models.ForeignKey(GPS)
+	timestamp = models.DateTimeField()
+### DEMO ###
+
 class Machine(models.Model):
 	HITCH_CHOICES = (
 		(1, '1'),
@@ -109,6 +140,7 @@ class Machine(models.Model):
 	photo = models.URLField(max_length = 200, blank = True)
 	photo1 = models.URLField(max_length = 200, blank = True)
 	photo2 = models.URLField(max_length = 200, blank = True)
+	beacon = models.ForeignKey(Beacon, blank = True, null = True) #DEMO
 
 	def __unicode__(self):
 		return "Manufacturer: " + str(self.manufacturer_model.manufacturer.name) + ", Model: " + str(self.manufacturer_model.model) + ", QRcode: " + str(self.qr_code)
@@ -137,6 +169,7 @@ class Implement(models.Model):
 	photo = models.URLField(max_length = 200, blank = True)
 	photo1 = models.URLField(max_length = 200, blank = True)
 	photo2 = models.URLField(max_length = 200, blank = True)
+	beacon = models.ForeignKey(Beacon, blank = True, null = True) #DEMO
 
 	def __unicode__(self):
 		return "Manufacturer: " + str(self.manufacturer_model.manufacturer.name) + ", Model: " + str(self.manufacturer_model.model) + ", QRcode: " + str(self.qr_code)
@@ -292,13 +325,6 @@ class ImplementCertification(models.Model):
 	def __unicode__(self):
 		return str(self.implement) + " " +  str(self.certification)
 
-class GPS(models.Model):
-	latitude = models.FloatField()
-	longitude = models.FloatField()
-
-	def __unicode__(self):
-		return "Latitude: " +str(self.latitude) + " " +  "Longitude: " +str(self.longitude)
-
 class FieldLocalization(models.Model):
 	field = models.ForeignKey(Field)
 	gps = models.ForeignKey(GPS)
@@ -430,17 +456,3 @@ class ImplementChecklist(models.Model):
 
 	def __unicode__(self):
 		return "Answer: " + str(self.answer) + ", Note: " + str(self.note)
-
-class Beacon(models.Model):
-    last_seen = models.DateTimeField()
-    name = models.CharField(max_length = 200, null = True)
-    beacon_id = models.CharField(max_length=200, null = True)
-    tractor_id = models.CharField(max_length=200, null = True)
-    implement_id = models.CharField(max_length=200, null = True)
-    longitude = models.CharField(max_length=200, null = True)
-    latitude = models.CharField(max_length=200, null = True)
-
-    def __unicode__(self):
-        return '{} {} {}'.format(self.beacon_id, self.name, self.last_seen,
-                                 self.tractor_id, self.implement_id,
-                                 self.longitude, self.latitude)
