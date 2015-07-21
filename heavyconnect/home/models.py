@@ -70,16 +70,16 @@ class Machine(models.Model):
 		(4, 'Quarantine'),
 	)
 	OPERATORSTATION_CHOICES = (
-		('a', 'Cab'), 
+		('a', 'Cab'),
 		('b', 'Open'),
 		('c', 'Canopy'),
 	)
 	MTYPE_CHOICES = (
-		('T', 'Track'), 
+		('T', 'Track'),
 		('W', 'Wheels'),
 	)
 	STEERING_CHOICES = (
-		('M', 'Manual'), 
+		('M', 'Manual'),
 		('G', 'GPS'),
 	)
 	manufacturer_model = models.ForeignKey(ManufacturerModel)
@@ -99,8 +99,8 @@ class Machine(models.Model):
 	engine_hours = models.IntegerField()
 	service_interval = models.IntegerField()
 	base_cost = models.FloatField(default = 0)
-	m_type = models.CharField(max_length = 1, choices = MTYPE_CHOICES) 
-	front_tires = models.CharField(max_length = 20)														
+	m_type = models.CharField(max_length = 1, choices = MTYPE_CHOICES)
+	front_tires = models.CharField(max_length = 20)
 	rear_tires = models.CharField(max_length = 20)
 	steering = models.CharField(max_length = 1, choices = STEERING_CHOICES)
 	operator_station = models.CharField(max_length = 1, choices = OPERATORSTATION_CHOICES)
@@ -128,7 +128,7 @@ class Implement(models.Model):
 	speed_range_min = models.FloatField()
 	speed_range_max = models.FloatField()
 	year_purchased = models.IntegerField()
-	implement_hours = models.IntegerField()	
+	implement_hours = models.IntegerField()
 	service_interval = models.IntegerField()
 	base_cost = models.FloatField()
 	hour_cost = models.FloatField()
@@ -216,7 +216,7 @@ class EmployeeAttendance(models.Model):
 	hour_started = models.TimeField()
 	hour_ended = models.TimeField(null = True, blank = True)
 	signature = models.CharField(max_length = 5000, null = True, blank = True)
-	
+
 
 	def __unicode__(self):
 		return "Employee: " + str(self.employee) + ", Date: " + str(self.date)
@@ -430,3 +430,17 @@ class ImplementChecklist(models.Model):
 
 	def __unicode__(self):
 		return "Answer: " + str(self.answer) + ", Note: " + str(self.note)
+
+class Beacon(models.Model):
+    last_seen = models.DateTimeField()
+    name = models.CharField(max_length = 200, null = True)
+    beacon_id = models.CharField(max_length=200, null = True)
+    tractor_id = models.CharField(max_length=200, null = True)
+    implement_id = models.CharField(max_length=200, null = True)
+    longitude = models.CharField(max_length=200, null = True)
+    latitude = models.CharField(max_length=200, null = True)
+
+    def __unicode__(self):
+        return '{} {} {}'.format(self.beacon_id, self.name, self.last_seen,
+                                 self.tractor_id, self.implement_id,
+                                 self.longitude, self.latitude)
