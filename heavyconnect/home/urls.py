@@ -67,6 +67,7 @@ urlpatterns = [
 	url(r'^getAllTaskCategory/$', main_views.getAllTaskCategory, name = 'getAllTaskCategory'),
 	url(r'^getTaskInfo/$', main_views.getTaskInfo, name = 'getTaskInfo'),
     url(r'^retrieveMachine/$', main_views.retrieveMachine, name = 'retrieveMachine'),
+    url(r'^getEmployeeCurrentTaskInfo/$', main_views.getEmployeeCurrentTaskInfo, name = 'getEmployeeCurrentTaskInfo'),
 	url(r'^retrieveScannedEmployee/$', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee'),
     url(r'^continueTask/$', main_views.continueTask, name = 'continueTask'),
     url(r'^pastTaskList/$', main_views.pastTaskList, name = 'pastTaskList'),
