@@ -5,18 +5,35 @@
 		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
 		<script>
 			//variables
-			
+			var taskMoreInfo;
+			taskMoreInfo = {};
 			//Events
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerDriver' %}");
-				$("#btnCreateTask").click(function() {		
-					return permissionCreateTask("{{csrf_token}}", "{% url 'validatePermission' %}", "");// true or false
+				$("#btnCreateTask").click(function() {
+					return permissionCreateTask("{{csrf_token}}", "{% url 'validatePermission' %}", "");
+					// true or false
 				});
-
 				getPendingTask("{{ csrf_token }}", "{% url 'retrievePendingTask' %}");
+				$(".moreInfo").click(function() {
+					$('.infoModalTask').html('');
+
+					$('#startTask').modal();
+
+					$("#dataMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].date.substring(0, 10));
+					$("#implementNameMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].implement_nickname);
+					$("#implementIdMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].implement_id);
+					$("#implementModelMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].implement_model);
+					$("#tractorNameMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].machine_nickname);
+					$("#tractorIdMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].machine_id);
+					$("#tractorModelMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].machine_model);
+					$("#employeeFirstMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].employee_first_name);
+					$("#employeeLastMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].employee_last_name);
+					$("#fieldMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].field);
+
+				});
 			});
-			
 			//Functions
 			function getPendingTask(token, url) {
 				$.ajax({
@@ -24,39 +41,42 @@
 					url : url,
 					data : {
 						"csrfmiddlewaretoken" : token,
-						"N" : 3
+						"offset" : 0,
+						"limit" : 3
 					},
 					datatype : "json",
 					success : function(data, status, xhr) {
-						//alert(data.success);
 						for (var i = 1; i < data.length; i++) {
-							if(i == 1){
+							if (i == 1) {
 								$("#divStartNow").attr("href", "{% url 'startTask'%}?task_id=" + data[i].task_id);
 							}
-							$("#next" + i + " .machineModel").html(data[i].qr_code);
+							$("#next" + i + " .machineModel").html(data[i].machine_nickname);
 							$("#next" + i + " .fieldName").html(data[i].field);
 							$("#next" + i + " .category").html(data[i].category);
 						};
+						taskMoreInfo = data;
 					}
 				});
 			}
-			function permissionCreateTask(token, url, permission){			
+
+			function permissionCreateTask(token, url, permission) {
 				$.ajax({
-					method: "POST",
-					url: url,
-					dataType: "json", 
-					async: false,
-       				data: {"csrfmiddlewaretoken" : token},
-					success: function(data, status, xhr)
-					{					 	
-					 	if(!data.authorized)
-					 	{	
-					 		alert("You do not have enough right to create a task!!");
-					 	}
-					 		permission = data.authorized;
+					method : "POST",
+					url : url,
+					dataType : "json",
+					async : false,
+					data : {
+						"csrfmiddlewaretoken" : token
+					},
+					success : function(data, status, xhr) {
+						alert(data.authorized);
+						if (!data.authorized) {
+							alert("You do not have enough right to create a task!!");
+						}
+						permission = data.authorized;
 					}
 				});
-					return permission; 
+				return permission;
 			}
 		</script>
 	</head>
@@ -70,24 +90,33 @@
 				<!--<span id="titleTask">Scheduled Tasks</span>-->
 				<div class="both"></div>
 				<div class="row pendingTasks">
+					<a href="#" id="moreInfo1" class="moreInfo">
 					<div class="col-xs-4 col-md-4 nextBox" id="next1">
-						<span class="titleNextTask">#1</span><br>
+						<span class="titleNextTask">#1</span>
+						<br>
 						<span class="machineModel"></span>
-						<h4>Field</h4><span class="fieldName"></span><br>
-						<a href="#" id="moreInfo">More Info</a>
-					</div>
+						<h4>Field</h4><span class="fieldName"></span>
+						<br>
+						<span class="plusInfo" id="moreInfo1"> More Info </span>
+					</div> </a>
+					<a href="#" id="moreInfo2" class="moreInfo">
 					<div class="col-xs-4 col-md-4 nextBox" id="next2">
-						<span class="titleNextTask">#2</span><br>
+						<span class="titleNextTask">#2</span>
+						<br>
 						<span class="machineModel"></span>
-						<h4>Field</h4><span class="fieldName"></span><br>
-						<a href="#" id="moreInfo2">More Info</a>
-					</div>
+						<h4>Field</h4><span class="fieldName"></span>
+						<br>
+						<span class="plusInfo"> More Info </span>
+					</div> </a>
+					<a href="#" id="moreInfo3" class="moreInfo">
 					<div class="col-xs-4 col-md-4 nextBox" id="next3">
-						<span class="titleNextTask">#3</span><br>
+						<span class="titleNextTask">#3</span>
+						<br>
 						<span class="machineModel"></span>
-						<h4>Field</h4><span class="fieldName"></span><br>
-						<a href="#" id="moreInfo2">More Info</a>
-					</div>
+						<h4>Field</h4><span class="fieldName"></span>
+						<br>
+						<span class="plusInfo"> More Info </span>
+					</div> </a>
 				</div>
 				<div class="row btnPastNextTask">
 					<div class="col-xs-4 col-md-4 colTasks" id="colPast">
@@ -95,14 +124,44 @@
 						<input type="button" value="Past Tasks   " id="btnPastTasks" class="btnsTasks"/>
 						</a>
 					</div>
-					<div class="col-xs-4 col-md-4 colTasks">
-					</div>
+					<div class="col-xs-4 col-md-4 colTasks"></div>
 					<div class="col-xs-4 col-md-4 colTasks" id="colCreate">
 						<a href="{% url 'createTask' %}">
-						<input type="button" value="Create Task" id="btnCreateTask" class="btnsTasks"/>
+						<input type="button" value="Create Task  " id="btnCreateTask" class="btnsTasks"/>
 						</a>
 					</div>
 				</div>
+				<!-- MODAL OF START TASK -->
+				<div class="modal fade" id="startTask" role="dialog">
+					<div class="modal-dialog">
+						<!-- Modal content-->
+						<div class="modal-content modalTask">
+							<button type="button" class="closeTask" data-dismiss="modal">
+								X
+							</button>
+							<span id="dataMoreInfo"></span>
+							<div class="modal-body infoTask">
+								IMPLEMENT: <span id="implementNameMoreInfo" class="infoModalTask"></span>
+								'<span id="implementIdMoreInfo" class="infoModalTask"></span>
+								(<span id="implementModelMoreInfo" class="infoModalTask"></span>)
+								<br>
+								TRACTOR: "<span id="tractorNameMoreInfo" class="infoModalTask"></span>" <span id="tractorIdMoreInfo" class="infoModalTask"></span>
+								(<span id="tractorModelMoreInfo" class="infoModalTask"></span>)
+								<br>
+								EMPLOYEE: <span id="employeeFirstMoreInfo" class="infoModalTask"></span>
+								<span id="employeeLastMoreInfo" class="infoModalTask"></span>
+								<br>
+								FIELD: <span id="fieldMoreInfo" class="infoModalTask"></span>
+								<!--br>ESTIMATED HOURS: <span id="hoursMoreInfo" class="infoModalTask"></span>-->
+							</div>
+							<a href="{% url 'startTask' %}">
+							<input type="button" value="Start" id="btnStartTask" />
+							</a>
+							<div class="both"></div>
+						</div>
+					</div>
+				</div>
+
 			</div>
 		</div>
 		<footer id="foot"></footer>

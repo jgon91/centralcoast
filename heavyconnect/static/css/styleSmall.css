@@ -368,15 +368,17 @@ footer {
 	float: right;
 	margin-right: 1%;
 }
-#moreInfo {
-	text-decoration: none;
-	color: white;
-	font-style: italic;
-}
-#moreInfo2 {
+.moreInfo {
 	text-decoration: none;
 	color: #4F7316;
+}
+#moreInfo1 {
+	color: white; !important
+}
+.plusInfo {
 	font-style: italic;
+	text-decoration: none;
+	color: #4F7316;
 }
 .btnPastNextTask {
 	width: 100%;
@@ -420,9 +422,64 @@ footer {
 	text-align: right;
 	font-size: 18px;
 }
+.pendingTasks a {
+	font-style: normal;
+}
+	/*** Modal Start Task Begin ***/
+.modalTask {
+	border-radius: 20px;
+	width: 90%;
+	margin: auto;
+	margin-top: 70px;
+	color: #466C00;
+}
+#dataMoreInfo {
+	font-size: 25px;
+	font-weight: 700;
+}
+#btnStartTask {
+	background: url('../imgSmall/buttons/startShift.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 140px;
+	height: 40px;
+	float: right;
+	border: none;
+	border-radius: 10px;
+	box-shadow: 2px 2px 5px gray;
+	margin-right: 20px;
+	margin-bottom: 20px;
+	text-decoration: none;
+	color: white;
+	font-size: 20px;
+}
+.closeTask {
+	background: url('../imgSmall/buttons/stopbreak.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 50px;
+	height: 50px;
+	float: right;
+	border: none;
+	border-radius: 10px;
+	box-shadow: -1px 1px 7px gray;
+	margin: 0px;
+	padding: 0px;
+	font-size: 35px;
+	color: white;
+	font-weight: 700;
+}
+.infoTask {
+	text-align: left;
+	padding-left: 50px;
+	font-size: 20px;
+	font-weight: 600;
+}
+.infoModalTask {
+	color: #434343;
+}
+	/*** Modal Start Task Begin ***/
 /*** Taskflow End ***/
 
-/*** Check list Begin ***/
+/*** Checklist Begin ***/
 .numButton {
 	width: 40px;
 	height: 40px;
