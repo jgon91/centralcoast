@@ -108,7 +108,6 @@ urlpatterns = [
     url(r'^taskFormView/$', main_views.taskFormView, name = 'registerTask'),
     url(r'^taskCategoryFormView/$', main_views.taskCategoryFormView, name = 'registerTaskCategory'),
     url(r'^employeeTaskFormView/$', main_views.employeeTaskFormView, name = 'registerEmployeeTask'),
-    #url(r'^taskImplementMachineFormView/$', main_views.taskImplementMachineFormView, name = 'registerTaskImplementMachine'),
     url(r'^appendixFormView/$', main_views.appendixFormView, name = 'registerAppendix'),
     url(r'^appendixTaskFormView/$', main_views.appendixTaskFormView, name = 'registerAppendixTask'),
     url(r'^serviceCategoryFormView/$', main_views.serviceCategoryFormView, name = 'registerServiceCategory'),

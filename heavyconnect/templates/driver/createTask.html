@@ -1,187 +1,485 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 	<head>
-		{%load staticfiles %}
+		{% load staticfiles %}
+		{% load i18n %}
 		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
 		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="{% static 'js/script.js' %}"></script>
 		<script>
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerDriver' %}");
-				$("#btnEnter1").click(function(){
-					//alert("Button Pressed!!");
-					$("#part1").attr("class", "tab-pane fade");
-					$("#part2").attr("class", "tab-pane fade active in").fadeIn(1000);
-					$("#p1").attr("class", "");
-					$("#p2").addClass("active");
-				});
-				//Functions filter tractors
-				$(".selectFilters").change(function(){
-					
-					getFilteredMachine("{{ csrf_token }}", "{% url 'getFilteredMachine' %}");
+				
+				$("#secondImplement").hide();
+				$('#AddImplement').click(function(){
+					$("#secondImplement").show();
 				});
 				
-				//This can be moved to another file later(script.js)
-				function getFilteredMachine(token, url){
-					//alert("Teste" + $("#manufacturer").val() + "<br>" + $("#hitch_capacity").val()+ "<br>" + $("#horse_power").val() + "<br>");
-					
-					$.ajax({
-						method: "POST",
-						url: url,
-						data: {"csrfmiddlewaretoken": token, "manufacturer": $("#manufacturer").val(), "hitch_capacity": $("#hitch_capacity").val(), "horse_power": $("#horse_power").val(), "implement_qr_code": $("#implement").val()},
-						datatype: "json",
-						success: function(data, status, xhr){
-							var len = data.length;
-							$("#showEquipmentDiv").html("");
-							for(var j=0; j < 10; j++){
-								for (var i=1; i < len; i++){
-									$("#showEquipmentDiv").append("<div class='tractorFiltered'><img src='"+data[i].photo+"'><br>Id: "+ data[i].asset_number +"<br>Nickname: "+ data[i].nickname +"<br>Id: "+ data[i].asset_number +" </div>");
-								}
-							}
-						}
-					});
-
-				}
+				//Change tabs when clicks in the buttons NEXT and RETURN
+				$('.nextTab').click(function(){
+					$('.nav-tabs > .active').next('li').find('a').trigger('click');
+				});
+				$('.prevTab').click(function(){
+				  	$('.nav-tabs > .active').prev('li').find('a').trigger('click');
+				});
 				
-				//Call function to get machines informations.
+				//It fill out the dropdown menus of this page
+				getAllTaskCategory("{{ csrf_token}}", "{% url 'getAllTaskCategory' %}");
+				getAllFields("{{ csrf_token}}", "{% url 'getAllFields' %}");
+				getAllManufacturers("{{ csrf_token}}", "{% url 'getAllManufacturers' %}");
+				
+				//This functions turn tabs green or red
+				//Category
+				$("#category").change(function(){
+					if($(this).val() != -1){
+						$("#taskTab").addClass("tabSucess");
+					}else{
+						$("#taskTab").removeClass("tabSucess");
+					}
+				});
+				//Field
+				$("#field").change(function(){
+					if($(this).val() != -1){
+						$("#fieldTab").addClass("tabSucess");
+					}else{
+						$("#fieldTab").removeClass("tabSucess");
+					}
+				});
+				//Time
+				$("#date, #time, #hours_prediction").change(function(){
+					if($("#date").val() != "" && $("#time").val() != "" && $("#hours_prediction").val() != ""){
+						$("#timeTab").addClass("tabSucess");
+					}else{
+						$("#timeTab").removeClass("tabSucess");
+					}
+				});
+				//Add Info
+				$("#passes, #description").change(function(){
+					if($("#passes").val() != "" && $("#description").val() != ""){
+						$("#infoTab").addClass("tabSucess");
+					}else{
+						$("#infoTab").removeClass("tabSucess");
+					}
+				});
+				
+				//Call a function that will send the data to the backend to be saved in the data base when click in the button save
+				$("#btnSubmit").click(function(){
+					saveTask("{{ csrf_token }}", "{% url 'createNewTask' %}", "{% url 'schedule' %}");
+				});
+				//Call function to get machines informations when click in the button.
 				$("#findMachine").click(function(){
 					getFilteredMachine("{{ csrf_token }}", "{% url 'getFilteredMachine' %}");
 				});
+				//Call function to get machines informations basead on filters when change the filters
+				$(".selectFiltersMachine").change(function(){
+					getFilteredMachine("{{ csrf_token }}", "{% url 'getFilteredMachine' %}");
+				});
+				var implement;
+				//Call function to get Implements informations basead on filters when change the filters
+				$(".selectFiltersImplement").change(function(){
+					getFilteredImplement("{{ csrf_token }}", "{% url 'getFilteredImplement' %}", implement);
+					
+				});
+				//Call function to get implements informations when click in the button.
+				$(".findImplement").click(function(){
+					implement = $(this).attr('id');
+					getFilteredImplement("{{ csrf_token }}", "{% url 'getFilteredImplement' %}", $(this).attr('id') );
+				
+				});
+				
+				// Detect which button was pressed to scan QRCode
+				$("#scanMachine").click(function() {
+					$("#machineBtn").val(1);
+					$("#implementBtn").val(0);
+					$("#implementBtn2").val(0);
+				});
+				$("#scanImplement").click(function() {
+					$("#implementBtn").val(1);
+					$("#machineBtn").val(0);
+					$("#implementBtn2").val(0);
+				});
 
+				$("#scanImplement2").click(function() {
+					$("#implementBtn2").val(1);
+					$("#implementBtn").val(0);
+					$("#machineBtn").val(0);
+					
+				});
+				
+				$("#submit").click(function () {
+				 	if($("#machineBtn").val() == 1){				 		
+                    	$("#machineSelected").val($("#qr_code").val());
+                    	$('#scanQRCodeMachine').modal("hide");
+                    }
+                    if($("#implementBtn").val() == 1){
+                    	$("#implementSelected").val($("#qr_code").val());
+                    	$('#scanQRCodeMachine').modal("hide");
+                    }
+                });
+				
 			});
-
+			
+			//creatTask page
+			//This can be moved to another file later(script.js)
+			function getFilteredImplement(token, url, implement){
+				$.ajax({
+					method: "POST",
+					url: url,
+					data: {"csrfmiddlewaretoken": token, 
+							"manufacturer": $("#manufacturerImplement").val(), 
+							"hitch_capacity_req": $("#hitch_capacity_required").val(), 
+							"horse_power_req": $("#horse_power_required").val(), 
+							"machine_qr_code": $("#machineSelected").val(),
+							"status_ok": 1,
+							"status_attention": 1,
+							"status_broken": false,
+							"status_quarantine": false },
+					datatype: "json",
+					success: function(data, status, xhr){
+						//alert("Hey: " + data[1].nickname);
+						var len = data.length;
+						$(".showImplementDiv").html("");
+						for (var i=1; i < len; i++){
+							$(".showImplementDiv").append("<a href=# id='"+ data[i].qr_code +"'><div class='tractorFiltered'><input type='hidden' id='"+ data[i].qr_code +"Id' value='1'><img id='"+ data[i].qr_code +"Img' src='"+ data[i].photo +"'><br>Id: "+ data[i].asset_number +"<br>{% trans 'Nickname:'%} "+ data[i].nickname +"<br>{% trans 'Drawbar Category:'%} "+ data[i].drawbar_category +" </div></a>");
+							$("#" + data[i].qr_code).click( function(){ 
+									$("#" + implement +"Selected").val($(this).attr('id'));
+									$("#" + implement +"SelectedImg").attr("src", $("#"+ $(this).attr('id') +"Img").attr("src"));
+									if(implement == "implement"){
+										$("#implementTab").addClass("tabSucess");	
+									}
+									
+									$('#findImplementModal').modal("hide");
+							});
+						}
+					}
+				});
+			}
+			
+			//creatTask page
+			//This can be moved to another file later(script.js)
+			function getFilteredMachine(token, url){
+				//alert("Teste" + $("#manufacturer").val() + "<br>" + $("#hitch_capacity").val()+ "<br>" + $("#horse_power").val() + "<br>");
+				
+				$.ajax({
+					method: "POST",
+					url: url,
+					data: {"csrfmiddlewaretoken": token, 
+							"manufacturer": $("#manufacturerMachine").val(), 
+							"hitch_capacity": $("#hitch_capacity").val(), 
+							"horse_power": $("#horse_power").val(), 
+							"implement_qr_code": $("#implementSelected").val(),
+							"status_ok": 1,
+							"status_attention": 1,
+							"status_broken": false,
+							"status_quarantine": false },
+					datatype: "json",
+					success: function(data, status, xhr){
+						var len = data.length;
+						$(".showEquipmentDiv").html("");
+						for (var i=1; i < len; i++){
+							$(".showEquipmentDiv").append("<a href=# id='"+ data[i].qr_code +"'><div class='tractorFiltered'><img id='"+ data[i].qr_code +"Img' src='"+ data[i].photo +"'><br><strong>Id:</strong> "+ data[i].asset_number +"<br><strong>Nickname:</strong> "+ data[i].nickname +"<br><strong>Drawbar Category:</strong> "+ data[i].drawbar_category +" </div></a>");
+							
+							$("#" + data[i].qr_code).click( function(){ 
+								
+								$("#machineSelected").val($(this).attr('id'));
+								$("#machineSelectedImg").attr("src", $("#"+ $(this).attr('id') +"Img").attr("src"));
+								$("#machineTab").addClass("tabSucess");
+								$('#findMachineModal').modal("hide");
+							});
+						}
+					}
+				});
+			}
+			
+			
+			
+			//Fill dropdown menu of tasks category
+			function getAllTaskCategory(token, url) {
+				$.ajax({
+					method : "POST",
+					url : url,
+					data : {
+						"csrfmiddlewaretoken" : token,
+					},
+					datatype : "json",
+					success : function(data, status, xhr) {
+						console.log(data);
+						for(var i = 1; i <= data.length; i++){
+							$("#category").append("<option value='" + data[i].id +"'>" + data[i].description + "</option>");
+						}
+						
+					}
+				});
+			}
+			//Fill dropdown menu of fields
+			function getAllFields(token, url) {
+				$.ajax({
+					method : "POST",
+					url : url,
+					data : {
+						"csrfmiddlewaretoken" : token,
+					},
+					datatype : "json",
+					success : function(data, status, xhr) {
+						for(var i = 1; i <= data.length; i++){
+							$("#field").append("<option value='" + data[i].id +"'>" + data[i].name + "</option>");
+						}
+						
+					}
+				});
+			}
+			//Fill dropdown menu of manufactures
+			function getAllManufacturers(token, url) {
+				$.ajax({
+					method : "POST",
+					url : url,
+					data : {
+						"csrfmiddlewaretoken" : token,
+					},
+					datatype : "json",
+					success : function(data, status, xhr) {
+						for(var i = 1; i <= data.length; i++){
+							$(".manufacturer").append("<option value='" + data[i].id +"'>" + data[i].name + "</option>");
+						}
+						
+					}
+				});
+			}
+			
 		</script>
+
 	</head>
 	<body>
 		<header id="head"></header>
 		<div id="wrapper">
 			<div id="content">
-				<div id="namePage" style="opacity: 0.5;">
-					TASKFLOW
-				</div>
-				<div id="namePage" style="width: 150px;">
-					CREATE NEW TASK
+
+				<div class="namePageCenter">
+					CREATE TASK
 				</div>
 				<div id="contentCreateTask">
-					<ul class="nav nav-pills" role="tablist" id="flapTask">
-						<li id="p1" class="active">
-							<a data-toggle="pill" href="#part1">PART 1</a>
-						</li>
-						<li id="p2">
-							<a data-toggle="pill" href="#part2">PART 2</a>
-						</li>
+					<ul class="nav nav-tabs">
+					    <li class="active"><a id="taskTab" data-toggle="tab" href="#taskTabContent">Task</a></li>
+					    <li><a id="machineTab" data-toggle="tab" href="#machineTabContent">Machine</a></li>
+					    <li><a id="implementTab" data-toggle="tab" href="#implementTabContent">Implement</a></li>
+					    <li><a id="fieldTab" data-toggle="tab" href="#fieldTabContent">Field</a></li>
+					    <li><a id="timeTab" data-toggle="tab" href="#timeTabContent">Time</a></li>
+					    <li><a id="infoTab" data-toggle="tab" href="#infoTabContent">Add Info</a></li>
 					</ul>
-					<div class="tab-content">
-						<div id="part1" class="tab-pane fade in active">
-						<div id="aaa">	<div id="divText1">
-								<div class="row divPart1">
-									<div class="col-xs-4 col-md-4 textLeft1">
-										TASK NAME:
-									</div>
-									<div class="col-xs-8 col-md-8 textRight1">
-										<input type="text"/>
-									</div>
+					
+					<div class="tab-content" >
+						<div id="taskTabContent" class="tab-pane fade in active">
+					      
+						    <div class="row" >
+								<div class="col-xs-3 col-md-3 alignCenterPage textCreateTask">
+									Task:
 								</div>
-
-								<div class="row divPart1">
-									<div class="col-xs-4 col-md-4 textLeft1">
-										FIELD ID:
-									</div>
-									<div class="col-xs-8 col-md-8 textRight1">
-										
-										<select class="inputCreateTask">
-										  <option value="0"></option>
-										  <option value="1">Ranch 1 - Block 1</option>
-										  <option value="2">Ranch 3 - Block 3</option>
-										  <option value="3">Ranch 6 - Block 5</option>
-										  <option value="4">Ranch 9 - Block 8</option>
-										</select> 
-									</div>
-								</div>
-								<div class="row divPart1">
-									<div class="col-xs-4 col-md-4 textLeft1">
-										PASSES NUMBER:
-									</div>
-									<div class="col-xs-8 col-md-8 textRight1">
-										<input type="text"/>
-									</div>
-								</div>
-								<div class="row divPart1">
-									<div class="col-xs-4 col-md-4 textLeft1">
-										HOURS PREDITION:
-									</div>
-									<div class="col-xs-8 col-md-8 textRight1">
-										<input type="text"/>
-									</div>
-								</div>
-								
-								<div class="row divPart1">
-									<div class="col-xs-4 col-md-4 textLeft1">
-										TIME START:
-									</div>
-									<div class="col-xs-8 col-md-8 textRight1">
-										<input type="time" class="inputCreateTask"/>
-									</div>
-								</div>
-								
-								<div class="row divPart1">
-									<div class="col-xs-4 col-md-4 textLeft1">
-										DATE START:
-									</div>
-									<div class="col-xs-8 col-md-8 textRight1">
-										<input type="date" class="inputCreateTask"/>
-									</div>
+								<div class="col-xs-7 col-md-7">
+									<select id="category" name="category" class="inputCreateTask alignCenterPage" required>
+									  <option value="-1"></option>
+									</select> 
 								</div>
 							</div>
-							<div id="divDesc1">
-								<p style="text-align: left; margin-left: 20px;">DESCRIPTION:</p>
-								<textarea form="notesSubmit" id="noteDesc"></textarea>
-								<a href="#part2"><input type="button" id="btnEnter1"/></a>
+							<div class="row">
+								<br>
+								<div class="col-xs-4 col-md-4">
+									
+								</div>
+								<div class="col-xs-4 col-md-4">
+									
+								</div>
+								<div class="col-xs-4 col-md-4">
+									<a class="btn nextTab alignCenterPage" href="#">NEXT</a>
+								</div>
+							</div>
+						  </div>
+					    
+					    <div id="machineTabContent" class="tab-pane fade in">
+					      <div class="row">
+								<div class="col-xs-3 col-md-3 alignCenterPage textCreateTask">
+									MACHINE:
+								</div>
+								<div class="col-xs-6 col-md-6 alignCenterPage ">
+									<input type="hidden" id="machineSelectedId" />
+									<input type="text" id="machineSelected" class="inputCreateTask" name="machine"/></br>
+									<input type="button" id="findMachine" name="machine" value="Search" onClick="$('#findMachineModal').modal()" class="findEquipment" /> 
+									<input type="button" value="Scan" onClick="$('#scanQRCode').modal()" class="scanEquipment" id="scanMachine"/>
+									<input type="hidden" id="machineBtn"></input>
+								</div>
+								<div class="col-xs-3 col-md-3">
+									<img src="{% static 'img/tractor-4.png' %}" id="machineSelectedImg" class="imgCreateTask"/>
+								</div>
+							</div>	
+					     
+					     <div class="row">
+								<div class="col-xs-4 col-md-4">
+									<a class="btn alignCenterPage prevTab" href="#">RETURN</a>
+								</div>
+								<div class="col-xs-4 col-md-4">
+									
+								</div>
+								<div class="col-xs-4 col-md-4">
+									<a class="btn nextTab alignCenterPage" href="#">NEXT</a>
+								</div>
+							</div>
+					    </div>
+					    
+					    <div id="implementTabContent" class="tab-pane fade in">
+					      
+					     <div class="row">
+							<div class="col-xs-3 col-md-3  alignCenterPage textCreateTask">
+								IMPLEMENT:
+								<input type="button" id="AddImplement" value=" ADD Imp" class="addImplement" />
+							</div>
+							<div class="col-xs-6 col-md-6  alignCenterPage ">
+								<input type="hidden" id="implementSelectedId" />
+								<input type="text" id="implementSelected" class="inputCreateTask"  name="implement"/>
+								<input type="button" id="implement" value="Search" onClick="$('#findImplementModal').modal()" class="findImplement findEquipment" />
+								<input type="button" value="Scan" onClick="$('#scanQRCode').modal()" class="scanEquipment" id="scanImplement" />
+								<input type="hidden" id="implementBtn"></input>
+							</div>
+							<div class="col-xs-3 col-md-3">
+								<img src="{% static 'img/implement.png' %}" id="implementSelectedImg" class="imgCreateTask"/>
 							</div>
 						</div>
 						
-						</div>
-						
-						<div id="part2" class="tab-pane fade">
-							<div id="divText2">
-								<div class="row divPart2">
-									<div class="col-xs-3 col-md-3 textLeft2">
-										MACHINE:
-									</div>
-									<div class="col-xs-6 col-md-6 textRight2">										
-										<input type="text" id="machineSelected"/></ br>
-										<input type="button" id="findMachine" value="Find a machine" onClick="$('#findTractor').modal()" class="btnCreateTask" /> 
-										<input type="button" value="Scan QRCode" onClick="$('#scanQRCode').modal()" class="btnCreateTask" />
-									</div>
-									<div class="col-xs-3 col-md-3">
-										<img src="{% static 'img/tractor-4.png' %}" class="imgCreate"/>
-									</div>
-								</div>
-								
-								<div class="row divPart2">
-									<div class="col-xs-3 col-md-3 textLeft2">
-										IMPLEMENT:
-									</div>
-									<div class="col-xs-6 col-md-6 textRight2">
-										<input type="text" id="implement"/>
-										<input type="button" id="findImplement" value="Find a implement" class="btnCreateTask" />
-										<input type="button" value="Scan QRCode" class="btnCreateTask" />
-									</div>
-									<div class="col-xs-3 col-md-3">
-										<img src="{% static 'img/implement.png' %}" class="imgCreate"/>
-									</div>
-								</div>
+						<div class="row" id="secondImplement">
+							<div class="col-xs-3 col-md-3  alignCenterPage textCreateTask">
+								IMPLEMENT:
 							</div>
-							<div id="divDesc2">
-								<a href="{% url 'schedule' %}"><input type="button" id="btnEnter2"/></a>
+							<div class="col-xs-6 col-md-6  alignCenterPage ">
+								<input type="hidden" id="implementSelectedId2" />
+								<input type="text" id="implement2Selected" class="inputCreateTask"  name="implement"/>
+								<input type="button" id="implement2" value="Search" onClick="$('#findImplementModal').modal()" class="findImplement findEquipment" />
+								<input type="button" value="Scan" onClick="$('#scanQRCode').modal()" class="scanEquipment" id="scanImplement2" />
+								<input type="hidden" id="implementBtn2"></input>
+							</div>
+							<div class="col-xs-3 col-md-3">
+								<img src="{% static 'img/implement.png' %}" id="implement2SelectedImg" class="imgCreateTask"/>
 							</div>
 						</div>
+					     <div class="both"></div>
+					     <div class="row">
+								<div class="col-xs-4 col-md-4">
+									<a class="btn alignCenterPage prevTab" href="#">RETURN</a>
+								</div>
+								<div class="col-xs-4 col-md-4">
+									
+								</div>
+								<div class="col-xs-4 col-md-4">
+									<a class="btn nextTab alignCenterPage" href="#">NEXT</a>
+								</div>
+							</div>
+					    </div>
+					    
+					    <div id="fieldTabContent" class="tab-pane fade in">
+					      
+						    <div class="row" >
+								<div class="col-xs-3 col-md-3 alignCenterPage textCreateTask">
+									Field:
+								</div>
+								<div class="col-xs-7 col-md-7">
+									<select id="field" name="field" class="inputCreateTask alignCenterPage" required>
+									  <option value="-1"></option>
+									</select> 
+								</div>
+							</div>
+							<div class="row">
+								</br>
+								<div class="col-xs-4 col-md-4">
+									<a class="btn alignCenterPage prevTab" href="#">RETURN</a>
+								</div>
+								<div class="col-xs-4 col-md-4">
+									
+								</div>
+								<div class="col-xs-4 col-md-4">
+									<a class="btn nextTab alignCenterPage" href="#">NEXT</a>
+								</div>
+							</div>
+						  </div>
+					    
+					    <div id="timeTabContent" class="tab-pane fade in">
+					      
+						    <div class="row" >
+								<div class="col-xs-4 col-md-4 textCreateTask">
+									Date:
+								</div>
+								<div class="col-xs-8 col-md-8">
+									<input id="date" name="date" type="date" class="inputCreateTask" required/>
+								</div>
+							</div>
+							<div class="row" >
+								<div class="col-xs-4 col-md-4 textCreateTask">
+									Start Time:
+								</div>
+								<div class="col-xs-8 col-md-8">
+									<input id="time" name="time" type="time" class="inputCreateTask" required/>
+								</div>
+							</div>
+							<div class="row" >
+								<div class="col-xs-4 col-md-4 textCreateTask">
+									Hours Prediction:
+								</div>
+								<div class="col-xs-8 col-md-8">
+									<input id="hours_prediction" class="inputCreateTask" name="hours_prediction" type="number" required/>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-4 col-md-4">
+									<a class="btn alignCenterPage prevTab" href="#">RETURN</a>
+								</div>
+								<div class="col-xs-4 col-md-4">
+									
+								</div>
+								<div class="col-xs-4 col-md-4">
+									<a class="btn nextTab alignCenterPage" href="#">NEXT</a>
+								</div>
+							</div>
+						  </div>
+						  
+						  <div id="infoTabContent" class="tab-pane fade in">
+					      
+						    <div class="row" >
+								<div class="col-xs-4 col-md-4 textCreateTask">
+									Passes:
+								</div>
+								<div class="col-xs-8 col-md-8">
+									<input id="passes" class="inputCreateTask" name="passes" type="number" required/>
+								</div>
+							</div>
+							
+							<div class="row" >
+								<div class="col-xs-4 col-md-4 textCreateTask">
+									Description:
+								</div>
+								<div class="col-xs-8 col-md-8">
+									<textarea  name="description" class="descriptionTask" id="description"></textarea>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-xs-4 col-md-4">
+									<a class="btn alignCenterPage prevTab" href="#">RETURN</a>
+								</div>
+								<div class="col-xs-4 col-md-4">
+									
+								</div>
+								<div class="col-xs-4 col-md-4">
+									<input type="button" id="btnSubmit"  value="SUBMIT" class="nextTab"/>
+								</div>
+							</div>
+						  </div>
+						  
 					</div>
-	
+					
 				</div>
 			</div>
-			<div class="modal fade" id="findTractor" role="dialog">
+			<footer id="foot"></footer>
+			<!--START FIND MACHINE MODAL-->
+			<div class="modal fade" id="findMachineModal" role="dialog">
 				    <div class="modal-dialog findTractor">
 				    	 <!-- Modal content-->
 					      <div class="modal-content">
@@ -193,25 +491,20 @@
 					          <div id="filterDiv">
 					          	<h3>Filters</h3>
 					          	Manufacturers:<br>
-					          	<select id="manufacturer" class="selectFilters">
+					          	<select id="manufacturerMachine" class="selectFiltersMachine selectFilters manufacturer">
 					          		<option value="">All</option>
-					          		<option value="1">JOHN DEERE</option>
-					          		<option value="2">MASSEY-FERGUSON</option>
-					          		<option value="3">NEW HOLLAND</option>
-					          		<option value="4">VERSATILE</option>
-					          		<option value="5">FORD</option>
 					          	</select>
-					          	<br><br>
+					          	<br>
 					          	HP:<br>
-					          	<select id="horse_power" class="selectFilters">
+					          	<select id="horse_power" class="selectFiltersMachine selectFilters">
 					          		<option value="0">All</option>
 					          		<option value="175">175 HP Or Greater</option>
 					          		<option value="100">100 HP Or Greater</option>
 					          		<option value="40">40 HP Or Greater</option>
 					          	</select >
-					          	<br><br>
+					          	<br>
 					          	Hitch Capacity:<br>
-					          	<select id="hitch_capacity" class="selectFilters">
+					          	<select id="hitch_capacity" class="selectFiltersMachine selectFilters">
 					          		<option value="0">All</option>
 					          		<option value="20000">20 000 lbs or Greater</option>
 					          		<option value="15000">15 000 lbs or Greater</option>
@@ -220,7 +513,7 @@
 					          	</select>
 					          	
 					          </div>
-					          <div id="showEquipmentDiv">
+					          <div class="showEquipmentDiv">
 					          	
 					          </div>
 					        </div>
@@ -232,49 +525,45 @@
 					      
 					</div>
 			</div>
-			
-			<div class="modal fade" id="scanQRCode" role="dialog">
+			<!--END FIND MACHINE MODAL-->
+			<!--START FIND IMPLEMENT MODAL-->
+			<div class="modal fade" id="findImplementModal" role="dialog">
 				    <div class="modal-dialog findTractor">
 				    	 <!-- Modal content-->
 					      <div class="modal-content">
 					        <div class="modal-header">
 					          <button type="button" class="close" data-dismiss="modal">&times;</button>
-					          <h4 class="modal-title"><strong>Scan QRCode</strong></h4>
+					          <h4 class="modal-title"><strong>Find a implement</strong></h4>
 					        </div>
 					        <div class="modal-body">
-					          	<!--SCANQRCODE -->
-					          	<div id="QR-Code" class="container">
-							            <div class="panel panel-primary">
-							                <div class="panel-heading" style="display: inline-block;width: 100%;  text-align: center; color: white; background: #1F3801;">
-							                    
-							                    <div style="margin auto 40px;text-align: center;">
-							                    	<span style="font-size: 20px">Type:  <input type="text" id="" style="color:black;"/> 
-							                    		<a href="#"><button data-dismiss="modal" id="submit" title="Play" type="button" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-play"></span></button><a></a>
-							                    		or Scan QR Code: </span>
-							                    <select id="cameraId" class="form-control" style="display: inline-block;width: auto;"></select>
-							                    <button id="play" data-toggle="tooltip" title="Play" type="submit" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-play"></span></button>
-							                    
-							                </div>
-							            </div>
-							            <div class="panel-body">
-							                <div class="col-md-12" style="text-align: center;">
-							                	
-							                    <div class="well" style="position: relative;display: inline-block;">
-							                        <canvas id="qr-canvas" width="320" height="240"></canvas>
-							                        <div class="scanner-laser laser-rightBottom" style="opacity: 0.5;"></div>
-							                        <div class="scanner-laser laser-rightTop" style="opacity: 0.5;"></div>
-							                        <div class="scanner-laser laser-leftBottom" style="opacity: 0.5;"></div>
-							                        <div class="scanner-laser laser-leftTop" style="opacity: 0.5;"></div>
-							                    </div>
-							                    
-							                </div>
-							                
-							            </div>
-							            <div class="panel-footer">
-							            </div>
-							        </div>
-							    </div>
-							    <!--END SCANQRCODE -->
+					          <div id="filterDiv">
+					          	<h3>Filters</h3>
+					          	Manufacturers:<br>
+					          	<select id="manufacturerImplement" class="selectFiltersImplement selectFilters manufacturer">
+					          		<option value="">All</option>
+					          	</select>
+					          	<br><br>
+					          	HP required:<br>
+					          	<select id="horse_power_required" class="selectFiltersImplement selectFilters">
+					          		<option value="0">All</option>
+					          		<option value="175">175 HP Or Greater</option>
+					          		<option value="100">100 HP Or Greater</option>
+					          		<option value="40">40 HP Or Greater</option>
+					          	</select >
+					          	<br><br>
+					          	Hitch Capacity required:<br>
+					          	<select id="hitch_capacity_required" class="selectFiltersImplement selectFilters">
+					          		<option value="0">All</option>
+					          		<option value="20000">20 000 lbs or Greater</option>
+					          		<option value="15000">15 000 lbs or Greater</option>
+					          		<option value="10000">10 000 lbs or Greater</option>
+					          		<option value="5000">5 000 lbs or Greater</option>
+					          	</select>
+					          	
+					          </div>
+					          <div class="showImplementDiv">
+					          	
+					          </div>
 					        </div>
 					 		<div class="clearBoth"></div>
 					        <div class="modal-footer">
@@ -284,14 +573,52 @@
 					      
 					</div>
 			</div>
-			
-			<div id="clearBoth"></div>
+			<!--END FIND IMPLEMENT MODAL-->
+			<!--SCANQRCODE MACHINE/IMPLEMENT -->
+			<div class="modal fade" id="scanQRCode" role="dialog">
+					    <div class="modal-dialog findTractor">
+					    	 <!-- Modal content-->
+						      <div class="modal-content">						        						   						        
+						        <div class="modal-body">
+						          	<!--SCANQRCODE -->
+						          	<div id="QR-Code" class="container">
+								        <div class="panel panel-primary col-xs-12" style="border: none;">
+	                       					 <div style="margin auto 40px; text-align: center; padding-top: 10px;">                          
+	                           					 <select id="cameraId" class="form-control" style="display: inline-block;width: auto; display: none;"></select>
+	                           					 <a href="#">
+	                              					  <input id="play" value="Scan QR-Code" title="Play" type="button" class="btn btn-success btn-sm"></input>   
+	                          					  </a>
+	                       					 </div>  
+	                   					 <div class="panel-body" id="contentQRCode" style="padding-top: 10px; padding-bottom: 0px;">
+	                    				    <div class="col-md-12 col-xs-12" style="text-align: center;">
+	                            				<div class="well" id="well" style="padding: 0px; position: relative;display: inline-block; border: green solid 2px;">
+	                               					 <canvas id="qr-canvas" width="200px" height="200px"></canvas>
+	                               					 <div class="scanner-laser laser-rightBottom" style="opacity: 0.5;"></div>
+					                                <div class="scanner-laser laser-rightTop" style="opacity: 0.5;"></div>
+					                                <div class="scanner-laser laser-leftBottom" style="opacity: 0.5;"></div>
+					                                <div class="scanner-laser laser-leftTop" style="opacity: 0.5;"></div>
+					                            </div>
+					                        </div>
+					                    </div>    
+	                   				 <div style="margin auto 40px; text-align: center;">     
+		                                <input type="text" id="qr_code_typed" style="color:black;" placeholder="Type QR-Code"/> 
+		                                <a id="linkEquipmemt" href="#">
+		                                    <button id="submitBtnModal" title="Play" type="button" class="btn btn-success btn-sm">
+		                                        <span class="glyphicon glyphicon-play"></span>
+		                                    </button>
+		                                </a>
+	                        		</div>         
+	                			</div>
+							    <!--END SCANQRCODE MACHINE/IMPLEMENT-->
+			<div class="clearBoth">&nbsp;</div>
 		</div>
-		<footer id="foot"></footer>
+		
 	</body>
 	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 	<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="{% static 'WebCodeCam/js/mainCreateTaskEquipment.js' %}"></script>
+	<script type="text/javascript" src="{% static 'WebCodeCam/js/main.js' %}"></script>
+	<script type="text/javascript" src="{% static 'WebCodeCam/js/startScanQRCode.js' %}"></script>
+	<!--<script type="text/javascript" src="{% static 'WebCodeCam/js/mainCreateTaskEquipment.js' %}"></script>-->
     <script type="text/javascript" src="{% static 'WebCodeCam/js/qrcodelib.js' %}"></script>
     <script type="text/javascript" src="{% static 'WebCodeCam/js/WebCodeCam.js' %}"></script>
 </html>

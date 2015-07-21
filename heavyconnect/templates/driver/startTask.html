@@ -3,83 +3,349 @@
 	<head>
 		{% load staticfiles %}
 		<script src=" {% static 'js/jquery-1.11.2.min.js' %}"></script>
+		<script src=" {% static 'js/script.js' %}"></script>
 		<script>
+
+			var checkMachine, // Check if machine is verified ok
+				checkImplement, // Check if implement is verified ok 
+				checkField, // Check if field is verified ok 
+				checkTask; // Check if field is verified ok 
+
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerDriver' %}");
+
+				var item = {}; // Stores parameters from the url
+				
+				item = getParametersUrl();
+				
+				getTaskInfo("{{ csrf_token }}", "{% url 'getTaskInfo' %}", item.task_id); //Ajax
+
+				//Events
+
+				//Hide the second implement
+				$("#secondImplement").hide();
+				
+				//Change tabs when clicks in the buttons NEXT and RETURN
+				$('.nextTab').click(function(){
+					$('.nav-tabs > .active').next('li').find('a').trigger('click');
+				});
+				$('.prevTab').click(function(){
+				  	$('.nav-tabs > .active').prev('li').find('a').trigger('click');
+				});
+
+				//Verify which was pressed to scan correctly
+				$("#scanMachine").click(function() {
+					$("#machineBtn").val(1);
+					$("#implementBtn").val(0);
+					$("#implementBtn2").val(0);
+				});
+				$("#scanImplement").click(function() {
+					$("#implementBtn").val(1);
+					$("#machineBtn").val(0);
+					$("#implementBtn2").val(0);
+				});
+
+				$("#submitBtnModal").click(function (){
+					if ($("#machineBtn").val() == 1) {
+						checkMachine = checkQRCode("machineTab", $("#machineSelectedStart").val(), $("#machineScannedQRCode").val());
+						$('#scanQRCode').modal("hide");
+					}else if($("#implementBtn").val() == 1){
+						checkImplement = checkQRCode("implementTab", $("#implementSelectedStart").val(), $("#implementScannedQRCode").val());
+						$('#scanQRCode').modal("hide");
+					}
+				});
+				
+				$("#checkField").click(function (){
+					checkField = confirm("Are you sure?");
+					checkTaskField("fieldTab", checkField);
+				});
+
+				$("#checkTask").click(function (){
+					checkTask = confirm("Are you sure?");
+					checkTaskField("taskTab", checkTask);
+				});
+
+				$("#start").click(function (){
+					startTask("{{ csrf_token }}", "{% url 'startNewTask' %}", item.task_id);
+				});
 			});
+
+			function startTask(token, url, task_id){
+				//alert(checkTask);
+				if(checkImplement == true && checkMachine == true && checkTask == true && checkField == true) {
+					$.ajax({
+						method : "POST",
+						url : url,
+						data : {
+							"csrfmiddlewaretoken" : token,
+							"task_id" : task_id
+						},
+						datatype : "json",
+						success : function(data, status, xhr) {
+							if(data.success){
+								alert("Task was started");
+								document.location("{% url 'taskFlow' %}");
+							}
+						}
+					});
+					
+				}else{
+					alert("All fields were not checked!\nPlease Check all fields");
+				}
+			}
+
+			function checkTaskField(div1, tmp){
+				if (tmp == true) {
+					$("#" + div1).addClass("tabSucess");
+				}else{
+					$("#" + div1).addClass("tabSucess");
+				}
+			}
+
+			function getTaskInfo(token, url, task_id) {
+				$.ajax({
+					method : "POST",
+					url : url,
+					data : {
+						"csrfmiddlewaretoken" : token,
+						"task_id" : task_id
+					},
+					datatype : "json",
+					success : function(data, status, xhr) {
+						//alert(data.code);
+						$("#implementSelectedStart").val(data.implement_nickname);
+						$("#inputField").html(data.field);
+						$("#inputDescription").html(data.description);
+						$("#machineSelectedStart").val(data.machine_nickname);
+					}
+				});
+			}
+
+			function checkQRCode(div1, qr_code_input, qr_code_scanned){
+				//alert(qr_code_scanned);
+				if ($("#qr_code_typed").val() == qr_code_input || qr_code_input == qr_code_scanned){
+					$("#" + div1).addClass("tabSucess");
+					return true;
+				}else{
+					$("#" + div1).removeClass("tabSucess");
+					alert("Invalid QRCode");
+					return false;
+				}
+			}
 		</script>
+		<style>
+			.inputTask{
+				width: 300px;
+				text-align: center;
+			}
+			.textCreateTask{
+				margin: auto;
+			}
+		</style>
 	</head>
 	<body>
 		<header id="head"></header>
 		<div id="wrapper">
 			<div id="content">
-				<div id="namePage">
-					TASKFLOW
+				<div class="namePageCenter">
+					Start Task
 				</div>
-				<div id="divTaskS">
-					NEW TASK:
-					<div class="row taskRows1">
-						<div class="col-xs-2 col-md-2 colNameTask">
-							TASKFLOW:
+				<div id="contentCreateTask">
+					
+					<ul class="nav nav-tabs">
+					    <li class="active"><a id="taskTab" data-toggle="tab" href="#taskTabContent">Task</a></li>
+					    <li><a id="machineTab" data-toggle="tab" href="#machineTabContent">Machine</a></li>
+					    <li><a id="implementTab" data-toggle="tab" href="#implementTabContent">Implement</a></li>
+					    <li><a id="fieldTab" data-toggle="tab" href="#fieldTabContent">Field</a></li>
+					</ul>
+					
+					<div class="tab-content" >
+						<div id="taskTabContent" class="tab-pane fade in active">
+					      
+						    <div class="row" >
+						    	<div class="col-xs-3 col-md-3">
+								</div>
+								<div class="col-xs-3 col-md-3 alignCenterPage textCreateTask taskRows1">
+									<span class="inputTask" id="inputDescription"></span>							
+								</div>
+								<div class="col-xs-3 col-md-3 alignCenterPage textCreateTask">
+									<input type="button" value="Check Task" id="checkTask" class="btnCreateTask btnScanQRCode" />
+								</div>
+								<div class="col-xs-3 col-md-3">
+								</div>
+							</div>
+							<div class="row">
+								<br>
+								<div class="col-xs-4 col-md-4">
+									
+								</div>
+								<div class="col-xs-4 col-md-4">
+									
+								</div>
+								<div class="col-xs-4 col-md-4">
+									<a class="btn nextTab alignCenterPage" href="#">NEXT</a>
+								</div>
+							</div>
+						  </div>	
+						  
+						  <div id="machineTabContent" class="tab-pane fade in">
+					      <div class="row">
+								<div class="col-xs-3 col-md-3 alignCenterPage textCreateTask taskRows2">
+									MACHINE:
+								</div>
+								<div class="col-xs-6 col-md-6 alignCenterPage ">
+									<input type="hidden" id="machineSelectedId" />
+									<input type="text" id="machineSelectedStart" class="inputCreateTask" name="machine" readonly="true"/></br> 
+									<input type="hidden" id="machineScannedQRCode"></input>
+									<input type="button" value="Scan" onClick="$('#scanQRCode').modal()" class="scanEquipment" id="scanMachine"/>
+									<input type="hidden" id="machineBtn"></input>
+								</div>
+								<div class="col-xs-3 col-md-3">
+									<img src="{% static 'img/tractor-4.png' %}" id="machineSelectedImg" class="imgCreateTask"/>
+								</div>
+							</div>	
+					     
+					     <div class="row">
+								<div class="col-xs-4 col-md-4">
+									<a class="btn alignCenterPage prevTab" href="#">RETURN</a>
+								</div>
+								<div class="col-xs-4 col-md-4">
+									
+								</div>
+								<div class="col-xs-4 col-md-4">
+									<a class="btn nextTab alignCenterPage" href="#">NEXT</a>
+								</div>
+							</div>
+					    </div>
+						  
+						<div id="implementTabContent" class="tab-pane fade in">
+					      
+					     <div class="row">
+							<div class="col-xs-3 col-md-3  alignCenterPage textCreateTask taskRows3">
+								IMPLEMENT:
+							</div>
+							<div class="col-xs-6 col-md-6  alignCenterPage ">
+								<input type="hidden" id="implementSelectedId" />
+								<input type="text" id="implementSelectedStart" class="inputCreateTask"  name="implement" readonly="true"/>
+								<input type="hidden" id="implementScannedQRCode"></input>
+								<input type="button" value="Scan" onClick="$('#scanQRCode').modal()" class="scanEquipment" id="scanImplement" />
+								<input type="hidden" id="implementBtn"></input>
+							</div>
+							<div class="col-xs-3 col-md-3">
+								<img src="{% static 'img/implement.png' %}" id="implementSelectedImg" class="imgCreateTask"/>
+							</div>
 						</div>
-						<div class="col-xs-7 col-md-7">
-							<input type="text" class="inputTask" id="taskflowInput" placeholder="SCAN QR CODE OR ENTER A NUMBER" readonly="true"/>
+						
+						<div class="row" id="secondImplement">
+							<div class="col-xs-3 col-md-3  alignCenterPage textCreateTask">
+								IMPLEMENT:
+							</div>
+							<div class="col-xs-6 col-md-6  alignCenterPage taskRows4">
+								<input type="hidden" id="implementSelectedId2" />
+								<input type="text" id="implement2Selected" class="inputCreateTask"  name="implement" readonly="true"/>
+								<input type="button" value="Scan" onClick="$('#scanQRCode').modal()" class="scanEquipment" id="scanImplement2" />
+								<input type="hidden" id="implementBtn2"></input>
+							</div>
+							<div class="col-xs-3 col-md-3">
+								<img src="{% static 'img/implement.png' %}" id="implement2SelectedImg" class="imgCreateTask"/>
+							</div>
 						</div>
-						<div class="col-xs-2 col-md-2">
-							<img src="{% static 'img/tractor-4.png' %}" class="imgTask"/>
-						</div>
-					</div>
-					<div class="row taskRows2">
-						<div class="col-xs-2 col-md-2 colNameTask">
-							IMPLEMENT:
-						</div>
-						<div class="col-xs-7 col-md-7">
-							<input type="text" class="inputTask" id="taskflowInput" placeholder="SCAN QR CODE OR ENTER A NUMBER" readonly="true"/>
-						</div>
-						<div class="col-xs-2 col-md-2">
-							<img src="{% static 'img/implement.png' %}" class="imgTask"/>
-						</div>
-					</div>
-					<div class="row taskRows3">
-						<div class="col-xs-2 col-md-2 colNameTask">
-							FIELD:
-						</div>
-						<div class="col-xs-7 col-md-7">
-							<input type="text" class="inputTask" id="taskflowInput" placeholder="SCAN QR CODE OR ENTER A NUMBER" readonly="true"/>
-						</div>
-						<div class="col-xs-2 col-md-2">
-							<img src="{% static 'img/map.png' %}" class="imgTask"/>
-						</div>
-					</div>
-					<div class="row taskRows4">
-						<div class="col-xs-2 col-md-2 colNameTask">
-							TASK:
-						</div>
-						<div class="col-xs-7 col-md-7">
-							<input type="text" class="inputTask" id="taskflowInput" placeholder="SCAN QR CODE OR ENTER A NUMBER" readonly="true"/>
-						</div>
-						<div class="col-xs-2 col-md-2">
+					     <div class="both"></div>
+					     <div class="row">
+								<div class="col-xs-4 col-md-4">
+									<a class="btn alignCenterPage prevTab" href="#">RETURN</a>
+								</div>
+								<div class="col-xs-4 col-md-4">
+									
+								</div>
+								<div class="col-xs-4 col-md-4">
+									<a class="btn nextTab alignCenterPage" href="#">NEXT</a>
+								</div>
+							</div>
+					    </div>  
+						  
+						<div id="fieldTabContent" class="tab-pane fade in">
+					      
+						    <div class="row" >
+								<div class="col-xs-6 col-md-6 alignCenterPage textCreateTask taskRows1">
+									<span class="inputTask" id="inputField"></span>									
+								</div>
+								<div class="col-xs-3 col-md-3 alignCenterPage textCreateTask">
+									<input type="button" value="Check Field" id="checkField" class="btnCreateTask btnScanQRCode" />
+								</div>
+								<div class="col-xs-3 col-md-3">
 
-						</div>
-					</div>
-					<div class="row taskRowBut">
-						<div class="col-xs-3 col-md-3" style="padding: 0px;">
-							<a href="indexDriver.html">
-							<input type="button" id="lastTaskBut"/>
-							</a>
-						</div><div class="col-xs-6 col-md-6"></div>
-						<div class="col-xs-3 col-md-3" style="text-align: right; padding: 0px;">
-							<a href="indexDriver.html">
-							<input type="button" id="nextTaskBut" />
-							</a>
-						</div>
-					</div>
+								</div>
+							</div>
+							<div class="row">
+								</br>
+								<div class="col-xs-4 col-md-4">
+									<a class="btn alignCenterPage prevTab" href="#">RETURN</a>
+								</div>
+								<div class="col-xs-4 col-md-4">
+									
+								</div>
+								<div class="col-xs-4 col-md-4">
+									<a class="btn nextTab alignCenterPage" id="start" href="#">Start</a>
+								</div>
+							</div>
+						  </div>  						  						 
+					</div>					
 				</div>
+			</div>
+				<div class="modal fade" id="scanQRCode" role="dialog">
+					    <div class="modal-dialog findTractor">
+					    	 <!-- Modal content-->
+						      <div class="modal-content">						        						   						        
+						        <div class="modal-body">
+						          	<!--SCANQRCODE -->
+						          	<div id="QR-Code" class="container">
+								        <div class="panel panel-primary col-xs-12" style="border: none;">
+	                       					 <div style="margin auto 40px; text-align: center; padding-top: 10px;">                          
+	                           					 <select id="cameraId" class="form-control" style="display: inline-block;width: auto; display: none;"></select>
+	                           					 <a href="#">
+	                              					  <input id="play" value="Scan QR-Code" title="Play" type="button" class="btn btn-success btn-sm"></input>   
+	                          					  </a>
+	                       					 </div>  
+	                   					 <div class="panel-body" id="contentQRCode" style="padding-top: 10px; padding-bottom: 0px;">
+	                    				    <div class="col-md-12 col-xs-12" style="text-align: center;">
+	                            				<div class="well" id="well" style="padding: 0px; position: relative;display: inline-block; border: green solid 2px;">
+	                               					 <canvas id="qr-canvas" width="200px" height="200px"></canvas>
+	                               					 <div class="scanner-laser laser-rightBottom" style="opacity: 0.5;"></div>
+					                                <div class="scanner-laser laser-rightTop" style="opacity: 0.5;"></div>
+					                                <div class="scanner-laser laser-leftBottom" style="opacity: 0.5;"></div>
+					                                <div class="scanner-laser laser-leftTop" style="opacity: 0.5;"></div>
+					                            </div>
+					                        </div>
+					                    </div>    
+	                   				 <div style="margin auto 40px; text-align: center;">     
+		                                <input type="text" id="qr_code_typed" style="color:black;" placeholder="Type QR-Code"/> 
+		                                <a id="linkEquipmemt" href="#">
+		                                    <button id="submitBtnModal" title="Play" type="button" class="btn btn-success btn-sm">
+		                                        <span class="glyphicon glyphicon-play"></span>
+		                                    </button>
+		                                </a>
+	                        		</div>         
+	                			</div>
+							    <!--END SCANQRCODE -->
+					        </div>
+					 		<div class="clearBoth"></div>
+					        <div class="modal-footer">
+					          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					        </div>
+					      </div>					      
+					</div>
 			</div>
 			<div id="clearBoth"></div>
 		</div>
 		<footer id="foot"></footer>
 	</body>
-
+	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="{% static 'WebCodeCam/js/main.js' %}"></script>
+	<script type="text/javascript" src="{% static 'WebCodeCam/js/startScanQRCode.js' %}"></script>
+	<!--<script type="text/javascript" src="{% static 'WebCodeCam/js/mainCreateTaskEquipment.js' %}"></script>-->
+    <script type="text/javascript" src="{% static 'WebCodeCam/js/qrcodelib.js' %}"></script>
+    <script type="text/javascript" src="{% static 'WebCodeCam/js/WebCodeCam.js' %}"></script>
 </html>

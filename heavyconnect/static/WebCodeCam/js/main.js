@@ -19,57 +19,14 @@
 		sh = $('#sharpness'),
 		shv = $('#sharpness-value'),
 		gr = $('#grayscale'),
-		grv = $('#grayscale-value');
+		grv = $('#grayscale-value'),
+		url = $("#url"),
+		machine = $("#machineSelected"),
+		implement = $("#implementSelected");
 		$('[data-toggle="tooltip"]').tooltip();
 	sl.css('opacity', .5);
 	pl.click(function() {
-	//function startScan() {	
-		if (typeof decoder.data().plugin_WebCodeCam == "undefined") {
-			decoder.WebCodeCam({
-				videoSource: {
-					id: $('select#cameraId').val(),
-					maxWidth: 640,
-					maxHeight: 480
-				},
-				autoBrightnessValue: 120,
-				resultFunction: function(text, imgSrc) {
-					si.attr('src', imgSrc);
-					
-					 alert(text);// Shows the QRCode scanned
-					 //document.location="{% url 'equipment' %}";
-					 document.location="../equipment";
-					sl.fadeOut(150, function() {
-						sl.fadeIn(150);
-					});
-				},
-				getUserMediaError: function() {
-					alert('Sorry, the browser you are using doesn\'t support getUserMedia');
-				},
-				cameraError: function(error) {
-					var p, message = 'Error detected with the following parameters:\n';
-					for (p in error) {
-						message += p + ': ' + error[p] + '\n';
-					}
-					alert(message);
-				}
-			});
-			sQ.text('Scanning ...');
-			sv.removeClass('disabled');
-			sp.click(function(event) {
-				sv.addClass('disabled');
-				sQ.text('Stopped');
-				decoder.data().plugin_WebCodeCam.cameraStop();
-			});
-			spAll.click(function(event) {
-				sv.addClass('disabled');
-				sQ.text('Stopped');
-				decoder.data().plugin_WebCodeCam.cameraStopAll();
-			});
-		} else {
-			sv.removeClass('disabled');
-			sQ.text('Scanning ...');
-			decoder.data().plugin_WebCodeCam.cameraPlay();
-		}
+		startScan(decoder, si, sl, sQ, sv, sp, spAll, url, machine, implement);
 	});
 	sv.click(function() {
 		if (typeof decoder.data().plugin_WebCodeCam == "undefined") return;

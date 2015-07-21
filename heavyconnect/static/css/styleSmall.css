@@ -38,8 +38,12 @@ footer {
 	width: 100%;
 	margin: 0px;
 }
+
 .both {
 	clear: both;
+}
+input[type=button]{
+	border: none;
 }
 /*** General End ***/
 
@@ -553,3 +557,381 @@ footer {
 	display: none;
 }
 /*** Check list End ***/
+
+/*** Past Tasks Begin ***/
+
+.divPast {
+	text-align: center;
+	width: 80%;
+	margin: auto;
+	min-width: 800px;
+	margin-top: 60px;
+	color: black;
+	padding: 0px;
+	padding-top: 5px;
+	font-size: 30px;
+	text-align: center;
+}
+.pastBox {
+	color: white;
+	background: #434343;
+	text-align: left;
+	margin: auto;
+	width: 38%;
+	height: 140px;
+	font-size: 12px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	line-height: 25px;
+	overflow: auto;
+}
+.btnPastTasks{
+	margin-top: 50px;
+	margin-left: 0%;
+	margin-right: 0%;
+	width: 9%;
+}
+#past1 {
+	margin-left: 2%;
+	margin-right: 2%;
+}
+#past2 {
+	float: left;
+	
+}
+#btnBack{
+	background: url('../imgSmall/buttons/backPastTasks.png') no-repeat top left;
+}
+#btnForward{
+	background: url('../imgSmall/buttons/nextPastTasks.png') no-repeat top left;
+}
+.btnBackAdv{
+	background-size: 100% 100%;
+	width: 34px;
+	border-radius: 10px;
+	height: 34px;
+	color: white;
+	font-size: 20px;
+}
+#btnReturn {
+	background: url('../imgSmall/buttons/returnPastTasks.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 161px;
+	height: 40px;
+	padding-left: 30px;
+	color: white;
+}
+.blockBtnReturn{
+	padding-top: 10px;
+	padding-bottom: 20px;
+	margin-left: 0%;
+}
+#task2{
+	margin-right: 65px;
+}
+#task1{
+	margin-right: 190px;
+}
+.dateTasks{
+	font-size: 20px;
+	float: left;
+	padding: 0px;
+	width: 50%;
+}
+.hour{
+	font-size: 12px;
+}
+/*** Past Tasks End ***/
+
+/*** Scan QR-Code Begin***/
+#play{
+	background: url('../imgSmall/buttons/scan.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 161px;
+	height: 40px;
+	font-size: 14px;
+	padding-left: 60px;
+	color: white;
+}
+
+.panel-primary{
+    height: 320px;
+}
+#QR-Code{
+    padding-top: 15px;                
+}
+#submit{
+    width: 60px;
+    height: 35px;
+    margin-bottom: 0px;
+}
+#qr_code{
+    height: 45px;
+    margin: auto;
+}
+.glyphicon{
+    font-size: 20px;
+}
+#qr_code{
+    height: 35px;
+    padding: 7px;
+    -webkit-box-shadow: inset 2px 2px 2px 0px #dddddd;
+    -moz-box-shadow: inset 2px 2px 2px 0px #dddddd;
+    box-shadow: inset 2px 2px 2px 0px #dddddd;
+}
+.btn-success{
+    border-color: none;
+}
+/*** Scan QR-Code End ***/
+*** Create Task Begin ***/
+#contentCreateTask {
+	width: 80%;
+	margin: auto;
+	margin-top: 4px;
+	margin-bottom: 10px;
+	min-width: 600px;
+	max-width: 800px;
+	min-height: 230px;
+	border-radius: 20px 20px 0px 0px;
+	box-shadow: 0px 5px 10px black;
+}
+#contentCreateTask .nav{
+	margin-bottom: 7px;
+}
+.inputCreateTask{
+	width: 100%;
+	height: 35px;
+	font-size: 20px;
+	text-align: left;
+	border: 2px solid #809A21;
+	border-radius: 10px 10px 10px 10px;
+	margin-bottom: 10px;
+}
+.imgCreateTask{
+	width: 110px;
+	height: 110px;
+	margin-left: -10px;	
+	margin-top: 10px;
+	border-radius: 10px 10px 10px 10px;
+}
+.descriptionTask{
+	width: 100%;
+	height: 70px;
+	font-size: 20px;
+	text-align: left;
+	border: 2px solid #809A21;
+	border-radius: 10px 10px 10px 10px;
+	margin-bottom: 10px;
+	padding: 5px;
+}
+
+.alignCenterPage{
+	margin-top: 40px;
+}
+
+.textCreateTask{
+	font-size: 18px;
+	text-align: right;
+	color: #809A21;
+	font-weight: bold;
+	line-height: 35px;
+}
+
+#AddImplement{
+	background: url('../imgSmall/buttons/addImplement.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 140px;
+	height: 35px;
+	margin-top: 10px;
+	margin-left: 5px;
+	margin-bottom: 5px;
+	box-shadow: 2px 2px 5px gray;
+	border-radius: 7px;
+	border: none;
+	color: white;
+}
+#AddImplement:hover{
+	background: url('../imgSmall/buttons/addImplementHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+.findEquipment{
+	background: url('../imgSmall/buttons/search.png') no-repeat top left;
+	background-size: 100% 100%;
+	min-width: 120px;
+	width: 48%;
+	height: 35px;
+	box-shadow: 2px 2px 5px gray;
+	border-radius: 7px;
+	border: none;
+	text-align: left;
+	padding-left: 15%;
+	color: white;
+	font-size: 18px;
+	font-weight: bold;
+}
+.findEquipment:hover{
+	background: url('../imgSmall/buttons/searchHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+.scanEquipment{
+	background: url('../imgSmall/buttons/scan.png') no-repeat top left;
+	background-size: 100% 100%;
+	min-width: 120px;
+	width: 48%;
+	height: 35px;
+	box-shadow: 2px 2px 5px gray;
+	border-radius: 7px;
+	border: none;
+	text-align: left;
+	padding-left: 20%;
+	color: white;
+	font-size: 18px;
+	font-weight: bold;
+}
+.scanEquipment:hover{
+	background: url('../imgSmall/buttons/scanHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+.nextTab {
+	background: url('../imgSmall/buttons/next.png') no-repeat top left;
+	background-size: 100% 100%;
+	border-radius: 7px;
+	border: none;
+	box-shadow: 2px 2px 5px gray;
+	height: 35px;
+	width: 170px;
+	color: white;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: left;
+	padding-left: 35px;
+}
+.nextTab:hover {
+	background: url('../imgSmall/buttons/nextHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+
+.prevTab {
+	background: url('../imgSmall/buttons/prev.png') no-repeat top left;
+	background-size: 100% 100%;
+	border-radius: 7px;
+	border: none;
+	box-shadow: 2px 2px 5px gray;
+	height: 35px;
+	width: 170px;
+	color: white;
+	margin-top: 10px;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: right;
+	padding-right: 25px;
+}
+.prevTab:hover {
+	background: url('../imgSmall/buttons/backHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+
+/*Nav tabs*/
+.nav>li {
+	width: 100px;
+	font-weight: bold;
+}
+/*Tabs status begin*/
+.nav>li>a{
+	color: white;
+	background-color: #989898;
+	border-radius: 10px 10px 0px 0px;
+}
+.tabError{
+	background-color: red;
+}
+.nav>li>a.tabSucess{
+	background-color: #4F7219;
+	color: white;
+}
+/*Tabs status end*/
+.findTractor{
+	width: 90%;
+	min-width: 300px;
+	overflow-y: scroll; 
+	max-height: 85%;
+}
+#filterDiv{
+	width: 20%;
+	border-right: 2px solid grey;
+	float: left;
+	min-height: 300px;
+}
+#filterDiv h3{
+	margin-top: 0px;	
+}
+.selectFilters{
+	font-size: 20px;
+	width: 90%;
+}
+.showEquipmentDiv{
+	width: 79%;
+	float:right;
+	min-height: 400px;
+}
+.showImplementDiv{
+	width: 79%;
+	float:right;
+	min-height: 400px;
+}
+.tractorFiltered{
+	width: 31%;
+	min-width: 200px;
+	min-height: 300px;
+	margin-right: 10px;
+	margin-bottom: 30px;
+	background-color: #EEE;
+	float: left;
+	font-size: 20px;
+}
+.tractorFiltered img{
+	width: 200px;
+	height: 200px;
+}
+/** Create Task End ***/
+
+/*** Start CSS Scheduler page ***/
+
+#cal{
+	width: 90%;
+	height: 200px;
+	margin: auto;
+}
+#cal h2{
+	font-size: 18px;
+}
+.fc-button {
+	width: 60px;
+	height: 10px;
+}
+.fc-toolbar{
+	margin-bottom: 2px;
+}
+.fc-time span{
+	font-size: 14px;
+}
+.fc-event .fc-bg{
+	border: solid black 2px;
+}
+/*400px in the PC*/
+.fc-scroller{
+	height: 250px !important;
+}
+/*** End CSS Scheduler page ***/
+
+/*** Start Task Begin ***/
+
+.btnCreateTask{
+	background: url('../imgSmall/buttons/break.png') no-repeat top left;
+	background-size: 100% 100%;
+	color: white;
+	width: 120px;
+	font-size: 16px;
+}

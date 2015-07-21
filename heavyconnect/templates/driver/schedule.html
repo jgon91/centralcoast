@@ -2,6 +2,7 @@
 <html lang="en">
 	<head>
 		{% load staticfiles %}
+		{% load i18n %}
 		<script src="//code.jquery.com/jquery.js"></script>
 		<script src='{% static "fullcalendar/lib/moment.min.js" %}'></script>
 		<script src='{% static "fullcalendar/fullcalendar.min.js" %}'></script>
@@ -16,7 +17,7 @@
 				$("#head").load("{% url 'headerDriver' %}");
 
 				$('#cal').fullCalendar({
-					events : [{
+					/*events : [{
 						title : 'DISK 5 passes NW',
 						description : 'DISK 5 passes NW, Proin lorem sem, posuere non sapien id, tempus auctor orci. Vestibulum scelerisque a nulla in scelerisque. Etiam euismod augue non nisi rutrum, quis viverra ante porttitor. Integer convallis sem sit amet enim volutpat mollis. Fusce feugiat, est et fermentum sollicitudin, lectus purus volutpat tortor, et malesuada ligula magna ac risus. Curabitur quis eros elit. Integer ultrices turpis id luctus accumsan. Integer mattis elementum mauris, quis semper nisi congue a. Proin nec risus id nunc hendrerit varius. Integer maximus felis condimentum, condimentum dolor quis, commodo augue. Sed finibus dolor a elit pharetra, eu suscipit nulla gravida. Mauris eu tincidunt est. Nullam et auctor arcu, ut finibus nunc. ',
 						field : '3242536',
@@ -45,7 +46,15 @@
 						url : 'startTask.html',
 						color : '#F4CA02',
 						allDay : false
-					}],
+					}],*/
+					events: {
+				        url: "{% url 'getEmployeeSchedulePart'%}",
+				        error: function() {
+				            alert('{% trans "There was an error while fetching events!" %}');
+				        },
+				        color: 'yellow',   // a non-ajax option
+				        textColor: 'black' // a non-ajax option
+				   },
 					header : {
 						left : '',
 						center : 'prev title next',
@@ -54,11 +63,13 @@
 					defaultView : 'agendaWeek',
 					height : 650,
 					eventClick : function(event, jsEvent, view) {
-						$('#modalTitle').html(event.title);
+						console.log(event);
+						$('#modalTitle').html(event.category);
 						$('#description').html(event.description);
 						$('#field').html(event.field);
-						$('#taskDuration').html(event.taskDuration);
-						$('#eventUrl').attr('href', event.url);
+						//$('#taskDuration').html(event.taskDuration);
+						
+						//$('#eventUrl').attr('href', );
 						$('#fullCalModal').modal();
 						return false;
 					}
@@ -70,8 +81,8 @@
 		<header id="head"></header>
 		<div id="wrapper">
 			<div id="content" style="color:black">
-				<div id="namePage">
-					Scheduler
+				<div class="namePageCenter">
+					{% trans 'HC Scheduler' %}
 				</div>
 				<div id="cal"></div>
 				<div id="fullCalModal" class="modal fade">
@@ -79,24 +90,27 @@
 						<div class="modal-content">
 							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal">
-									<span aria-hidden="true">×</span><span class="sr-only">close</span>
+									<span aria-hidden="true">×</span><span class="sr-only">{% trans 'close' %}</span>
 
 								</button>
-								<h4 id="modalTitle" class="modal-title"></h4>
+								<h4 class="modal-title">{% trans 'TASK INFORMATION' %}</h4>
 
 							</div>
 							<div id="modalBody" class="modal-body">
-								<h3>Description</h3><strong><span id="description"></span></strong>
-								<h3>Field:</h3><strong><span id="field"></span></strong>
-								<h3>Task duration:</h3><strong><span id="taskDuration"></span> Hours</strong>
+								<strong>{% trans 'TASK:' %} </strong><span id="modalTitle"></span><br>
+								<strong>{% trans 'DESCRIPTION:' %} </strong><span id="description"></span><br>
+								<strong>{% trans 'FIELD:' %} </strong><span id="field"></span><br>
+								<strong>{% trans 'MACHINE:' %} </strong><span id="machine"></span><br>
+								<strong>{% trans 'IMPLEMENT:' %} </strong><span id="implement"></span><br>
+								<!--TASK DURSTION:<strong><span id="taskDuration"></span> Hours</strong><br>--></br>
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-default" data-dismiss="modal">
-									Close
+									{% trans 'Close' %}
 								</button>
 								<a id="eventUrl" target="_blank">
 								<button class="btn btn-primary">
-									Start Task
+									{% trans 'Start Task' %}
 								</button> </a>
 							</div>
 						</div>
@@ -104,6 +118,6 @@
 				</div>
 			</div>
 		</div>
-		<footer id="foot"></footer>
+		<!--<footer id="foot"></footer>-->
 	</body>
 </html>
