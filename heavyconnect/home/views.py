@@ -95,14 +95,23 @@ def createNewTask(request):
 def startNewTask(request):
  	result = {'success' : False}
  	if request.method == 'POST':
+		task_id = request.POST['task_id']
  		if request.is_ajax():
 			try:
-				task = EmployeeTask.objects.get(task_id = request.POST['task_id'])
-				now = datetime.datetime.now()
-				task.task_init = now
-				task.save()
-				result = {'success' : True} # Task updated with success
-			except Employee.DoesNotExist:
+				task = Task.objects.get(id = task_id)
+				try:
+					employeeTask = EmployeeTask.objects.get(task_id = task_id)
+					now = datetime.datetime.now()
+					employeeTask.start_time = now
+					if task.task_init == None:
+						task.task_init = now
+					task.status = 4 # Update status for Ongoing
+					employeeTask.save()
+					task.save()
+					result['success'] = True # Task table updated with success
+				except EmployeeTask.DoesNotExist:
+					result['code'] =  1 # EmployeeTask DoesNotExist
+			except Task.DoesNotExist:
 				result['code'] =  1 # Task DoesNotExist
  		else:
 			result['code'] = 2 #Use ajax to perform requests
@@ -596,11 +605,14 @@ def getTaskInfo(request):
 							employeeTask = EmployeeTask.objects.get(task__id = task_id)
 							result['employee'] = str(employeeTask.employee.user.first_name)+' '+str(employeeTask.employee.user.last_name)
 							result['field'] = task.field.name
+							result['category'] = task.category.description
 							result['description'] = task.description
 							result['machine_nickname'] = machineTask.machine.nickname
 							result['machine_photo'] = machineTask.machine.photo
+							result['machine_qr_code'] = machineTask.machine.qr_code
 							result['implement_nickname'] = implementTask.implement.nickname
 							result['implement_photo'] = implementTask.implement.photo
+							result['implement_qr_code'] = implementTask.implement.qr_code
 							result['success'] = True
 						except EmployeeTask.DoesNotExist:
 							result['error4'] = 'Assigned employee not found for this task' #No Task associated on EmployeeTask table

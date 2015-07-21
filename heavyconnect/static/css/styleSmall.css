@@ -665,15 +665,12 @@ input[type=button]{
     height: 35px;
     margin-bottom: 0px;
 }
-#qr_code{
-    height: 45px;
-    margin: auto;
-}
 .glyphicon{
     font-size: 20px;
 }
-#qr_code{
-    height: 35px;
+#qr_code_typed{
+   height: 35px;
+    margin: auto;
     padding: 7px;
     -webkit-box-shadow: inset 2px 2px 2px 0px #dddddd;
     -moz-box-shadow: inset 2px 2px 2px 0px #dddddd;
@@ -683,7 +680,7 @@ input[type=button]{
     border-color: none;
 }
 /*** Scan QR-Code End ***/
-*** Create Task Begin ***/
+/*** Create Task Begin ***/
 #contentCreateTask {
 	width: 80%;
 	margin: auto;
@@ -935,3 +932,5 @@ input[type=button]{
 	width: 120px;
 	font-size: 16px;
 }
+
+/*** Start Task End ***/

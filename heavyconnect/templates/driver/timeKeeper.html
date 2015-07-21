@@ -10,7 +10,7 @@
 				$("#foot").load("{%url 'footer'%}");
 				$("#head").load("{%url 'headerDriver'%}");
 				
-				getEmployeeSchedule("{{ csrf_token }}", "{% url 'employeeSchedule' %}");
+				getEmployeeSchedule("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
 
 				$("#startShift").click(function() {
 					var confirmResult = confirm("Are you sure?");
