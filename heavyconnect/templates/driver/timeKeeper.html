@@ -10,7 +10,9 @@
 				$("#foot").load("{%url 'footer'%}");
 				$("#head").load("{%url 'headerDriver'%}");
 				
-				getEmployeeSchedule("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
+
+				getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
+
 
 				$("#startShift").click(function() {
 					var confirmResult = confirm("Are you sure?");
@@ -43,7 +45,7 @@
    					}
 				});
 			});
-			function getEmployeeSchedule(token, url) {
+			function getEmployeeShifts(token, url) {
 				$(addBreak).attr("disabled", "disabled");
 				$(startBreak1).attr("disabled", "disabled");
 				$(stopBreak1).attr("disabled", "disabled");
@@ -56,7 +58,7 @@
 					datatype : "json",
 					success : function(data, status, xhr) {
 						if (data.success) {
-							if (data.hour_started != "None") {
+							if (data.hour_started != "") {
 								changeBtn("#startShift", data.hour_started.substring(0,8));
 							}
 							for(var i = 0; i < data.breaks.length; i++) {
@@ -182,8 +184,10 @@
 							} else if(data.code == 3){
 								alert("You need to start a shift first.");
 							} else if(data.code == 4){
-								alert("Error. Contact Suport.");
+								alert("There is no users associated with this id.");
 							} else if(data.code == 5){
+								alert("Error. Contact Suport.");
+							} else if(data.code == 6){
 								alert("Error. Contact Suport.");
 							}
 						}
@@ -219,7 +223,7 @@
 		<div id="wrapper">
 			<div id="content">
 				<div class="namePage">
-					<img src="{% static 'imgSmall/clock.png' %}"/>
+					<img src="{% static 'imgSmall/iconTimekeeper.png' %}"/>
 					HC TIMEKEEPER
 				</div>
 				<div class="row">
