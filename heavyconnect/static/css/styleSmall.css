@@ -488,3 +488,44 @@ input[type=button]{
 	font-size: 12px;
 }
 /*** Past Tasks End ***/
+
+/*** Scan QR-Code Begin***/
+#play{
+	background: url('../imgSmall/buttons/scan.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 161px;
+	height: 40px;
+	font-size: 14px;
+	padding-left: 60px;
+	color: white;
+}
+
+.panel-primary{
+                height: 320px;
+}
+#QR-Code{
+    padding-top: 15px;                
+}
+#submit{
+    width: 60px;
+    height: 35px;
+    margin-bottom: 0px;
+}
+#qr_code{
+    height: 45px;
+    margin: auto;
+}
+.glyphicon{
+    font-size: 20px;
+}
+#qr_code{
+    height: 35px;
+    padding: 7px;
+    -webkit-box-shadow: inset 2px 2px 2px 0px #dddddd;
+    -moz-box-shadow: inset 2px 2px 2px 0px #dddddd;
+    box-shadow: inset 2px 2px 2px 0px #dddddd;
+}
+.btn-success{
+    border-color: none;
+}
+/*** Scan QR-Code End ***/
