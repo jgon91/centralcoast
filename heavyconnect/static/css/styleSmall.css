@@ -34,6 +34,13 @@ footer {
 	font-weight: 600;
 	margin-left: 10px;
 }
+.namePageCenter {
+	float: center;
+	color: #809A21;
+	font-weight: 600;
+	margin-top: 5px;
+	font-size: 20px;
+}
 .row {
 	width: 100%;
 	margin: 0px;
@@ -683,7 +690,7 @@ input[type=button]{
     border-color: none;
 }
 /*** Scan QR-Code End ***/
-*** Create Task Begin ***/
+/*** Create Task Begin ***/
 #contentCreateTask {
 	width: 80%;
 	margin: auto;

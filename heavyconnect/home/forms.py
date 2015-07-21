@@ -254,17 +254,46 @@ class taskForm(forms.Form):
 	hours_prediction = forms.FloatField()
 	description = forms.CharField()
 	passes = forms.IntegerField()
-	machine = forms.ModelChoiceField(queryset = Machine.objects.all())
-	implement = forms.ModelChoiceField(queryset = Implement.objects.all())
-	implement2 = forms.ModelChoiceField(queryset = Implement.objects.all(), required = False)
+	machine = forms.CharField(max_length=10)
+	implement = forms.CharField(max_length=10)
+	implement2 = forms.CharField(max_length=10, required = False)
 
-	def clean_implement2(self):
-		if self.cleaned_data['implement2'] is None:
+	#@bss3
+	def clean_implement(self):
+		qr_code = self.cleaned_data['implement']
+		if qr_code is None:
 			return None
-		elif self.cleaned_data['implement2'].id != self.cleaned_data['implement'].id:
-			return self.cleaned_data['implement2']
 		else:
-			raise forms.ValidationError("The second implement cannot be the same as the first!")
+			try:
+				return Implement.objects.get(qr_code = qr_code)
+			except Implement.DoesNotExist:
+				raise forms.ValidationError("This QR code do not belong do any implement!")
+	
+	#@bss3
+	def clean_machine(self):
+		qr_code = self.cleaned_data['machine']
+		if qr_code is None:
+			return None
+		else:
+			try:
+				return Machine.objects.get(qr_code = qr_code)
+			except Machine.DoesNotExist:
+				raise forms.ValidationError("This QR code do not belong do any machine!")
+
+	#@bss3
+	def clean_implement2(self):
+		qr_code = self.cleaned_data['implement2']
+		if len(qr_code) == 0:
+			return None
+		else:
+			try:
+				implement2 = Implement.objects.get(qr_code = qr_code)
+				if implement2 is not self.cleaned_data['implement']:
+					return implement2
+				else:
+					raise forms.ValidationError("The second implement cannot be the same as the first!")
+			except Implement.DoesNotExist:
+				raise forms.ValidationError("This QR code do not belong do any implement!")
 ### End ###
 
 ### Structure for taskCategoryForm ###
