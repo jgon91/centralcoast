@@ -1259,17 +1259,18 @@ def pastTaskList(request):
 				off = int(request.POST['offset'])
 				limit = int(request.POST['limit'])
 				# Filter EmployeeTask by user, date and status task != Finished
-				emploTask   =  EmployeeTask.objects.filter(employee__user__id = request.user.id, task__status = 6)[off:limit+off]
+				emploTask   =  EmployeeTask.objects.order_by('-end_time').filter(employee__user__id = request.user.id, task__status = 6)[off:limit+off]
+				print emploTask
 				for item in emploTask:
 					aux['category'] = item.task.description
 					aux['field'] = item.task.field.name
 					aux['date'] = str(item.task.date_assigned)
 					aux['description'] = item.task.description
-					# Calculate the duratio of the task
-					duration = datetime.timedelta( hours = item.task.task_end.hour - item.task.task_init.hour, 
-											minutes = item.task.task_end.minute - item.task.task_init.minute, 	
-											seconds=item.task.task_end.second - item.task.task_init.second)
-					aux['duration'] = str(duration)[8:] # Remove the "-1 day" that appears, I don't know why.
+					# Calculate the duratio of the task based on EmployeeTask table (not in Task table)
+					duration = datetime.timedelta( hours = item.end_time.hour - item.start_time.hour, 
+													minutes = item.end_time.minute - item.start_time.minute, 	
+													seconds=item.end_time.second - item.start_time.second)
+					aux['duration'] = str(duration)
 					aux['task_id'] = item.task.id
 					aux['employee_id'] = item.employee.id
 					aux['employee_first_name'] = item.employee.user.first_name
