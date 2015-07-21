@@ -1812,7 +1812,7 @@ def beaconUpdate(request):
 			result['errorString'] = 'Use ajax to perform requests'
 	else:
 		result['code'] = 3 #Request was not POST
-		result['errorString'] = 'Request was not POST'
+		result['errorString'] = 'Request was not POST, your sent a ' + str(request.method)
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
