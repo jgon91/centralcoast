@@ -1299,7 +1299,7 @@ def pastTaskList(request):
 				for item in emploTask:
 					aux['category'] = item.task.description
 					aux['field'] = item.task.field.name
-					aux['date'] = str(item.task.date_assigned)
+					aux['date'] = str(item.start_time)
 					aux['description'] = item.task.description
 					# Calculate the duratio of the task based on EmployeeTask table (not in Task table)
 					duration = datetime.timedelta( hours = item.end_time.hour - item.start_time.hour, 
