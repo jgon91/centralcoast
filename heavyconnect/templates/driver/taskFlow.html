@@ -75,7 +75,6 @@
 						"csrfmiddlewaretoken" : token
 					},
 					success : function(data, status, xhr) {
-						//alert(data.authorized);
 						if (!data.authorized) {
 							alert("You do not have enough right to create a task!!");
 						}
@@ -103,12 +102,7 @@
 						<span class="machineModel"></span>
 						<h4>{% trans 'Field' %}</h4><span class="fieldName"></span>
 						<br>
-<<<<<<< HEAD
 						<span class="plusInfo" id="moreInfo1">{% trans 'More Info' %}</span>
-=======
-						<span class="plusInfo" id="moreInfo1"> More Info </span>
-						
->>>>>>> 6a2798b4ab40e4cbed9c36a5ed174f9b2332b043
 					</div> </a>
 					<a href="#" id="moreInfo2" class="moreInfo">
 					<div class="col-xs-4 col-md-4 nextBox" id="next2">
@@ -162,12 +156,7 @@
 								{% trans 'EMPLOYEE' %}: <span id="employeeFirstMoreInfo" class="infoModalTask"></span>
 								<span id="employeeLastMoreInfo" class="infoModalTask"></span>
 								<br>
-<<<<<<< HEAD
 								{% trans 'FIELD' %}: <span id="fieldMoreInfo" class="infoModalTask"></span>
-=======
-								FIELD: <span id="fieldMoreInfo" class="infoModalTask"></span>
-								<input type="hidden" class="task_id">
->>>>>>> 6a2798b4ab40e4cbed9c36a5ed174f9b2332b043
 								<!--br>ESTIMATED HOURS: <span id="hoursMoreInfo" class="infoModalTask"></span>-->
 							</div>
 							<a id="linkStartTask" href="">
