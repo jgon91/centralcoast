@@ -615,6 +615,7 @@ def getAllTaskCategory(request):
 # that match with Task.id desired, since the higher foreing key for Task will   	#
 # corresponde to the last person assigned to the Task.id desired.					#
 #####################################################################################
+# machine_qr_code, implement_qr_code, task_category,
 @login_required
 def getTaskInfo(request):
 	result = {'success' : False}
@@ -631,11 +632,14 @@ def getTaskInfo(request):
 							employeeTask = EmployeeTask.objects.get(task__id = task_id)
 							result['employee'] = str(employeeTask.employee.user.first_name)+' '+str(employeeTask.employee.user.last_name)
 							result['field'] = task.field.name
+							result['category'] = task.category.description
 							result['description'] = task.description
 							result['machine_nickname'] = machineTask.machine.nickname
 							result['machine_photo'] = machineTask.machine.photo
+							result['machine_qr_code'] = machineTask.machine.qr_code
 							result['implement_nickname'] = implementTask.implement.nickname
 							result['implement_photo'] = implementTask.implement.photo
+							result['implement_qr_code'] = implementTask.implement.qr_code
 							result['success'] = True
 						except EmployeeTask.DoesNotExist:
 							result['error4'] = 'Assigned employee not found for this task' #No Task associated on EmployeeTask table
