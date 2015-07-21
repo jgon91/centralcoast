@@ -92,23 +92,36 @@ def createNewTask(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+
+
 def startNewTask(request):
  	result = {'success' : False}
  	if request.method == 'POST':
+		task_id = request.POST['task_id']
  		if request.is_ajax():
 			try:
-				task = EmployeeTask.objects.get(task_id = request.POST['task_id'])
-				now = datetime.datetime.now()
-				task.task_init = now
-				task.save()
-				result = {'success' : True} # Task updated with success
-			except Employee.DoesNotExist:
+				task = Task.objects.get(id = task_id)
+				try:
+					employeeTask = EmployeeTask.objects.get(task_id = task_id)
+					now = datetime.datetime.now()
+					employeeTask.start_time = now
+					if task.task_init == None:
+						task.task_init = now
+					task.status = 4 # Update status for Ongoing
+					employeeTask.save()
+					task.save()
+					result['success'] = True # Task table updated with success
+				except EmployeeTask.DoesNotExist:
+					result['code'] =  1 # EmployeeTask DoesNotExist
+			except Task.DoesNotExist:
 				result['code'] =  1 # Task DoesNotExist
  		else:
 			result['code'] = 2 #Use ajax to perform requests
  	else:
 		result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
 
 def endTask(request):
 	result = {'success' : False}
