@@ -83,6 +83,7 @@ urlpatterns = [
 	url(r'^getFilteredMachineWithGPS/$', main_views.getFilteredMachineWithGPS, name = 'getFilteredMachineWithGPS'),
 	url(r'^getFilteredImplementWithGPS/$', main_views.getFilteredImplementWithGPS, name = 'getFilteredImplementWithGPS'),
 	url(r'^beaconUpdate/$', main_views.beaconUpdate, name = 'beaconUpdate'),
+    url(r'^getEmployeeSelfCurrentTask/$', main_views.getEmployeeSelfCurrentTask, name = 'getEmployeeSelfCurrentTask'),
     ### End ###
 
     ###Insert###

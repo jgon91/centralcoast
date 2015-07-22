@@ -1407,6 +1407,42 @@ def getEmployeeCurrentTaskInfo(request):
 	 	result['code'] = 3  #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+@login_required
+def getEmployeeSelfCurrentTask(request):
+	result = {}
+	result['success'] = False
+	if request.method == 'POST':
+		if request.is_ajax():
+			try:
+				employeeTask = EmployeeTask.objects.filter(employee__user__id = request.user.id, task__status = 4).order_by('-start_time')
+				for item in employeeTask:
+					if item.end_time is None:
+						result['task_id'] = item.task.id
+						result['task_description'] = item.task.description
+						result['category'] = item.task.category.description
+						result['field'] = item.task.field.name
+						result['success'] = True
+						equipment = getTaskImplementMachine(item.task.id, item.id)
+						if len(equipment['implement']) > 0:
+							result['machine'] = equipment['machine']
+							result['implement'] = equipment['implement']	
+					elif item.start_time > item.end_time:
+						result['task_id'] = item.task.id
+						result['task_description'] = item.task.description
+						result['category'] = item.task.category.description
+						result['field'] = item.task.field.name
+						result['success'] = True
+						equipment = getTaskImplementMachine(item.task.id, item.id)
+						if len(equipment['implement']) > 0:
+							result['machine'] = equipment['machine']
+							result['implement'] = equipment['implement']
+			except Employee.DoesNotExist:
+				result['code'] = 1 #there is no Employee associated with this user.id
+		else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else:
+	 	result['code'] = 3  #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
 
