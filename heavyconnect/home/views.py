@@ -1210,7 +1210,7 @@ def retrievePendingTask(request):
 					for each in emploTask:
 						if not each in invalidTasks:
 							emploTaskList.append(each)
-						
+
 					for item in emploTaskList:
 						aux['category'] = item.task.description
 						aux['field'] = item.task.field.name
@@ -1740,63 +1740,6 @@ def continueTask(request):
 	else:
 	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
-
-def expandInfoBox(request):
-	result = {'success' : False}
-	if request.method == 'POST':
-		if request.is_ajax():
-			try:
-				employeeTask = EmployeeTask.objects.get(id = request.POST['id'])
-				task = Task.objects.get(id = request.POST['id'])
-				taskImplementMachine = TaskImplementMachine.objects.get(id = request.POST['id'])
-				field = Field.objects.get(id = request.POST['id'])
-				time_now = datetime.datetime.now();
-				date = task.date
-				boolean = bool(str(time_now) > str(date))
-				print boolean
-				if bool(str(time_now) > str(date)):
-					employee = Employee.objects.get(id = employeeTask.employee_id)
-					result['employee_id'] = employeeTask.employee_id
-					result['hours_spent'] = employeeTask.hours_spent
-					result['user.id'] = employee.user.id
-					result['first_name'] = employee.user.first_name
-					result['last_name'] = employee.user.last_name
-					result['company_id'] = employee.company_id
-					result['taskImplementMachine.id'] = taskImplementMachine.id
-					result['implement.id'] = taskImplementMachine.implement.id
-					result['field.id'] = field.id
-				elif bool(str(time_now) < str(date)):
-					result['hours_prediction'] = task.hours_prediction
-				result[0] = {'success' : True}
-			except DoesNotExist:
-				result['code'] =  1 #There is no Implement associated with this
-		else:
-			result['code'] = 2 #Use ajax to perform requests
-	else:
-	 	result['code'] = 3 #Request was not POST
-	return HttpResponse(json.dumps(result),content_type='application/json')
-
-# Create a entry on TaskImplementMachine table and insert the following fields with information from the front-end:
-# Task_id (task_id created on last sudb-page), Machine_id, Implement_id.
-
-# Used tables: Task, TaskImplementMachine.
-# def createEntryOnTaskImplementMachine(request):
-# 	form = taskForm(request.POST)
-# 	result = {'success' : False}
-
-# 	taskImplementMachine = Task.objects.get(id = 1)#request.POST['id'])
-# 	print "task ID: " + taskImplementMachine
-# 	machine_id = form.cleaned_data['machine_id']
-# 	print "machine ID: " + machine_id
-# 	implement_id = form.cleaned_data['implement_id']
-# 	print "implement_id: " + implement_id
-# 	taskImplementMachine = TaskImplementMachine(task_id= taskImplementMachine, machine_id = machine_id, implement_id = implement_id)
-# 	print TaskImplementMachine
-# 	# TaskImplementMachine.save()
-# 	result['success'] = True
-# 	return HttpResponse(json.dumps(result),content_type='application/json')
-
-
 
 # @menezescode: Page only to show the form was correctly sended.
 def formOk(request):
