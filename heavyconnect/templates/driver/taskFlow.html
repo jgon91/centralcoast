@@ -55,9 +55,8 @@
 							if (i == 1) {
 								$("#divStartNow").attr("href", "{% url 'startTask'%}?task_id=" + data[i].task_id);
 							}
-							$("#next" + i + " .machineModel").html(data[i].machine_nickname);
-							$("#next" + i + " .fieldName").html(data[i].field);
 							$("#next" + i + " .category").html(data[i].category);
+							$("#next" + i + " .fieldName").html(data[i].field);
 							$("#next" + i + " .task_id").html(data[i].task_id);
 						};
 						taskMoreInfo = data;
@@ -99,7 +98,7 @@
 					<div class="col-xs-4 col-md-4 nextBox" id="next1">
 						<span class="titleNextTask">#1</span>
 						<br>
-						<span class="machineModel"></span>
+						<span class="category titleNextTask"></span>
 						<h4>{% trans 'Field' %}</h4><span class="fieldName"></span>
 						<br>
 						<span class="plusInfo" id="moreInfo1">{% trans 'More Info' %}</span>
@@ -108,7 +107,7 @@
 					<div class="col-xs-4 col-md-4 nextBox" id="next2">
 						<span class="titleNextTask">#2</span>
 						<br>
-						<span class="machineModel"></span>
+						<span class="category titleNextTask"></span>
 						<h4>{% trans 'Field' %}</h4><span class="fieldName"></span>
 						<br>
 						<span class="plusInfo">{% trans 'More Info' %}</span>
@@ -117,7 +116,7 @@
 					<div class="col-xs-4 col-md-4 nextBox" id="next3">
 						<span class="titleNextTask">#3</span>
 						<br>
-						<span class="machineModel"></span>
+						<span class="category titleNextTask"></span>
 						<h4>{% trans 'Field' %}</h4><span class="fieldName"></span>
 						<br>
 						<span class="plusInfo">{% trans 'More Info' %}</span>

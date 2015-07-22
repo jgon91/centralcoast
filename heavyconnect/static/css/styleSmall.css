@@ -337,6 +337,7 @@ input[type=button]{
 .pendingTasks {
 	width: 100%;
 	min-width: 640px;
+	max-width: 800px;
 	margin: auto;
 }
 .nextBox {
@@ -346,7 +347,8 @@ input[type=button]{
 	width: 31%;
 	font-size: 15px;
 	padding-bottom: 10px;
-	min-height: 170px;
+	height: 170px;
+	overflow: auto;
 }
 .titleNextTask {
 	font-size: 25px;
@@ -367,7 +369,8 @@ input[type=button]{
 	color: #434343;
 	margin-left: 2.5%;
 	margin-right: 2.5%;
-}#next2:hover {
+}
+#next2:hover {
 	background: url('../imgSmall/buttons/next1Hover.png') no-repeat top left;
 	background-size: 100% 100%;
 }
@@ -397,6 +400,7 @@ input[type=button]{
 .btnPastNextTask {
 	width: 100%;
 	min-width: 640px;
+	max-width: 800px;
 	margin: auto;
 }
 .colTasks {
