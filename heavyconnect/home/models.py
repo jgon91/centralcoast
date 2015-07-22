@@ -45,6 +45,40 @@ class EquipmentType(models.Model):
 	def __unicode__(self):
 		return "Name: " + str(self.name) + ", Category: " + str(self.category.name)
 
+class GPS(models.Model):
+	latitude = models.FloatField()
+	longitude = models.FloatField()
+
+	def __unicode__(self):
+		return "Latitude: " +str(self.latitude) + " " +  "Longitude: " +str(self.longitude)
+
+### DEMO ###
+class Beacon(models.Model):
+	REFERS_CHOICES = (
+		(1, 'Machine'),
+		(2, 'Implement'),
+	)
+
+	beacon_serial = models.CharField(max_length=10, null = True)
+	refers = models.IntegerField(choices = REFERS_CHOICES)
+
+	def __unicode__(self):
+		if self.refers == 1:
+			return 'Machine Beacon: serial = ' + self.beacon_serial
+		else:
+			return 'Implement Beacon: serial = ' + self.beacon_serial
+### DEMO ###
+
+### DEMO ###		
+class BeaconGPS(models.Model):
+	beacon = models.ForeignKey(Beacon)
+	gps = models.ForeignKey(GPS)
+	timestamp = models.DateTimeField()
+
+	def __unicode__(self):
+		return str(self.beacon) + ' ' +  str (self.gps) + ' Timestamp:' + str(self.timestamp)
+### DEMO ###
+
 class Machine(models.Model):
 	HITCH_CHOICES = (
 		(1, '1'),
@@ -70,16 +104,16 @@ class Machine(models.Model):
 		(4, 'Quarantine'),
 	)
 	OPERATORSTATION_CHOICES = (
-		('a', 'Cab'), 
+		('a', 'Cab'),
 		('b', 'Open'),
 		('c', 'Canopy'),
 	)
 	MTYPE_CHOICES = (
-		('T', 'Track'), 
+		('T', 'Track'),
 		('W', 'Wheels'),
 	)
 	STEERING_CHOICES = (
-		('M', 'Manual'), 
+		('M', 'Manual'),
 		('G', 'GPS'),
 	)
 	manufacturer_model = models.ForeignKey(ManufacturerModel)
@@ -99,8 +133,8 @@ class Machine(models.Model):
 	engine_hours = models.IntegerField()
 	service_interval = models.IntegerField()
 	base_cost = models.FloatField(default = 0)
-	m_type = models.CharField(max_length = 1, choices = MTYPE_CHOICES) 
-	front_tires = models.CharField(max_length = 20)														
+	m_type = models.CharField(max_length = 1, choices = MTYPE_CHOICES)
+	front_tires = models.CharField(max_length = 20)
 	rear_tires = models.CharField(max_length = 20)
 	steering = models.CharField(max_length = 1, choices = STEERING_CHOICES)
 	operator_station = models.CharField(max_length = 1, choices = OPERATORSTATION_CHOICES)
@@ -109,6 +143,7 @@ class Machine(models.Model):
 	photo = models.URLField(max_length = 200, blank = True)
 	photo1 = models.URLField(max_length = 200, blank = True)
 	photo2 = models.URLField(max_length = 200, blank = True)
+	beacon = models.ForeignKey(Beacon, blank = True, null = True) #DEMO
 
 	def __unicode__(self):
 		return "Manufacturer: " + str(self.manufacturer_model.manufacturer.name) + ", Model: " + str(self.manufacturer_model.model) + ", QRcode: " + str(self.qr_code)
@@ -128,7 +163,7 @@ class Implement(models.Model):
 	speed_range_min = models.FloatField()
 	speed_range_max = models.FloatField()
 	year_purchased = models.IntegerField()
-	implement_hours = models.IntegerField()	
+	implement_hours = models.IntegerField()
 	service_interval = models.IntegerField()
 	base_cost = models.FloatField()
 	hour_cost = models.FloatField()
@@ -137,6 +172,7 @@ class Implement(models.Model):
 	photo = models.URLField(max_length = 200, blank = True)
 	photo1 = models.URLField(max_length = 200, blank = True)
 	photo2 = models.URLField(max_length = 200, blank = True)
+	beacon = models.ForeignKey(Beacon, blank = True, null = True) #DEMO
 
 	def __unicode__(self):
 		return "Manufacturer: " + str(self.manufacturer_model.manufacturer.name) + ", Model: " + str(self.manufacturer_model.model) + ", QRcode: " + str(self.qr_code)
@@ -216,7 +252,7 @@ class EmployeeAttendance(models.Model):
 	hour_started = models.TimeField()
 	hour_ended = models.TimeField(null = True, blank = True)
 	signature = models.CharField(max_length = 5000, null = True, blank = True)
-	
+
 
 	def __unicode__(self):
 		return "Employee: " + str(self.employee) + ", Date: " + str(self.date)
@@ -291,13 +327,6 @@ class ImplementCertification(models.Model):
 
 	def __unicode__(self):
 		return str(self.implement) + " " +  str(self.certification)
-
-class GPS(models.Model):
-	latitude = models.FloatField()
-	longitude = models.FloatField()
-
-	def __unicode__(self):
-		return "Latitude: " +str(self.latitude) + " " +  "Longitude: " +str(self.longitude)
 
 class FieldLocalization(models.Model):
 	field = models.ForeignKey(Field)
