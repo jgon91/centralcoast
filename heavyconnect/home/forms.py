@@ -4,7 +4,7 @@
 	menezescode@gmail.com
 
 	notes: All the BooleanField are (required = False). This is hapening because if we don't
-	use the required false the form will only work wen the checkbox is marked.
+	use the required false the form will only work when the checkbox is marked.
 '''
 
 from django import forms

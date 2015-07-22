@@ -569,7 +569,7 @@ def getEquipmentInfo(request):
 					control = 0
 					for item in emploTask:
 						impementTask = ImplementTask.objects.filter(task__id = item.task.id, implement__id = implement.id).order_by('-machine_task__employee_task__start_time')[:1]
-						for item2 in impementTask:	
+						for item2 in impementTask:
 							impleTask = ImplementTask.objects.filter(machine_task__id = item2.machine_task.id)
 							if len(impleTask) != 0:
 								temp = []
@@ -1261,7 +1261,7 @@ def retrievePendingTask(request):
 				for each in emploTask:
 					if not each in invalidTasks:
 						emploTaskList.append(each)
-					
+
 				for item in emploTaskList:
 					aux['category'] = item.task.description
 					aux['field'] = item.task.field.name
@@ -1306,7 +1306,7 @@ def pastTaskList(request):
 	result.append({'success' : False})
 	if request.method == 'POST':
 	 	if request.is_ajax():
-			try:				
+			try:
 				aux = {}
 				off = int(request.POST['offset'])
 				limit = int(request.POST['limit'])
@@ -1319,8 +1319,8 @@ def pastTaskList(request):
 					aux['date'] = str(item.start_time)
 					aux['description'] = item.task.description
 					# Calculate the duratio of the task based on EmployeeTask table (not in Task table)
-					duration = datetime.timedelta( hours = item.end_time.hour - item.start_time.hour, 
-													minutes = item.end_time.minute - item.start_time.minute, 	
+					duration = datetime.timedelta( hours = item.end_time.hour - item.start_time.hour,
+													minutes = item.end_time.minute - item.start_time.minute,
 													seconds=item.end_time.second - item.start_time.second)
 					aux['duration'] = str(duration)
 					aux['task_id'] = item.task.id
@@ -1346,6 +1346,42 @@ def pastTaskList(request):
 					result.append(aux)
 					aux = {}
 				result[0] = {'success' : True}
+					# Filter EmployeeTask by user, date and status task != Finished
+					emploTask   =  EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date_assigned__lte = date2, task__status__lt = 6)[:n]
+					invalidTasks = EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date_assigned__lte = date2, task__status = 4)
+					emploTaskList = []
+					# Filter again EmployeeTask removing task with status = Ongoing
+					for each in emploTask:
+						if not each in invalidTasks:
+							emploTaskList.append(each)
+
+					for item in emploTaskList:
+						aux['category'] = item.task.description
+						aux['field'] = item.task.field.name
+						aux['date'] = str(item.task.date_assigned)
+						aux['task_id'] = item.task.id
+						aux['employee_id'] = item.employee.id
+						aux['employee_first_name'] = item.employee.user.first_name
+						aux['employee_last_name'] = item.employee.user.last_name
+						try:
+							machineTask = MachineTask.objects.get(task__id = item.task.id)
+							aux['machine_model'] = machineTask.machine.manufacturer_model.model
+							aux['machine_nickname'] = machineTask.machine.nickname
+							aux['machine_id'] = machineTask.machine.id
+						except MachineTask.DoesNotExist:
+							aux['machine_id'] = "NONE"
+						try:
+							implementTask = ImplementTask.objects.get(task__id = item.task.id)
+							aux['implement_model'] = implementTask.implement.manufacturer_model.model
+							aux['implement_nickname'] = implementTask.implement.nickname
+							aux['implement_id'] = implementTask.implement.id
+						except ImplementTask.DoesNotExist:
+							aux['implement_id'] = "NONE"
+						result.append(aux)
+						aux = {}
+					result[0] = {'success' : True}
+				else:
+					result.append({'result' : 1})#Index is invalid
 			except EmployeeTask.DoesNotExist:
 				result.append({'result' : 1})#There is no Implement associated with this
 		else:
@@ -1412,7 +1448,7 @@ def getEmployeeCurrentTaskInfo(request):
 	if request.method == 'POST':
 		employee_id = request.POST['employee_id']
 	 	if request.is_ajax():
-			try:				
+			try:
 				employeeTask = EmployeeTask.objects.get(employee__id = employee_id, task__status = 4)# Return Ongoing task of requested Employee
 				result['task_id'] = employeeTask.task.id
 				result['task_description'] = employeeTask.task.category.description
@@ -1544,7 +1580,7 @@ def getEmployeeShifts(request):
 					result['hour_started'] = str(attendance.hour_started)
 					result['hour_ended'] = str(attendance.hour_ended)
 					breaks = Break.objects.filter(attendance_id = attendance.id).order_by('start').values()
-					
+
 					temp = []
 					for item in breaks:
 						temp.append((str(item['start']),str(item['end'])))
@@ -1934,63 +1970,6 @@ def continueTask(request):
 	else:
 	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
-
-def expandInfoBox(request):
-	result = {'success' : False}
-	if request.method == 'POST':
-		if request.is_ajax():
-			try:
-				employeeTask = EmployeeTask.objects.get(id = request.POST['id'])
-				task = Task.objects.get(id = request.POST['id'])
-				taskImplementMachine = TaskImplementMachine.objects.get(id = request.POST['id'])
-				field = Field.objects.get(id = request.POST['id'])
-				time_now = datetime.datetime.now();
-				date = task.date
-				boolean = bool(str(time_now) > str(date))
-				print boolean
-				if bool(str(time_now) > str(date)):
-					employee = Employee.objects.get(id = employeeTask.employee_id)
-					result['employee_id'] = employeeTask.employee_id
-					result['hours_spent'] = employeeTask.hours_spent
-					result['user.id'] = employee.user.id
-					result['first_name'] = employee.user.first_name
-					result['last_name'] = employee.user.last_name
-					result['company_id'] = employee.company_id
-					result['taskImplementMachine.id'] = taskImplementMachine.id
-					result['implement.id'] = taskImplementMachine.implement.id
-					result['field.id'] = field.id
-				elif bool(str(time_now) < str(date)):
-					result['hours_prediction'] = task.hours_prediction
-				result[0] = {'success' : True}
-			except DoesNotExist:
-				result['code'] =  1 #There is no Implement associated with this
-		else:
-			result['code'] = 2 #Use ajax to perform requests
-	else:
-	 	result['code'] = 3 #Request was not POST
-	return HttpResponse(json.dumps(result),content_type='application/json')
-
-# Create a entry on TaskImplementMachine table and insert the following fields with information from the front-end:
-# Task_id (task_id created on last sudb-page), Machine_id, Implement_id.
-
-# Used tables: Task, TaskImplementMachine.
-# def createEntryOnTaskImplementMachine(request):
-# 	form = taskForm(request.POST)
-# 	result = {'success' : False}
-
-# 	taskImplementMachine = Task.objects.get(id = 1)#request.POST['id'])
-# 	print "task ID: " + taskImplementMachine
-# 	machine_id = form.cleaned_data['machine_id']
-# 	print "machine ID: " + machine_id
-# 	implement_id = form.cleaned_data['implement_id']
-# 	print "implement_id: " + implement_id
-# 	taskImplementMachine = TaskImplementMachine(task_id= taskImplementMachine, machine_id = machine_id, implement_id = implement_id)
-# 	print TaskImplementMachine
-# 	# TaskImplementMachine.save()
-# 	result['success'] = True
-# 	return HttpResponse(json.dumps(result),content_type='application/json')
-
-
 
 # @menezescode: Page only to show the form was correctly sended.
 def formOk(request):
