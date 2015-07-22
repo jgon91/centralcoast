@@ -2093,16 +2093,16 @@ def getFilteredMachineWithGPS(request):
 		status_attention = 0
 		status_broken = 0
 		status_quarantine = 0
-		#if request.POST['status_ok'] == 'False':
-		#	status_ok = 1
-		#if request.POST['status_attention'] == 'False':
-		#	status_attention = 2
-		#if request.POST['status_broken'] == 'False':
-		#	status_broken = 3
-		#if request.POST['status_quarantine'] == 'False':
-		#	status_quarantine = 4
+		if request.POST['status_ok'] == '0':
+			status_ok = 1
+		if request.POST['status_attention'] == '0':
+			status_attention = 2
+		if request.POST['status_broken'] == '0':
+			status_broken = 3
+		if request.POST['status_quarantine'] == '0':
+			status_quarantine = 4
 
-	 	if request.is_ajax():
+	 	if not request.is_ajax():
 			try:
 				# Filtering by manufacturer, hitch_cap_req, horse_power_req, and status.
 				# Do not filter by manufacture in case if this filter hasn't been chosen
