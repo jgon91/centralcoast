@@ -27,9 +27,9 @@
 					$('#startTask').modal();
 
 					$("#dataMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].date.substring(0, 10));
-					$("#implementNameMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].implement_nickname);
-					$("#implementIdMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].implement_id);
-					$("#implementModelMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].implement_model);
+					$("#implementNameMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].implement1_nickname);
+					$("#implementIdMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].implement1_id);
+					$("#implementModelMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].implement1_model);
 					$("#tractorNameMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].machine_nickname);
 					$("#tractorIdMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].machine_id);
 					$("#tractorModelMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].machine_model);
@@ -51,6 +51,7 @@
 					},
 					datatype : "json",
 					success : function(data, status, xhr) {
+						//alert(data.length);
 						for (var i = 1; i < data.length; i++) {
 							if (i == 1) {
 								$("#divStartNow").attr("href", "{% url 'startTask'%}?task_id=" + data[i].task_id);

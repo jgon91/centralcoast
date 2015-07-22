@@ -1,5 +1,5 @@
 
-function startScan(decoder, si, sl, sQ, sv, sp, spAll, url, machine, implement) {
+function startScan(decoder, si, sl, sQ, sv, sp, spAll, url, machine, implement, implement2) {
 	if (typeof decoder.data().plugin_WebCodeCam == "undefined") {
 			decoder.WebCodeCam({
 				videoSource: {
@@ -13,23 +13,32 @@ function startScan(decoder, si, sl, sQ, sv, sp, spAll, url, machine, implement) 
 					
 					 alert(text);// Shows the QRCode scanned
 
-					if(url.val() != undefined){
+					 if(url.val() != undefined){
 						document.location = url.val() + text;
-					}
-					if($("#machineBtn").val() == 1){
+					}if($("#machineBtn").val() == 1){
 						machine.val(text);//Create Task
+						//$("#machineSelectedStart").val(text)
 						$('#machineScannedQRCode').val(text);// Start Task
 						$('#scanQRCode').modal("hide");
-						$("#implementBtn").val(0);
+						
 						//check machine in start task page
 						checkMachine = checkQRCode("machineTab", $("#machineSelectedStart").val(), $("#machineScannedQRCode").val());
 					}if($("#implementBtn").val() == 1){
 						implement.val(text);// Create Task
+						//$("#implementSelectedStart").val(text)
 						$('#implementScannedQRCode').val(text);// Start Task
 						$('#scanQRCode').modal("hide");
-						$("#machineBtn").val(0);
+						
 						//check implment in start task page
 						checkImplement = checkQRCode("implementTab", $("#implementSelectedStart").val(), $("#implementScannedQRCode").val());
+					}if($("#implementBtn2").val() == 1){
+						implement2.val(text);// Create Task
+						//$("#implement2SelectedStart").val(text)
+						$('#implement2ScannedQRCode').val(text);// Start Task
+						$('#scanQRCode').modal("hide");
+						
+						//check implment in start task page
+						checkImplement2 = checkQRCode("implementTab", $("#implement2SelectedStart").val(), $("#implement2ScannedQRCode").val());
 					}
 					 //document.location="#";
 					sl.fadeOut(150, function() {

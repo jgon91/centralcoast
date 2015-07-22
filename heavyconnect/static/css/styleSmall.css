@@ -720,7 +720,7 @@ input[type=button]{
 	max-width: 800px;
 	min-height: 230px;
 	border-radius: 20px 20px 0px 0px;
-	box-shadow: 0px 5px 10px black;
+	box-shadow: 0px 5px 10px grey;
 }
 #contentCreateTask .nav {
 	margin-bottom: 7px;
@@ -776,6 +776,24 @@ input[type=button]{
 }
 #AddImplement:hover {
 	background: url('../imgSmall/buttons/addImplementHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+
+#delImplement {
+	background: url('../imgSmall/buttons/startNow.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 140px;
+	height: 35px;
+	margin-top: 10px;
+	margin-left: 5px;
+	margin-bottom: 5px;
+	box-shadow: 2px 2px 5px gray;
+	border-radius: 7px;
+	border: none;
+	color: white;
+}
+#delImplement:hover {
+	background: url('../imgSmall/buttons/startNow.png') no-repeat top left;
 	background-size: 100% 100%;
 }
 .findEquipment {
