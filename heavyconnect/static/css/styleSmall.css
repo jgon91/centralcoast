@@ -497,7 +497,7 @@ input[type=button]{
 	height: 50px;
 	float: right;
 	border: none;
-	border-radius: 10px;
+	border-radius: 7px;
 	box-shadow: -1px 1px 7px gray;
 	margin: 0px;
 	padding: 0px;
@@ -518,7 +518,7 @@ input[type=button]{
 .infoModalTask {
 	color: #434343;
 }
-	/*** Modal Start Task Begin ***/
+	/*** Modal Start Task End ***/
 /*** Taskflow End ***/
 
 /*** Checklist Begin ***/
@@ -950,6 +950,63 @@ input[type=button]{
 .fc-scroller {
 	height: 250px !important;
 }
+	/*** Modal Scheduler Begin ***/
+.modalSchedule {
+	border-radius: 20px;
+	width: 90%;
+	margin: auto;
+	margin-top: 70px;
+	color: #466C00;
+}
+#titleModalSchedule {
+	font-size: 25px;
+	font-weight: 700;
+}
+#btnAprove {
+	background: url('../imgSmall/buttons/startNow.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 140px;
+	height: 40px;
+	float: right;
+	border: none;
+	border-radius: 10px;
+	box-shadow: 2px 2px 5px gray;
+	margin-right: 20px;
+	margin-bottom: 20px;
+	text-decoration: none;
+	color: white;
+	font-size: 20px;
+}
+#btnAprove:hover {
+	background: url('../imgSmall/buttons/startNowHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+.closeSchedule {
+	background: url('../imgSmall/buttons/esc.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 50px;
+	height: 50px;
+	float: right;
+	border: none;
+	border-radius: 7px;
+	box-shadow: -1px 1px 7px gray;
+	margin: 0px;
+	padding: 0px;
+}
+.closeSchedule:hover {
+	background: url('../imgSmall/buttons/escHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+.infoSchedule {
+	text-align: left;
+	padding-left: 20px;
+	font-size: 20px;
+	font-weight: 600;
+}
+.infoModalSchedule {
+	color: #434343;
+}
+	/*** Modal Scheduler End ***/
 /*** End CSS Scheduler page ***/
 
 /*** Start Task Begin ***/
@@ -962,7 +1019,6 @@ input[type=button]{
 	margin-left: 120px;
 	margin-top: 20px;
 }
-
 .startTaskInfo {
 	font-size: 22px;
 	text-align: left;
@@ -972,14 +1028,13 @@ input[type=button]{
 	margin-top: -10px;
 	line-height: 35px;
 }
-.startTaskInfo span{
+.startTaskInfo span {
 	color: black;
 }
-#rowFieldStartTask{
+#rowFieldStartTask {
 	height: 100px;
 }
-#rowFieldStartTask2{
+#rowFieldStartTask2 {
 	margin-top: -100px;
 }
-
 /*** Start Task End ***/
