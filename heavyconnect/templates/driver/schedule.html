@@ -85,34 +85,24 @@
 					{% trans 'HC Scheduler' %}
 				</div>
 				<div id="cal"></div>
-				<div id="fullCalModal" class="modal fade">
+				<div class="modal fade" id="fullCalModal" role="dialog">
 					<div class="modal-dialog">
-						<div class="modal-content">
-							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal">
-									<span aria-hidden="true">×</span><span class="sr-only">{% trans 'close' %}</span>
-
-								</button>
-								<h4 class="modal-title">{% trans 'TASK INFORMATION' %}</h4>
-
+						<div class="modal-content modalSchedule">
+							<button type="button" class="closeSchedule" data-dismiss="modal">
+							</button>
+							<span class="modal-title" id="titleModalSchedule">{% trans 'TASK INFORMATION' %}</span>
+							<div class="modal-body infoSchedule">
+								{% trans 'TASK:' %} <span id="modalTitle" class="infoModalSchedule"></span><br>
+								{% trans 'DESCRIPTION:' %} <span id="description" class="infoModalSchedule"></span><br>
+								{% trans 'FIELD:' %} <span id="field" class="infoModalSchedule"></span><br>
+								{% trans 'MACHINE:' %} <span id="machine" class="infoModalSchedule"></span><br>
+								{% trans 'IMPLEMENT:' %} <span id="implement" class="infoModalSchedule"></span><br>
 							</div>
-							<div id="modalBody" class="modal-body">
-								<strong>{% trans 'TASK:' %} </strong><span id="modalTitle"></span><br>
-								<strong>{% trans 'DESCRIPTION:' %} </strong><span id="description"></span><br>
-								<strong>{% trans 'FIELD:' %} </strong><span id="field"></span><br>
-								<strong>{% trans 'MACHINE:' %} </strong><span id="machine"></span><br>
-								<strong>{% trans 'IMPLEMENT:' %} </strong><span id="implement"></span><br>
-								<!--TASK DURSTION:<strong><span id="taskDuration"></span> Hours</strong><br>--></br>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-default" data-dismiss="modal">
-									{% trans 'Close' %}
-								</button>
-								<a id="eventUrl" target="_blank">
-								<button class="btn btn-primary">
-									{% trans 'Start Task' %}
-								</button> </a>
-							</div>
+							<a id="eventUrl" target="_blank">
+							<button class="btn btn-primary" id="btnAprove">
+								{% trans 'Start' %}
+							</button> </a>
+							<div class="both"></div>
 						</div>
 					</div>
 				</div>
