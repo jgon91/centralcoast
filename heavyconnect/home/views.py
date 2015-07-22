@@ -711,6 +711,7 @@ def retrieveScannedMachine(request):
 				result['photo'] = machine.photo
 				result['photo1'] = machine.photo1
 				result['photo2'] = machine.photo2
+				result['nickname'] = machine.nickname
 				if result['status'] is 1:
  					result['success'] = True
 			except Machine.DoesNotExist:
