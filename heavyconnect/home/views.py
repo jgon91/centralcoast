@@ -633,17 +633,26 @@ def getAllTaskCategory(request):
 @login_required
 def getTaskInfo(request):
 	result = {'success' : False}
-	if request.method == 'POST':
-		task_id = request.POST['task_id']
-	 	if request.is_ajax():
+	if not request.method == 'POST':
+		task_id = 5#request.POST['task_id']
+	 	if not request.is_ajax():
 			try: # Check if task is added on the Task table
 				task = Task.objects.get(id = task_id)
 				try: # Check if task is added on MachineTask table
 					machineTask = MachineTask.objects.get(task__id = task_id)
 					try: # Check if task is added on ImplementTask table
-						implementTask = ImplementTask.objects.get(task__id = task_id)
+						implementTask = ImplementTask.objects.filter(task__id = task_id)
 						try: # Check if task is added on EmployeeTask table
 							employeeTask = EmployeeTask.objects.get(task__id = task_id)
+							result['implement1_nickname'] = implementTask[0].implement.nickname
+							result['implement1_photo'] = implementTask[0].implement.photo
+							result['implement1_model'] = implementTask[0].implement.manufacturer_model.manufacturer.name
+							result['implement1_qr_code'] = implementTask[0].implement.qr_code
+							if len(implementTask) == 2:
+								result['implement2_nickname'] = implementTask[1].implement.nickname
+								result['implement2_photo'] = implementTask[1].implement.photo
+								result['implement2_model'] = implementTask[1].implement.manufacturer_model.manufacturer.name
+								result['implement2_qr_code'] = implementTask[1].implement.qr_code
 							result['employee'] = str(employeeTask.employee.user.first_name)+' '+str(employeeTask.employee.user.last_name)
 							result['field'] = task.field.name
 							result['category'] = task.category.description
@@ -651,9 +660,6 @@ def getTaskInfo(request):
 							result['machine_nickname'] = machineTask.machine.nickname
 							result['machine_photo'] = machineTask.machine.photo
 							result['machine_qr_code'] = machineTask.machine.qr_code
-							result['implement_nickname'] = implementTask.implement.nickname
-							result['implement_photo'] = implementTask.implement.photo
-							result['implement_qr_code'] = implementTask.implement.qr_code
 							result['success'] = True
 						except EmployeeTask.DoesNotExist:
 							result['error4'] = 'Assigned employee not found for this task' #No Task associated on EmployeeTask table
@@ -1344,7 +1350,7 @@ def pastTaskList(request):
 							aux['implement2_model'] = implementTask[1].implement.manufacturer_model.manufacturer.name
 							aux['implement2_nickname'] = implementTask[1].implement.nickname
 							aux['implement2_id'] = implementTask[1].implement.id
-					except ImplementTask.DoesNotExist:
+					except ImplementTask.DoesNotExist:	
 						aux['implement_id'] = "NONE"
 					result.append(aux)
 					aux = {}
