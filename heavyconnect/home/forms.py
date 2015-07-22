@@ -362,8 +362,8 @@ class beaconForm(forms.Form):
 	latitude = forms.FloatField()
 	timestamp = forms.DateTimeField()
 
-	def clean_beaconSerial(self):
-		serial = self.cleaned_data['beaconSerial']
+	def clean_beacon(self):
+		serial = self.cleaned_data['beacon']
 
 		if serial is None or serial == '':
 			return None

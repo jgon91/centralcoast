@@ -1806,7 +1806,8 @@ def beaconUpdate(request):
 				result['success'] = True
 			else:
 				result['code'] = 1 #Use ajax to perform requests
-				result['errorString'] = 'Use ajax to perform requests'
+				result['errorString'] = 'Not all data is valid'
+				result['errors'] = form.errors
 		else:
 			result['code'] = 2 #Use ajax to perform requests
 			result['errorString'] = 'Use ajax to perform requests'
