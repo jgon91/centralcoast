@@ -1004,8 +1004,8 @@ def getFilteredMachine(request):
 # Driver 6.3.2.6
 # It will return the Implement filtered by some options and the Machine (if it has been chosed)
 # In the Front End, it will have choices with ids for Manufacture.
-# Attention: This function will return only machines with status = 'OK' and status = 'Attention'
-# So in case no implements have returned, consider implements 'Broken' or in 'Quarantine'
+# Attention: This function will return only machines with desired status passed as argument.
+# It expects status_ok=True, status_attention=False, and so on.
 @login_required
 def getFilteredImplement(request):
 	result = []
@@ -1062,11 +1062,14 @@ def getFilteredImplement(request):
 				# Remove those implements that have different hitch category then the selected machine,
 				# And remove those implements that have different drawbar category then the selected machine
 				if machine_qr_code:
-					machine = Machine.objects.get(qr_code = machine_qr_code)
-					implement2 = implement.exclude(hitch_capacity_req__gt = machine.hitch_capacity)		# Remove Implement with more hitch_capacity req
-					implement3 = implement2.exclude(horse_power_req__gt = machine.horsepower)			# Remove Implement with more horse_power req
-					implement2 = implement3.exclude(hitch_category__gt = machine.hitch_category).exclude(hitch_category__lt = machine.hitch_category)	# Remove Implement with different hitch_category
-					implement = implement2.exclude(drawbar_category__gt = machine.drawbar_category).exclude(drawbar_category__lt = machine.drawbar_category)# Remove Implement with different drawbar_category
+					try:
+						machine = Machine.objects.get(qr_code = machine_qr_code)
+						implement2 = implement.exclude(hitch_capacity_req__gt = machine.hitch_capacity)		# Remove Implement with more hitch_capacity req
+						implement3 = implement2.exclude(horse_power_req__gt = machine.horsepower)			# Remove Implement with more horse_power req
+						implement2 = implement3.exclude(hitch_category__gt = machine.hitch_category).exclude(hitch_category__lt = machine.hitch_category)	# Remove I different hitch_category
+						implement = implement2.exclude(drawbar_category__gt = machine.drawbar_category).exclude(drawbar_category__lt = machine.drawbar_category)# Remove I different drawbar_category
+					except Machine.DoesNotExist:
+						result.append({'error' : 'Machine passed does not exist'}) #There is no users associated with this
 				# Selecting which field will be retrieved to fron-end
 				for each in implement:
 					each_result['qr_code'] = each.qr_code
@@ -1079,7 +1082,7 @@ def getFilteredImplement(request):
 					result.append(each_result)
 					each_result = {}
 				result[0] = {'success' : True}
-			except Machine.DoesNotExist:
+			except Implement.DoesNotExist:
 				result.append({'code' : 1}) #There is no users associated with this
 		else:
 	 		result.append({'code' : 2}) #Use ajax to perform requests
