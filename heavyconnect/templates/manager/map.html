@@ -2,6 +2,7 @@
 <html lang="en">
 	<head>
 		{% load staticfiles %}
+		{% load i18n %}
 		<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
 		
 		<script>
@@ -9,18 +10,113 @@
 				$("#foot").load("{%url 'footer'%}");
 				$("#head").load("{%url 'headerDriver'%}");
 			});
+			
+			events = "[{"+
+						"title : 'DISK 5 passes NW',"+
+						"longitude : '36.786446',"+
+						"latitude : '-121.439914',"+
+						"url : 'http://www.google.html',"+	
+						"marker : 'https://maps.google.com/mapfiles/kml/shapes/schools_maps.png'"+
+					"}, {"+
+						"title : 'Event 2',"+
+						"longitude : '36.576393',"+
+						"latitude : '-121.437466',"+
+						"url : 'http://www.google.html',"+
+						"marker : 'https://maps.google.com/mapfiles/kml/shapes/schools_maps.png'"+
+					"}]";
 		</script>
-		
+		<script src="https://maps.googleapis.com/maps/api/js"></script>
+		<script>
+
+
+			function initialize() {
+
+			  //Locations
+			  var locations = [
+			      ['<a href="http://www.google.com">Giga</a>', 36.576393, -121.437466, 4],
+			      ['Rojo', 36.500673, -121.722643, 5],
+			      ['El Gigante', 36.770761, -121.612489, 3],
+			      ['Chicharito', 36.794287, -121.590458, 2],
+			      ['Big Guy', 36.816341, -121.436493, 1]
+			  ];	
+
+ 			   var iconGood = {
+				url: '{% static "img/TractorGood.png" %}', // url
+				scaledSize: new google.maps.Size(30, 30), // scaled size
+				origin: new google.maps.Point(0,0), // origin
+				anchor: new google.maps.Point(0, 0) // anchor
+   			  };
+   			  var iconBroken = {
+				url: '{% static "img/TractorBroken.png" %}', // url
+				scaledSize: new google.maps.Size(30, 30), // scaled size
+				origin: new google.maps.Point(0,0), // origin
+				anchor: new google.maps.Point(0, 0) // anchor
+   			  };
+			  //Marks
+			  var icons = {
+				0: {
+					icon: iconGood
+				},
+				1: {
+					icon: iconBroken
+				},
+				broken: {
+					icon: '{% static "img/TractorBroken.png" %}'
+				}
+			  };
+
+			 
+
+			  var myLatlng = new google.maps.LatLng(36.701120,-121.572099);
+			  var myLatlng2 = new google.maps.LatLng(-25.363882,131.044922);
+			  var mapOptions = {
+			    zoom: 9,
+			    center: myLatlng
+			  }
+			  var infowindow = new google.maps.InfoWindow();
+
+    		  var marker, i;
+			  var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+			  for(i = 0; i < locations.length; i++){
+			  	  var marker = new google.maps.Marker({
+				      position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+				      icon: icons[i%2].icon,
+				      map: map
+				  });
+			  	  google.maps.event.addListener(marker, 'click', (function(marker, i) {
+			        return function() {
+			          infowindow.setContent(locations[i][0]);
+			          infowindow.open(map, marker);
+			        }
+			      })(marker, i));
+			  }
+				
+			}
+
+		  google.maps.event.addDomListener(window, 'load', initialize);
+		</script>
+		<style>
+	      #map-canvas {
+	        width: 500px;
+	        height: 400px;
+	        margin: auto;
+	        margin-top: 15px;
+	        margin-bottom: 15px;
+	      }
+	    </style>
 	</head>
 	<body>
 		<header id="head"></header>
 		<div id="wrapper">
 			<div id="content">
-				<div class="namePage">
-					<img src="{% static 'imgSmall/clock.png' %}"/>
-					HC FLEET MANAGEMENT
+	          	
+				<div class="namePageCenter">
+					HC FLEET MANAGEMENT MAP
 				</div>
-				
+				{% trans 'Status' %}: <input type="checkbox" name="vehicle" value="ok"> OK 
+  				<input type="checkbox" name="vehicle" value="service" checked> SERVICE 
+  				<input type="checkbox" name="vehicle" value="broken" checked> BROKEN 
+				<div id="map-canvas"></div>
 			</div>
 		</div>	
 		<footer>
