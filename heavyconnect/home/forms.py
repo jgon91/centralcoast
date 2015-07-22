@@ -165,6 +165,7 @@ class employeeForm(forms.Form):
 	contact_number = forms.CharField()
 	permission_level = forms.ChoiceField(choices = PERMISSION_LEVEL_CHOICES)
 	photo = forms.URLField()
+	notes = forms.CharField(max_length = 250)
 ### End ###
 
 ### Structure for employeeAttendanceForm ###
@@ -372,4 +373,3 @@ class beaconForm(forms.Form):
 				return Beacon.objects.get(beacon_serial = serial)
 			except Beacon.DoesNotExist:
 				raise forms.ValidationError("This serial do not belong do any registered bluetooth beacon.")
-

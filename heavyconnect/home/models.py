@@ -69,7 +69,7 @@ class Beacon(models.Model):
 			return 'Implement Beacon: serial = ' + self.beacon_serial
 ### DEMO ###
 
-### DEMO ###		
+### DEMO ###
 class BeaconGPS(models.Model):
 	beacon = models.ForeignKey(Beacon)
 	gps = models.ForeignKey(GPS)
@@ -235,6 +235,7 @@ class Employee(models.Model):
 	contact_number = models.CharField(max_length = 14)
 	permission_level = models.IntegerField(choices = ((1, 'Driver'), (2, 'Manager')))
 	photo = models.URLField(max_length = 200, blank = True)
+	notes = models.CharField(max_length = 250, null = True)
 
 	def __unicode__(self):
 		return  "First Name: " + str(self.user.first_name) + ", Last Name: " + str(self.user.last_name) + ", User ID: " + str(self.user.id) + ", ID: " + str(self.id)
