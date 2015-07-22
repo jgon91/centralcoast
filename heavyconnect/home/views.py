@@ -633,9 +633,9 @@ def getAllTaskCategory(request):
 @login_required
 def getTaskInfo(request):
 	result = {'success' : False}
-	if not request.method == 'POST':
-		task_id = 5#request.POST['task_id']
-	 	if not request.is_ajax():
+	if request.method == 'POST':
+		task_id = request.POST['task_id']
+	 	if request.is_ajax():
 			try: # Check if task is added on the Task table
 				task = Task.objects.get(id = task_id)
 				try: # Check if task is added on MachineTask table
@@ -1269,7 +1269,7 @@ def retrievePendingTask(request):
 						emploTaskList.append(each)
 
 				for item in emploTaskList:
-					aux['category'] = item.task.description
+					aux['category'] = item.task.category.description
 					aux['field'] = item.task.field.name
 					aux['date'] = str(item.task.date_assigned)
 					aux['task_id'] = item.task.id
@@ -1284,12 +1284,15 @@ def retrievePendingTask(request):
 					except MachineTask.DoesNotExist:
 						aux['machine_id'] = "NONE"
 					try:
-						# For now, this function just accept ONE implement per task
-						# objects.get() has to be changed to objects.filter() later
-						implementTask = ImplementTask.objects.get(task__id = item.task.id)
-						aux['implement_model'] = implementTask.implement.manufacturer_model.model
-						aux['implement_nickname'] = implementTask.implement.nickname
-						aux['implement_id'] = implementTask.implement.id
+						# If task uses two implements, it will retrieve both. If It doesn't, return only one
+						implementTask = ImplementTask.objects.filter(task__id = item.task.id)
+						aux['implement1_model'] = implementTask[0].implement.manufacturer_model.model
+						aux['implement1_nickname'] = implementTask[0].implement.nickname
+						aux['implement1_id'] = implementTask[0].implement.id
+						if len(implementTask) == 2: # Check if there is a second implement and return it
+							aux['implement2_model'] = implementTask[1].implement.manufacturer_model.model
+							aux['implement2_nickname'] = implementTask[1].implement.nickname
+							aux['implement2_id'] = implementTask[1].implement.id
 					except ImplementTask.DoesNotExist:
 						aux['implement_id'] = "NONE"
 					result.append(aux)
