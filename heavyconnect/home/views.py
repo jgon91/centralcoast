@@ -1345,7 +1345,7 @@ def pastTaskList(request):
 						aux['machine_id'] = "NONE"
 					try:
 						# Retrieve first implement always. If existent, retrieve the second as well.
-						implementTask = ImplementTask.objects.filter(task__id = item.task.id)						
+						implementTask = ImplementTask.objects.filter(task__id = item.task.id)
 						aux['implement1_model'] = implementTask[0].implement.manufacturer_model.manufacturer.name
 						aux['implement1_nickname'] = implementTask[0].implement.nickname
 						aux['implement1_id'] = implementTask[0].implement.id
@@ -1353,7 +1353,7 @@ def pastTaskList(request):
 							aux['implement2_model'] = implementTask[1].implement.manufacturer_model.manufacturer.name
 							aux['implement2_nickname'] = implementTask[1].implement.nickname
 							aux['implement2_id'] = implementTask[1].implement.id
-					except ImplementTask.DoesNotExist:	
+					except ImplementTask.DoesNotExist:
 						aux['implement_id'] = "NONE"
 					result.append(aux)
 					aux = {}
@@ -1428,7 +1428,7 @@ def getEmployeeSelfCurrentTask(request):
 						equipment = getTaskImplementMachine(item.task.id, item.id)
 						if len(equipment['implement']) > 0:
 							result['machine'] = equipment['machine']
-							result['implement'] = equipment['implement']	
+							result['implement'] = equipment['implement']
 					elif item.start_time > item.end_time:
 						result['task_id'] = item.task.id
 						result['task_description'] = item.task.description
@@ -1839,6 +1839,8 @@ def beaconUpdate(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+
+
 def logout(request):
 	auth_logout(request)
 	return redirect('home')
@@ -1998,9 +2000,9 @@ def getFilteredImplementWithGPS(request):
 	result.append({'success' : False})
   	if request.method == 'POST':
 		# Save values from request
-		manufacturer = '' # request.POST['manufacturer']
-		hitch_capacity_req = '' # request.POST['hitch_capacity_req']
-		horse_power_req = '' # request.POST['horse_power_req']
+		manufacturer = request.POST['manufacturer']
+		hitch_capacity_req = request.POST['hitch_capacity_req']
+		horse_power_req = request.POST['horse_power_req']
 		# Set minimum values in case no filters were applied for those option
 		if hitch_capacity_req == '' or hitch_capacity_req == None:
 			hitch_capacity_req = -1
@@ -2044,13 +2046,10 @@ def getFilteredImplementWithGPS(request):
 
 				# Selecting which field will be retrieved to fron-end
 				for each in implement:
-					try:
-						beacon_gps = BeaconGPS.objects.order_by('-timestamp').filter(beacon__beacon_serial = each.beacon.beacon_serial)[:1]
-						each_result['beacon_latitude'] = str(beacon_gps[0].gps.latitude)
-						each_result['beacon_longitude'] = str(beacon_gps[0].gps.longitude)
-						each_result['timestamp'] = str(beacon_gps[0].timestamp)
-					except BeaconGPS.DoesNotExist:
-						each_result['GPS'] = 'Fudeu!!!'
+					beacon_gps = BeaconGPS.objects.order_by('-timestamp').filter(beacon__beacon_serial = each.beacon.beacon_serial)[:1]
+					each_result['beacon_latitude'] = str(beacon_gps[0].gps.latitude)
+					each_result['beacon_longitude'] = str(beacon_gps[0].gps.longitude)
+					each_result['timestamp'] = str(beacon_gps[0].timestamp)
 					each_result['qr_code'] = each.qr_code
 					each_result['nickname'] = each.nickname
 					each_result['photo'] = each.photo
@@ -2076,9 +2075,9 @@ def getFilteredMachineWithGPS(request):
 	result.append({'success' : False})
   	if request.method == 'POST':
 		# Save values from request
-		manufacturer = '' # request.POST['manufacturer']
-		hitch_capacity = '' # request.POST['hitch_capacity_req']
-		horse_power = '' # request.POST['horse_power_req']
+		manufacturer = request.POST['manufacturer']
+		hitch_capacity = request.POST['hitch_capacity_req']
+		horse_power = request.POST['horse_power_req']
 		# Set minimum values in case no filters were applied for those option
 		if hitch_capacity == '' or hitch_capacity == None:
 			hitch_capacity = -1
@@ -2122,15 +2121,10 @@ def getFilteredMachineWithGPS(request):
 
 				# Selecting which field will be retrieved to fron-end
 				for each in machine:
-					try:
-						beacon_gps = BeaconGPS.objects.order_by('-timestamp').filter(beacon__beacon_serial = each.beacon.beacon_serial)[:1]
-						# beacon_gps = BeaconGPS.objects.get(beacon__beacon_id)
-						each_result['beacon_latitude'] = str(beacon_gps[0].gps.latitude)
-						each_result['beacon_longitude'] = str(beacon_gps[0].gps.longitude)
-						each_result['timestamp'] = str(beacon_gps[0].timestamp)
-					except BeaconGPS.DoesNotExist:
-						print 'FUDEU!!!'
-						# each_result['GPS'] = 'Fudeu!!!'
+					beacon_gps = BeaconGPS.objects.order_by('-timestamp').filter(beacon__beacon_serial = each.beacon.beacon_serial)[:1]
+					each_result['beacon_latitude'] = str(beacon_gps[0].gps.latitude)
+					each_result['beacon_longitude'] = str(beacon_gps[0].gps.longitude)
+					each_result['timestamp'] = str(beacon_gps[0].timestamp)
 					each_result['qr_code'] = each.qr_code
 					each_result['nickname'] = each.nickname
 					each_result['photo'] = each.photo
@@ -2149,26 +2143,7 @@ def getFilteredMachineWithGPS(request):
 	 	result.append({'code' : 3}) #Request was not POST
  	return HttpResponse(json.dumps(result),content_type='application/json')
 
-
-# Create a entry on TaskImplementMachine table and insert the following fields with information from the front-end:
-# Task_id (task_id created on last sudb-page), Machine_id, Implement_id.
-
-# Used tables: Task, TaskImplementMachine.
-# def createEntryOnTaskImplementMachine(request):
-# 	form = taskForm(request.POST)
-# 	result = {'success' : False}
-
-# 	taskImplementMachine = Task.objects.get(id = 1)#request.POST['id'])
-# 	print "task ID: " + taskImplementMachine
-# 	machine_id = form.cleaned_data['machine_id']
-# 	print "machine ID: " + machine_id
-# 	implement_id = form.cleaned_data['implement_id']
-# 	print "implement_id: " + implement_id
-# 	taskImplementMachine = TaskImplementMachine(task_id= taskImplementMachine, machine_id = machine_id, implement_id = implement_id)
-# 	print TaskImplementMachine
-# 	# TaskImplementMachine.save()
-# 	result['success'] = True
-# 	return HttpResponse(json.dumps(result),content_type='application/json')
+def saveEmployeeNotes(request):
 
 
 # @menezescode: Page only to show the form was correctly sended.
