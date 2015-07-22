@@ -36,7 +36,7 @@ urlpatterns = [
     url(r'^equipmentManager/$', main_views.equipmentManager, name='equipmentManager'),
     url(r'^profileManager/$', main_views.profileManager, name='profileManager'),
     url(r'^getEmployeeLocation/$', main_views.getEmployeeLocation, name = 'getEmployeeLocation'),
-    url(r'^formTest/$', main_views.expandInfoBox, name='expandInfoBox'),
+    # url(r'^formTest/$', main_views.expandInfoBox, name='expandInfoBox'),
 
     ### Functions ###
     url(r'^employeeLocation/$', main_views.getEmployeeLocation, name = 'employeeLocation'),
@@ -81,7 +81,7 @@ urlpatterns = [
     url(r'^timeKeeperReport/$', main_views.timeKeeperReport, name = 'timeKeeperReport'),
 	url(r'^getQRCodeStatusForEquipment/$', main_views.getQRCodeStatusForEquipment, name = 'getQRCodeStatusForEquipment'),
     url(r'^equipmentQuestionsChecklist/$', main_views.equipmentQuestionsChecklist, name = 'equipmentQuestionsChecklist'),
-
+     url(r'^getEmployeeSelfCurrentTask/$', main_views.getEmployeeSelfCurrentTask, name = 'getEmployeeSelfCurrentTask'),
     ### End ###
 
     ###Insert###
