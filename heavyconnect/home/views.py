@@ -2028,7 +2028,7 @@ def getFilteredImplementWithGPS(request):
 	result = []
 	each_result = {}
 	result.append({'success' : False})
-  	if not request.method == 'POST':
+  	if request.method == 'POST':
 		# Save values from request
 		manufacturer = '' # request.POST['manufacturer']
 		hitch_capacity_req = '' # request.POST['hitch_capacity_req']
@@ -2055,7 +2055,7 @@ def getFilteredImplementWithGPS(request):
 		#if request.POST['status_quarantine'] == 'False':
 		#	status_quarantine = 4
 
-	 	if not request.is_ajax():
+	 	if request.is_ajax():
 	 		try:
 				# Filtering by manufacturer, hitch_cap_req, horse_power_req, and status.
 				# Do not filter by manufacture in case if this filter hasn't been chosen
@@ -2106,7 +2106,7 @@ def getFilteredMachineWithGPS(request):
 	result = []
 	each_result = {}
 	result.append({'success' : False})
-  	if not request.method == 'POST':
+  	if request.method == 'POST':
 		# Save values from request
 		manufacturer = '' # request.POST['manufacturer']
 		hitch_capacity = '' # request.POST['hitch_capacity_req']
@@ -2133,7 +2133,7 @@ def getFilteredMachineWithGPS(request):
 		#if request.POST['status_quarantine'] == 'False':
 		#	status_quarantine = 4
 
-	 	if not request.is_ajax():
+	 	if request.is_ajax():
 			try:
 				# Filtering by manufacturer, hitch_cap_req, horse_power_req, and status.
 				# Do not filter by manufacture in case if this filter hasn't been chosen
