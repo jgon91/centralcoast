@@ -7,7 +7,8 @@ from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 
 import json
-import datetime
+from datetime import datetime
+import time
 
 from home.forms import *
 from home.models import *
@@ -1773,7 +1774,30 @@ def expandInfoBox(request):
 # 	result['success'] = True
 # 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-
+@login_required
+def equipmentQuestionsChecklist(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+		questions = Question.objects.filter(category_id = category.id).order_by('category')
+		date = request.POST['date']
+		if request.is_ajax():
+			try:
+				# date = datetime.datetime.now()
+				d = date.strftime("%Y-%m-%d")
+				time_keeping = Break.objects.filter(attendance__date = d, attendance__employee__user__id = request.user.id)
+				num = len(time_keeping)
+				for item in questions:
+					result['category'] = item.category
+					result['refers'] = item.refers
+					result['description'] = item.description
+				result[0] = {'success' : True}
+			except DoesNotExist:
+				result['code'] =  1 #There is no Implement associated with this
+		else:
+			result['code'] = 2 #Use ajax to perform requests
+	else:
+		result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
 
 # @menezescode: Page only to show the form was correctly sended.
 def formOk(request):
