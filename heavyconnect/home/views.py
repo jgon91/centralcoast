@@ -913,14 +913,14 @@ def getAllImplementInfo(request):
 # Driver 6.3.2.5
 # It will return the Machine filtered by some options and the Implement (if it has been chosed)
 # In the Front End, it will have choices with ids for Manufacture.
-# Attention: This function will return only machines with status = 'OK' and status = 'Attention'
-# So in case no machine have returned, consider machine 'Broken' or in 'Quarantine'
+# Attention: This function will return only machines with desired status passed as argument.
+# It expects status_ok=True, status_attention=False, and so on.
 @login_required
 def getFilteredMachine(request):
 	result = []
 	each_result = {}
 	result.append({'success' : False})
-  	if request.method == 'POST':
+  	if request.method == 'POST':  
 		# Save values from request
 		manufacturer = request.POST['manufacturer']
 		hitch_capacity = request.POST['hitch_capacity']
@@ -939,14 +939,14 @@ def getFilteredMachine(request):
 		status_attention = 0
 		status_broken = 0
 		status_quarantine = 0
-		if request.POST['status_ok'] == 'False':
-			status_ok = 1
-		if request.POST['status_attention'] == 'False':
-			status_attention = 2
-		if request.POST['status_broken'] == 'False':
-			status_broken = 3
-		if request.POST['status_quarantine'] == 'False':
-			status_quarantine = 4
+		if request.POST['status_ok'] == 'False':                   
+			status_ok = 1											
+		if request.POST['status_attention'] == 'False':			
+			status_attention = 2										
+		if request.POST['status_broken'] == 'False':				
+			status_broken = 3										
+		if request.POST['status_quarantine'] == 'False':		
+			status_quarantine = 4								
 
 	 	if request.is_ajax():
 	 		try:
@@ -971,11 +971,14 @@ def getFilteredMachine(request):
 				# Remove those machines that have different hitch category then the selected implement
 				# And remove those machines that have different drawbar category then the selected implement
 				if implement_qr_code:
-					implement = Implement.objects.get(qr_code = implement_qr_code)
-					machine2 = machine.exclude(hitch_capacity__lt = implement.hitch_capacity_req)															# Remove Machine with less hitch_capacity
-					machine3 = machine2.exclude(horsepower__lt = implement.horse_power_req)																	# Remove Machine with less horse_power
-					machine2 = machine3.exclude(hitch_category__gt = implement.hitch_category).exclude(hitch_category__lt = implement.hitch_category)		# Remove Machine with different hitch_category
-					machine = machine2.exclude(drawbar_category__gt = implement.drawbar_category).exclude(drawbar_category__lt = implement.drawbar_category)# Remove Machine with different drawbar_category
+					try:
+						implement = Implement.objects.get(qr_code = implement_qr_code)
+						machine2 = machine.exclude(hitch_capacity__lt = implement.hitch_capacity_req)													# Remove Machine with less hitch_capacity
+						machine3 = machine2.exclude(horsepower__lt = implement.horse_power_req)															# Remove Machine with less horse_power
+						machine2 = machine3.exclude(hitch_category__gt = implement.hitch_category).exclude(hitch_category__lt = implement.hitch_category)# Remove Machine with different hitch_category
+						machine = machine2.exclude(drawbar_category__gt = implement.drawbar_category).exclude(drawbar_category__lt = implement.drawbar_category)# Remove M different drawbar_category
+					except Implement.DoesNotExist:
+						result.append({'error' : 'Implement passed does not exist'}) #There is no users associated with this:
 				# Selecting which field will be retrieved to fron-end
 				for each in machine:
 					each_result['qr_code'] = each.qr_code
