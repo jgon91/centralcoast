@@ -3,12 +3,19 @@
 	<head>
 		{% load staticfiles %}
 		<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
+		<script src="{% static 'jSignature/jSignature.min.js'%}"></script>
 		<script>
 			var item_count = 0;
 			var urlTest = "{% url 'stopBreak' %}";
 			$(document).ready(function() {
 				$("#foot").load("{%url 'footer'%}");
 				$("#head").load("{%url 'headerDriver'%}");
+				$("#signature").jSignature()
+				
+				$("#clearSignature").click(function() {
+					var $sigdiv = $("#signature");
+					$sigdiv.jSignature("reset");
+				});
 				
 				getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
 
@@ -39,6 +46,9 @@
 				$("#stopShift").click(function(){
 					var confirmResult = confirm("Are you sure?");
 					if (confirmResult == true){
+						var $sigdiv = $("#signature");
+						//Get the signature in the 64base
+						var datapair = $sigdiv.jSignature("getData", "base30");
    						stopShift("{{ csrf_token }}", "{% url 'stopShift' %}");
    					}
 				});
@@ -174,6 +184,7 @@
 						datatype: "json",
 						success: function(data, status, xhr){
 							if(data.success){
+								$('#signModal').modal("hide");
 								changeBtn("#stopShift", data.hour_ended.substring(11,19));
 							} else if(data.code == 1){
 								alert("You need to have done at least 3 breaks.");
@@ -273,13 +284,37 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" id="stopShift" value="END SHIFT"/>
+						<input type="button" id="stopShift" value="END SHIFT" onClick="$('#signModal').modal()"/>
 					</div>
 				</div>
 			</div>
 		</div>	
 		<footer>
 				&copy;2015 Heavy Connect, Inc.
-			</footer>
+		</footer>
+		<div class="modal fade" id="signModal" role="dialog">
+		    <div class="modal-dialog signModalDialog">
+		    	 <!-- Modal content-->
+			      <div class="modal-content">
+			        <div class="modal-header">
+			          <button type="button" class="close" data-dismiss="modal">&times;</button>
+			          <h4 class="modal-title"><strong>Sign</strong></h4>
+			        </div>
+			        <div class="modal-body" id="signatureContent">
+			         
+			          <div id="signField">
+			          	<div id="signature"></div>
+			          	<button type="button" id="clearSignature" class="btn btn-default">Limpiar</button>
+			          </div>
+			        </div>
+			 		<div class="both"></div>
+			        <div class="modal-footer">
+			          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+			          <button type="button" id="stopShiftConfirm" class="btn btn-success">Confirmar</button>
+			        </div>
+			      </div>
+			      
+			</div>
+		</div>
 	</body>
 </html>

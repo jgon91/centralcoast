@@ -338,6 +338,12 @@ input[type=button]{
 .btnColTime {
 	padding: 0px;
 }
+.signModalDialog{
+	width: 100%;
+	min-height: 300px;
+	min-width: 601px;
+}
+
 /*** Timekeeper End ***/
 
 /*** Taskflow Begin ***/
