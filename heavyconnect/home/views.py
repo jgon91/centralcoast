@@ -556,7 +556,7 @@ def getEquipmentInfo(request):
 					control = 0
 					for item in emploTask:
 						impementTask = ImplementTask.objects.filter(task__id = item.task.id, implement__id = implement.id).order_by('-machine_task__employee_task__start_time')[:1]
-						for item2 in impementTask:	
+						for item2 in impementTask:
 							impleTask = ImplementTask.objects.filter(machine_task__id = item2.machine_task.id)
 							if len(impleTask) != 0:
 								temp = []
@@ -1244,7 +1244,7 @@ def retrievePendingTask(request):
 				for each in emploTask:
 					if not each in invalidTasks:
 						emploTaskList.append(each)
-					
+
 				for item in emploTaskList:
 					aux['category'] = item.task.description
 					aux['field'] = item.task.field.name
@@ -1289,7 +1289,7 @@ def pastTaskList(request):
 	result.append({'success' : False})
 	if request.method == 'POST':
 	 	if request.is_ajax():
-			try:				
+			try:
 				aux = {}
 				off = int(request.POST['offset'])
 				limit = int(request.POST['limit'])
@@ -1302,8 +1302,8 @@ def pastTaskList(request):
 					aux['date'] = str(item.task.date_assigned)
 					aux['description'] = item.task.description
 					# Calculate the duratio of the task based on EmployeeTask table (not in Task table)
-					duration = datetime.timedelta( hours = item.end_time.hour - item.start_time.hour, 
-													minutes = item.end_time.minute - item.start_time.minute, 	
+					duration = datetime.timedelta( hours = item.end_time.hour - item.start_time.hour,
+													minutes = item.end_time.minute - item.start_time.minute,
 													seconds=item.end_time.second - item.start_time.second)
 					aux['duration'] = str(duration)
 					aux['task_id'] = item.task.id
@@ -1395,7 +1395,7 @@ def getEmployeeCurrentTaskInfo(request):
 	if request.method == 'POST':
 		employee_id = request.POST['employee_id']
 	 	if request.is_ajax():
-			try:				
+			try:
 				employeeTask = EmployeeTask.objects.get(employee__id = employee_id, task__status = 4)# Return Ongoing task of requested Employee
 				result['task_id'] = employeeTask.task.id
 				result['task_description'] = employeeTask.task.category.description
@@ -1527,7 +1527,7 @@ def getEmployeeShifts(request):
 					result['hour_started'] = str(attendance.hour_started)
 					result['hour_ended'] = str(attendance.hour_ended)
 					breaks = Break.objects.filter(attendance_id = attendance.id).order_by('start').values()
-					
+
 					temp = []
 					for item in breaks:
 						temp.append((str(item['start']),str(item['end'])))
@@ -1952,6 +1952,127 @@ def expandInfoBox(request):
 	else:
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+# Driver 6.3.2.6
+# It will return the Implement filtered by some options and the Machine (if it has been chosed)
+# In the Front End, it will have choices with ids for Manufacture.
+# Attention: This function will return only machines with status = 'OK' and status = 'Attention'
+# So in case no implements have returned, consider implements 'Broken' or in 'Quarantine'
+@login_required
+def getFilteredEquipment(request):
+	result = []
+	each_result = {}
+	result.append({'success' : False})
+  	if not request.method == 'POST':
+		# Save values from request
+		manufacturer = '' # request.POST['manufacturer']
+		hitch_capacity_req = '' # request.POST['hitch_capacity_req']
+		horse_power_req = '' # request.POST['horse_power_req']
+		# Set minimum values in case no filters were applied for those option
+		if hitch_capacity_req == '' or hitch_capacity_req == None:
+			hitch_capacity_req = -1
+		if horse_power_req == '' or horse_power_req == None:
+			horse_power_req = -1
+		# Set the correct values for all status filters
+		# All status filters will receive True or False.
+		#   - If False, it will change to the correct value on the database  (1, 2, 3, or 4)
+		#   - If True, it will still with 0
+		status_ok = 0
+		status_attention = 0
+		status_broken = 0
+		status_quarantine = 0
+		#if request.POST['status_ok'] == 'False':
+		#	status_ok = 1
+		#if request.POST['status_attention'] == 'False':
+		#	status_attention = 2
+		#if request.POST['status_broken'] == 'False':
+		#	status_broken = 3
+		#if request.POST['status_quarantine'] == 'False':
+		#	status_quarantine = 4
+
+	 	if not request.is_ajax():
+	 		try:
+				# Filtering by manufacturer, hitch_cap_req, horse_power_req, and status.
+				# Do not filter by manufacture in case if this filter hasn't been chosen
+				if manufacturer == '' or manufacturer == None:
+					implement = Implement.objects.filter(
+					hitch_capacity_req__gte = hitch_capacity_req,
+					horse_power_req__gte = horse_power_req)
+				else:
+					implement = Implement.objects.filter(
+					manufacturer_model__manufacturer__id = manufacturer,
+					hitch_capacity_req__gte = hitch_capacity_req,
+					horse_power_req__gte = horse_power_req)
+				# Filter the machine with the correct desired status
+				implement = implement.exclude(status = status_ok)
+				implement = implement.exclude(status = status_attention)
+				implement = implement.exclude(status = status_broken)
+				implement = implement.exclude(status = status_quarantine)
+
+				# Selecting which field will be retrieved to fron-end
+				for each in implement:
+					try:
+						beacon_gps = BeaconGPS.objects.order_by('-timestamp').filter(beacon__beacon_serial = each.beacon.beacon_serial)[:1]
+						each_result['beacon_latitude'] = str(beacon_gps[0].gps.latitude)
+						each_result['beacon_longitude'] = str(beacon_gps[0].gps.longitude)
+						each_result['timestamp'] = str(beacon_gps[0].timestamp)
+					except BeaconGPS.DoesNotExist:
+						each_result['GPS'] = 'Fudeu!!!'
+					each_result['qr_code'] = each.qr_code
+					each_result['nickname'] = each.nickname
+					each_result['photo'] = each.photo
+					each_result['horse_power_req'] = each.horse_power_req
+					each_result['asset_number'] = each.asset_number
+					each_result['drawbar_category'] = each.drawbar_category
+					each_result['status'] = each.status
+					result.append(each_result)
+					each_result = {}
+				result[0] = {'success' : True}
+			except Implement.DoesNotExist:
+				try:
+					# Filtering by manufacturer, hitch_cap_req, horse_power_req, and status.
+					# Do not filter by manufacture in case if this filter hasn't been chosen
+					if manufacturer == '' or manufacturer == None:
+						machine = Machine.objects.filter(
+						hitch_capacity__gte = hitch_capacity_req,
+						horsepower__gte = horse_power_req)
+					else:
+						machine = Machine.objects.filter(
+						manufacturer_model__manufacturer__id = manufacturer,
+						hitch_capacity__gte = hitch_capacity_req,
+						horsepower__gte = horse_power_req)
+					# Filter the machine with the correct desired status
+					machine = machine.exclude(status = status_ok)
+					machine = machine.exclude(status = status_attention)
+					machine = machine.exclude(status = status_broken)
+					machine = machine.exclude(status = status_quarantine)
+
+					# Selecting which field will be retrieved to fron-end
+					for each in machine:
+						try:
+							beacon_gps = BeaconGPS.objects.order_by('-timestamp').filter(beacon__beacon_serial = each.beacon.beacon_serial)[:1]
+							each_result['beacon_latitude'] = str(beacon_gps[0].gps.latitude)
+							each_result['beacon_longitude'] = str(beacon_gps[0].gps.longitude)
+							each_result['timestamp'] = str(beacon_gps[0].timestamp)
+						except BeaconGPS.DoesNotExist:
+							each_result['GPS'] = 'Fudeu!!!'
+						each_result['qr_code'] = each.qr_code
+						each_result['nickname'] = each.nickname
+						each_result['photo'] = each.photo
+						each_result['horsepower'] = each.horsepower
+						each_result['asset_number'] = each.asset_number
+						each_result['drawbar_category'] = each.drawbar_category
+						each_result['status'] = each.status
+						result.append(each_result)
+						each_result = {}
+					result[0] = {'success' : True}
+				except Machine.DoesNotExist
+					result.append({'code' : 1}) #There is no equipment associated with this
+		else:
+	 		result.append({'code' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'code' : 3}) #Request was not POST
+ 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 # Create a entry on TaskImplementMachine table and insert the following fields with information from the front-end:
 # Task_id (task_id created on last sudb-page), Machine_id, Implement_id.
