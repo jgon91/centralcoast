@@ -2146,6 +2146,22 @@ def getFilteredMachineWithGPS(request):
  	return HttpResponse(json.dumps(result),content_type='application/json')
 
 def saveEmployeeNotes(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+		if request.is_ajax():
+			try:
+				employee = Employee.objects.get(id = request.POST['id'])
+				employee.notes = str(request.POST['notes'])
+				result['notes'] = employee.notes
+				result['success'] = True
+				employee.save()
+			except DoesNotExist:
+				result['code'] =  1 #There is no Implement associated with this
+		else:
+			result['code'] = 2 #Use ajax to perform requests
+	else:
+		result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
 # @menezescode: Page only to show the form was correctly sended.
