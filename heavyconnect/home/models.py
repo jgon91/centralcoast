@@ -74,6 +74,9 @@ class BeaconGPS(models.Model):
 	beacon = models.ForeignKey(Beacon)
 	gps = models.ForeignKey(GPS)
 	timestamp = models.DateTimeField()
+
+	def __unicode__(self):
+		return str(self.beacon) + ' ' +  str (self.gps) + ' Timestamp:' + str(self.timestamp)
 ### DEMO ###
 
 class Machine(models.Model):

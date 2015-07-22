@@ -82,8 +82,13 @@ urlpatterns = [
     url(r'^endTask/$', main_views.endTask, name = 'endTask'),
     url(r'^timeKeeperReport/$', main_views.timeKeeperReport, name = 'timeKeeperReport'),
 	url(r'^getQRCodeStatusForEquipment/$', main_views.getQRCodeStatusForEquipment, name = 'getQRCodeStatusForEquipment'),
+<<<<<<< HEAD
 	url(r'^getFilteredMachineWithGPS/$', main_views.getFilteredMachineWithGPS, name = 'getFilteredMachineWithGPS'),
 	url(r'^getFilteredImplementWithGPS/$', main_views.getFilteredImplementWithGPS, name = 'getFilteredImplementWithGPS'),
+=======
+	#url(r'^getFilteredEquipment/$', main_views.getFilteredEquipment, name = 'getFilteredEquipment'),
+    url(r'^beaconUpdate/$', main_views.beaconUpdate, name = 'beaconUpdate'),
+>>>>>>> c3c757b5e3c0e7ab450bc91feefc48730852e449
     ### End ###
 
     ###Insert###

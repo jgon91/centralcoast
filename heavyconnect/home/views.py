@@ -698,7 +698,6 @@ def retrieveScannedMachine(request):
  	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
-
 # Driver 6.3.2.1
 # Just retrieve a Machine according with qr_code passed as argument. And check if implement is compatible, if it was chosen.
 @login_required
@@ -1788,6 +1787,33 @@ def timeKeeperReport(request):
 			result['code'] = 2 #Use ajax to perform requests
 	else:
 		result['code'] = 3 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+def beaconUpdate(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+		if request.is_ajax():
+			form = beaconForm(request.POST)
+			if form.is_valid():
+				beacon = form.cleaned_data['beacon']
+				timestamp = form.cleaned_data['timestamp']
+				latitude = form.cleaned_data['latitude']
+				longitude = form.cleaned_data['longitude']
+				gps, created = GPS.objects.get_or_create(latitude = latitude, longitude = longitude)
+				bgps = BeaconGPS(beacon = beacon, gps = gps, timestamp = timestamp)
+				bgps.save()
+				result['success'] = True
+			else:
+				result['code'] = 1 #Use ajax to perform requests
+				result['errorString'] = 'Not all data is valid'
+				result['errors'] = form.errors
+		else:
+			result['code'] = 2 #Use ajax to perform requests
+			result['errorString'] = 'Use ajax to perform requests'
+	else:
+		result['code'] = 3 #Request was not POST
+		result['errorString'] = 'Request was not POST, your sent a ' + str(request.method)
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 

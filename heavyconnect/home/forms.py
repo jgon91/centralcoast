@@ -354,3 +354,22 @@ class breakForm(forms.Form):
 	start = forms.TimeField()
 	end = forms.TimeField(required = False)
 ### End ###
+
+### Structire for beaconForm ###
+class beaconForm(forms.Form):
+	beacon = forms.CharField(max_length = 10)
+	longitude = forms.FloatField()
+	latitude = forms.FloatField()
+	timestamp = forms.DateTimeField()
+
+	def clean_beacon(self):
+		serial = self.cleaned_data['beacon']
+
+		if serial is None or serial == '':
+			return None
+		else:
+			try:
+				return Beacon.objects.get(beacon_serial = serial)
+			except Beacon.DoesNotExist:
+				raise forms.ValidationError("This serial do not belong do any registered bluetooth beacon.")
+
