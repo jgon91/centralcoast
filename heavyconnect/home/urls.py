@@ -36,7 +36,6 @@ urlpatterns = [
     url(r'^equipmentManager/$', main_views.equipmentManager, name='equipmentManager'),
     url(r'^profileManager/$', main_views.profileManager, name='profileManager'),
     url(r'^getEmployeeLocation/$', main_views.getEmployeeLocation, name = 'getEmployeeLocation'),
-    url(r'^formTest/$', main_views.expandInfoBox, name='expandInfoBox'),
 
     ### Functions ###
     url(r'^employeeLocation/$', main_views.getEmployeeLocation, name = 'employeeLocation'),

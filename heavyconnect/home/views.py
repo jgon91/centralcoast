@@ -1312,7 +1312,7 @@ def pastTaskList(request):
 				limit = int(request.POST['limit'])
 				# Filter EmployeeTask by user, date and status task != Finished
 				emploTask   =  EmployeeTask.objects.order_by('-end_time').filter(employee__user__id = request.user.id, task__status = 6)[off:limit+off]
-				print emploTask
+				print 'SSS' + str(request.user.id)
 				for item in emploTask:
 					aux['category'] = item.task.description
 					aux['field'] = item.task.field.name
@@ -1335,53 +1335,20 @@ def pastTaskList(request):
 					except MachineTask.DoesNotExist:
 						aux['machine_id'] = "NONE"
 					try:
-						# For now, this function just accept ONE implement per task
-						# objects.get() has to be changed to objects.filter() later
-						implementTask = ImplementTask.objects.get(task__id = item.task.id)
-						aux['implement_model'] = implementTask.implement.manufacturer_model.model
-						aux['implement_nickname'] = implementTask.implement.nickname
-						aux['implement_id'] = implementTask.implement.id
+						# Retrieve first implement always. If existent, retrieve the second as well.
+						implementTask = ImplementTask.objects.filter(task__id = item.task.id)						
+						aux['implement1_model'] = implementTask[0].implement.manufacturer_model.manufacturer.name
+						aux['implement1_nickname'] = implementTask[0].implement.nickname
+						aux['implement1_id'] = implementTask[0].implement.id
+						if len(implementTask) == 2:	# If Task uses two implements, get second implement information
+							aux['implement2_model'] = implementTask[1].implement.manufacturer_model.manufacturer.name
+							aux['implement2_nickname'] = implementTask[1].implement.nickname
+							aux['implement2_id'] = implementTask[1].implement.id
 					except ImplementTask.DoesNotExist:
 						aux['implement_id'] = "NONE"
 					result.append(aux)
 					aux = {}
 				result[0] = {'success' : True}
-					# Filter EmployeeTask by user, date and status task != Finished
-					emploTask   =  EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date_assigned__lte = date2, task__status__lt = 6)[:n]
-					invalidTasks = EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date_assigned__lte = date2, task__status = 4)
-					emploTaskList = []
-					# Filter again EmployeeTask removing task with status = Ongoing
-					for each in emploTask:
-						if not each in invalidTasks:
-							emploTaskList.append(each)
-
-					for item in emploTaskList:
-						aux['category'] = item.task.description
-						aux['field'] = item.task.field.name
-						aux['date'] = str(item.task.date_assigned)
-						aux['task_id'] = item.task.id
-						aux['employee_id'] = item.employee.id
-						aux['employee_first_name'] = item.employee.user.first_name
-						aux['employee_last_name'] = item.employee.user.last_name
-						try:
-							machineTask = MachineTask.objects.get(task__id = item.task.id)
-							aux['machine_model'] = machineTask.machine.manufacturer_model.model
-							aux['machine_nickname'] = machineTask.machine.nickname
-							aux['machine_id'] = machineTask.machine.id
-						except MachineTask.DoesNotExist:
-							aux['machine_id'] = "NONE"
-						try:
-							implementTask = ImplementTask.objects.get(task__id = item.task.id)
-							aux['implement_model'] = implementTask.implement.manufacturer_model.model
-							aux['implement_nickname'] = implementTask.implement.nickname
-							aux['implement_id'] = implementTask.implement.id
-						except ImplementTask.DoesNotExist:
-							aux['implement_id'] = "NONE"
-						result.append(aux)
-						aux = {}
-					result[0] = {'success' : True}
-				else:
-					result.append({'result' : 1})#Index is invalid
 			except EmployeeTask.DoesNotExist:
 				result.append({'result' : 1})#There is no Implement associated with this
 		else:
@@ -1394,50 +1361,6 @@ def pastTaskList(request):
 
 
 
-'''
-#Return task already accomplished
-@login_required
-def pastTaskList(request):
-	result = []
-	aux = {}
-	result.append({'success' : False})
-	if request.method == 'POST':
-	 	if request.is_ajax():
-			try:
-				off = int(request.POST['offset'])
-				limit =int(request.POST['limit'])
-				if off >= 0 and limit > 0:
-					tasks = EmployeeTask.objects.filter(employee__user__id = request.user.id, task__accomplished = True)[off:limit]
-					for item in tasks:
-						try:
-							equipment = TaskImplementMachine.objects.get(task__id = item.task.id)
-							aux['machine'] = equipment.machine.qr_code
-						except:
-							aux['machine'] = None
-						try:
-							implement = TaskImplementMachine.objects.get(task__id = item.task.id)
-							aux['implement'] = equipment.implement.qr_code
-						except:
-							aux['implement'] = None
-						aux['duration'] = item.hours_spent
-						aux['task_id'] = item.task.id
-						aux['description'] = item.task.description
-						aux['category'] = item.task.category.description
-						aux['field'] = item.task.field.name
-						aux['date'] = str(item.task.date)
-						result.append(aux)
-						aux = {}
-					result[0] = {'success' : True}
-				else:
-					result.append({'result' : 11})#Index is invalid
-			except EmployeeTask.DoesNotExist:
-				result.append({'result' : 1})#There is no Implement associated with this
-		else:
-	 		result.append({'result' : 2}) #Use ajax to perform requests
-	else:
-	 	result.append({'result' : 3}) #Request was not POST
-	return HttpResponse(json.dumps(result),content_type='application/json')
-'''
 
 
 # Get Employee current Task information if he is doing some task at the moment.
