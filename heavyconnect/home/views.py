@@ -1953,13 +1953,8 @@ def expandInfoBox(request):
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-# Driver 6.3.2.6
-# It will return the Implement filtered by some options and the Machine (if it has been chosed)
-# In the Front End, it will have choices with ids for Manufacture.
-# Attention: This function will return only machines with status = 'OK' and status = 'Attention'
-# So in case no implements have returned, consider implements 'Broken' or in 'Quarantine'
 @login_required
-def getFilteredEquipment(request):
+def getFilteredImplementWithGPS(request):
 	result = []
 	each_result = {}
 	result.append({'success' : False})
@@ -2029,50 +2024,93 @@ def getFilteredEquipment(request):
 					each_result = {}
 				result[0] = {'success' : True}
 			except Implement.DoesNotExist:
-				try:
-					# Filtering by manufacturer, hitch_cap_req, horse_power_req, and status.
-					# Do not filter by manufacture in case if this filter hasn't been chosen
-					if manufacturer == '' or manufacturer == None:
-						machine = Machine.objects.filter(
-						hitch_capacity__gte = hitch_capacity_req,
-						horsepower__gte = horse_power_req)
-					else:
-						machine = Machine.objects.filter(
-						manufacturer_model__manufacturer__id = manufacturer,
-						hitch_capacity__gte = hitch_capacity_req,
-						horsepower__gte = horse_power_req)
-					# Filter the machine with the correct desired status
-					machine = machine.exclude(status = status_ok)
-					machine = machine.exclude(status = status_attention)
-					machine = machine.exclude(status = status_broken)
-					machine = machine.exclude(status = status_quarantine)
-
-					# Selecting which field will be retrieved to fron-end
-					for each in machine:
-						try:
-							beacon_gps = BeaconGPS.objects.order_by('-timestamp').filter(beacon__beacon_serial = each.beacon.beacon_serial)[:1]
-							each_result['beacon_latitude'] = str(beacon_gps[0].gps.latitude)
-							each_result['beacon_longitude'] = str(beacon_gps[0].gps.longitude)
-							each_result['timestamp'] = str(beacon_gps[0].timestamp)
-						except BeaconGPS.DoesNotExist:
-							each_result['GPS'] = 'Fudeu!!!'
-						each_result['qr_code'] = each.qr_code
-						each_result['nickname'] = each.nickname
-						each_result['photo'] = each.photo
-						each_result['horsepower'] = each.horsepower
-						each_result['asset_number'] = each.asset_number
-						each_result['drawbar_category'] = each.drawbar_category
-						each_result['status'] = each.status
-						result.append(each_result)
-						each_result = {}
-					result[0] = {'success' : True}
-				except Machine.DoesNotExist
-					result.append({'code' : 1}) #There is no equipment associated with this
+				result.append({'code' : 1}) #There is no equipment associated with this
 		else:
 	 		result.append({'code' : 2}) #Use ajax to perform requests
 	else:
 	 	result.append({'code' : 3}) #Request was not POST
  	return HttpResponse(json.dumps(result),content_type='application/json')
+
+@login_required
+def getFilteredMachineWithGPS(request):
+	result = []
+	each_result = {}
+	result.append({'success' : False})
+  	if not request.method == 'POST':
+		# Save values from request
+		manufacturer = '' # request.POST['manufacturer']
+		hitch_capacity = '' # request.POST['hitch_capacity_req']
+		horse_power = '' # request.POST['horse_power_req']
+		# Set minimum values in case no filters were applied for those option
+		if hitch_capacity == '' or hitch_capacity == None:
+			hitch_capacity = -1
+		if horse_power == '' or horse_power == None:
+			horse_power = -1
+		# Set the correct values for all status filters
+		# All status filters will receive True or False.
+		#   - If False, it will change to the correct value on the database  (1, 2, 3, or 4)
+		#   - If True, it will still with 0
+		status_ok = 0
+		status_attention = 0
+		status_broken = 0
+		status_quarantine = 0
+		#if request.POST['status_ok'] == 'False':
+		#	status_ok = 1
+		#if request.POST['status_attention'] == 'False':
+		#	status_attention = 2
+		#if request.POST['status_broken'] == 'False':
+		#	status_broken = 3
+		#if request.POST['status_quarantine'] == 'False':
+		#	status_quarantine = 4
+
+	 	if not request.is_ajax():
+			try:
+				# Filtering by manufacturer, hitch_cap_req, horse_power_req, and status.
+				# Do not filter by manufacture in case if this filter hasn't been chosen
+				if manufacturer == '' or manufacturer == None:
+					machine = Machine.objects.filter(
+					hitch_capacity__gte = hitch_capacity,
+					horsepower__gte = horse_power)
+				else:
+					machine = Machine.objects.filter(
+					manufacturer_model__manufacturer__id = manufacturer,
+					hitch_capacity__gte = hitch_capacity,
+					horsepower__gte = horse_power)
+				# Filter the machine with the correct desired status
+				machine = machine.exclude(status = status_ok)
+				machine = machine.exclude(status = status_attention)
+				machine = machine.exclude(status = status_broken)
+				machine = machine.exclude(status = status_quarantine)
+
+				# Selecting which field will be retrieved to fron-end
+				for each in machine:
+					try:
+						beacon_gps = BeaconGPS.objects.order_by('-timestamp').filter(beacon__beacon_serial = each.beacon.beacon_serial)[:1]
+						# beacon_gps = BeaconGPS.objects.get(beacon__beacon_id)
+						each_result['beacon_latitude'] = str(beacon_gps[0].gps.latitude)
+						each_result['beacon_longitude'] = str(beacon_gps[0].gps.longitude)
+						each_result['timestamp'] = str(beacon_gps[0].timestamp)
+					except BeaconGPS.DoesNotExist:
+						print 'FUDEU!!!'
+						# each_result['GPS'] = 'Fudeu!!!'
+					each_result['qr_code'] = each.qr_code
+					each_result['nickname'] = each.nickname
+					each_result['photo'] = each.photo
+					each_result['horsepower'] = each.horsepower
+					each_result['asset_number'] = each.asset_number
+					each_result['drawbar_category'] = each.drawbar_category
+					each_result['status'] = each.status
+					result.append(each_result)
+					each_result = {}
+				result[0] = {'success' : True}
+			except Machine.DoesNotExist:
+				result.append({'code' : 1}) #There is no equipment associated with this
+		else:
+	 		result.append({'code' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'code' : 3}) #Request was not POST
+ 	return HttpResponse(json.dumps(result),content_type='application/json')
+
 
 # Create a entry on TaskImplementMachine table and insert the following fields with information from the front-end:
 # Task_id (task_id created on last sudb-page), Machine_id, Implement_id.
