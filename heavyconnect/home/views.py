@@ -1567,6 +1567,7 @@ def getEmployeeShifts(request):
 @login_required
 def getEmployeeSchedulePart(request):
 	result = []
+	color = ['#F7F003','#05C60E', '#FF0000', '#B3D1FF','#FF6600', '#A2A9AF']
 	if request.method == 'GET':
 		if request.is_ajax():
 			aux = request.GET['start'] #get the date in the POST request
@@ -1587,7 +1588,7 @@ def getEmployeeSchedulePart(request):
 					aux['description'] = item.task.description
 					aux['field'] = item.task.field.name
 					aux['category'] =  item.task.category.description
-					# aux['equipment'] = equipment
+					aux['color'] = color[item.task.status - 1]
 					if len(equipment['implement']) > 0:
 						aux['machine'] = equipment['machine']
 						aux['implement'] = equipment['implement']
@@ -1602,6 +1603,7 @@ def getEmployeeSchedulePart(request):
 					aux['description'] = item.task.description
 					aux['field'] = item.task.field.name
 					aux['category'] =  item.task.category.description
+					aux['color'] = color[item.task.status - 1]
 					equipment = getTaskImplementMachine(item.task.id, item.id)
 					if len(equipment['implement']) > 0:
 						aux['machine'] = equipment['machine']
