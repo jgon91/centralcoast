@@ -86,7 +86,7 @@
 						success : function(data, status, xhr) {
 							if(data.success){
 								alert("Task was started");
-								document.location("{% url 'taskFlow' %}");
+								$("#start").attr("href", "{% url 'taskFlow' %}");
 							}
 						}
 					});
@@ -98,9 +98,11 @@
 
 			function checkTaskField(div1, tmp){
 				if (tmp == true) {
+					$("#" + div1).removeClass("tabError");
 					$("#" + div1).addClass("tabSucess");
 				}else{
-					$("#" + div1).addClass("tabSucess");
+					$("#" + div1).removeClass("tabSucess");
+					$("#" + div1).addClass("tabError");
 				}
 			}
 
@@ -127,10 +129,12 @@
 			function checkQRCode(div1, qr_code_input, qr_code_scanned){
 				//alert(qr_code_scanned);
 				if ($("#qr_code_typed").val() == qr_code_input || qr_code_input == qr_code_scanned){
+					$("#" + div1).removeClass("tabError");					
 					$("#" + div1).addClass("tabSucess");
 					return true;
 				}else{
-					$("#" + div1).removeClass("tabSucess");
+					$("#" + div1).removeClass("tabSucess");					
+					$("#" + div1).addClass("tabError");					
 					alert("Invalid QRCode");
 					return false;
 				}
@@ -147,6 +151,7 @@
 				margin: auto;
 				text-align: left;
 			}
+
 		</style>
 	</head>
 	<body>
@@ -159,7 +164,7 @@
 				<div id="contentCreateTask">
 					
 					<ul class="nav nav-tabs">
-					    <li class="active"><a class="tabSucess" id="taskTab" data-toggle="tab" href="#taskTabContent">{% trans 'Task' %} :</a></li>
+					    <li class="active"><a class="tabSucess" id="taskTab" data-toggle="tab" href="#taskTabContent">{% trans 'Task' %}</a></li>
 					    <li><a id="machineTab" data-toggle="tab" href="#machineTabContent">{% trans 'Machine' %}</a></li>
 					    <li><a id="implementTab" data-toggle="tab" href="#implementTabContent">{% trans 'Implement' %}</a></li>
 					    <li><a id="fieldTab" data-toggle="tab" href="#fieldTabContent">{% trans 'Field' %}</a></li>
@@ -169,18 +174,16 @@
 						<div id="taskTabContent" class="tab-pane fade in active">
 					      
 						    <div class="row" >
-						    	<div class="col-xs-3 col-md-3">
+						    	<div class="col-xs-1 col-md-1">
 								</div>
-								<div class="col-xs-2 col-md-2 alignCenterPage textCreateTask taskRows1" style="text-align: left;">
+								<div class="col-xs-10 col-md-10 alignCenterPage startTaskInfo">
 									<strong>{% trans 'Task' %}:</strong>
+									<span class="inputTask" id="inputCategory"></span>	<br>						
 									<strong>{% trans 'Description' %}:</strong>
-								</div>								
-								<div class="col-xs-4 col-md-4 alignCenterPage textCreateTask">
 									<span class="inputTask" id="inputDescription"></span>							
-									<span class="inputTask" id="inputCategory"></span>							
 									<!--<input type="button" value="Check Task" id="checkTask" class="btnCreateTask btnScanQRCode" />-->
 								</div>
-								<div class="col-xs-4 col-md-4">
+								<div class="col-xs-1 col-md-1">
 								</div>
 							</div>
 							<div class="row">
@@ -192,7 +195,7 @@
 									
 								</div>
 								<div class="col-xs-4 col-md-4">
-									<a class="btn nextTab alignCenterPage" href="#">{% trans 'NEXT' %} :</a>
+									<a class="btn nextTab alignCenterPage" href="#">{% trans 'NEXT' %}</a>
 								</div>
 							</div>
 						  </div>	
@@ -200,7 +203,7 @@
 						  <div id="machineTabContent" class="tab-pane fade in">
 					      <div class="row">
 								<div class="col-xs-3 col-md-3 alignCenterPage textCreateTask taskRows2">
-									{% trans 'MACHINE' %} :
+									{% trans 'MACHINE' %} 
 								</div>
 								<div class="col-xs-6 col-md-6 alignCenterPage ">
 									<input type="hidden" id="machineSelectedId" />
@@ -216,13 +219,13 @@
 					     
 					     <div class="row">
 								<div class="col-xs-4 col-md-4">
-									<a class="btn alignCenterPage prevTab" href="#">{% trans 'RETURN' %} :</a>
+									<a class="btn alignCenterPage prevTab" href="#">{% trans 'RETURN' %}</a>
 								</div>
 								<div class="col-xs-4 col-md-4">
 									
 								</div>
 								<div class="col-xs-4 col-md-4">
-									<a class="btn nextTab alignCenterPage" href="#">{% trans 'NEXT' %} :</a>
+									<a class="btn nextTab alignCenterPage" href="#">{% trans 'NEXT' %}</a>
 								</div>
 							</div>
 					    </div>
@@ -231,7 +234,7 @@
 					      
 					     <div class="row">
 							<div class="col-xs-3 col-md-3  alignCenterPage textCreateTask taskRows3">
-								{% trans 'IMPLEMENT' %} :
+								{% trans 'IMPLEMENT' %}
 							</div>
 							<div class="col-xs-6 col-md-6  alignCenterPage ">
 								<input type="hidden" id="implementSelectedId" />
@@ -247,7 +250,7 @@
 						
 						<div class="row" id="secondImplement">
 							<div class="col-xs-3 col-md-3  alignCenterPage textCreateTask">
-								{% trans 'IMPLEMENT' %} :
+								{% trans 'IMPLEMENT' %} 
 							</div>
 							<div class="col-xs-6 col-md-6  alignCenterPage taskRows4">
 								<input type="hidden" id="implementSelectedId2" />
@@ -273,23 +276,18 @@
 							</div>
 					    </div>  
 						  
-						<div id="fieldTabContent" class="tab-pane fade in">
-					      
-						    <div class="row" >
-						    	<div class="col-xs-1 col-md-1 alignCenterPage textCreateTask taskRows1">						   
-								</div>
-						    	<div class="col-xs-1 col-md-1 alignCenterPage textCreateTask taskRows1" style="text-align: left;">
-						    		<strong>{% trans 'Field' %}:</strong>
-								</div>
-								<div class="col-xs-6 col-md-6 alignCenterPage textCreateTask taskRows1">									
-									<span class="inputTask" id="inputField"></span>									
-								</div>
-								<div class="col-xs-3 col-md-3 alignCenterPage textCreateTask">
-									<input type="button" value="Check Field" id="checkField" class="btnCreateTask btnScanQRCode" />
-								</div>				
-							</div>
-							<div class="row">
-								</br>
+						<div id="fieldTabContent" class="tab-pane fade in">					      
+						    <div class="row" id="rowFieldStartTask">
+						    	<div class="col-xs-2 col-md-2 alignCenterPage startTaskInfo">	
+						    		<strong>{% trans 'Field' %}:</strong>												   
+								</div>						    	
+								<div class="col-xs-10 col-md-10 alignCenterPage startTaskInfo">											
+									<span class="inputTask" id="inputField"></span>			
+									<input type="button" value="Check Field" id="checkField" class="btnCreateTask btnScanQRCode" />			
+								</div>						
+							</div>							
+							<div class="row" id="rowFieldStartTask2">
+								
 								<div class="col-xs-4 col-md-4">
 									<a class="btn alignCenterPage prevTab" href="#">{% trans 'RETURN' %}</a>
 								</div>
@@ -297,7 +295,7 @@
 									
 								</div>
 								<div class="col-xs-4 col-md-4">
-									<a class="btn nextTab alignCenterPage" id="start" href="{% url 'taskFlow' %}">{% trans 'Start' %}</a>
+									<a class="btn nextTab alignCenterPage" id="start" href="#">{% trans 'Start' %}</a>
 								</div>
 							</div>
 						  </div>  						  						 

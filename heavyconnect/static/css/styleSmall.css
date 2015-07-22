@@ -866,8 +866,9 @@ input[type=button]{
 	background-color: #989898;
 	border-radius: 10px 10px 0px 0px;
 }
-.tabError {
+.nav>li>a.tabError {
 	background-color: red;
+	color: white;
 }
 .nav>li>a.tabSucess {
 	background-color: #4F7219;
@@ -954,6 +955,27 @@ input[type=button]{
 	color: white;
 	width: 120px;
 	font-size: 16px;
+	margin-left: 120px;
+	margin-top: 20px;
+}
+
+.startTaskInfo {
+	font-size: 22px;
+	text-align: left;
+	color: #809A21;	
+	padding: 20px;
+	font-weight: bold;
+	margin-top: -10px;
+	line-height: 35px;
+}
+.startTaskInfo span{
+	color: black;
+}
+#rowFieldStartTask{
+	height: 100px;
+}
+#rowFieldStartTask2{
+	margin-top: -100px;
 }
 
 /*** Start Task End ***/
