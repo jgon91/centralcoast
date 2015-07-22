@@ -65,6 +65,7 @@
 			}
 
 			function permissionCreateTask(token, url, permission) {
+				console.log(url)
 				$.ajax({
 					method : "POST",
 					url : url,
@@ -74,10 +75,11 @@
 						"csrfmiddlewaretoken" : token
 					},
 					success : function(data, status, xhr) {
-						if (!data.authorized) {
+						//console.log(data)
+						if (!data.success) {
 							alert("You do not have enough right to create a task!!");
 						}
-						permission = data.authorized;
+						permission = data.success;
 					}
 				});
 				return permission;

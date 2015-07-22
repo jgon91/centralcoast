@@ -30,6 +30,66 @@ function process_login() {
 //END SCRIPT LOGIN PAGE
 
 
+/*** SAVE TASK BEGIN ***/
+function saveTask(token, url, urlScheduler){
+	$.ajax({
+		method: "POST",
+		url: url,
+		data: {"csrfmiddlewaretoken": token,
+				"category": $("#category").val(), 
+				"field": $("#field").val(), 
+				"passes": $("#passes").val(), 
+				"hours_prediction": $("#hours_prediction").val(), 
+				"time": $("#time").val(), 
+				"date": $("#date").val(), 
+				"description": $("#description").val(),
+				"machine": $("#machineSelected").val(), 
+				"implement": $("#implementSelected").val(),
+				"implement2": $("#implement2Selected").val(),
+				},
+		async: false,
+		datatype: "json",
+		success: function(data, status, xhr){
+			if(data.success){
+				alert("Task created");
+				document.location = urlScheduler;
+			}else if(data.code == 3){
+				var errorsMessage = "";
+				if(data.errors.category != null){
+					errorsMessage += "\nCategory: " + data.errors.category;
+				}
+				if(data.errors.machine != null){
+					errorsMessage += "\nMachine: " + data.errors.machine;
+				}
+				if(data.errors.implement != null){
+					errorsMessage += "\nImplement: " + data.errors.implement;
+				}
+				if(data.errors.field != null){
+					errorsMessage += "\nField: " + data.errors.field;
+				}
+				if(data.errors.date != null){
+					errorsMessage += "\nDate: " + data.errors.date;
+				}
+				if(data.errors.time != null){
+					errorsMessage += "\nTime: " + data.errors.time;
+				}
+				if(data.errors.hours_prediction != null){
+					errorsMessage += "\nHours Prediction: " + data.errors.hours_prediction;
+				}
+				if(data.errors.passes != null){
+					errorsMessage += "\nPasses: " + data.errors.passes;
+				}
+				if(data.errors.description != null){
+					errorsMessage += "\nDescription: " + data.errors.description;
+				}
+				alert("Erros:" + errorsMessage);
+			}
+			console.log(data.errors);
+		}	
+	});
+}
+/*** CREATE TASK END ***/
+
 
 /* Script Profile 
 	function getUserInformation(token) {

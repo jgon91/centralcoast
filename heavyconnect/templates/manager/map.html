@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{% load staticfiles %}
+		<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
+		
+		<script>
+			$(document).ready(function() {
+				$("#foot").load("{%url 'footer'%}");
+				$("#head").load("{%url 'headerDriver'%}");
+			});
+		</script>
+		
+	</head>
+	<body>
+		<header id="head"></header>
+		<div id="wrapper">
+			<div id="content">
+				<div class="namePage">
+					<img src="{% static 'imgSmall/clock.png' %}"/>
+					HC FLEET MANAGEMENT
+				</div>
+				
+			</div>
+		</div>	
+		<footer>
+				&copy;2015 Heavy Connect, Inc.
+			</footer>
+	</body>
+</html>
