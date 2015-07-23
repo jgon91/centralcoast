@@ -510,8 +510,23 @@ def getEquipmentInfo(request):
 	result = {'success' : False}
 	if request.method == 'POST':
 	 	if request.is_ajax():
+			date = datetime.datetime.now()
+			start_date = datetime.datetime.combine(date, datetime.time.min)
+			end_date = datetime.datetime.combine(date, datetime.time.max)
+			qr_code = request.POST['qr_code']
 			try:
-				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
+				machine = Machine.objects.get(qr_code = qr_code)
+				result['nickname'] = machine.nickname
+				result['hitch_category'] = machine.hitch_category
+				result['speed_range_min'] = machine.speed_range_min
+				result['speed_range_max'] = machine.speed_range_max
+				result['engine_hours'] = machine.engine_hours
+				result['base_cost'] = machine.base_cost
+				result['machine_type'] = str(machine.m_type)
+				result['front_tires'] = machine.front_tires
+				result['rear_tires'] = machine.rear_tires
+				result['steering'] = machine.steering
+				result['operator_station'] = machine.operator_station
 				result['manufacturer'] = machine.manufacturer_model.manufacturer.name
 				result['model'] = machine.manufacturer_model.model
 				result['asset_number'] = machine.asset_number
@@ -525,10 +540,30 @@ def getEquipmentInfo(request):
 				result['photo'] = machine.photo
 				result['photo1'] = machine.photo1
 				result['photo2'] = machine.photo2
+				emploTask = EmployeeTask.objects.filter(task__status = 4, start_time__range = (start_date,end_date)).order_by('-start_time') #just task active and with the today date
+				control = 0
+				for item in emploTask:
+					implement = ImplementTask.objects.filter(task__id = item.task.id, machine_task__machine__id = machine.id).order_by('-machine_task__employee_task__start_time')
+					if len(implement) != 0:
+						temp = []
+						for doc in implement:
+							temp.append((doc.implement.equipment_type.name))
+							if control < doc.machine_task.id:
+								control = doc.machine_task.id
+								result['employee'] = doc.machine_task.employee_task.employee.user.first_name + " " + doc.machine_task.employee_task.employee.user.last_name
+								result['task'] = doc.task.category.description
+						result['implement'] = temp
+						break
 				result['success'] = True
 			except Machine.DoesNotExist:
 				try:
-					implement = Implement.objects.get(qr_code = request.POST['qr_code'])
+					implement = Implement.objects.get(qr_code = qr_code)
+					result['nickname'] = implement.nickname
+					result['hitch_category'] = implement.hitch_category
+					result['speed_range_min'] = implement.speed_range_min
+					result['speed_range_max'] = implement.speed_range_max
+					result['base_cost'] = implement.base_cost
+					result['equipment_type'] = str(implement.equipment_type)
 					result['manufacturer'] = implement.manufacturer_model.manufacturer.name
 					result['model'] = implement.manufacturer_model.model
 					result['asset_number'] = implement.asset_number
@@ -542,6 +577,23 @@ def getEquipmentInfo(request):
 					result['photo'] = implement.photo
 					result['photo1'] = implement.photo1
 					result['photo2'] = implement.photo2
+					emploTask = EmployeeTask.objects.filter(task__status = 4, start_time__range = (start_date,end_date)).order_by('-start_time') #just task active and with the today date
+					control = 0
+					for item in emploTask:
+						impementTask = ImplementTask.objects.filter(task__id = item.task.id, implement__id = implement.id).order_by('-machine_task__employee_task__start_time')[:1]
+						for item2 in impementTask:
+							impleTask = ImplementTask.objects.filter(machine_task__id = item2.machine_task.id)
+							if len(impleTask) != 0:
+								temp = []
+								for doc in impleTask:
+									if implement.id != doc.implement.id:
+										temp.append((doc.implement.equipment_type.name))
+									if control < doc.machine_task.id:
+										control = doc.machine_task.id
+										result['machine'] = doc.machine_task.machine.qr_code
+										result['employee'] = doc.machine_task.employee_task.employee.user.first_name + " " + doc.machine_task.employee_task.employee.user.last_name
+										result['task'] = doc.task.category.description
+								result['implement'] = temp
 					result['success'] = True
 				except Implement.DoesNotExist:
 					result['code'] = 1 #There is no equipment associated with this
@@ -635,25 +687,25 @@ def getTaskInfo(request):
 @login_required
 def retrieveScannedMachine(request):
 	result = {'success' : False}
-  	if request.method == 'POST':
- 		if request.is_ajax():
+  	if not request.method == 'POST':
+ 		if not request.is_ajax():
  			try:
-				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
+				machine = Machine.objects.get(qr_code = '987654k')#request.POST['qr_code'])
 				result['qr_code'] = machine.qr_code
 				result['manufacture'] = machine.manufacturer_model.manufacturer.name
 				result['serial'] = machine.serial_number
 				result['status'] = machine.status
-				result['model'] = models.model
+				result['model'] = machine.manufacturer_model.model
 				result['asset_number'] = machine.asset_number
 				result['horsepower'] = machine.horsepower
 				result['hitch_capacity'] = machine.hitch_capacity
-				result['hitch_category'] = machine.hitch_category
+				result['hitch_category'] = str(machine.hitch_category)
 				result['drawbar_category'] = machine.drawbar_category
 				result['speed_range_min'] = machine.speed_range_min
 				result['speed_range_max'] = machine.speed_range_max
 				result['year_purchased'] = machine.year_purchased
 				result['engine_hours'] = machine.engine_hours
-				result['base_cost'] = machine.base_cost
+				result['base_cost'] = str(machine.base_cost)
 				result['m_type'] = machine.m_type
 				result['front_tires'] = machine.front_tires
 				result['rear_tires'] = machine.rear_tires
@@ -663,6 +715,7 @@ def retrieveScannedMachine(request):
 				result['photo'] = machine.photo
 				result['photo1'] = machine.photo1
 				result['photo2'] = machine.photo2
+				result['nickname'] = machine.nickname
 				if result['status'] is 1:
  					result['success'] = True
 			except Machine.DoesNotExist:
@@ -672,7 +725,6 @@ def retrieveScannedMachine(request):
 	else:
 	 	result['code'] = 3 #Request was not POST
  	return HttpResponse(json.dumps(result),content_type='application/json')
-
 
 
 # Driver 6.3.2.1
@@ -1222,7 +1274,7 @@ def retrievePendingTask(request):
 						emploTaskList.append(each)
 					
 				for item in emploTaskList:
-					aux['category'] = item.task.description
+					aux['category'] = item.task.category.description
 					aux['field'] = item.task.field.name
 					aux['date'] = str(item.task.date_assigned)
 					aux['task_id'] = item.task.id

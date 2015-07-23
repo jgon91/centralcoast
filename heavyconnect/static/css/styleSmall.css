@@ -366,6 +366,7 @@ input[type=button]{
 .titleNextTask {
 	font-size: 25px;
 	font-weight: 700;
+	line-height: 33px;
 }
 #next1 {
 	background: url('../imgSmall/buttons/next1.png') no-repeat top left;
@@ -403,7 +404,7 @@ input[type=button]{
 	color: #4F7316;
 }
 #moreInfo1 {
-	color: white; !important
+	color: black; !important
 }
 .plusInfo {
 	font-style: italic;
@@ -1094,6 +1095,7 @@ input[type=button]{
 	margin-top: 5px;
 	height: 100px;
 	font-size: 15px;
+	line-height: 15px;
 	padding: 1px;
 	resize: none;
 	border: none;
@@ -1114,13 +1116,13 @@ input[type=button]{
 	width: 60px;
 }
 #colSpecImg2 {
-	text-align: left;
 	padding-top: 10px;
 	width: 140px;
+	margin-left: 30px;
 }
 #colSpecImg3 {
 	text-align: left;
-	padding-top: 10px;
+	padding-top: 25px;
 	width: 60px;
 }
 #btnSpecs {
@@ -1128,22 +1130,31 @@ input[type=button]{
 	background-size: 100% 100%;
 	width: 80px;
 	height: 80px;
-	padding-top: 55px;
-
+	padding-top: 57px;
+	color: white;
+	font-size: 17px;
+	border-radius: 5px;
+	box-shadow: 2px 2px 5px gray;
 }
 #btnTractor {
-	background: url('../imgSmall/buttons/tractor.png') no-repeat top left;
-	background-size: 100% 100%;
 	width: 80px;
 	height: 80px;
 	margin-left: 40px;
 	margin-right: 10px;
+	border-radius: 5px;
+	box-shadow: 2px 2px 5px gray;
+	border: 3px solid #819927;
 }
 #btnAddImg {
 	background: url('../imgSmall/buttons/addImage.png') no-repeat top left;
 	background-size: 100% 100%;
 	width: 50px;
 	height: 50px;
+	padding-top: 35px;
+	color: white;
+	font-size: 10px;
+	border-radius: 5px;
+	box-shadow: 2px 2px 5px gray;
 }
 #colMapHolder {
 	max-width: 360px;
@@ -1157,6 +1168,13 @@ input[type=button]{
 	border: 2px solid #819927;
 }
 	/*** Modal Equipment Begin ***/
+#modalEquipSpecs {
+	font-size: 20px;
+	margin-left: 30px;
+}
+.specModalEquip {
+	color: #434343;
+}
 .modalEquip {
 	border-radius: 20px;
 	width: 90%;
@@ -1181,14 +1199,15 @@ input[type=button]{
 	background-size: 100% 100%;
 }
 #slideModalEquip {
-	padding-right: 60px;
+	
 }
 .controlModalEquip {
 	border-radius: 10px;
 	width: 20%;
 }
 .imgsEquip {
-	width: 200px;
+	width: 350px;
+	height: 235px !important;
 	margin: auto;
 	border-radius: 10px;
 	border: 5px solid #819927;

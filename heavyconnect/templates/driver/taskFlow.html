@@ -14,7 +14,7 @@
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerDriver' %}");
 				$("#btnCreateTask").click(function() {
-					return permissionCreateTask("{{csrf_token}}", "{% url 'validatePermission' %}", "");
+					/*return permissionCreateTask("{{csrf_token}}", "{% url 'validatePermission' %}", "");*/
 					// true or false
 				});
 				$(".moreInfo").click(function() {
@@ -64,7 +64,7 @@
 				});
 			}
 
-			function permissionCreateTask(token, url, permission) {
+/*			function permissionCreateTask(token, url, permission) {
 				console.log(url)
 				$.ajax({
 					method : "POST",
@@ -83,7 +83,7 @@
 					}
 				});
 				return permission;
-			}
+			}*/
 		</script>
 	</head>
 	<body>
@@ -101,7 +101,7 @@
 						<span class="titleNextTask">#1</span>
 						<br>
 						<span class="category titleNextTask"></span>
-						<h4>{% trans 'Field' %}</h4><span class="fieldName"></span>
+						<h4 style="font-size: 20px; line-height: 10px;">{% trans 'Field' %}</h4><span class="fieldName"></span>
 						<br>
 						<span class="plusInfo" id="moreInfo1">{% trans 'More Info' %}</span>
 					</div> </a>
@@ -110,7 +110,7 @@
 						<span class="titleNextTask">#2</span>
 						<br>
 						<span class="category titleNextTask"></span>
-						<h4>{% trans 'Field' %}</h4><span class="fieldName"></span>
+						<h4 style="font-size: 20px; line-height: 10px;">{% trans 'Field' %}</h4><span class="fieldName"></span>
 						<br>
 						<span class="plusInfo">{% trans 'More Info' %}</span>
 					</div> </a>
@@ -119,7 +119,7 @@
 						<span class="titleNextTask">#3</span>
 						<br>
 						<span class="category titleNextTask"></span>
-						<h4>{% trans 'Field' %}</h4><span class="fieldName"></span>
+						<h4 style="font-size: 20px; line-height: 10px;">{% trans 'Field' %}</h4><span class="fieldName"></span>
 						<br>
 						<span class="plusInfo">{% trans 'More Info' %}</span>
 					</div> </a>
