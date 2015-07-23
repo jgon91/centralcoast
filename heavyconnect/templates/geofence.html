@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Polygon Arrays</title>
+    <style>
+      html, body, #map-canvas {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <script>
+// This example creates a simple polygon representing the Bermuda Triangle.
+// When the user clicks on the polygon an info window opens, showing
+// information about the polygon's coordinates.
+
+var map;
+var infoWindow;
+
+function initialize() {
+  var mapOptions = {
+    zoom: 15,
+    center: new google.maps.LatLng(36.648046, -121.809542), // centralized on CSUMB
+    mapTypeId: google.maps.MapTypeId.TERRAIN
+  };
+
+  map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+
+  // Define the LatLng coordinates for the polygon.
+  var fielCoodinates = [
+    new google.maps.LatLng(36.648046, -121.809542),
+    new google.maps.LatLng(36.646393, -121.802830),
+    new google.maps.LatLng(36.646260, -121.787114),
+    new google.maps.LatLng(36.654577, -121.786051),
+    new google.maps.LatLng(36.654924, -121.793162),
+    new google.maps.LatLng(36.657669, -121.793294),
+    new google.maps.LatLng(36.658096, -121.798444),
+    new google.maps.LatLng(36.660655, -121.798744),
+    new google.maps.LatLng(36.661534, -121.809476),
+  ];
+
+  // Construct the polygon.
+  var field = new google.maps.Polygon({
+    name: 'CSMUB',
+    paths: fielCoodinates,
+    strokeColor: '#000000',
+    strokeOpacity: 0.8,
+    strokeWeight: 3,
+    fillColor: '#FF0000',
+    fillOpacity: 0.35
+  });
+
+  field.setMap(map);
+
+  // Add a listener for the click event.
+  google.maps.event.addListener(field, 'click', showArrays);
+
+  infoWindow = new google.maps.InfoWindow();
+}
+
+/** @this {google.maps.Polygon} */
+function showArrays(event) {
+
+  // Since this polygon has only one path, we can call getPath()
+  // to return the MVCArray of LatLngs.
+  var vertices = this.getPath();
+
+  var contentString = '<a href="http://www.google.com"><b>California State University</b><br></a>';
+
+  // Replace the info window's content and position.
+  infoWindow.setContent(contentString);
+  infoWindow.setPosition(event.latLng);
+
+  infoWindow.open(map);
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+  </body>
+</html>

@@ -920,7 +920,7 @@ def getFilteredMachine(request):
 	result = []
 	each_result = {}
 	result.append({'success' : False})
-  	if request.method == 'POST':  
+  	if request.method == 'POST':
 		# Save values from request
 		manufacturer = request.POST['manufacturer']
 		hitch_capacity = request.POST['hitch_capacity']
@@ -939,14 +939,14 @@ def getFilteredMachine(request):
 		status_attention = 0
 		status_broken = 0
 		status_quarantine = 0
-		if request.POST['status_ok'] == 'False':                   
-			status_ok = 1											
-		if request.POST['status_attention'] == 'False':			
-			status_attention = 2										
-		if request.POST['status_broken'] == 'False':				
-			status_broken = 3										
-		if request.POST['status_quarantine'] == 'False':		
-			status_quarantine = 4								
+		if request.POST['status_ok'] == 'False':
+			status_ok = 1
+		if request.POST['status_attention'] == 'False':
+			status_attention = 2
+		if request.POST['status_broken'] == 'False':
+			status_broken = 3
+		if request.POST['status_quarantine'] == 'False':
+			status_quarantine = 4
 
 	 	if request.is_ajax():
 	 		try:
@@ -1933,6 +1933,10 @@ def equipmentManager(request):
 @login_required
 def profileManager(request):
     return render(request, 'manager/profile.html')
+
+@login_required
+def geofence(request):
+	return render(request, 'geoFence.html')
 
 def retrieveScannedEmployee(request):
 	result = {'success' : False}
