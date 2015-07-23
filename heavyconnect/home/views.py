@@ -522,6 +522,17 @@ def getEquipmentInfo(request):
 			qr_code = request.POST['qr_code']
 			try:
 				machine = Machine.objects.get(qr_code = qr_code)
+				result['nickname'] = machine.nickname
+				result['hitch_category'] = machine.hitch_category
+				result['speed_range_min'] = machine.speed_range_min
+				result['speed_range_max'] = machine.speed_range_max
+				result['engine_hours'] = machine.engine_hours
+				result['base_cost'] = machine.base_cost
+				result['machine_type'] = str(machine.m_type)
+				result['front_tires'] = machine.front_tires
+				result['rear_tires'] = machine.rear_tires
+				result['steering'] = machine.steering
+				result['operator_station'] = machine.operator_station
 				result['manufacturer'] = machine.manufacturer_model.manufacturer.name
 				result['model'] = machine.manufacturer_model.model
 				result['asset_number'] = machine.asset_number
@@ -553,6 +564,12 @@ def getEquipmentInfo(request):
 			except Machine.DoesNotExist:
 				try:
 					implement = Implement.objects.get(qr_code = qr_code)
+					result['nickname'] = implement.nickname
+					result['hitch_category'] = implement.hitch_category
+					result['speed_range_min'] = implement.speed_range_min
+					result['speed_range_max'] = implement.speed_range_max
+					result['base_cost'] = implement.base_cost
+					result['equipment_type'] = str(implement.equipment_type)
 					result['manufacturer'] = implement.manufacturer_model.manufacturer.name
 					result['model'] = implement.manufacturer_model.model
 					result['asset_number'] = implement.asset_number
