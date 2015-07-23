@@ -22,11 +22,12 @@
 		grv = $('#grayscale-value'),
 		url = $("#url"),
 		machine = $("#machineSelected"),
-		implement = $("#implementSelected");
+		implement = $("#implementSelected"),
+		implement2 = $("#implement2Selected");
 		$('[data-toggle="tooltip"]').tooltip();
 	sl.css('opacity', .5);
 	pl.click(function() {
-		startScan(decoder, si, sl, sQ, sv, sp, spAll, url, machine, implement);
+		startScan(decoder, si, sl, sQ, sv, sp, spAll, url, machine, implement, implement2);
 	});
 	sv.click(function() {
 		if (typeof decoder.data().plugin_WebCodeCam == "undefined") return;

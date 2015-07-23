@@ -7,10 +7,12 @@
 		<script src=" {% static 'js/script.js' %}"></script>
 		<script>
 
-			var checkMachine, // Check if machine is verified ok
-				checkImplement, // Check if implement is verified ok 
-				checkField, // Check if field is verified ok 
-				checkTask = true; // Check if field is verified ok 
+			var checkMachine = false, // Check if machine is verified ok
+				checkImplement = false, // Check if implement is verified ok 
+				checkImplement2 = false,
+				checkField = false, // Check if field is verified ok 
+				checkTask = true,
+				errorMessage = ["", "", "", ""]; // Display error messages 
 
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
@@ -41,11 +43,18 @@
 					$("#implementBtn").val(0);
 					$("#implementBtn2").val(0);
 				});
+
 				$("#scanImplement").click(function() {
 					$("#implementBtn").val(1);
 					$("#machineBtn").val(0);
 					$("#implementBtn2").val(0);
 				});
+
+				$("#scanImplement2").click(function() {
+					$("#implementBtn2").val(1);
+					$("#implementBtn").val(0);
+					$("#machineBtn").val(0);					
+				});				
 
 				$("#submitBtnModal").click(function (){
 					if ($("#machineBtn").val() == 1) {
@@ -54,6 +63,9 @@
 					}else if($("#implementBtn").val() == 1){
 						checkImplement = checkQRCode("implementTab", $("#implementSelectedStart").val(), $("#implementScannedQRCode").val());
 						$('#scanQRCode').modal("hide");
+					}else if ($("#implementBtn2").val() == 1){
+						checkImplement2 = checkQRCode("implementTab", $("#implement2SelectedStart").val(), $("#implement2ScannedQRCode").val());
+						$('#scanQRCode').modal("hide");	
 					}
 				});
 				
@@ -61,11 +73,7 @@
 					checkField = confirm("Are you sure?");
 					checkTaskField("fieldTab", checkField);
 				});
-
-				/*$("#checkTask").click(function (){
-					checkTask = confirm("Are you sure?");
-					checkTaskField("taskTab", checkTask);
-				});*/
+				
 
 				$("#start").click(function (){
 					startTask("{{ csrf_token }}", "{% url 'startNewTask' %}", item.task_id);
@@ -74,7 +82,7 @@
 
 			function startTask(token, url, task_id){
 				//alert(checkTask);
-				if(checkImplement == true && checkMachine == true && checkTask == true && checkField == true) {
+				if(checkImplement == true && checkMachine == true && checkTask == true && checkField == true && checkImplement2 == true) {
 					$.ajax({
 						method : "POST",
 						url : url,
@@ -92,7 +100,23 @@
 					});
 					
 				}else {
-					alert("All fields were not checked!\nPlease Check all fields");
+
+					if(checkImplement == false) {
+						errorMessage[0] = "Implement";
+					}if(checkImplement2 == false) {
+						errorMessage[1] = "Implement 2";
+					}if(checkMachine == false) {
+						errorMessage[2] = "Machine";
+					}if(checkField == false) {
+						errorMessage[3] = "Field"
+					}
+
+					alert("The following fields are not checked: \n"  + errorMessage[0] + "\n" + errorMessage[1] + "\n" + errorMessage[2] + "\n" + errorMessage[3])
+
+					for (var i = 0; i < 4; i++) {
+						errorMessage[i] = "";
+					};
+
 				}
 			}
 
@@ -116,12 +140,19 @@
 					},
 					datatype : "json",
 					success : function(data, status, xhr) {
-						//alert(data.code);
-						$("#implementSelectedStart").val(data.implement_qr_code);
-						$("#machineSelectedStart").val(data.machine_qr_code);						
+						//alert(data.machine_photo);
 						$("#inputField").html(data.field);
 						$("#inputDescription").html(data.description);
 						$("#inputCategory").html(data.category);
+						$("#machineSelectedStart").val(data.machine_qr_code);	
+						$("#machineSelectedImg").attr("src", data.machine_photo);
+						$("#implementSelectedStart").val(data.implement1_qr_code);	
+						$("#implementSelectedImg").attr("src", data.implement1_photo);																										
+						if (data.implement2_qr_code != undefined) {
+							$("#secondImplement").show();
+							$("#implement2SelectedStart").val(data.implement2_qr_code);	
+							$("#implement2SelectedImg").attr("src", data.implement2_photo);																							
+						}				
 					}
 				});
 			}
@@ -129,8 +160,12 @@
 			function checkQRCode(div1, qr_code_input, qr_code_scanned){
 				//alert(qr_code_scanned);
 				if ($("#qr_code_typed").val() == qr_code_input || qr_code_input == qr_code_scanned){
-					$("#" + div1).removeClass("tabError");					
-					$("#" + div1).addClass("tabSucess");
+					if(div1 == "machineTab" )
+						$("#" + div1).addClass("tabSucess");
+					if(checkImplement == true)			
+						$("#" + div1).addClass("tabSucess");
+					else if(checkImplement2 == true)	
+						$("#" + div1).addClass("tabSucess");
 					return true;
 				}else{
 					$("#" + div1).removeClass("tabSucess");					
@@ -254,7 +289,8 @@
 							</div>
 							<div class="col-xs-6 col-md-6  alignCenterPage taskRows4">
 								<input type="hidden" id="implementSelectedId2" />
-								<input type="text" id="implement2Selected" class="inputCreateTask"  name="implement" readonly="true"/>
+								<input type="text" id="implement2SelectedStart" class="inputCreateTask"  name="implement" readonly="true"/>
+								<input type="hidden" id="implement2ScannedQRCode"></input>
 								<input type="button" value="Scan" onClick="$('#scanQRCode').modal()" class="scanEquipment" id="scanImplement2" />
 								<input type="hidden" id="implementBtn2"></input>
 							</div>
@@ -262,6 +298,7 @@
 								<img src="{% static 'img/implement.png' %}" id="implement2SelectedImg" class="imgCreateTask"/>
 							</div>
 						</div>
+
 					     <div class="both"></div>
 					     <div class="row">
 								<div class="col-xs-4 col-md-4">
@@ -295,7 +332,7 @@
 									
 								</div>
 								<div class="col-xs-4 col-md-4">
-									<a class="btn nextTab alignCenterPage" id="start" href="#">{% trans 'Start' %}</a>
+									<a class="btn nextTab alignCenterPage" id="start" href="">{% trans 'Start' %}</a>
 								</div>
 							</div>
 						  </div>  						  						 

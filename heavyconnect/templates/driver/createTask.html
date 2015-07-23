@@ -12,9 +12,19 @@
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerDriver' %}");
 				
+				//Hide second implement
 				$("#secondImplement").hide();
+
 				$('#AddImplement').click(function(){
+					$("#AddImplement").hide();
 					$("#secondImplement").show();
+				});
+
+				$('#delImplement').click(function(){	
+					$("#AddImplement").show();				
+					$("#secondImplement").hide();
+					$("#secondImplement img").attr("src", "{% static 'img/implement.png' %}");
+					$("#implement2Selected").val("");
 				});
 				
 				//Change tabs when clicks in the buttons NEXT and RETURN
@@ -104,8 +114,7 @@
 				$("#scanImplement2").click(function() {
 					$("#implementBtn2").val(1);
 					$("#implementBtn").val(0);
-					$("#machineBtn").val(0);
-					
+					$("#machineBtn").val(0);					
 				});
 				
 				$("#submit").click(function () {
@@ -348,6 +357,7 @@
 						<div class="row" id="secondImplement">
 							<div class="col-xs-3 col-md-3  alignCenterPage textCreateTask">
 								{% trans 'IMPLEMENT:' %}
+								<input type="button" id="delImplement" value="DEL Imp" class="addImplement" />
 							</div>
 							<div class="col-xs-6 col-md-6  alignCenterPage ">
 								<input type="hidden" id="implementSelectedId2" />
@@ -503,7 +513,7 @@
 					          		<option value="40">{% trans '40 HP Or Greater' %}</option>
 					          	</select >
 					          	<br>
-					          	{% trans 'Hitch Capacity:<br>
+					          	{% trans 'Hitch Capacity:' %}<br>
 					          	<select id="hitch_capacity" class="selectFiltersMachine selectFilters">
 					          		<option value="0">{% trans 'All' %}</option>
 					          		<option value="20000">{% trans '20 000 lbs or Greater' %}</option>
@@ -537,15 +547,15 @@
 					        </div>
 					        <div class="modal-body">
 					          <div id="filterDiv">
-					          	<h3>{% trans 'Filters</h3>
-					          	{% trans 'Manufacturers:<br>
+					          	<h3>{% trans 'Filters' %}</h3>
+					          	{% trans 'Manufacturers:' %}<br>
 					          	<select id="manufacturerImplement" class="selectFiltersImplement selectFilters manufacturer">
 					          		<option value="">{% trans 'All' %}</option>
 					          	</select>
 					          	<br><br>
 					          	{% trans 'HP required' %}:<br>
 					          	<select id="horse_power_required" class="selectFiltersImplement selectFilters">
-					          		<option value="0">{% trans 'All</option>
+					          		<option value="0">{% trans 'All' %}</option>
 					          		<option value="175">{% trans '175 HP Or Greater' %}</option>
 					          		<option value="100">{% trans '100 HP Or Greater' %}</option>
 					          		<option value="40">{% trans '40 HP Or Greater' %}</option>
@@ -600,18 +610,14 @@
 					                            </div>
 					                        </div>
 					                    </div>    
-	                   				 <div style="margin auto 40px; text-align: center;">     
-		                                <input type="text" id="qr_code_typed" style="color:black;" placeholder="Type QR-Code"/> 
-		                                <a id="linkEquipmemt" href="#">
-		                                    <button id="submitBtnModal" title="Play" type="button" class="btn btn-success btn-sm">
-		                                        <span class="glyphicon glyphicon-play"></span>
-		                                    </button>
-		                                </a>
-	                        		</div>         
 	                			</div>
 							    <!--END SCANQRCODE MACHINE/IMPLEMENT-->
-			<div class="clearBoth">&nbsp;</div>
-		</div>
+								<div class="clearBoth"></div>
+							        <div class="modal-footer">
+							          <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
+							        </div>
+							      </div>
+							</div>
 		
 	</body>
 	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
