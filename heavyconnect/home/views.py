@@ -691,7 +691,7 @@ def retrieveScannedMachine(request):
 				result['manufacture'] = machine.manufacturer_model.manufacturer.name
 				result['serial'] = machine.serial_number
 				result['status'] = machine.status
-				result['model'] = models.model
+				result['model'] = machine.manufacturer_model.model
 				result['asset_number'] = machine.asset_number
 				result['horsepower'] = machine.horsepower
 				result['hitch_capacity'] = machine.hitch_capacity
