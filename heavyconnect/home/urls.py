@@ -76,7 +76,6 @@ urlpatterns = [
     url(r'^retrieveScannedEmployee/$', main_views.retrieveScannedEmployee, name = 'retrieveScannedEmployee'),
     url(r'^validatePermission/$', main_views.validatePermission, name = 'validatePermission'),
     url(r'^getAllManufacturers/$', main_views.getAllManufacturers, name = 'getAllManufacturers'),
-    url(r'^expandInfoBox/$', main_views.expandInfoBox, name = 'expandInfoBox'),
     url(r'^updateEquipmentStatus/$', main_views.updateEquipmentStatus, name = 'updateEquipmentStatus'),
     url(r'^getEmployeeSchedulePart/$', main_views.getEmployeeSchedulePart, name = 'getEmployeeSchedulePart'),
     url(r'^getAllFields/$', main_views.getAllFields, name = 'getAllFields'),

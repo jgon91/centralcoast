@@ -173,20 +173,35 @@ def startShift(request):
 
 	if request.method == "POST":
 		if request.is_ajax():
+
 			try:
 				employee = Employee.objects.get(user_id = request.user.id)
 
-				now = datetime.datetime.now()
-				start_date = datetime.datetime.combine(now, datetime.time.min)
-				end_date = datetime.datetime.combine(now, datetime.time.max)
+				attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('date').first()
 
-				attendance, created = EmployeeAttendance.objects.get_or_create(employee_id = employee.id, date__range = (start_date, end_date), defaults = {'date' : now, 'hour_started' : now})
-				if created:
+				if attendance is not None:
+					#If more than 16 hours was passed since the last shift was started we can consider that now we are creating a new shift
+					time_delta = (datetime.datetime.now() - datetime.datetime.combine(attendance.date,attendance.hour_started))
+					if ((time_delta.seconds / 3600.0) >= 16.17) or (time_delta.days >= 1):
+						eAttendance = EmployeeAttendance(employee = employee, date = now(), hour_started = now())
+						eAttendance.save()
+						result['success'] = True
+						result['hour_started'] = str(eAttendance.hour_started)
+					else:
+						#In case 16 hours haven't passed yet we need to check if the shift we get was finished or not
+						if attendance.hour_ended is not None: #The last shift was finished already, so we can start a new one
+							eAttendance = EmployeeAttendance(employee = employee, date = now(), hour_started = now())
+							eAttendance.save()
+							result['success'] = True
+							result['hour_started'] = str(eAttendance.hour_started)
+						else: #The last shift wasn't finished yet.
+							result['code'] = 1 #You need to finish the shift you started already before create a new one
+				else: #First time the employee will create a shift
+					eAttendance = EmployeeAttendance(employee = employee, date = now(), hour_started = now())
+					eAttendance.save()
 					result['success'] = True
-					result['hour_started'] = str(attendance.hour_started)
-				else:
-					result['code'] = 1 #The shift for today was already created
-			except Employee.DoesNotExist:
+					result['hour_started'] = str(eAttendance.hour_started)
+			except (Employee.DoesNotExist, EmployeeAttendance.DoesNotExist) as e:
 				result['code'] =  2 #There is no users associated with this id
 		else:
 			result['code'] = 3 #Use ajax to perform requests
@@ -243,13 +258,10 @@ def startBreak(request):
 	if request.method == "POST":
 		if request.is_ajax():
 			try:
+				
 				employee = Employee.objects.get(user_id = request.user.id)
 
-				now = datetime.datetime.now()
-				start_date = datetime.datetime.combine(now, datetime.time.min)
-				end_date = datetime.datetime.combine(now, datetime.time.max)
-
-				attendance = EmployeeAttendance.objects.get(employee_id = employee, date__range = (start_date, end_date))
+				attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('date').first()
 
 				if attendance.hour_ended is None:
 					t_break = Break.objects.filter(attendance_id = attendance).order_by('-start')
@@ -1541,7 +1553,7 @@ def getEmployeeShifts(request):
 			employee = Employee.objects.get(user_id = request.user.id)
 
 			try:
-				attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('date').first()
+				
 				result['first_name'] = employee.user.first_name
 				result['last_name'] = employee.user.last_name
 				result['qr_code'] = employee.qr_code
@@ -1549,19 +1561,26 @@ def getEmployeeShifts(request):
 				result['permission_level'] = employee.permission_level
 				result['photo_url'] = employee.photo
 
-				if attendance is None:
+				attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('date').first()
+
+				if attendance is not None:
+					time_delta = (datetime.datetime.now() - datetime.datetime.combine(attendance.date,attendance.hour_started))
+					if ((time_delta.seconds / 3600.0) >= 16.17) or (time_delta.days >=1):
+						result['hour_started'] = ''
+						result['hour_ended'] = ''
+					else:
+						result['hour_started'] = str(attendance.hour_started)
+						result['hour_ended'] = str(attendance.hour_ended)
+						breaks = Break.objects.filter(attendance_id = attendance.id).order_by('start').values()
+
+						temp = []
+						for item in breaks:
+							temp.append((str(item['start']),str(item['end'])))
+
+						result['breaks'] = temp
+				else:
 					result['hour_started'] = ''
 					result['hour_ended'] = ''
-				else:
-					result['hour_started'] = str(attendance.hour_started)
-					result['hour_ended'] = str(attendance.hour_ended)
-					breaks = Break.objects.filter(attendance_id = attendance.id).order_by('start').values()
-
-					temp = []
-					for item in breaks:
-						temp.append((str(item['start']),str(item['end'])))
-
-					result['breaks'] = temp
 				result['success'] = True
 			except EmployeeAttendance.DoesNotExist:
 				result['code'] = 1 #There is no shift records for this employee
@@ -1639,10 +1658,6 @@ def getTaskImplementMachine(taskId,EmploTaskId):
 		tmp.append(item.implement.qr_code)
 	result['implement'] = tmp
 	return result
-
-
-
-
 
 def getAllManufacturers(request):
 	each_result = {}
@@ -1846,8 +1861,6 @@ def beaconUpdate(request):
 		result['errorString'] = 'Request was not POST, your sent a ' + str(request.method)
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
-
-
 
 def logout(request):
 	auth_logout(request)
