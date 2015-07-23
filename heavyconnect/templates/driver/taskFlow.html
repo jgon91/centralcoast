@@ -2,76 +2,174 @@
 <html lang="en">
 	<head>
 		{% load staticfiles %}
+		{% load i18n %}
 		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
+		<link rel="stylesheet" type="text/css" href="{% static 'css/styleSmall.css' %}">
 		<script>
+			//variables
+			var taskMoreInfo;
+			taskMoreInfo = {};
+			//Events
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerDriver' %}");
-				
+				$("#btnCreateTask").click(function() {
+					return permissionCreateTask("{{csrf_token}}", "{% url 'validatePermission' %}", "");
+					// true or false
+				});
+				$(".moreInfo").click(function() {
+					$("#linkStartTask").attr("href", "{% url 'startTask'%}?task_id=" + taskMoreInfo[parseInt(this.id.substring(8, 9))].task_id);
+                });
+				getPendingTask("{{ csrf_token }}", "{% url 'retrievePendingTask' %}");
+				$(".moreInfo").click(function() {
+					$('.infoModalTask').html('');
+
+					$('#startTask').modal();
+
+					$("#dataMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].date.substring(0, 10));
+					$("#implementNameMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].implement1_nickname);
+					$("#implementIdMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].implement1_id);
+					$("#implementModelMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].implement1_model);
+					$("#tractorNameMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].machine_nickname);
+					$("#tractorIdMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].machine_id);
+					$("#tractorModelMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].machine_model);
+					$("#employeeFirstMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].employee_first_name);
+					$("#employeeLastMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].employee_last_name);
+					$("#fieldMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].field);
+
+				});
 			});
+			//Functions
+			function getPendingTask(token, url) {
+				$.ajax({
+					method : "POST",
+					url : url,
+					data : {
+						"csrfmiddlewaretoken" : token,
+						"offset" : 0,
+						"limit" : 3
+					},
+					datatype : "json",
+					success : function(data, status, xhr) {
+						//alert(data.length);
+						for (var i = 1; i < data.length; i++) {
+							if (i == 1) {
+								$("#divStartNow").attr("href", "{% url 'startTask'%}?task_id=" + data[i].task_id);
+							}
+							$("#next" + i + " .category").html(data[i].category);
+							$("#next" + i + " .fieldName").html(data[i].field);
+							$("#next" + i + " .task_id").html(data[i].task_id);
+						};
+						taskMoreInfo = data;
+					}
+				});
+			}
+
+			function permissionCreateTask(token, url, permission) {
+				console.log(url)
+				$.ajax({
+					method : "POST",
+					url : url,
+					dataType : "json",
+					async : false,
+					data : {
+						"csrfmiddlewaretoken" : token
+					},
+					success : function(data, status, xhr) {
+						//console.log(data)
+						if (!data.success) {
+							alert("You do not have enough right to create a task!!");
+						}
+						permission = data.success;
+					}
+				});
+				return permission;
+			}
 		</script>
 	</head>
 	<body>
 		<header id="head"></header>
 		<div id="wrapper">
 			<div id="content">
-				<div id="namePage">
-					TASKFLOW
+				<div class="namePage">
+					<img src="{% static 'imgSmall/iconTaskflow.png' %}"/>{% trans 'HC TASKFLOW' %}
 				</div>
-				<div id="divTask">
-					<div id="pendingTask">
-						<p id="taskP">PENDING TASKS</p>
-						<a href="{% url 'startTask' %}" id="last1" style="text-decoration: none;">
-							<div class="lastClass">Disk 3 passes N-W - Ranch 1 Block 1.
-						</div></a>
-						<a href="{% url 'startTask' %}" id="last2" style="text-decoration: none;">
-							<div class="lastClass">Disk 4 passes S-N - Ranch 3 Block 3.
-						</div></a>
-						<a href="{% url 'startTask' %}" id="last3" style="text-decoration: none;">
-							<div class="lastClass">Disk 2 passes N-E - Ranch 6 Block 5.
-						</div></a>
-						<a href="{% url 'startTask' %}" id="last4" style="text-decoration: none;">
-							<div class="lastClass">Disk 4 passes W-E - Ranch 9 Block 8.
-						</div></a>
+				<!--<span id="titleTask">Scheduled Tasks</span>-->
+				<div class="both"></div>
+				<div class="row pendingTasks">
+					<a href="#" id="moreInfo1" class="moreInfo">
+					<div class="col-xs-4 col-md-4 nextBox" id="next1">
+						<span class="titleNextTask">#1</span>
+						<br>
+						<span class="category titleNextTask"></span>
+						<h4>{% trans 'Field' %}</h4><span class="fieldName"></span>
+						<br>
+						<span class="plusInfo" id="moreInfo1">{% trans 'More Info' %}</span>
+					</div> </a>
+					<a href="#" id="moreInfo2" class="moreInfo">
+					<div class="col-xs-4 col-md-4 nextBox" id="next2">
+						<span class="titleNextTask">#2</span>
+						<br>
+						<span class="category titleNextTask"></span>
+						<h4>{% trans 'Field' %}</h4><span class="fieldName"></span>
+						<br>
+						<span class="plusInfo">{% trans 'More Info' %}</span>
+					</div> </a>
+					<a href="#" id="moreInfo3" class="moreInfo">
+					<div class="col-xs-4 col-md-4 nextBox" id="next3">
+						<span class="titleNextTask">#3</span>
+						<br>
+						<span class="category titleNextTask"></span>
+						<h4>{% trans 'Field' %}</h4><span class="fieldName"></span>
+						<br>
+						<span class="plusInfo">{% trans 'More Info' %}</span>
+					</div> </a>
+				</div>
+				<div class="row btnPastNextTask">
+					<div class="col-xs-4 col-md-4 colTasks" id="colPast">
+						<a href="{% url 'pastTasks' %}">
+						<input type="button" value="Past Tasks   " id="btnPastTasks" class="btnsTasks"/>
+						</a>
 					</div>
-					<div id="divCreateTask"><a href="{% url 'createTask' %}"><input type="button" id="btnCreateTask" /></a></div>
-					<div id="divLastTask"><a href="{% url 'pastTasks' %}"><input type="button" id="btnLastTasks" /></a></div>
-					<div id="divGoScheduler"><a href="{% url 'schedule' %}"><input type="button" id="btnGoScheduler" /></a></div>
-					
+					<div class="col-xs-4 col-md-4 colTasks"></div>
+					<div class="col-xs-4 col-md-4 colTasks" id="colCreate">
+						<a href="{% url 'createTask' %}">
+						<input type="button" value="Create Task  " id="btnCreateTask" class="btnsTasks"/>
+						</a>
+					</div>
 				</div>
+				<!-- MODAL OF START TASK -->
+				<div class="modal fade" id="startTask" role="dialog">
+					<div class="modal-dialog">
+						<!-- Modal content-->
+						<div class="modal-content modalTask">
+							<button type="button" class="closeTask" data-dismiss="modal">
+							</button>
+							<span id="dataMoreInfo"></span>
+							<div class="modal-body infoTask">
+								{% trans 'IMPLEMENT' %}: <span id="implementNameMoreInfo" class="infoModalTask"></span>
+								'<span id="implementIdMoreInfo" class="infoModalTask"></span>
+								(<span id="implementModelMoreInfo" class="infoModalTask"></span>)
+								<br>
+								{% trans 'TRACTOR' %}: "<span id="tractorNameMoreInfo" class="infoModalTask"></span>" <span id="tractorIdMoreInfo" class="infoModalTask"></span>
+								(<span id="tractorModelMoreInfo" class="infoModalTask"></span>)
+								<br>
+								{% trans 'EMPLOYEE' %}: <span id="employeeFirstMoreInfo" class="infoModalTask"></span>
+								<span id="employeeLastMoreInfo" class="infoModalTask"></span>
+								<br>
+								{% trans 'FIELD' %}: <span id="fieldMoreInfo" class="infoModalTask"></span>
+								<!--br>ESTIMATED HOURS: <span id="hoursMoreInfo" class="infoModalTask"></span>-->
+							</div>
+							<a id="linkStartTask" href="">
+							<input type="button" value="{% trans 'Start' %}" id="btnStartTask"/>
+							</a>
+							<div class="both"></div>
+						</div>
+					</div>
+				</div>
+
 			</div>
-			<div id="clearBoth"></div>
 		</div>
 		<footer id="foot"></footer>
 	</body>
-	<script>
-			function startNewTask()
-			{			
-					
-					console.log("function called");
-					$.ajax({
-						method: "POST",
-						url: "",
-						dataType: "json", 
-           				data: {"csrf_token": '{{csrf_token}}'},
-						success: function(data, status, xhr)
-						{
-							if(data.success)
-							{		 	
-							 	if(data.authorized)
-							 	{	
-							 		return true;
-							 	}else
-							 	{
-							 		alert("You do not have enough right to create a task!!");
-							 		return false;
-							 	}
-							}
-						}
-					});
-			}
-			
-			$("#btnCreateTask").click(startNewTask);
-			
-	</script>
 </html>

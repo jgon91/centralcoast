@@ -34,7 +34,6 @@ def updatedDate(request):
 def taskflow(request):
 	return render(request, 'taskflow.html')
 
-@login_required
 def createNewTask(request):
 	form = taskForm(request.POST)
 	result = {'success' : False}
@@ -1283,6 +1282,7 @@ def retrievePendingTask(request):
 					aux['employee_id'] = item.employee.id
 					aux['employee_first_name'] = item.employee.user.first_name
 					aux['employee_last_name'] = item.employee.user.last_name
+					
 					try:
 						machineTask = MachineTask.objects.get(task__id = item.task.id)
 						aux['machine_model'] = machineTask.machine.manufacturer_model.model
@@ -1290,6 +1290,7 @@ def retrievePendingTask(request):
 						aux['machine_id'] = machineTask.machine.id
 					except MachineTask.DoesNotExist:
 						aux['machine_id'] = "NONE"
+					
 					try:
 						# If task uses two implements, it will retrieve both. If It doesn't, return only one
 						implementTask = ImplementTask.objects.filter(task__id = item.task.id)
@@ -1302,20 +1303,21 @@ def retrievePendingTask(request):
 							aux['implement2_id'] = implementTask[1].implement.id
 					except ImplementTask.DoesNotExist:
 						aux['implement_id'] = "NONE"
+					
 					result.append(aux)
 					aux = {}
-				result[0] = {'success' : True}
+				result['success'] = True
 			except EmployeeTask.DoesNotExist:
-				result.append({'result' : 1})#There is no Implement associated with this
+				result['code'] = 1 #There is no Implement associated with this
 		else:
-	 		result.append({'result' : 2}) #Use ajax to perform requests
+	 		result['code'] = 2 #Use ajax to perform requests
 	else:
-	 	result.append({'result' : 3}) #Request was not POST
+		result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
 
-#Return task that are not complished until today, the number of task returned is according to the number n
+##Return task that are not complished until today, the number of task returned is according to the number n
 @login_required
 def pastTaskList(request):
 	result = []
@@ -1328,12 +1330,13 @@ def pastTaskList(request):
 				limit = int(request.POST['limit'])
 				# Filter EmployeeTask by user, date and status task != Finished
 				emploTask   =  EmployeeTask.objects.order_by('-end_time').filter(employee__user__id = request.user.id, task__status = 6)[off:limit+off]
-				print 'SSS' + str(request.user.id)
+
 				for item in emploTask:
 					aux['category'] = item.task.description
 					aux['field'] = item.task.field.name
 					aux['date'] = str(item.start_time)
 					aux['description'] = item.task.description
+
 					# Calculate the duratio of the task based on EmployeeTask table (not in Task table)
 					duration = datetime.timedelta( hours = item.end_time.hour - item.start_time.hour,
 													minutes = item.end_time.minute - item.start_time.minute,
@@ -1343,6 +1346,7 @@ def pastTaskList(request):
 					aux['employee_id'] = item.employee.id
 					aux['employee_first_name'] = item.employee.user.first_name
 					aux['employee_last_name'] = item.employee.user.last_name
+					
 					try:
 						machineTask = MachineTask.objects.get(task__id = item.task.id)
 						aux['machine_model'] = machineTask.machine.manufacturer_model.model
@@ -1350,6 +1354,7 @@ def pastTaskList(request):
 						aux['machine_id'] = machineTask.machine.id
 					except MachineTask.DoesNotExist:
 						aux['machine_id'] = "NONE"
+					
 					try:
 						# Retrieve first implement always. If existent, retrieve the second as well.
 						implementTask = ImplementTask.objects.filter(task__id = item.task.id)
@@ -1362,6 +1367,7 @@ def pastTaskList(request):
 							aux['implement2_id'] = implementTask[1].implement.id
 					except ImplementTask.DoesNotExist:
 						aux['implement_id'] = "NONE"
+					
 					result.append(aux)
 					aux = {}
 				result[0] = {'success' : True}
@@ -1373,12 +1379,6 @@ def pastTaskList(request):
 	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-
-
-
-
-
-
 # Get Employee current Task information if he is doing some task at the moment.
 # Retrieve what Field he is and what Machine and Implement he is using
 def getEmployeeCurrentTaskInfo(request):
@@ -1387,12 +1387,14 @@ def getEmployeeCurrentTaskInfo(request):
 	if request.method == 'POST':
 		employee_id = request.POST['employee_id']
 	 	if request.is_ajax():
+
 			try:
 				employeeTask = EmployeeTask.objects.get(employee__id = employee_id, task__status = 4)# Return Ongoing task of requested Employee
 				result['task_id'] = employeeTask.task.id
 				result['task_description'] = employeeTask.task.category.description
 				result['field'] = employeeTask.task.field.name
 				result['success'] = True
+				
 				try:
 					machineTask = MachineTask.objects.get(task__id = employeeTask.task.id)
 					result['machine_id'] = machineTask.machine.id
@@ -1401,6 +1403,7 @@ def getEmployeeCurrentTaskInfo(request):
 					result['machine_nickname'] = machineTask.machine.nickname
 				except MachineTask.DoesNotExist:
 					aux['machine_id'] = "NONE"
+				
 				try:
 					implementTask = ImplementTask.objects.get(task__id = employeeTask.task.id)
 					result['implement_id'] = implementTask.implement.id
@@ -1409,6 +1412,7 @@ def getEmployeeCurrentTaskInfo(request):
 					result['implement_nickname'] = implementTask.implement.nickname
 				except ImplementTask.DoesNotExist:
 					aux['implement_id'] = "NONE"
+			
 			except EmployeeTask.DoesNotExist:
 				result['code'] = 1#There is no Implement associated with this
 		else:
@@ -1453,9 +1457,6 @@ def getEmployeeSelfCurrentTask(request):
 	else:
 	 	result['code'] = 3  #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
-
-
-
 
 # change back:
 # parametro request, voltar para employee_id, date_entry
@@ -1694,12 +1695,10 @@ def validatePermission(request):
 	if request.method == 'POST':
 		if request.is_ajax():
 			try:
-				employee = Employee.objects.get(id = request.user.id)
-				aux = employee.permission_level
-				result['authorized'] = False
-				if aux == 2 or aux == 3:
-					result['authorized'] = True
-				result['success'] = True
+				employee = Employee.objects.get(user = request.user)
+				
+				if employee.permission_level == 2:
+					result['success'] = True
 			except Employee.DoesNotExist:
 				result['code'] = 1 #There is no shift records for this employee
 		else:
@@ -1929,6 +1928,10 @@ def fleet(request):
 @login_required
 def equipmentManager(request):
     return render(request, 'manager/equipment.html')
+
+@login_required
+def map(request):
+    return render(request, 'manager/map.html')
 
 @login_required
 def profileManager(request):
@@ -2191,12 +2194,10 @@ Just a quick explanation on how to test forms:
 	            return HttpResponseRedirect('/thanks/') # Redirect after POST
 	    else:
 	        form = ContactForm() # An unbound form
-
 	    return render(request, 'THEPAGEYOUWANTTOBERETURNED.html', {
 	        'form': form,
 	    })
 </menezescode>
-
 @menezescode: 	Those are the forms. At the current point 06/22/2015,
 				each view does nothgin besides render the page and redirect
 				to a different page (formOk) if it's correct and reload the page

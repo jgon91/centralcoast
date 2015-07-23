@@ -1,3 +1,95 @@
+//SCRIPT LOGIN PAGE***
+function process_login() {
+	$.ajax({
+		method: "POST",
+		url: "login/",
+		data: $('#login-form').serialize(),
+		success: function(data, status, xhr){
+			if(data.success){
+				location.reload();
+			} else if (data.code == 1){
+				$("#errorMessage").html("User Inactive. Call your manager.");
+				$("#errorMessage").attr("class", "fade in");
+				$("#errorMessage").css('display', 'block');
+			} else if (data.code == 2){
+				$("#errorMessage").html("Wrong Username/Password.");
+				$("#errorMessage").attr("class", "fade in");
+				$("#errorMessage").css('display', 'block');
+			} else if (data.code == 3){
+				$("#errorMessage").html("Enter the username and password.");
+				$("#errorMessage").attr("class", "fade in");
+				$("#errorMessage").css('display', 'block');
+			} else if (data.code == 4 || data.code == 5){
+				$("#errorMessage").html("Error. Please, contact the suport.");
+				$("#errorMessage").attr("class", "fade in");
+				$("#errorMessage").css('display', 'block');
+			}
+		}
+	});
+}
+//END SCRIPT LOGIN PAGE
+
+
+/*** SAVE TASK BEGIN ***/
+function saveTask(token, url, urlScheduler){
+	$.ajax({
+		method: "POST",
+		url: url,
+		data: {"csrfmiddlewaretoken": token,
+				"category": $("#category").val(), 
+				"field": $("#field").val(), 
+				"passes": $("#passes").val(), 
+				"hours_prediction": $("#hours_prediction").val(), 
+				"time": $("#time").val(), 
+				"date": $("#date").val(), 
+				"description": $("#description").val(),
+				"machine": $("#machineSelected").val(), 
+				"implement": $("#implementSelected").val(),
+				"implement2": $("#implement2Selected").val(),
+				},
+		async: false,
+		datatype: "json",
+		success: function(data, status, xhr){
+			if(data.success){
+				alert("Task created");
+				document.location = urlScheduler;
+			}else if(data.code == 3){
+				var errorsMessage = "";
+				if(data.errors.category != null){
+					errorsMessage += "\nCategory: " + data.errors.category;
+				}
+				if(data.errors.machine != null){
+					errorsMessage += "\nMachine: " + data.errors.machine;
+				}
+				if(data.errors.implement != null){
+					errorsMessage += "\nImplement: " + data.errors.implement;
+				}
+				if(data.errors.field != null){
+					errorsMessage += "\nField: " + data.errors.field;
+				}
+				if(data.errors.date != null){
+					errorsMessage += "\nDate: " + data.errors.date;
+				}
+				if(data.errors.time != null){
+					errorsMessage += "\nTime: " + data.errors.time;
+				}
+				if(data.errors.hours_prediction != null){
+					errorsMessage += "\nHours Prediction: " + data.errors.hours_prediction;
+				}
+				if(data.errors.passes != null){
+					errorsMessage += "\nPasses: " + data.errors.passes;
+				}
+				if(data.errors.description != null){
+					errorsMessage += "\nDescription: " + data.errors.description;
+				}
+				alert("Erros:" + errorsMessage);
+			}
+			console.log(data.errors);
+		}	
+	});
+}
+/*** CREATE TASK END ***/
+
 
 /* Script Profile 
 	function getUserInformation(token) {
@@ -44,14 +136,36 @@
 
 /* End Active Page */
 
+/* Get parameters from url's */
+	function getParametersUrl(){
+		var url   = window.location.search.replace("?", "");
+		var parametersList = url.split("&");
+		var item = {};
+		
+		for(var i = 0; i < parametersList.length; i++){
+		    var parameter = parametersList[i].split("=");
+		    var key = parameter[0];
+		    var value = parameter[1];
+		    item[key] = value;
+		}
+
+		return item;
+	}
+
+/*End function getParametersUrl */
+
 /* Script checklist page */
 	function eventsCheckList() 
 	{
 		//Variables
-		var answer1 = 9; var answer2 = 9; var answer3 = 9; var answer4 = 9; var answer5 = 9;
+		var answer1 = undefined, 
+			answer2 = undefined,
+			answer3 = undefined,
+			answer4 = undefined, 
+			answer5 = undefined;
 		
 		$("#q1").css("border", "solid 5px #FFF");
-		$("#q1").css("padding", "10px");
+		//$("#q1").css("padding", "18px");
 		
 		// Events
 		$("input[name=q1]:radio").change(function(){
@@ -114,8 +228,9 @@
 		$("#q4").css("border", ""); $("#checkList4").hide();
 		$("#q5").css("border", ""); $("#checkList5").hide();
 		$("#" + checkedList).fadeIn(500);
+		$("#" + checkedList).css("display", "block");
 		$("#" + question).css("border", "solid 5px #FFF");
-		$("#" + question).css("padding", "10px");
+		//$("#" + question).css("padding", "18px");
 	}
 	
 	function questionChecked(question) 

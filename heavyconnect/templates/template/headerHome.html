@@ -13,7 +13,9 @@
 		<!--IMPORTS-->
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-		<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/styleSmall.css' %}">
+		<!-- <link rel="stylesheet" type="text/css" href="{% static 'css/styleSmall.css' %}" media="screen and (max-width: 800px) and (orientation: landscape)">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/styleMedium.css' %}" media="screen and (min-width: 801px)"> -->
 		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
 		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
 		<link rel="shortcut icon" href="/favicon.ico">
@@ -27,17 +29,10 @@
 				$("a:odd").attr("href", "{% url 'profile' %}");
 		}
 	</script>
-	<style>
-		#logoHome
-		{
-			width: 190px;
-			height: 100px;
-		}
-	</style>
 	<body>
 		<div id="top">
 			<div id="menuTop">
-				<img src="{% static 'img/Logo_negative.png' %}" id="logoHome"/>
+				<img src="{% static 'img/logoNegative.png' %}" id="logoHome"/>
 				<a href="{% url 'logout' %}"><input type="button" id="logOff"/>
 				<a><input onclick="detectPage()" type="button" id="userImg"/>
 			</div>

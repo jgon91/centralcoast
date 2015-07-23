@@ -36,8 +36,8 @@
 					si.attr('src', imgSrc);
 					
 					 alert(text);// Shows the QRCode scanned
-					 //document.location="{% url '#' %}";
-					 document.location="#";
+					 $("#machineSelected").val(text);
+					 $('#scanQRCode').modal("hide");
 					sl.fadeOut(150, function() {
 						sl.fadeIn(150);
 					});
