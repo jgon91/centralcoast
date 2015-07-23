@@ -2174,6 +2174,31 @@ def saveEmployeeNotes(request):
 		result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+def getFieldLocalization(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+		if request.is_ajax():
+			try:
+				fieldLocalization = FieldLocalization.objects.filter(field_id = request.POST['id'])
+				latitude = []
+				longitude = []
+				for each in fieldLocalization:
+					latitude.append(each.gps.latitude)
+					longitude.append(each.gps.longitude)
+					result['name'] = each.field.name
+				result['latitude'] = latitude
+				result['longitude'] = longitude
+				result['success'] = True
+			except DoesNotExist:
+				result['code'] =  1 #There is no Implement associated with this
+		else:
+			result['code'] = 2 #Use ajax to perform requests
+	else:
+		result['code'] = 3 #Request was not POST
+
+	return HttpResponse(json.dumps(result), content_type='application/json')
+
+
 
 # @menezescode: Page only to show the form was correctly sended.
 def formOk(request):
