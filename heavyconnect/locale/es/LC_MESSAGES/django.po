@@ -32,31 +32,31 @@ msgstr "Portugués Brasileño"
 
 #: heavyconnect/templates/driver/createTask.html:154
 msgid "Nickname:"
-msgstr ""
+msgstr "Sobre Nombre"
 
 #: heavyconnect/templates/driver/createTask.html:154
 msgid "Drawbar Category:"
-msgstr ""
+msgstr "-------"
 
 #: heavyconnect/templates/driver/createTask.html:269
 msgid "CREATE TASK"
-msgstr ""
+msgstr "CREAR TAREA"
 
 #: heavyconnect/templates/driver/createTask.html:273
 #: heavyconnect/templates/driver/startTask.html:202
 #: heavyconnect/templates/driver/startTask.html:215
 msgid "Task"
-msgstr ""
+msgstr "Tarea"
 
 #: heavyconnect/templates/driver/createTask.html:274
 #: heavyconnect/templates/driver/startTask.html:203
 msgid "Machine"
-msgstr ""
+msgstr "Maquina"
 
 #: heavyconnect/templates/driver/createTask.html:275
 #: heavyconnect/templates/driver/startTask.html:204
 msgid "Implement"
-msgstr ""
+msgstr "Implement"
 
 #: heavyconnect/templates/driver/createTask.html:276
 #: heavyconnect/templates/driver/startTask.html:205
@@ -65,19 +65,19 @@ msgstr ""
 #: heavyconnect/templates/driver/taskFlow.html:114
 #: heavyconnect/templates/driver/taskFlow.html:123
 msgid "Field"
-msgstr ""
+msgstr "Fil"
 
 #: heavyconnect/templates/driver/createTask.html:277
 msgid "Time"
-msgstr ""
+msgstr "Tiempo"
 
 #: heavyconnect/templates/driver/createTask.html:278
 msgid "Add Info"
-msgstr ""
+msgstr "Aggregar Informacion"
 
 #: heavyconnect/templates/driver/createTask.html:286
 msgid "Task:"
-msgstr ""
+msgstr "Tarea:"
 
 #: heavyconnect/templates/driver/createTask.html:303
 #: heavyconnect/templates/driver/createTask.html:333
@@ -88,12 +88,12 @@ msgstr ""
 #: heavyconnect/templates/driver/startTask.html:263
 #: heavyconnect/templates/driver/startTask.html:311
 msgid "NEXT"
-msgstr ""
+msgstr "SIGUIENTE"
 
 #: heavyconnect/templates/driver/createTask.html:311
 #: heavyconnect/templates/driver/schedule.html:98
 msgid "MACHINE:"
-msgstr ""
+msgstr "MAQUINA"
 
 #: heavyconnect/templates/driver/createTask.html:327
 #: heavyconnect/templates/driver/createTask.html:376
@@ -105,51 +105,51 @@ msgstr ""
 #: heavyconnect/templates/driver/startTask.html:305
 #: heavyconnect/templates/driver/startTask.html:329
 msgid "RETURN"
-msgstr ""
+msgstr "REGRESAR"
 
 #: heavyconnect/templates/driver/createTask.html:342
 #: heavyconnect/templates/driver/createTask.html:359
 #: heavyconnect/templates/driver/schedule.html:99
 msgid "IMPLEMENT:"
-msgstr ""
+msgstr "IMPLEMENTO"
 
 #: heavyconnect/templates/driver/createTask.html:417
 msgid "Date:"
-msgstr ""
+msgstr "Fecha:"
 
 #: heavyconnect/templates/driver/createTask.html:425
 msgid "Start Time:"
-msgstr ""
+msgstr "Hora de Inicio:"
 
 #: heavyconnect/templates/driver/createTask.html:433
 msgid "Hours Prediction:"
-msgstr ""
+msgstr "Horas de Predicaccion:"
 
 #: heavyconnect/templates/driver/createTask.html:457
 msgid "Passes:"
-msgstr ""
+msgstr "Pasadas:"
 
 #: heavyconnect/templates/driver/createTask.html:466
 msgid "Description:"
-msgstr ""
+msgstr "Descripcion:"
 
 #: heavyconnect/templates/driver/createTask.html:481
 msgid "SUBMIT"
-msgstr ""
+msgstr "ENTRAR"
 
 #: heavyconnect/templates/driver/createTask.html:498
 msgid "Find a Machine"
-msgstr ""
+msgstr "Encontrar Maquina"
 
 #: heavyconnect/templates/driver/createTask.html:502
 #: heavyconnect/templates/driver/createTask.html:550
 msgid "Filters"
-msgstr ""
+msgstr "Filtrar"
 
 #: heavyconnect/templates/driver/createTask.html:503
 #: heavyconnect/templates/driver/createTask.html:551
 msgid "Manufacturers:"
-msgstr ""
+msgstr "Fabricrador:"
 
 #: heavyconnect/templates/driver/createTask.html:505
 #: heavyconnect/templates/driver/createTask.html:510
@@ -158,84 +158,84 @@ msgstr ""
 #: heavyconnect/templates/driver/createTask.html:558
 #: heavyconnect/templates/driver/createTask.html:566
 msgid "All"
-msgstr ""
+msgstr "Todos"
 
 #: heavyconnect/templates/driver/createTask.html:508
 msgid "HP:"
-msgstr ""
+msgstr "Caballos de Fuerza:"
 
 #: heavyconnect/templates/driver/createTask.html:511
 #: heavyconnect/templates/driver/createTask.html:559
 msgid "175 HP Or Greater"
-msgstr ""
+msgstr "175 Caballos de Fuera or Mas"
 
 #: heavyconnect/templates/driver/createTask.html:512
 #: heavyconnect/templates/driver/createTask.html:560
 msgid "100 HP Or Greater"
-msgstr ""
+msgstr "100 Caballos de Fuera or Mas"
 
 #: heavyconnect/templates/driver/createTask.html:513
 #: heavyconnect/templates/driver/createTask.html:561
 msgid "40 HP Or Greater"
-msgstr ""
+msgstr "40 Caballos de Fuera or Mas"
 
 #: heavyconnect/templates/driver/createTask.html:516
 msgid "Hitch Capacity:"
-msgstr ""
+msgstr "Capacidad de Enganche:"
 
 #: heavyconnect/templates/driver/createTask.html:519
 #: heavyconnect/templates/driver/createTask.html:567
 msgid "20 000 lbs or Greater"
-msgstr ""
+msgstr "20 000 Libras o Mas"
 
 #: heavyconnect/templates/driver/createTask.html:520
 #: heavyconnect/templates/driver/createTask.html:568
 msgid "15 000 lbs or Greater"
-msgstr ""
+msgstr "15 000 Libras o Mas"
 
 #: heavyconnect/templates/driver/createTask.html:521
 #: heavyconnect/templates/driver/createTask.html:569
 msgid "10 000 lbs or Greater"
-msgstr ""
+msgstr "10 000 Libras o Mas"
 
 #: heavyconnect/templates/driver/createTask.html:522
 #: heavyconnect/templates/driver/createTask.html:570
 msgid "5 000 lbs or Greater"
-msgstr ""
+msgstr "5 000 Libras o Mas"
 
 #: heavyconnect/templates/driver/createTask.html:532
 #: heavyconnect/templates/driver/createTask.html:580
 #: heavyconnect/templates/driver/createTask.html:617
 #: heavyconnect/templates/driver/startTask.html:380
 msgid "Close"
-msgstr ""
+msgstr "Cerrar"
 
 #: heavyconnect/templates/driver/createTask.html:546
 msgid "Find a implement"
-msgstr ""
+msgstr "Encontrar Implemento"
 
 #: heavyconnect/templates/driver/createTask.html:556
 msgid "HP required"
-msgstr ""
+msgstr "Caballos de Fuerza requirida"
 
 #: heavyconnect/templates/driver/createTask.html:564
 msgid "Hitch Capacity required:"
-msgstr ""
+msgstr "Capacidad Requerida del Enganche"
 
 #: heavyconnect/templates/driver/pastTasks.html:23
 #: heavyconnect/templates/driver/pastTasks.html:59
 msgid "There is no past task to be displayed"
-msgstr ""
+msgstr "No hay tareas anteriores para mostrar"
 
 #: heavyconnect/templates/driver/pastTasks.html:113
 msgid "HC PAST TASKS"
-msgstr ""
+msgstr "HC TAREAS ANTERIORES"
 
 #: heavyconnect/templates/driver/pastTasks.html:135
 #: heavyconnect/templates/driver/pastTasks.html:144
 #: heavyconnect/templates/driver/startTask.html:241
 msgid "MACHINE"
-msgstr ""
+msgstr "MAQUINA"
 
 #: heavyconnect/templates/driver/pastTasks.html:136
 #: heavyconnect/templates/driver/pastTasks.html:145
@@ -243,85 +243,85 @@ msgstr ""
 #: heavyconnect/templates/driver/startTask.html:288
 #: heavyconnect/templates/driver/taskFlow.html:150
 msgid "IMPLEMENT"
-msgstr ""
+msgstr "IMPLEMENTO"
 
 #: heavyconnect/templates/driver/pastTasks.html:137
 #: heavyconnect/templates/driver/pastTasks.html:146
 #: heavyconnect/templates/driver/taskFlow.html:160
 msgid "FIELD"
-msgstr ""
+msgstr "FIL"
 
 #: heavyconnect/templates/driver/pastTasks.html:138
 #: heavyconnect/templates/driver/pastTasks.html:147
 msgid "TASK"
-msgstr ""
+msgstr "TAREA"
 
 #: heavyconnect/templates/driver/pastTasks.html:139
 #: heavyconnect/templates/driver/pastTasks.html:148
 msgid "CATEGORY"
-msgstr ""
+msgstr "CATEGORIA"
 
 #: heavyconnect/templates/driver/pastTasks.html:140
 #: heavyconnect/templates/driver/pastTasks.html:149
 msgid "DURATION"
-msgstr ""
+msgstr "DURACION"
 
 #: heavyconnect/templates/driver/schedule.html:53
 msgid "There was an error while fetching events!"
-msgstr ""
+msgstr "¡Error al combinar eventos!"
 
 #: heavyconnect/templates/driver/schedule.html:85
 msgid "HC Scheduler"
-msgstr ""
+msgstr "HC Horario"
 
 #: heavyconnect/templates/driver/schedule.html:93
 msgid "TASK INFORMATION"
-msgstr ""
+msgstr "INFORMACION DE TAREA"
 
 #: heavyconnect/templates/driver/schedule.html:95
 msgid "TASK:"
-msgstr ""
+msgstr "TAREA:"
 
 #: heavyconnect/templates/driver/schedule.html:96
 msgid "DESCRIPTION:"
-msgstr ""
+msgstr "DESCRIPCION"
 
 #: heavyconnect/templates/driver/schedule.html:97
 msgid "FIELD:"
-msgstr ""
+msgstr "FIL"
 
 #: heavyconnect/templates/driver/schedule.html:103
 #: heavyconnect/templates/driver/startTask.html:335
 #: heavyconnect/templates/driver/taskFlow.html:164
 msgid "Start"
-msgstr ""
+msgstr "Iniciar"
 
 #: heavyconnect/templates/driver/startTask.html:197
 msgid "Start Task"
-msgstr ""
+msgstr "Iniciar Tarea"
 
 #: heavyconnect/templates/driver/startTask.html:217
 msgid "Description"
-msgstr ""
+msgstr "Descripcion"
 
 #: heavyconnect/templates/driver/taskFlow.html:95
 msgid "HC TASKFLOW"
-msgstr ""
+msgstr "HC LISTA DE TAREA"
 
 #: heavyconnect/templates/driver/taskFlow.html:107
 #: heavyconnect/templates/driver/taskFlow.html:116
 #: heavyconnect/templates/driver/taskFlow.html:125
 msgid "More Info"
-msgstr ""
+msgstr "Mas Informacion"
 
 #: heavyconnect/templates/driver/taskFlow.html:154
 msgid "TRACTOR"
-msgstr ""
+msgstr "TRACTOR"
 
 #: heavyconnect/templates/driver/taskFlow.html:157
 msgid "EMPLOYEE"
-msgstr ""
+msgstr "EMPLEADO"
 
 #: heavyconnect/templates/manager/map.html:116
 msgid "Status"
-msgstr ""
+msgstr "Estado"

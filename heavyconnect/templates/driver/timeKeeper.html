@@ -66,7 +66,7 @@
 					datatype : "json",
 					success : function(data, status, xhr) {
 						if (data.success) {
-							if (data.hour_started != "") {
+							if (data.hour_started != 'None') {
 								changeBtn("#startShift", data.hour_started.substring(0,8));
 							}
 							for(var i = 0; i < data.breaks.length; i++) {
