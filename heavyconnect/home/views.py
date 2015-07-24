@@ -585,15 +585,12 @@ def getEquipmentInfo(request):
 			except Machine.DoesNotExist:
 				try:
 					implement = Implement.objects.get(qr_code = qr_code)
-<<<<<<< HEAD
-=======
 					result['nickname'] = implement.nickname
 					result['hitch_category'] = implement.hitch_category
 					result['speed_range_min'] = implement.speed_range_min
 					result['speed_range_max'] = implement.speed_range_max
 					result['base_cost'] = implement.base_cost
 					result['equipment_type'] = str(implement.equipment_type)
->>>>>>> origin/Small_Screen
 					result['manufacturer'] = implement.manufacturer_model.manufacturer.name
 					result['model'] = implement.manufacturer_model.model
 					result['asset_number'] = implement.asset_number
