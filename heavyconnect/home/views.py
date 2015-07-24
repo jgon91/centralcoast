@@ -636,24 +636,26 @@ def getEquipmentInfo(request):
 # It will retrieve id + description of all task categories in database.
 def getAllTaskCategory(request):
 	each_result = {}
-	result = []
-	result.append({'success' : False})
+	result = {'success' : False}
+
 	if request.method == 'POST':
 	 	if request.is_ajax():
 			try:
 				all_task_category = TaskCategory.objects.filter()
+				taskCategotys = []
 				for each in all_task_category:
 					each_result['id'] = each.id
 					each_result['description'] = each.description
-					result.append(each_result)
+					taskCategotys.append(each_result)
 					each_result = {}
-				result[0] = {'success' : True}
+				result['success'] = True
+				result['taskCategoty'] = taskCategotys
 			except TaskCategory.DoesNotExist:
-				result.append({'code' : 1}) #There is no task associated with this
+				result['code'] = 1 #There is no task associated with this
 		else:
-	 		result.append({'code' : 2}) #Use ajax to perform requests
+	 		result['code'] = 2 #Use ajax to perform requests
 	else:
-	 	result.append({'code' : 3})  #Request was not POST
+	 	result['code'] = 3  #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
@@ -1696,48 +1698,52 @@ def getTaskImplementMachine(taskId,EmploTaskId):
 
 def getAllManufacturers(request):
 	each_result = {}
-	result = []
-	result.append({'success' : False})
+	result = {'success' : False}
+
 	if request.method == 'POST':
 	 	if request.is_ajax():
 			try:
 				all_manufacturers = Manufacturer.objects.filter()
+				manufactures = []
 				for each in all_manufacturers:
 					each_result['id'] = each.id
 					each_result['name'] = each.name
-					result.append(each_result)
+					manufactures.append(each_result)
 					each_result = {}
-				result[0] = {'success' : True}
+				result['success'] = True
+				result['manufactures'] = manufactures
 			except Manufacturer.DoesNotExist:
-				result.append({'code' : 1}) #There is no task associated with this
+				result['code'] = 1 #There is no Manufacurer in this system
 		else:
-	 		result.append({'code' : 2}) #Use ajax to perform requests
+	 		result['code'] = 2 #Use ajax to perform requests
 	else:
-	 	result.append({'code' : 3})  #Request was not POST
+	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 def getAllFields(request):
 	each_result = {}
-	result = []
-	result.append({'success' : False})
+	result = {'success' : False}
+
 	if request.method == 'POST':
 	 	if request.is_ajax():
 			try:
 				all_fields = Field.objects.filter()
+				fields = []
 				for each in all_fields:
 					each_result['id'] = each.id
 					each_result['name'] = each.name
 					each_result['organic'] = each.organic
 					each_result['size'] = each.size
-					result.append(each_result)
+					fields.append(each_result)
 					each_result = {}
-				result[0] = {'success' : True}
-			except Manufacturer.DoesNotExist:
-				result.append({'code' : 1}) #There is no task associated with this
+				result['success'] = True
+				result['fields'] = fields
+			except Field.DoesNotExist:
+				result['code'] = 1 #There is no task associated with this
 		else:
-	 		result.append({'code' : 2}) #Use ajax to perform requests
+	 		result['code'] = 2 #Use ajax to perform requests
 	else:
-	 	result.append({'code' : 3})  #Request was not POST
+	 	result['code'] = 3  #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 def validatePermission(request):

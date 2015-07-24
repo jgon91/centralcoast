@@ -214,10 +214,13 @@
 					},
 					datatype : "json",
 					success : function(data, status, xhr) {
-						console.log(data);
-						for(var i = 1; i <= data.length; i++){
-							$("#category").append("<option value='" + data[i].id +"'>" + data[i].description + "</option>");
+						
+						if(data.success){
+							for(var i = 1; i <= data.length; i++){
+								$("#category").append("<option value='" + data.taskCategotys[i].id +"'>" + data.taskCategotys[i].description + "</option>");
+							}	
 						}
+						
 						
 					}
 				});
@@ -232,14 +235,18 @@
 					},
 					datatype : "json",
 					success : function(data, status, xhr) {
-						for(var i = 1; i <= data.length; i++){
-							$("#field").append("<option value='" + data[i].id +"'>" + data[i].name + "</option>");
+
+						if (data.success){
+							for(var i = 0; i < data.fields.length; i++){
+								$("#field").append("<option value='" + data.fields[i].id +"'>" + data.fields[i].name + "</option>");
+							}
 						}
 						
 					}
 				});
 			}
 			//Fill dropdown menu of manufactures
+
 			function getAllManufacturers(token, url) {
 				$.ajax({
 					method : "POST",
@@ -249,10 +256,13 @@
 					},
 					datatype : "json",
 					success : function(data, status, xhr) {
-						for(var i = 1; i <= data.length; i++){
-							$(".manufacturer").append("<option value='" + data[i].id +"'>" + data[i].name + "</option>");
-						}
 						
+						if (data.success){
+							for(var i = 0; i < data.manufactures.length; i++){
+								$(".manufacturer").append("<option value='" + data.manufactures[i].id +"'>" + data.manufactures[i].name + "</option>");
+							}	
+						}
+
 					}
 				});
 			}
