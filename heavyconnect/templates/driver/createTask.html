@@ -216,8 +216,8 @@
 					success : function(data, status, xhr) {
 						
 						if(data.success){
-							for(var i = 1; i <= data.length; i++){
-								$("#category").append("<option value='" + data.taskCategotys[i].id +"'>" + data.taskCategotys[i].description + "</option>");
+							for(var i = 0; i <= data.taskCategorys.length; i++){
+								$("#category").append("<option value='" + data.taskCategorys[i].id +"'>" + data.taskCategorys[i].description + "</option>");
 							}	
 						}
 						

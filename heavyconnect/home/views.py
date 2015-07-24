@@ -642,14 +642,14 @@ def getAllTaskCategory(request):
 	 	if request.is_ajax():
 			try:
 				all_task_category = TaskCategory.objects.filter()
-				taskCategotys = []
+				taskCategorys = []
 				for each in all_task_category:
 					each_result['id'] = each.id
 					each_result['description'] = each.description
-					taskCategotys.append(each_result)
+					taskCategorys.append(each_result)
 					each_result = {}
 				result['success'] = True
-				result['taskCategoty'] = taskCategotys
+				result['taskCategorys'] = taskCategorys
 			except TaskCategory.DoesNotExist:
 				result['code'] = 1 #There is no task associated with this
 		else:
