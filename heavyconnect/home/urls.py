@@ -88,6 +88,7 @@ urlpatterns = [
 	url(r'^beaconUpdate/$', main_views.beaconUpdate, name = 'beaconUpdate'),
     url(r'^getEmployeeSelfCurrentTask/$', main_views.getEmployeeSelfCurrentTask, name = 'getEmployeeSelfCurrentTask'),
 	url(r'^saveEmployeeNotes/$', main_views.saveEmployeeNotes, name = 'saveEmployeeNotes'),
+	url(r'^getFieldLocalization/$', main_views.getFieldLocalization, name = 'getFieldLocalization'),
     ### End ###
 
     ###Insert###
