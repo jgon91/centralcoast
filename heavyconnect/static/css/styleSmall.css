@@ -150,17 +150,13 @@ input[type=button]{
 	float: right;
 	border: none;
 }
-#userImg:hover {
-	background: url('../imgSmall/buttons/userPictureHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}
 #logOff {
 	background: url('../imgSmall/buttons/logoff.png') no-repeat top left;
 	background-size: 100% 100%;
 	width: 55px;
-	height: 55px;
+	height: 35px;
 	margin-right: 2.5px;
-	margin-top: 2.5px;
+	margin-top: 12.5px;
 	float: right;
 	border: none;
 }
@@ -1089,11 +1085,12 @@ input[type=button]{
 	color: white;
 	width: 150px;
 	height: 30px;
-	border-radius: 5px;
+	border-radius: 10px;
 	box-shadow: 2px 2px 5px gray;
 	font-size: 15px;
 	margin-top: 5px;
 	padding: 0px;
+	border: 2px solid black !important;
 }
 #btnOk {
 	background: url('../imgSmall/buttons/ok.png') no-repeat top left;
