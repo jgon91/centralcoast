@@ -16,7 +16,7 @@ from home.models import *
 
 def home(request):
 	if request.user.is_authenticated():
-		employee = Employee.objects.get(user_id = request.user.id)
+		employee = Employee.objects.get(user = request.user)
 		if employee.permission_level == 1: #Driver
 			return redirect('driver')
 		elif employee.permission_level == 2: #Manager

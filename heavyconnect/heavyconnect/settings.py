@@ -94,10 +94,10 @@ WSGI_APPLICATION = 'heavyconnect.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'd9gfceh6642m3k',                      # Or path to database file if using sqlite3.
-        'USER': 'oiyfrcynbvlyev',                      # Not used with sqlite3.
-        'PASSWORD': 'QI9jiCzj-h6WnhlSEiooEV9pnU',                  # Not used with sqlite3.
-        'HOST': 'ec2-54-83-41-183.compute-1.amazonaws.com',                      # Set to empty string for localhost. Not used with sqlite3.
+        'NAME': 'dal04i63pr1kg7',                      # Or path to database file if using sqlite3.
+        'USER': 'aebzoitajrldzt',                      # Not used with sqlite3.
+        'PASSWORD': 'hHkSMA_HJYv1Ay9HzNaDVykTLG',                  # Not used with sqlite3.
+        'HOST': 'ec2-107-21-125-143.compute-1.amazonaws.com',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
 
     }
