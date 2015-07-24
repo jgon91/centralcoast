@@ -1594,11 +1594,6 @@ def getEmployeeShifts(request):
 
 				attendance = EmployeeAttendance.objects.filter(employee = employee).order_by('-date').first()
 
-				result['attendance-hour'] = str(attendance.hour_started)
-				result['attendance-date'] = str(attendance.date)
-				result['attendance-id'] = str(attendance.id)
-				result['employee-id'] = employee.id
-
 				if attendance is not None:
 					time_delta = (datetime.datetime.now() - datetime.datetime.combine(attendance.date,attendance.hour_started))
 					if ((time_delta.seconds / 3600.0) >= 16.17) or (time_delta.days >=1):
