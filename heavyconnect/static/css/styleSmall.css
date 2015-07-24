@@ -53,7 +53,7 @@ input[type=button]{
 }
 /*** General End ***/
 
-/*** Login Begin ***/
+/*** Login Page Begin ***/
 #login {
 	margin-top: 20px;
 	margin-bottom: 50px;
@@ -117,7 +117,7 @@ input[type=button]{
 	border: 1px solid #A94442;
 	margin-bottom: -50px;
 }
-/*** Login End ***/
+/*** Login Page End ***/
 
 /*** Header Home Begin ***/
 #top {
@@ -220,7 +220,7 @@ input[type=button]{
 }
 /*** Header Driver End ***/
 
-/*** Home Begin ***/
+/*** Home Page Begin ***/
 .btnMain {
 	width: 105px;
 	height: 105px;
@@ -276,9 +276,9 @@ input[type=button]{
 	position: fixed;
 	bottom: 0;
 }
-/*** Home End ***/
+/*** Home Page End ***/
 
-/*** Timekeeper Begin ***/
+/*** Timekeeper Page Begin ***/
 #startShift {
 	background: url('../imgSmall/buttons/startShift.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -344,9 +344,9 @@ input[type=button]{
 	min-width: 601px;
 }
 
-/*** Timekeeper End ***/
+/*** Timekeeper Page End ***/
 
-/*** Taskflow Begin ***/
+/*** Taskflow Page Begin ***/
 .pendingTasks {
 	width: 100%;
 	min-width: 640px;
@@ -366,6 +366,7 @@ input[type=button]{
 .titleNextTask {
 	font-size: 25px;
 	font-weight: 700;
+	line-height: 33px;
 }
 #next1 {
 	background: url('../imgSmall/buttons/next1.png') no-repeat top left;
@@ -403,7 +404,7 @@ input[type=button]{
 	color: #4F7316;
 }
 #moreInfo1 {
-	color: white; !important
+	color: black; !important
 }
 .plusInfo {
 	font-style: italic;
@@ -507,9 +508,6 @@ input[type=button]{
 	box-shadow: -1px 1px 7px gray;
 	margin: 0px;
 	padding: 0px;
-	/*font-size: 35px;
-	color: white;
-	font-weight: 700;*/
 }
 .closeTask:hover {
 	background: url('../imgSmall/buttons/escHover.png') no-repeat top left;
@@ -525,9 +523,9 @@ input[type=button]{
 	color: #434343;
 }
 	/*** Modal Start Task End ***/
-/*** Taskflow End ***/
+/*** Taskflow Page End ***/
 
-/*** Checklist Begin ***/
+/*** Checklist Page Begin ***/
 .numButton {
 	width: 40px;
 	height: 40px;
@@ -598,9 +596,9 @@ input[type=button]{
 	left: 120px;
 	display: none;
 }
-/*** Check list End ***/
+/*** Checklist Page End ***/
 
-/*** Past Tasks Begin ***/
+/*** Past Tasks Page Begin ***/
 .divPast {
 	text-align: center;
 	width: 80%;
@@ -681,9 +679,9 @@ input[type=button]{
 .hour {
 	font-size: 12px;
 }
-/*** Past Tasks End ***/
+/*** Past Tasks Page End ***/
 
-/*** Scan QR-Code Begin ***/
+/*** Scan QR-Code Page Begin ***/
 #play {
 	background: url('../imgSmall/buttons/scan.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -718,9 +716,9 @@ input[type=button]{
 .btn-success {
     border-color: none;
 }
-/*** Scan QR-Code End ***/
+/*** Scan QR-Code Page End ***/
 
-/*** Create Task Begin ***/
+/*** Create Task Page Begin ***/
 #contentCreateTask {
 	width: 80%;
 	margin: auto;
@@ -946,9 +944,9 @@ input[type=button]{
 	width: 200px;
 	height: 200px;
 }
-/*** Create Task End ***/
+/*** Create Task Page End ***/
 
-/*** Start CSS Scheduler page ***/
+/*** Scheduler Page Begin ***/
 #cal {
 	width: 90%;
 	height: 200px;
@@ -1031,9 +1029,9 @@ input[type=button]{
 	color: #434343;
 }
 	/*** Modal Scheduler End ***/
-/*** End CSS Scheduler page ***/
+/*** Scheduler Page End ***/
 
-/*** Start Task Begin ***/
+/*** Start Task Page Begin ***/
 .btnCreateTask {
 	background: url('../imgSmall/buttons/break.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -1061,4 +1059,180 @@ input[type=button]{
 #rowFieldStartTask2 {
 	margin-top: -100px;
 }
-/*** Start Task End ***/
+/*** Start Task Page End ***/
+
+/*** Equipment Page Begin ***/
+.divEquip {
+	color: #577225;
+	font-size: 20px;
+	font-weight: 600;
+	max-width: 800px;
+	margin: auto;
+}
+.rowUpEquip {
+	width: 100%;
+	margin: auto;
+	color: black;
+	font-size: 20px;
+	font-weight: 300;
+	text-align: left;
+	line-height: 25px;
+}
+#colBtnsEquip {
+	padding: 0px;
+	text-decoration: none;
+	margin-left: 15px;
+	margin-right: -15px;
+	max-width: 160px;
+}
+.btnStatusEquip {
+	color: white;
+	width: 150px;
+	height: 30px;
+	border-radius: 5px;
+	box-shadow: 2px 2px 5px gray;
+	font-size: 15px;
+	margin-top: 5px;
+	padding: 0px;
+}
+#btnOk {
+	background: url('../imgSmall/buttons/ok.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnService {
+	background: url('../imgSmall/buttons/service.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnBroken {
+	background: url('../imgSmall/buttons/broken.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#notesEquip {
+	width: 100%;
+	max-width: 130px;
+	margin-top: 5px;
+	height: 100px;
+	font-size: 15px;
+	line-height: 15px;
+	padding: 1px;
+	resize: none;
+	border: none;
+	border-radius: 5px;
+	border: 2px solid #819927;
+	box-shadow: 2px 2px 5px gray;
+}
+#colSpecEquip {
+	font-size: 18px;
+}
+.rowDownEquip {
+	width: 100%;
+	margin: auto;
+}
+#colSpecImg1 {
+	text-align: left;
+	padding-top: 10px;
+	width: 60px;
+}
+#colSpecImg2 {
+	padding-top: 10px;
+	width: 140px;
+	margin-left: 30px;
+}
+#colSpecImg3 {
+	text-align: left;
+	padding-top: 25px;
+	width: 60px;
+}
+#btnSpecs {
+	background: url('../imgSmall/buttons/specs.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 80px;
+	height: 80px;
+	padding-top: 57px;
+	color: white;
+	font-size: 17px;
+	border-radius: 5px;
+	box-shadow: 2px 2px 5px gray;
+}
+#btnTractor {
+	width: 80px;
+	height: 80px;
+	margin-left: 40px;
+	margin-right: 10px;
+	border-radius: 5px;
+	box-shadow: 2px 2px 5px gray;
+	border: 3px solid #819927;
+}
+#btnAddImg {
+	background: url('../imgSmall/buttons/addImage.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 50px;
+	height: 50px;
+	padding-top: 35px;
+	color: white;
+	font-size: 10px;
+	border-radius: 5px;
+	box-shadow: 2px 2px 5px gray;
+}
+#colMapHolder {
+	max-width: 360px;
+}
+#mapholder {
+	width: 290px;
+	height: 100px;
+	margin-top: -10px;
+	margin-bottom: 8px;
+	border-radius: 5px;
+	border: 2px solid #819927;
+}
+	/*** Modal Equipment Begin ***/
+#modalEquipSpecs {
+	font-size: 20px;
+	margin-left: 30px;
+}
+.specModalEquip {
+	color: #434343;
+}
+.modalEquip {
+	border-radius: 20px;
+	width: 90%;
+	margin: auto;
+	margin-top: 70px;
+	color: #466C00;
+}
+.closeEquip {
+	background: url('../imgSmall/buttons/esc.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 50px;
+	height: 50px;
+	float: right;
+	border: none;
+	border-radius: 7px;
+	box-shadow: -1px 1px 7px gray;
+	margin: 0px;
+	padding: 0px;
+}
+.closeEquip:hover {
+	background: url('../imgSmall/buttons/escHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#slideModalEquip {
+	
+}
+.controlModalEquip {
+	border-radius: 10px;
+	width: 20%;
+}
+.imgsEquip {
+	width: 350px;
+	height: 235px !important;
+	margin: auto;
+	border-radius: 10px;
+	border: 5px solid #819927;
+}
+	/*** Modal Equipment End ***/
+/*** Equipment Page End ***/
+
+
+
+

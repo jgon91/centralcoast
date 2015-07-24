@@ -543,6 +543,17 @@ def getEquipmentInfo(request):
 			qr_code = request.POST['qr_code']
 			try:
 				machine = Machine.objects.get(qr_code = qr_code)
+				result['nickname'] = machine.nickname
+				result['hitch_category'] = machine.hitch_category
+				result['speed_range_min'] = machine.speed_range_min
+				result['speed_range_max'] = machine.speed_range_max
+				result['engine_hours'] = machine.engine_hours
+				result['base_cost'] = machine.base_cost
+				result['machine_type'] = str(machine.m_type)
+				result['front_tires'] = machine.front_tires
+				result['rear_tires'] = machine.rear_tires
+				result['steering'] = machine.steering
+				result['operator_station'] = machine.operator_station
 				result['manufacturer'] = machine.manufacturer_model.manufacturer.name
 				result['model'] = machine.manufacturer_model.model
 				result['asset_number'] = machine.asset_number
@@ -574,6 +585,15 @@ def getEquipmentInfo(request):
 			except Machine.DoesNotExist:
 				try:
 					implement = Implement.objects.get(qr_code = qr_code)
+<<<<<<< HEAD
+=======
+					result['nickname'] = implement.nickname
+					result['hitch_category'] = implement.hitch_category
+					result['speed_range_min'] = implement.speed_range_min
+					result['speed_range_max'] = implement.speed_range_max
+					result['base_cost'] = implement.base_cost
+					result['equipment_type'] = str(implement.equipment_type)
+>>>>>>> origin/Small_Screen
 					result['manufacturer'] = implement.manufacturer_model.manufacturer.name
 					result['model'] = implement.manufacturer_model.model
 					result['asset_number'] = implement.asset_number
@@ -704,25 +724,25 @@ def getTaskInfo(request):
 @login_required
 def retrieveScannedMachine(request):
 	result = {'success' : False}
-  	if request.method == 'POST':
- 		if request.is_ajax():
+  	if not request.method == 'POST':
+ 		if not request.is_ajax():
  			try:
-				machine = Machine.objects.get(qr_code = request.POST['qr_code'])
+				machine = Machine.objects.get(qr_code = '987654k')#request.POST['qr_code'])
 				result['qr_code'] = machine.qr_code
 				result['manufacture'] = machine.manufacturer_model.manufacturer.name
 				result['serial'] = machine.serial_number
 				result['status'] = machine.status
-				result['model'] = models.model
+				result['model'] = machine.manufacturer_model.model
 				result['asset_number'] = machine.asset_number
 				result['horsepower'] = machine.horsepower
 				result['hitch_capacity'] = machine.hitch_capacity
-				result['hitch_category'] = machine.hitch_category
+				result['hitch_category'] = str(machine.hitch_category)
 				result['drawbar_category'] = machine.drawbar_category
 				result['speed_range_min'] = machine.speed_range_min
 				result['speed_range_max'] = machine.speed_range_max
 				result['year_purchased'] = machine.year_purchased
 				result['engine_hours'] = machine.engine_hours
-				result['base_cost'] = machine.base_cost
+				result['base_cost'] = str(machine.base_cost)
 				result['m_type'] = machine.m_type
 				result['front_tires'] = machine.front_tires
 				result['rear_tires'] = machine.rear_tires
