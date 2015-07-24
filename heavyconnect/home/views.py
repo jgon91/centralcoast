@@ -1296,8 +1296,8 @@ def loadImplementsImage(request):
 #Return task that are not complished until today, the number of task returned is according to the number n
 @login_required
 def retrievePendingTask(request):
-	result = []
-	result.append({'success' : False})
+	result = {'success' : False}
+	
 	date1 = datetime.timedelta(days = 1) #it will work as increment to the current day
 	date2 =  datetime.datetime.now() + date1
 	if request.method == 'POST':
@@ -1315,6 +1315,7 @@ def retrievePendingTask(request):
 					if not each in invalidTasks:
 						emploTaskList.append(each)
 
+				auxs = []
 				for item in emploTaskList:
 					aux['category'] = item.task.category.description
 					aux['field'] = item.task.field.name
@@ -1345,8 +1346,9 @@ def retrievePendingTask(request):
 					except ImplementTask.DoesNotExist:
 						aux['implement_id'] = "NONE"
 					
-					result.append(aux)
+					auxs.append(aux)
 					aux = {}
+				result['auxs'] = auxs
 				result['success'] = True
 			except EmployeeTask.DoesNotExist:
 				result['code'] = 1 #There is no Implement associated with this

@@ -51,15 +51,18 @@
 					},
 					datatype : "json",
 					success : function(data, status, xhr) {
-						for (var i = 1; i < data.length; i++) {
-							if (i == 1) {
-								$("#divStartNow").attr("href", "{% url 'startTask'%}?task_id=" + data[i].task_id);
-							}
-							$("#next" + i + " .category").html(data[i].category);
-							$("#next" + i + " .fieldName").html(data[i].field);
-							$("#next" + i + " .task_id").html(data[i].task_id);
-						};
-						taskMoreInfo = data;
+						if(data.success){
+							for (var i = 0; i < data.auxs.length; i++) {
+								if (i == 0) {
+									$("#divStartNow").attr("href", "{% url 'startTask'%}?task_id=" + data.auxs[i].task_id);
+								}
+								$("#next" + i + " .category").html(data.auxs[i].category);
+								$("#next" + i + " .fieldName").html(data.auxs[i].field);
+								$("#next" + i + " .task_id").html(data.auxs[i].task_id);
+							};
+							taskMoreInfo = data.auxs;
+						}
+						
 					}
 				});
 			}
