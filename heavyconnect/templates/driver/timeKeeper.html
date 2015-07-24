@@ -186,6 +186,7 @@
 							if(data.success){
 								$('#signModal').modal("hide");
 								changeBtn("#stopShift", data.hour_ended.substring(11,19));
+								window.redirec("%url 'timeKeeper'%")
 							} else if(data.code == 1){
 								alert("You need to have done at least 3 breaks.");
 							} else if(data.code == 2){
