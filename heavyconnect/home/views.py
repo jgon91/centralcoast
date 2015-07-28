@@ -1293,30 +1293,29 @@ def loadImplementsImage(request):
 
 
 
-#Return task that are not complished until today, the number of task returned is according to the number n
+# Return pending tasks, which are tasks that have "approved" status or "paused" 
+# status (not "pending" status. This would be waiting for manager approval)
 @login_required
 def retrievePendingTask(request):
 	result = {'success' : False}
-	
-	date1 = datetime.timedelta(days = 1) #it will work as increment to the current day
-	date2 =  datetime.datetime.now() + date1
 	if request.method == 'POST':
 	 	if request.is_ajax():
 			try:
 				aux = {}
 				off = int(request.POST['offset'])
 				limit = int(request.POST['limit'])
-				# Filter EmployeeTask by user, date and status task != Finished
-				emploTask   =  EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date_assigned__lte = date2, task__status__lt = 6)[off:limit+off]
-				invalidTasks = EmployeeTask.objects.filter(employee__user__id = request.user.id, task__date_assigned__lte = date2, task__status = 4)
-				emploTaskList = []
-				# Filter again EmployeeTask removing task with status = Ongoing
-				for each in emploTask:
-					if not each in invalidTasks:
-						emploTaskList.append(each)
+				# Filter EmployeeTask by user and order by assigned date
+				emploTask   =  EmployeeTask.objects.order_by('task__date_assigned').filter(employee__user__id = request.user.id)
+				# Remove invalid status, letting just tasks with status "Approved" (2) and "Paused" (5)
+				emploTask = emploTask.exclude(task__status = 1)
+				emploTask = emploTask.exclude(task__status = 3)
+				emploTask = emploTask.exclude(task__status = 4)
+				emploTask = emploTask.exclude(task__status = 6)
+				# Limit by the range passed by the Fron-End (limit and off)
+				emploTask = emploTask[off:limit+off]
 
-				auxs = []
-				for item in emploTaskList:
+				each_task_info = []
+				for item in emploTask:
 					aux['category'] = item.task.category.description
 					aux['field'] = item.task.field.name
 					aux['date'] = str(item.task.date_assigned)
@@ -1324,7 +1323,6 @@ def retrievePendingTask(request):
 					aux['employee_id'] = item.employee.id
 					aux['employee_first_name'] = item.employee.user.first_name
 					aux['employee_last_name'] = item.employee.user.last_name
-					
 					try:
 						machineTask = MachineTask.objects.get(task__id = item.task.id)
 						aux['machine_model'] = machineTask.machine.manufacturer_model.model
@@ -1332,23 +1330,23 @@ def retrievePendingTask(request):
 						aux['machine_id'] = machineTask.machine.id
 					except MachineTask.DoesNotExist:
 						aux['machine_id'] = "NONE"
-					
 					try:
-						# If task uses two implements, it will retrieve both. If It doesn't, return only one
+						# If task uses more the one implement it will retrieve all. If It just have one, return only one
+						aux2 = {}
+						aux_implement = []
 						implementTask = ImplementTask.objects.filter(task__id = item.task.id)
-						aux['implement1_model'] = implementTask[0].implement.manufacturer_model.model
-						aux['implement1_nickname'] = implementTask[0].implement.nickname
-						aux['implement1_id'] = implementTask[0].implement.id
-						if len(implementTask) == 2: # Check if there is a second implement and return it
-							aux['implement2_model'] = implementTask[1].implement.manufacturer_model.model
-							aux['implement2_nickname'] = implementTask[1].implement.nickname
-							aux['implement2_id'] = implementTask[1].implement.id
+						for each_implement in implementTask:
+							aux2['implement_model'] = each_implement.implement.manufacturer_model.model
+							aux2['implement_nickname'] = each_implement.implement.nickname
+							aux2['implement_id'] = each_implement.implement.id
+							aux_implement.append(aux2)
+							aux2 = {}
+						aux['implement'] = aux_implement
 					except ImplementTask.DoesNotExist:
-						aux['implement_id'] = "NONE"
-					
-					auxs.append(aux)
+						aux['implement'] = "NONE"					
+					each_task_info.append(aux)
 					aux = {}
-				result['auxs'] = auxs
+				result['each_task_info'] = each_task_info
 				result['success'] = True
 			except EmployeeTask.DoesNotExist:
 				result['code'] = 1 #There is no Implement associated with this
