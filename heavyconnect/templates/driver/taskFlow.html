@@ -18,24 +18,29 @@
 					// true or false
 				});
 				$(".moreInfo").click(function() {
-					$("#linkStartTask").attr("href", "{% url 'startTask'%}?task_id=" + taskMoreInfo[parseInt(this.id.substring(8, 9))].task_id);
+					var indexDiv = (parseInt(this.id.substring(8, 9)) - 1);// decrement div value to adjust with the array
+
+					$("#linkStartTask").attr("href", "{% url 'startTask'%}?task_id=" + taskMoreInfo[indexDiv].task_id);
                 });
 				getPendingTask("{{ csrf_token }}", "{% url 'retrievePendingTask' %}");
 				$(".moreInfo").click(function() {
-					$('.infoModalTask').html('');
 
+					var indexDiv = (parseInt(this.id.substring(8, 9)) - 1); //decrement div value to adjust with the array
+
+					$('.infoModalTask').html('');
 					$('#startTask').modal();
 
-					$("#dataMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].date.substring(0, 10));
-					$("#implementNameMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].implement1_nickname);
-					$("#implementIdMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].implement1_id);
-					$("#implementModelMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].implement1_model);
-					$("#tractorNameMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].machine_nickname);
-					$("#tractorIdMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].machine_id);
-					$("#tractorModelMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].machine_model);
-					$("#employeeFirstMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].employee_first_name);
-					$("#employeeLastMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].employee_last_name);
-					$("#fieldMoreInfo").html(taskMoreInfo[parseInt(this.id.substring(8, 9))].field);
+					$("#dataMoreInfo").html(taskMoreInfo[indexDiv].date.substring(0, 10));
+					$("#implementNameMoreInfo").html(taskMoreInfo[indexDiv].implement1_nickname);
+					$("#implementIdMoreInfo").html(taskMoreInfo[indexDiv].implement1_id);
+					$("#implementModelMoreInfo").html(taskMoreInfo[indexDiv].implement1_model);
+					$("#tractorNameMoreInfo").html(taskMoreInfo[indexDiv].machine_nickname);
+					$("#tractorIdMoreInfo").html(taskMoreInfo[indexDiv].machine_id);
+					$("#tractorModelMoreInfo").html(taskMoreInfo[indexDiv].machine_model);
+					$("#employeeFirstMoreInfo").html(taskMoreInfo[indexDiv].employee_first_name);
+					$("#employeeLastMoreInfo").html(taskMoreInfo[indexDiv].employee_last_name);
+					$("#fieldMoreInfo").html(taskMoreInfo[indexDiv].field);
+
 
 				});
 			});
@@ -51,17 +56,17 @@
 					},
 					datatype : "json",
 					success : function(data, status, xhr) {
+						//alert(data.auxs.length);
 						if(data.success){
-							for (var i = 0; i < data.auxs.length; i++) {
-								if (i == 0) {
-									$("#divStartNow").attr("href", "{% url 'startTask'%}?task_id=" + data.auxs[i].task_id);
-								}
-								$("#next" + i + " .category").html(data.auxs[i].category);
-								$("#next" + i + " .fieldName").html(data.auxs[i].field);
-								$("#next" + i + " .task_id").html(data.auxs[i].task_id);
+							for (var i = 0; i < data.auxs.length; i++) {						
+								$("#next" + (i+1) + " .category").html(data.auxs[i].category);
+								$("#next" + (i+1) + " .fieldName").html(data.auxs[i].field);
+								$("#next" + (i+1) + " .task_id").html(data.auxs[i].task_id);
 							};
 							taskMoreInfo = data.auxs;
 						}
+
+						taskMoreInfo;
 						
 					}
 				});
@@ -149,17 +154,16 @@
 							</button>
 							<span id="dataMoreInfo"></span>
 							<div class="modal-body infoTask">
-								{% trans 'IMPLEMENT' %}: <span id="implementNameMoreInfo" class="infoModalTask"></span>
-								'<span id="implementIdMoreInfo" class="infoModalTask"></span>
+								{% trans 'FIELD' %}: <span id="fieldMoreInfo" class="infoModalTask"></span>
+								</br>
+								{% trans 'TRACTOR' %}: "<span id="tractorNameMoreInfo" class="infoModalTask"></span>"
+								(<span id="tractorModelMoreInfo" class="infoModalTask"></span>)								
+								<br>								
+								{% trans 'IMPLEMENT' %}: "<span id="implementNameMoreInfo" class="infoModalTask"></span>"
 								(<span id="implementModelMoreInfo" class="infoModalTask"></span>)
 								<br>
-								{% trans 'TRACTOR' %}: "<span id="tractorNameMoreInfo" class="infoModalTask"></span>" <span id="tractorIdMoreInfo" class="infoModalTask"></span>
-								(<span id="tractorModelMoreInfo" class="infoModalTask"></span>)
-								<br>
-								{% trans 'EMPLOYEE' %}: <span id="employeeFirstMoreInfo" class="infoModalTask"></span>
-								<span id="employeeLastMoreInfo" class="infoModalTask"></span>
-								<br>
-								{% trans 'FIELD' %}: <span id="fieldMoreInfo" class="infoModalTask"></span>
+								{% trans 'IMPLEMENT 2' %}: "<span id="implement2NameMoreInfo" class="infoModalTask"></span>"
+								(<span id="implement2ModelMoreInfo" class="infoModalTask"></span>)
 								<!--br>ESTIMATED HOURS: <span id="hoursMoreInfo" class="infoModalTask"></span>-->
 							</div>
 							<a id="linkStartTask" href="">
