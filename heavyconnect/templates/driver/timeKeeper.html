@@ -6,6 +6,7 @@
 		<script src="{% static 'jSignature/jSignature.min.js'%}"></script>
 		<script>
 			var item_count = 0;
+			var hour_start = 0;
 			var urlTest = "{% url 'stopBreak' %}";
 			$(document).ready(function() {
 				$("#foot").load("{%url 'footer'%}");
@@ -54,13 +55,7 @@
 								}
 								if (data.breaks[i][1] != "None") {
 									changeBtn("#stopBreak" + i, data.breaks[i][1].substring(0, 8));
-									if (data.breaks[0][1] != "None") {
-										$(startBreak1).removeAttr('disabled');
-										$(stopBreak1).removeAttr('disabled');
-									}
-									if (data.breaks[1][1] != "None" && i > 0 && i < data.breaks.length-1) {
-										createBtnBreak(i+1);
-									}
+									createBtnBreak(i+1);
 									item_count++;
 								}
 							}
@@ -128,14 +123,8 @@
 						success: function(data, status, xhr){
 							if(data.success){
 								changeBtn("#stopBreak" + breaks, data.time.substring(11,19));
-								if(breaks == 0){	
-									$(startBreak1).removeAttr('disabled');
-									$(stopBreak1).removeAttr('disabled');
-								}
-								if(breaks >= 1){	
-									$(addBreak).removeAttr('disabled');
-								}
 								item_count++;
+								createBtnBreak(item_count);
 							} else if(data.code == 1){
 								alert("You need to start a break first.");
 							} else if(data.code == 2){
@@ -158,7 +147,8 @@
 						datatype: "json",
 						success: function(data, status, xhr){
 							if(data.success){
-								$('#signModal').modal("hide");
+								 $('#signModal').modal();
+								//$('#signModal').modal("hide");
 								changeBtn("#stopShift", data.hour_ended.substring(11,19));
 								window.redirec("%url 'timeKeeper'%")
 							} else if(data.code == 1){
@@ -178,15 +168,41 @@
 					});
 			}
 			function changeBtn(idBtn, hour) {
-				$(idBtn).removeClass('.btnGreenTime');
-				$(idBtn).removeClass('.btnTimekeeper');
-				$(idBtn).attr("value", hour);
-				$(idBtn).attr("disabled", "disabled");
-  				$(idBtn).css('font-size', '25px');
+				if(idBtn.substring(0,11) == "#startBreak"){
+					hour_start = hour;
+					$(idBtn).attr("value", hour);
+					$(idBtn).css('font-size', '20px');
+					$(idBtn).css('font-weight', '600');
+					$(idBtn).css('font-style', 'italic');
+					$(idBtn).css('background', 'url("{% static 'imgSmall/buttons/startShiftHover.png' %}") no-repeat top left');
+  					$(idBtn).css('background-size', '100% 100%');
+				} else if(idBtn.substring(0,10) == "#stopBreak"){
+					$("#startBreak" + idBtn.substring(10,11)).attr("value", hour_start);
+					$("#startBreak" + idBtn.substring(10,11)).css('background', 'none');
+					$("#startBreak" + idBtn.substring(10,11)).css('color', 'black');
+					$("#startBreak" + idBtn.substring(10,11)).css('font-size', '20px');
+					$("#startBreak" + idBtn.substring(10,11)).css('font-weight', '600');
+					$("#startBreak" + idBtn.substring(10,11)).css('font-style', 'italic');
+					$("#startBreak" + idBtn.substring(10,11)).css('box-shadow', 'none');
+					$(idBtn).attr("value", hour);
+					$(idBtn).css('background', 'none');
+					$(idBtn).css('color', 'black');
+					$(idBtn).css('font-size', '20px');
+					$(idBtn).css('font-weight', '600');
+					$(idBtn).css('font-style', 'italic');
+					$(idBtn).css('box-shadow', 'none');
+				} else {
+					$(idBtn).attr("value", hour);
+					$(idBtn).css('background', 'none');
+					$(idBtn).css('color', 'black');
+					$(idBtn).css('font-size', '20px');
+					$(idBtn).css('font-weight', '600');
+					$(idBtn).css('font-style', 'italic');
+					$(idBtn).css('box-shadow', 'none');
+				}
 			}
 			function createBtnBreak(count) {
-				$(addBreak).attr("disabled", "disabled");
-				$( "#divBreaks").append('<div class="row"><div class="col-xs-1 col-md-1 btnColTime"></div><div class="col-xs-4 col-md-4 btnColTime"><input type="button" id="startBreak'+count+'" value="START BREAK" class="btnGreen btnBreaksGreen"/></div><div class="col-xs-2 col-md-2 btnColTime"></div><div class="col-xs-4 col-md-4 btnColTime"><input type="button" id="stopBreak'+count+'" value="STOP BREAK"  class="btnRed btnBreaksRed"/></div><div class="col-xs-1 col-md-1 btnColTime"></div></div>');
+				$( "#divBreaks").append('<div class="row"><div class="col-xs-3 col-md-3 btnColTime"></div><div class="col-xs-2 col-md-2 btnColTime"><input type="button" id="startBreak'+count+'" value="START" class="btnGreenTime btnBreaksGreen"/></div><div class="col-xs-2 col-md-2 btnColTime"></div><div class="col-xs-2 col-md-2 btnColTime"><input type="button" id="stopBreak'+count+'" value="STOP"  class="btnRedTime btnBreaksRed"/></div><div class="col-xs-3 col-md-3 btnColTime"></div></div>');
 				$(".btnBreaksGreen").click(function() {
 					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);
 				});
@@ -206,27 +222,27 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" id="startShift" value="START SHIFT" class="btnTimekeeper btnGreenTime"/>
+						<input type="button" id="startShift" value="START SHIFT" class=""/>
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-xs-1 col-md-1 btnColTime">
+					<div class="col-xs-3 col-md-3 btnColTime">
 					</div>
-					<div class="col-xs-4 col-md-4 btnColTime">
-						<input type="button" id="startBreak" value="START" class="btnTimekeeper btnGreenTime btnBreaksGreen"/>
+					<div class="col-xs-2 col-md-2 btnColTime">
+						<input type="button" id="startBreak0" value="START" class="btnGreenTime btnBreaksGreen"/>
 					</div>
 					<div class="col-xs-2 col-md-2 btnColTime">
 					</div>
-					<div class="col-xs-4 col-md-4 btnColTime">
-						<input type="button" id="stopBreak" value="STOP"  class="btnTimekeeper btnRedTime btnBreaksRed"/>
+					<div class="col-xs-2 col-md-2 btnColTime">
+						<input type="button" id="stopBreak0" value="STOP"  class="btnRedTime btnBreaksRed"/>
 					</div>
-					<div class="col-xs-1 col-md-1 btnColTime">
+					<div class="col-xs-3 col-md-3 btnColTime">
 					</div>
 				</div>
 				<div id="divBreaks"></div>
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" id="stopShift" value="END SHIFT" onClick="$('#signModal').modal()"/>
+						<input type="button" id="stopShift" value="END SHIFT"/>
 					</div>
 				</div>
 			</div>
