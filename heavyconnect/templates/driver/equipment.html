@@ -85,20 +85,18 @@
 				$("#btnSpecs").click(function() {
 					$('#showSpecModal').modal();
 				});
-				$("#btnOk").click(function() {
+				$("#btnOk").click(function() {						
+						setEquipmentStatus("{{ csrf_token }}", "{% url 'updateEquipmentStatus' %}", item.qr_code, $("#btnGreen").val());
 						changeColorStatus("btnOk", "btnService", "btnBroken");
-						$("#btnOk").css('background', 'url("{% static 'imgSmall/buttons/ok.png' %}") no-repeat top left');
-						$("#btnOk").css('background-size', '100% 100%');
+						
 				});
 				$("#btnService").click(function() {
-						changeColorStatus("btnService", "btnBroken", "btnOk");
-						$("#btnService").css('background', 'url("{% static 'imgSmall/buttons/service.png' %}") no-repeat top left');
-						$("#btnService").css('background-size', '100% 100%');
+						setEquipmentStatus("{{ csrf_token }}", "{% url 'updateEquipmentStatus' %}", item.qr_code, $("#btnYellow").val());
+						changeColorStatus("btnService", "btnBroken", "btnOk");						
 				});
 				$("#btnBroken").click(function() {
+						setEquipmentStatus("{{ csrf_token }}", "{% url 'updateEquipmentStatus' %}", item.qr_code, $("#btnRed").val());
 						changeColorStatus("btnBroken", "btnOk", "btnService");
-						$("#btnBroken").css('background', 'url("{% static 'imgSmall/buttons/broken.png' %}") no-repeat top left');
-						$("#btnBroken").css('background-size', '100% 100%');
 				});
 
 			});
@@ -166,7 +164,7 @@
 					url : url,
 					data : {
 						"csrfmiddlewaretoken" : token,
-						"qr_code" : id
+						"qr_code" : id						
 					}, // id could be qrCode or employeeId
 					datatype : "json",
 					success : function(data, status, xhr) {
@@ -183,9 +181,41 @@
 				});
 			}
 
+			function setEquipmentStatus(token, url, id, status) {
+				$.ajax({
+					method : "POST",
+					url : url,
+					data : {
+						"csrfmiddlewaretoken" : token,
+						"qr_code" : id,
+						"status" : status
+					}, // id could be qrCode or employeeId
+					datatype : "json",
+					success : function(data, status, xhr) {
+						alert("Status has been update")
+						
+					}
+
+				});				
+			}
+
 			function changeColorStatus(btn1, btn2, btn3) {
+
+				if (btn1 == "btnOk") {
+					$("#" + btn1).css('background', 'url("{% static 'imgSmall/buttons/ok.png' %}") no-repeat top left');
+					$("#" + btn1).css('background-size', '100% 100%');
+				}
+				else if (btn1 == "btnService") {
+					$("#" + btn1).css('background', 'url("{% static 'imgSmall/buttons/service.png' %}") no-repeat top left');
+					$("#" + btn1).css('background-size', '100% 100%');
+				}else if (btn1 == "btnBroken") {
+					$("#" + btn1).css('background', 'url("{% static 'imgSmall/buttons/broken.png' %}") no-repeat top left');
+					$("#" + btn1).css('background-size', '100% 100%');
+				}
+
 				$("#" + btn2).css('background', 'url("{% static 'imgSmall/buttons/startShiftHover.png' %}") no-repeat top left');
 				$("#" + btn3).css('background', 'url("{% static 'imgSmall/buttons/startShiftHover.png' %}") no-repeat top left');
+				
 			}
 		</script>
 	</head>
@@ -198,13 +228,16 @@
 					<div class="col-xs-3 col-md-3" id="colBtnsEquip">
 						{% trans 'Status' %}:
 						<a href="#">
-						<input type="button" id="btnOk" id="btnStatus1" class="btnStatusEquip" value="{% trans 'OK - Ready to work' %}"/>
+						<input type="button" id="btnOk" id="btn3nStatus1" class="btnStatusEquip" value="{% trans 'OK - Ready to work' %}"/>
+						<input type="hidden" id="btnGreen" value="1"/>
 						</a>
 						<a href="#">
 						<input type="button" id="btnService" class="btnStatusEquip" value="{% trans 'SERVICE Needed' %}"/>
+						<input type="hidden" id="btnYellow" value="2"/>
 						</a>
 						<a href="#">
 						<input type="button" id="btnBroken" class="btnStatusEquip" value="{% trans 'BROKEN! Do not use' %}"/>
+						<input type="hidden" id="btnRed" value="3"/>
 						</a>
 					</div>
 					<div class="col-xs-3 col-md-3" id="colNoteEquip">
