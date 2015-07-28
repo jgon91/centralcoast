@@ -1646,6 +1646,8 @@ def getEmployeeSchedulePart(request):
 					equipment = getTaskImplementMachine(item.task.id, item.id)
 					aux['start'] = str(item.task.date_assigned)
 					aux['end'] = str(data_prediction)
+					aux['task_id'] = item.task.id
+					aux['status'] = item.task.status
 					aux['description'] = item.task.description
 					aux['field'] = item.task.field.name
 					aux['category'] =  item.task.category.description
@@ -1661,6 +1663,8 @@ def getEmployeeSchedulePart(request):
 					aux = {}
 					aux['start'] = str(item.task.date_assigned)
 					aux['end'] = str(item.task.task_end)
+					aux['task_id'] = item.task.id
+					aux['status'] = item.task.status
 					aux['description'] = item.task.description
 					aux['field'] = item.task.field.name
 					aux['category'] =  item.task.category.description

@@ -17,36 +17,7 @@
 				$("#head").load("{% url 'headerDriver' %}");
 
 				$('#cal').fullCalendar({
-					/*events : [{
-						title : 'DISK 5 passes NW',
-						description : 'DISK 5 passes NW, Proin lorem sem, posuere non sapien id, tempus auctor orci. Vestibulum scelerisque a nulla in scelerisque. Etiam euismod augue non nisi rutrum, quis viverra ante porttitor. Integer convallis sem sit amet enim volutpat mollis. Fusce feugiat, est et fermentum sollicitudin, lectus purus volutpat tortor, et malesuada ligula magna ac risus. Curabitur quis eros elit. Integer ultrices turpis id luctus accumsan. Integer mattis elementum mauris, quis semper nisi congue a. Proin nec risus id nunc hendrerit varius. Integer maximus felis condimentum, condimentum dolor quis, commodo augue. Sed finibus dolor a elit pharetra, eu suscipit nulla gravida. Mauris eu tincidunt est. Nullam et auctor arcu, ut finibus nunc. ',
-						field : '3242536',
-						taskDuration: 2,
-						url : 'startTask.html',
-						start : moment().add(1, 'h'),
-						end : moment().add(3, 'h'),
-						color : '#BD330C',
-						allDay : false
-					}, {
-						title : 'Event 2',
-						start : moment().add(1, 'h'),
-						end : moment().add(6, 'h'),
-						description : 'Something Else blah blah',
-						field : '3242536',
-						taskDuration: 3,
-						url : 'startTask.html',
-						color : '#7F9B22'
-					}, {
-						title : 'Other Event',
-						start : moment().add(8, 'h'),
-						end : moment().add(10, 'h'),
-						description : 'Something Else blah blah blah blah',
-						field : '3242536',
-						taskDuration: 2,
-						url : 'startTask.html',
-						color : '#F4CA02',
-						allDay : false
-					}],*/
+					
 					events: {
 				        url: "{% url 'getEmployeeSchedulePart'%}",
 				        error: function() {
@@ -70,7 +41,14 @@
 						$('#machine').html(event.machine);
 						$('#implement').html(event.implement);
 						//$('#taskDuration').html(event.taskDuration);
-						
+						if(event.status == 2){
+							$('#btnStartTaskScheduler').html(' <a id="eventUrl" href="{% url "startTask" %}?task_id='+ event.task_id +'" >' +
+													'<button class="btn btn-primary" id="btnAprove">' +
+													'{% trans "Start" %}' +
+													'</button> </a>');
+						}else{
+							$('#btnStartTaskScheduler').html(" ");
+						}
 						//$('#eventUrl').attr('href', );
 						$('#fullCalModal').modal();
 						return false;
@@ -100,10 +78,9 @@
 								{% trans 'MACHINE:' %} <span id="machine" class="infoModalSchedule"></span><br>
 								{% trans 'IMPLEMENT:' %} <span id="implement" class="infoModalSchedule"></span><br>
 							</div>
-							<a id="eventUrl" target="_blank">
-							<button class="btn btn-primary" id="btnAprove">
-								{% trans 'Start' %}
-							</button> </a>
+							
+							<span id="btnStartTaskScheduler"></span>
+
 							<div class="both"></div>
 						</div>
 					</div>
