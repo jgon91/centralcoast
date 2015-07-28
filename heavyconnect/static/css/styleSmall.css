@@ -275,16 +275,25 @@ input[type=button]{
 /*** Home Page End ***/
 
 /*** Timekeeper Page Begin ***/
-#startShift {
-	background: url('../imgSmall/buttons/startShift.png') no-repeat top left;
-	background-size: 100% 100%;
+.btnTimekeeper {
 	border-radius: 7px;
 	border: none;
 	box-shadow: 2px 2px 5px gray;
-	background-color: #809B21;
 	height: 45px;
 	width: 200px;
 	color: white;
+	margin-top: 7px;
+}
+.btnGreenTime {
+	background: url('../imgSmall/buttons/btnGreen.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+.btnRedTime {
+	background: url('../imgSmall/buttons/btnRed.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#startShift {
+	
 }
 #stopShift {
 	background: url('../imgSmall/buttons/stopShift.png') no-repeat top left;
@@ -298,39 +307,7 @@ input[type=button]{
 	margin-top: 7px;
 	margin-bottom: 11px;
 }
-#addBreak {
-	background: url('../imgSmall/buttons/addBreak.png') no-repeat top left;
-	background-size: 100% 100%;
-	border-radius: 7px;
-	border: none;
-	box-shadow: 2px 2px 5px gray;
-	height: 35px;
-	width: 170px;
-	color: white;
-	margin-top: 7px;
-}
-.btnGreen {
-	background: url('../imgSmall/buttons/break.png') no-repeat top left;
-	background-size: 100% 100%;
-	border-radius: 7px;
-	border: none;
-	box-shadow: 2px 2px 5px gray;
-	height: 35px;
-	width: 170px;
-	color: white;
-	margin-top: 7px;
-}
-.btnRed {
-	background: url('../imgSmall/buttons/stopBreak.png') no-repeat top left;
-	background-size: 100% 100%;
-	border-radius: 7px;
-	border: none;
-	box-shadow: 2px 2px 5px gray;
-	height: 35px;
-	width: 170px;
-	color: white;
-	margin-top: 7px;
-}
+
 .btnColTime {
 	padding: 0px;
 }

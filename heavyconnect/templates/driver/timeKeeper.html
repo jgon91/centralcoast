@@ -11,52 +11,31 @@
 				$("#foot").load("{%url 'footer'%}");
 				$("#head").load("{%url 'headerDriver'%}");
 				$("#signature").jSignature()
-				
 				$("#clearSignature").click(function() {
 					var $sigdiv = $("#signature");
 					$sigdiv.jSignature("reset");
 				});
-				
 				getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
-
 				$("#startShift").click(function() {
-					var confirmResult = confirm("Are you sure?");
-					if (confirmResult == true) {
-						startShift("{{ csrf_token }}", "{% url 'startShift' %}");
-					}
+					startShift("{{ csrf_token }}", "{% url 'startShift' %}");
 				});
 				$(".btnBreaksGreen").click(function(){
-					var confirmResult = confirm("Are you sure?");
-					if (confirmResult == true) {
-						startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);
-					}	
+					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);
 				});	
 				$(".btnBreaksRed").click(function(){
-					var confirmResult = confirm("Are you sure?");
-					if (confirmResult == true){
-	   					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count);
-					}
+	   				stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count);
 				});
-				$("#addBreak").click(function() {
-					var confirmResult = confirm("Are you sure?");
-					if (confirmResult == true) {
-						createBtnBreak(item_count);
-					}
+				$("#stopBreak").click(function() {
+					createBtnBreak(item_count);
 				});
 				$("#stopShift").click(function(){
-					var confirmResult = confirm("Are you sure?");
-					if (confirmResult == true){
-						var $sigdiv = $("#signature");
-						//Get the signature in the 64base
-						var datapair = $sigdiv.jSignature("getData", "base30");
-   						stopShift("{{ csrf_token }}", "{% url 'stopShift' %}");
-   					}
+					var $sigdiv = $("#signature");
+					//Get the signature in the 64base
+					var datapair = $sigdiv.jSignature("getData", "base30");
+   					stopShift("{{ csrf_token }}", "{% url 'stopShift' %}");
 				});
 			});
 			function getEmployeeShifts(token, url) {
-				$(addBreak).attr("disabled", "disabled");
-				$(startBreak1).attr("disabled", "disabled");
-				$(stopBreak1).attr("disabled", "disabled");
 				$.ajax({
 					method : "POST",
 					url : url,
@@ -72,16 +51,12 @@
 							for(var i = 0; i < data.breaks.length; i++) {
 								if (data.breaks[i][0] != "None") {
 									changeBtn("#startBreak" + i, data.breaks[i][0].substring(0, 8));
-									$(addBreak).attr("disabled", "disabled");
 								}
 								if (data.breaks[i][1] != "None") {
 									changeBtn("#stopBreak" + i, data.breaks[i][1].substring(0, 8));
 									if (data.breaks[0][1] != "None") {
 										$(startBreak1).removeAttr('disabled');
 										$(stopBreak1).removeAttr('disabled');
-									}
-									if (data.breaks[1][1] != "None") {
-										$(addBreak).removeAttr('disabled');
 									}
 									if (data.breaks[1][1] != "None" && i > 0 && i < data.breaks.length-1) {
 										createBtnBreak(i+1);
@@ -91,7 +66,6 @@
 							}
 							if (data.hour_ended != "None") {
 								changeBtn("#stopShift", data.hour_ended.substring(0,8));
-								$(addBreak).attr("disabled", "disabled");
 							}
 						}
 					}
@@ -204,26 +178,20 @@
 					});
 			}
 			function changeBtn(idBtn, hour) {
+				$(idBtn).removeClass('.btnGreenTime');
+				$(idBtn).removeClass('.btnTimekeeper');
 				$(idBtn).attr("value", hour);
 				$(idBtn).attr("disabled", "disabled");
-  				$(idBtn).css('background', 'url("{% static 'imgSmall/buttons/startShiftHover.png' %}") no-repeat top left');
-  				$(idBtn).css('background-size', '100% 100%');
   				$(idBtn).css('font-size', '25px');
 			}
 			function createBtnBreak(count) {
 				$(addBreak).attr("disabled", "disabled");
 				$( "#divBreaks").append('<div class="row"><div class="col-xs-1 col-md-1 btnColTime"></div><div class="col-xs-4 col-md-4 btnColTime"><input type="button" id="startBreak'+count+'" value="START BREAK" class="btnGreen btnBreaksGreen"/></div><div class="col-xs-2 col-md-2 btnColTime"></div><div class="col-xs-4 col-md-4 btnColTime"><input type="button" id="stopBreak'+count+'" value="STOP BREAK"  class="btnRed btnBreaksRed"/></div><div class="col-xs-1 col-md-1 btnColTime"></div></div>');
 				$(".btnBreaksGreen").click(function() {
-					var confirmResult = confirm("Are you sure?");
-					if (confirmResult == true) {
-						startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);
-					}
+					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);
 				});
 				$(".btnBreaksRed").click(function(){
-					var confirmResult = confirm("Are you sure?");
-					if (confirmResult == true){
-						stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count);
-					}
+					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count);
 				});
 			}
 		</script>
@@ -238,51 +206,24 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" id="startShift" value="START SHIFT"/>
+						<input type="button" id="startShift" value="START SHIFT" class="btnTimekeeper btnGreenTime"/>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-1 col-md-1 btnColTime">
 					</div>
 					<div class="col-xs-4 col-md-4 btnColTime">
-						<input type="button" id="startBreak0" value="START BREAK" class="btnGreen btnBreaksGreen"/>
+						<input type="button" id="startBreak" value="START" class="btnTimekeeper btnGreenTime btnBreaksGreen"/>
 					</div>
 					<div class="col-xs-2 col-md-2 btnColTime">
 					</div>
 					<div class="col-xs-4 col-md-4 btnColTime">
-						<input type="button" id="stopBreak0" value="STOP BREAK"  class="btnRed btnBreaksRed"/>
-					</div>
-					<div class="col-xs-1 col-md-1 btnColTime">
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-1 col-md-1 btnColTime">
-					</div>
-					<div class="col-xs-4 col-md-4 btnColTime">
-						<input type="button" id="startBreak1" value="START LUNCH" class="btnGreen btnBreaksGreen"/>
-					</div>
-					<div class="col-xs-2 col-md-2 btnColTime">
-					</div>
-					<div class="col-xs-4 col-md-4 btnColTime">
-						<input type="button" id="stopBreak1" value="STOP LUNCH" class="btnRed btnBreaksRed"/>
+						<input type="button" id="stopBreak" value="STOP"  class="btnTimekeeper btnRedTime btnBreaksRed"/>
 					</div>
 					<div class="col-xs-1 col-md-1 btnColTime">
 					</div>
 				</div>
 				<div id="divBreaks"></div>
-				<div class="row">
-					<div class="col-xs-1 col-md-1 btnColTime">
-					</div>
-					<div class="col-xs-4 col-md-4 btnColTime">
-						<input type="button" id="addBreak" value="   ADD BREAK" />
-					</div>
-					<div class="col-xs-2 col-md-2 btnColTime">
-					</div>
-					<div class="col-xs-4 col-md-4 btnColTime">
-					</div>
-					<div class="col-xs-1 col-md-1 btnColTime">
-					</div>
-				</div>
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
 						<input type="button" id="stopShift" value="END SHIFT" onClick="$('#signModal').modal()"/>
@@ -314,7 +255,6 @@
 			          <a href="{% url 'home' %}"><button type="button" id="stopShiftConfirm" class="btn btn-success">Confirmar</button></a>
 			        </div>
 			      </div>
-			      
 			</div>
 		</div>
 	</body>
