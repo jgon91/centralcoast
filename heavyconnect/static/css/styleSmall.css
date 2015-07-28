@@ -81,10 +81,10 @@ input[type=button]{
 	border-radius: 7px;
 	box-shadow: 2px 2px 5px gray;
 }
-#btn_login:hover {
+/*#btn_login:hover {
 	background: url('../imgSmall/buttons/loginBtnHover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 .input_login[type=text] {
 	padding: 7px;
 	border: 2px solid #809256;
@@ -160,10 +160,10 @@ input[type=button]{
 	float: right;
 	border: none;
 }
-#logOff:hover {
+/*#logOff:hover {
 	background: url('../imgSmall/buttons/logoffHover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 /*** Header Home End ***/
 
 /*** Header Driver Begin ***/
@@ -178,42 +178,42 @@ input[type=button]{
 	background: url('../imgSmall/buttons/btnHomeTop.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-#btnHomeUp:hover {
+/*#btnHomeUp:hover {
 	background: url('../imgSmall/buttons/btnHomeTopHover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 #btnEquipmentUp {
 	background: url('../imgSmall/buttons/btnEquipmentTop.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-#btnEquipmentUp:hover {
+/*#btnEquipmentUp:hover {
 	background: url('../imgSmall/buttons/btnEquipmentTopHover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 #btnTaskflowUp {
 	background: url('../imgSmall/buttons/btnTaskflowTop.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-#btnTaskflowUp:hover {
+/*#btnTaskflowUp:hover {
 	background: url('../imgSmall/buttons/btnTaskflowTopHover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 #btnSchedulerUp {
 	background: url('../imgSmall/buttons/btnSchedulerTop.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-#btnSchedulerUp:hover {
+/*#btnSchedulerUp:hover {
 	background: url('../imgSmall/buttons/btnSchedulerTopHover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 #btnTimerkeeperUp {
 	background: url('../imgSmall/buttons/btnTimekeeperTop.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-#btnTimerkeeperUp:hover {
+/*#btnTimerkeeperUp:hover {
 	background: url('../imgSmall/buttons/btnTimekeeperTopHover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 /*** Header Driver End ***/
 
 /*** Home Page Begin ***/
@@ -236,34 +236,34 @@ input[type=button]{
 	background: url('../imgSmall/buttons/equipment.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-#btnEquipment:hover {
+/*#btnEquipment:hover {
 	background: url('../imgSmall/buttons/equipmentHover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 #btnTaskflow {
 	background: url('../imgSmall/buttons/taskflow.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-#btnTaskflow:hover {
+/*#btnTaskflow:hover {
 	background: url('../imgSmall/buttons/taskflowHover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 #btnScheduler {
 	background: url('../imgSmall/buttons/scheduler.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-#btnScheduler:hover {
+/*#btnScheduler:hover {
 	background: url('../imgSmall/buttons/schedulerHover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 #btnTimerkeeper {
 	background: url('../imgSmall/buttons/timekeeper.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-#btnTimerkeeper:hover {
+/*#btnTimerkeeper:hover {
 	background: url('../imgSmall/buttons/timekeeperHover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 #backgroundFooter {
 	background-size: 100% 100%;
 	width: 100%;
@@ -369,10 +369,10 @@ input[type=button]{
 	background-size: 100% 100%;
 	margin-left: 1%;
 }
-#next1:hover {
+/*#next1:hover {
 	background: url('../imgSmall/buttons/next1Hover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 #next2 {
 	background: url('../imgSmall/buttons/next2.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -380,10 +380,10 @@ input[type=button]{
 	margin-left: 2.5%;
 	margin-right: 2.5%;
 }
-#next2:hover {
+/*#next2:hover {
 	background: url('../imgSmall/buttons/next1Hover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 #next3 {
 	background: url('../imgSmall/buttons/next2.png') no-repeat top left;
 	background-size: 100% 100%;	
@@ -391,10 +391,10 @@ input[type=button]{
 	float: right;
 	margin-right: 1%;
 }
-#next3:hover {
+/*#next3:hover {
 	background: url('../imgSmall/buttons/next1Hover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 .moreInfo {
 	text-decoration: none;
 	color: #4F7316;
@@ -438,10 +438,10 @@ input[type=button]{
 	text-align: right;
 	font-size: 18px;
 }
-#btnPastTasks:hover {
+/*#btnPastTasks:hover {
 	background: url('../imgSmall/buttons/btnPastTasksHover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 #btnCreateTask {
 	background: url('../imgSmall/buttons/btnCreateTask.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -454,11 +454,11 @@ input[type=button]{
 	text-align: right;
 	font-size: 18px;
 }
-#btnCreateTask:hover {
+/*#btnCreateTask:hover {
 	background: url('../imgSmall/buttons/btnCreateTaskHover.png') no-repeat top left;
 	background-size: 100% 100%;
 	color: white;
-}
+}*/
 .pendingTasks a {
 	font-style: normal;
 }
@@ -505,10 +505,10 @@ input[type=button]{
 	margin: 0px;
 	padding: 0px;
 }
-.closeTask:hover {
+/*.closeTask:hover {
 	background: url('../imgSmall/buttons/escHover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 .infoTask {
 	text-align: left;
 	padding-left: 50px;
@@ -778,10 +778,10 @@ input[type=button]{
 	border: none;
 	color: white;
 }
-#AddImplement:hover {
+/*#AddImplement:hover {
 	background: url('../imgSmall/buttons/addImplementHover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 
 #delImplement {
 	background: url('../imgSmall/buttons/startNow.png') no-repeat top left;
@@ -815,10 +815,10 @@ input[type=button]{
 	font-size: 18px;
 	font-weight: bold;
 }
-.findEquipment:hover {
+/*.findEquipment:hover {
 	background: url('../imgSmall/buttons/searchHover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 .scanEquipment {
 	background: url('../imgSmall/buttons/scan.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -834,10 +834,10 @@ input[type=button]{
 	font-size: 18px;
 	font-weight: bold;
 }
-.scanEquipment:hover {
+/*.scanEquipment:hover {
 	background: url('../imgSmall/buttons/scanHover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 .nextTab {
 	background: url('../imgSmall/buttons/next.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -854,10 +854,10 @@ input[type=button]{
 	text-align: left;
 	padding-left: 35px;
 }
-.nextTab:hover {
+/*.nextTab:hover {
 	background: url('../imgSmall/buttons/nextHover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 .prevTab {
 	background: url('../imgSmall/buttons/prev.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -873,10 +873,10 @@ input[type=button]{
 	text-align: right;
 	padding-right: 25px;
 }
-.prevTab:hover {
+/*.prevTab:hover {
 	background: url('../imgSmall/buttons/backHover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 	/* Nav tabs */
 .nav>li {
 	width: 100px;
@@ -995,10 +995,10 @@ input[type=button]{
 	color: white;
 	font-size: 20px;
 }
-#btnAprove:hover {
+/*#btnAprove:hover {
 	background: url('../imgSmall/buttons/startNowHover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 .closeSchedule {
 	background: url('../imgSmall/buttons/esc.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -1011,10 +1011,10 @@ input[type=button]{
 	margin: 0px;
 	padding: 0px;
 }
-.closeSchedule:hover {
+/*.closeSchedule:hover {
 	background: url('../imgSmall/buttons/escHover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 .infoSchedule {
 	text-align: left;
 	padding-left: 20px;
@@ -1209,10 +1209,10 @@ input[type=button]{
 	margin: 0px;
 	padding: 0px;
 }
-.closeEquip:hover {
+/*.closeEquip:hover {
 	background: url('../imgSmall/buttons/escHover.png') no-repeat top left;
 	background-size: 100% 100%;
-}
+}*/
 #slideModalEquip {
 	
 }
