@@ -1904,6 +1904,7 @@ def beaconUpdate(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+#this function gives back the last localization of the equipment
 def equipmentLastLocalization(request):
 	result = {'success' : False}
 	if request.method == 'POST':
