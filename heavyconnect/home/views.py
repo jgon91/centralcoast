@@ -1904,7 +1904,7 @@ def beaconUpdate(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-def equipmentLastLocaliation(request):
+def equipmentLastLocalization(request):
 	result = {'success' : False}
 	if request.method == 'POST':
 		qr_code = request.POST['qr_code']
