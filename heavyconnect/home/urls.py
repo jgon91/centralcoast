@@ -89,7 +89,7 @@ urlpatterns = [
     url(r'^getEmployeeSelfCurrentTask/$', main_views.getEmployeeSelfCurrentTask, name = 'getEmployeeSelfCurrentTask'),
 	url(r'^saveEmployeeNotes/$', main_views.saveEmployeeNotes, name = 'saveEmployeeNotes'),
 	url(r'^getFieldLocalization/$', main_views.getFieldLocalization, name = 'getFieldLocalization'),
-    url(r'^equipmentLastLocaliation/$', main_views.equipmentLastLocaliation, name = 'equipmentLastLocaliation'),
+    url(r'^equipmentLastLocalization/$', main_views.equipmentLastLocalization, name = 'equipmentLastLocalization'),
     ### End ###
 
     ###Insert###
