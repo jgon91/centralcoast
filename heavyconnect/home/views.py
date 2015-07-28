@@ -1906,26 +1906,35 @@ def beaconUpdate(request):
 
 def equipmentLastLocaliation(request):
 	result = {'success' : False}
-	qr_code = request.POST['qr_code']
-	try:
-		machine = Machine.objects.get(qr_code = qr_code)
-		beaconGPS = BeaconGPS.objects.filter(beacon__id = machine.beacon.id).order_by('-timestamp')[:1]
-		for item in beaconGPS:
-			result['latitude'] = item.gps.latitude
-			result['longitude'] = item.gps.longitude
-			result['status'] = machine.status
-		result['success'] = True
-	except:
-		try:
-			implement = Implement.objects.get(qr_code = qr_code)
-			beaconGPS = BeaconGPS.objects.filter(beacon__id = implement.beacon.id).order_by('-timestamp')[:1]
-			for item in beaconGPS:
-				result['latitude'] = item.gps.latitude
-				result['longitude'] = item.gps.longitude
-				result['status'] = implement.status
-			result['success'] = True
-		except Implement.DoesNotExist:
-			result['code'] = 1
+	if request.method == 'POST':
+		qr_code = request.POST['qr_code']
+		if request.is_ajax():
+			try:
+				machine = Machine.objects.get(qr_code = qr_code)
+				beaconGPS = BeaconGPS.objects.filter(beacon__id = machine.beacon.id).order_by('-timestamp')[:1]
+				for item in beaconGPS:
+					result['latitude'] = item.gps.latitude
+					result['longitude'] = item.gps.longitude
+					result['status'] = machine.status
+				result['success'] = True
+			except:
+				try:
+					implement = Implement.objects.get(qr_code = qr_code)
+					beaconGPS = BeaconGPS.objects.filter(beacon__id = implement.beacon.id).order_by('-timestamp')[:1]
+					for item in beaconGPS:
+						result['latitude'] = item.gps.latitude
+						result['longitude'] = item.gps.longitude
+						result['status'] = implement.status
+					result['success'] = True
+				except Implement.DoesNotExist:
+					result['code'] = 1
+		else:
+				result['code'] = 2 #Use ajax to perform requests
+				result['errorString'] = 'Use ajax to perform requests'
+	else:
+		result['code'] = 3 #Request was not POST
+		result['errorString'] = 'Request was not POST, your sent a ' + str(request.method)
+
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
