@@ -251,6 +251,11 @@ Question
 	category								This field will differentiate the question into groups - int
 	refers									This question is related to Machine or Implement - Choices
 
+TranslatedQuestion
+	question 							The original question in english - INT FOREIGN KEY
+	description 						The translated description - CHARFIELD(250)
+	idiom								The idiom code of the question - INT
+
 MachineChecklist
 	question								Question identification number - FOREIGN KEY
 	qrCode									QRCode referent of the equipment -  FOREIGN KEY
@@ -271,7 +276,7 @@ ImplementChecklist
 
 Beacon
 	beacon_serial						Beacon serial located on the back of the device - CHARFIELD(10)
-	refers								Indicates if the beacon belongs to a machine or a implement
+	refers								Indicates if the beacon belongs to a machine or a implement - INT
 
 BeaconGPS
 	beacon 								Reference to a becon - INT FOREIGN KEY
