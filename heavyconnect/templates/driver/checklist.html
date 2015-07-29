@@ -11,8 +11,17 @@
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerDriver' %}");
 				
-				eventsCheckList();
+				//progress bar events
+				var valeur = 0;
+				$('#checkYes').on('click', function(){
+					valeur += 20;
+					$('.progress-bar').css('width', valeur+'%').attr('aria-valuenow', valeur); 
+					$('.progress-bar').html(valeur + '%'); 
+				});
+
+				getCheckListQuestions("{{ csrf_token }}", "{% url 'equipmentQuestionsChecklist' %}");
 			});
+
 		</script>
 	</head>
 	<body>
@@ -24,128 +33,30 @@
 				</div>
 				<br />
 				<div class="row">
-					<div id="checkListForm" class="col-xs-12 col-md-12 col-sm-12">
-						<form action="" method="get">
-							<div class="questions">
-								<input type="button" class="numButton" id="q1" value="1">
-							</div>
-							<div class="questions">
-								<input type="button" class="numButton" id="q2" value="2">
-							</div>
-							<div class="questions">
-								<input type="button" class="numButton" id="q3" value="3">
-							</div>
-							<div class="questions">
-								<input type="button" class="numButton" id="q4" value="4">
-							</div>
-							<div class="questions">
-								<input type="button" class="numButton" id="q5" value="5">
-							</div>
-							<div class="questions">
-								<input type="button" id="hoursButton" value="Hours">
-								<input type="submit" id="buttonSubmit" value="SUBMIT">
-							</div>
-						</form>
-					</div>
+					<div id="progressCheckList" class="progress progress-striped active">
+				        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"> 
+				        	0%
+				        </div>
+				    </div>
 				</div>
 				<div class="row">
-					<div id="checkList1" class="questionsCheckList" class="col-xs-12 col-md-12">
-						<p style="color: black; font-size: 24px;">
-							<strong>Safety Equipment</strong> present and working properly?
-						</p>
-						<div class="row">
-							<label>
-								<div class="radioBtnCheck"  id="checkYes" class="col-xs-6 col-md-6">
-									YES
-									<input type="radio" value="1" name="q1" class="radio">
-								</div>
-							</label>	
-							<label>
-								<div class="radioBtnCheck" id="checkNo" class="col-xs-6 col-md-6">
-									NO
-									<input type="radio" value="0" name="q1" class="radio">
-								</div>
-							</label>
-						</div>
-					</div>
-					<div id="checkList2" class="questionsCheckList" class="col-xs-12 col-md-12">
-						<p style="color: black; font-size: 24px;">
-							Engine oil level is OK?
-						</p>
-						<div class="row">
-							<label>
-								<div class="radioBtnCheck"  id="checkYes" class="col-xs-6 col-md-6">
-									YES
-									<input type="radio" value="1" name="q2" class="radio">
-								</div>
-							</label>	
-							<label>
-								<div class="radioBtnCheck" id="checkNo" class="col-xs-6 col-md-6">
-									NO
-									<input type="radio" value="0" name="q2" class="radio">
-								</div>
-							</label>
-						</div>
-					</div>
-					<div id="checkList3"  class="questionsCheckList" class="col-xs-12 col-md-12" >
-						<p style="color: black; font-size: 24px;">
-							Coolant level is OK?
-						</p>
-						<div class="row">
-							<label>
-								<div class="radioBtnCheck"  id="checkYes" class="col-xs-6 col-md-6">
-									YES
-									<input type="radio" value="1" name="q3" class="radio">
-								</div>
-							</label>	
-							<label>
-								<div class="radioBtnCheck" id="checkNo" class="col-xs-6 col-md-6">
-									NO
-									<input type="radio" value="0" name="q3" class="radio">
-								</div>
-							</label>
-						</div>
-					</div>
-					<div id="checkList4"  class="questionsCheckList" class="col-xs-12 col-md-12">
-						<p style="color: black; font-size: 24px;">
-							Cab interior condition acceptable?
-						</p>
-						<div class="row">
-							<label>
-								<div class="radioBtnCheck"  id="checkYes" class="col-xs-6 col-md-6">
-									YES
-									<input type="radio" value="1" name="q4" class="radio">
-								</div>
-							</label>	
-							<label>
-								<div class="radioBtnCheck" id="checkNo" class="col-xs-6 col-md-6">
-									NO
-									<input type="radio" value="0" name="q4" class="radio">
-								</div>
-							</label>
-						</div>
-					</div>
-					<div id="checkList5"  class="questionsCheckList" class="col-xs-12 col-md-12">
-						<p style="color: black; font-size: 24px;">
-							Start Engine?
-						</p>
-						<div class="row">
-							<label>
-								<div class="radioBtnCheck"  id="checkYes" class="col-xs-6 col-md-6">
-									YES
-									<input type="radio" value="1" name="q5" class="radio">
-								</div>
-							</label>	
-							<label>
-								<div class="radioBtnCheck" id="checkNo" class="col-xs-6 col-md-6">
-									NO
-									<input type="radio" value="0" name="q5" class="radio">
-								</div>
-							</label>
-						</div>
-					</div>
-				</div>
+					<div id="checkList" class="col-xs-12 col-md-12">
+					<p>
+						Safety Equipment present and working properly?
+					</p>
 			</div>
+			<div class="row">
+							
+				<div class="col-xs-6 col-md-6">
+					<input type="button" id="checkYes" value="YES" />
+				</div>
+			
+				<div class="col-xs-6 col-md-6">
+					<input type="button" id="checkNo" value="NO" />
+				</div>
+
+			</div>
+		</div>
 		</div>
 		<footer id="foot"></footer>
 	</body>
