@@ -16,82 +16,109 @@
 				$("#btnCreateTask").click(function() {
 					/*return permissionCreateTask("{{csrf_token}}", "{% url 'validatePermission' %}", "");*/
 					// true or false
-				});
-				$(".moreInfo").click(function() {
-					var indexDiv = (parseInt(this.id.substring(8, 9)) - 1);// decrement div value to adjust with the array
+			});
 
-					$("#linkStartTask").attr("href", "{% url 'startTask'%}?task_id=" + taskMoreInfo[indexDiv].task_id);
-                });
-				getPendingTask("{{ csrf_token }}", "{% url 'retrievePendingTask' %}");
-				$(".moreInfo").click(function() {
+			$(".moreInfo").click(function() {
+				var indexDiv = (parseInt(this.id.substring(8, 9)) - 1);// decrement div value to adjust with the array
 
-					var indexDiv = (parseInt(this.id.substring(8, 9)) - 1); //decrement div value to adjust with the array
+				$("#linkStartTask").attr("href", "{% url 'startTask'%}?task_id=" + taskMoreInfo[indexDiv].task_id);
+            });
 
-					$('.infoModalTask').html('');
-					$('#startTask').modal();
+			getPendingTask("{{ csrf_token }}", "{% url 'retrievePendingTask' %}");
 
+			$(".moreInfo").click(function() {
+
+				var indexDiv = (parseInt(this.id.substring(8, 9)) - 1); //decrement div value to adjust with the array
+
+				$('.infoModalTask').html('');
+				$('#startTask').modal();
+
+				if(taskMoreInfo[indexDiv].implement.length > 1){//2 implements for the 1 task
+					$("#implement2").css("display", "inline");
+					$("#implement2NameMoreInfo").html(taskMoreInfo[indexDiv].implement[1].implement_nickname);
+					$("#implement2ModelMoreInfo").html("(" + taskMoreInfo[indexDiv].implement[1].implement_model + ")");
+				}
 					$("#dataMoreInfo").html(taskMoreInfo[indexDiv].date.substring(0, 10));
-					$("#implementNameMoreInfo").html(taskMoreInfo[indexDiv].implement1_nickname);
-					$("#implementIdMoreInfo").html(taskMoreInfo[indexDiv].implement1_id);
-					$("#implementModelMoreInfo").html(taskMoreInfo[indexDiv].implement1_model);
+					$("#implementNameMoreInfo").html(taskMoreInfo[indexDiv].implement[0].implement_nickname);
+					$("#implementModelMoreInfo").html(taskMoreInfo[indexDiv].implement[0].implement_model);
 					$("#tractorNameMoreInfo").html(taskMoreInfo[indexDiv].machine_nickname);
-					$("#tractorIdMoreInfo").html(taskMoreInfo[indexDiv].machine_id);
 					$("#tractorModelMoreInfo").html(taskMoreInfo[indexDiv].machine_model);
 					$("#employeeFirstMoreInfo").html(taskMoreInfo[indexDiv].employee_first_name);
 					$("#employeeLastMoreInfo").html(taskMoreInfo[indexDiv].employee_last_name);
 					$("#fieldMoreInfo").html(taskMoreInfo[indexDiv].field);
 
-
-				});
 			});
-			//Functions
-			function getPendingTask(token, url) {
-				$.ajax({
-					method : "POST",
-					url : url,
-					data : {
-						"csrfmiddlewaretoken" : token,
-						"offset" : 0,
-						"limit" : 3
-					},
-					datatype : "json",
-					success : function(data, status, xhr) {
-						//alert(data.auxs.length);
-						if(data.success){
-							for (var i = 0; i < data.auxs.length; i++) {						
-								$("#next" + (i+1) + " .category").html(data.auxs[i].category);
-								$("#next" + (i+1) + " .fieldName").html(data.auxs[i].field);
-								$("#next" + (i+1) + " .task_id").html(data.auxs[i].task_id);
-							};
-							taskMoreInfo = data.auxs;
-						}
-
-						taskMoreInfo;
+		});
+		//Functions
+		function getPendingTask(token, url) {
+			$.ajax({
+				method : "POST",
+				url : url,
+				data : {
+					"csrfmiddlewaretoken" : token,
+					"offset" : 0,
+					"limit" : 3
+				},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					if(data.success){
+						//alert(data.each_task_info[1].implement[0].implement_model);	
 						
+						if (data.each_task_info.length == 2) {
+							$("#next3 .category").html("No Task");
+							$("#next3 .titleField").html("");
+							$("#next3 .plusInfo").html("");
+						}else if (data.each_task_info.length == 1) {		
+							$("#next3 .category").html("No Task");
+							$("#next3 .titleField").html("");
+							$("#next3 .plusInfo").html("");
+							$("#next2 .category").html("No Task");
+							$("#next2 .titleField").html("");
+							$("#next2 .plusInfo").html("");
+						}else if (data.each_task_info.length == 0) {		
+							$("#next3 .category").html("No Task");
+							$("#next3 .titleField").html("");
+							$("#next3 .plusInfo").html("");
+							$("#next2 .category").html("No Task");
+							$("#next2 .titleField").html("");
+							$("#next2 .plusInfo").html("");
+							$("#next1 .category").html("No Task");
+							$("#next1 .titleField").html("");
+							$("#next1 .plusInfo").html("");
+						}		
+
+						for (var i = 0; i < data.each_task_info.length; i++) {		
+							$("#next" + (i+1) + " .category").html(data.each_task_info[i].category);
+							$("#next" + (i+1) + " .fieldName").html(data.each_task_info[i].field);
+							$("#next" + (i+1) + " .task_id").html(data.each_task_info[i].task_id);
+						}
+						taskMoreInfo = data.each_task_info;
 					}
-				});
-			}
+				}
+					
+			});
+		}
 
 /*			function permissionCreateTask(token, url, permission) {
-				console.log(url)
-				$.ajax({
-					method : "POST",
-					url : url,
-					dataType : "json",
-					async : false,
-					data : {
-						"csrfmiddlewaretoken" : token
-					},
-					success : function(data, status, xhr) {
-						//console.log(data)
-						if (!data.success) {
-							alert("You do not have enough right to create a task!!");
-						}
-						permission = data.success;
+			console.log(url)
+			$.ajax({
+				method : "POST",
+				url : url,
+				dataType : "json",
+				async : false,
+				data : {
+					"csrfmiddlewaretoken" : token
+				},
+				success : function(data, status, xhr) {
+					//console.log(data)
+					if (!data.success) {
+						alert("You do not have enough right to create a task!!");
 					}
-				});
-				return permission;
-			}*/
+					permission = data.success;
+				}
+			});
+			return permission;
+		}*/
 		</script>
 	</head>
 	<body>
@@ -109,7 +136,7 @@
 						<span class="titleNextTask">#1</span>
 						<br>
 						<span class="category titleNextTask"></span>
-						<h4 style="font-size: 20px; line-height: 10px;">{% trans 'Field' %}</h4><span class="fieldName"></span>
+						<h4 class="titleField" style="font-size: 20px; line-height: 10px;">{% trans 'Field' %}</h4><span class="fieldName"></span>
 						<br>
 						<span class="plusInfo" id="moreInfo1">{% trans 'More Info' %}</span>
 					</div> </a>
@@ -118,7 +145,7 @@
 						<span class="titleNextTask">#2</span>
 						<br>
 						<span class="category titleNextTask"></span>
-						<h4 style="font-size: 20px; line-height: 10px;">{% trans 'Field' %}</h4><span class="fieldName"></span>
+						<h4 class="titleField" style="font-size: 20px; line-height: 10px;">{% trans 'Field' %}</h4><span class="fieldName"></span>
 						<br>
 						<span class="plusInfo">{% trans 'More Info' %}</span>
 					</div> </a>
@@ -127,7 +154,7 @@
 						<span class="titleNextTask">#3</span>
 						<br>
 						<span class="category titleNextTask"></span>
-						<h4 style="font-size: 20px; line-height: 10px;">{% trans 'Field' %}</h4><span class="fieldName"></span>
+						<h4 class="titleField" style="font-size: 20px; line-height: 10px;">{% trans 'Field' %}</h4><span class="fieldName"></span>
 						<br>
 						<span class="plusInfo">{% trans 'More Info' %}</span>
 					</div> </a>
@@ -146,7 +173,7 @@
 					</div>
 				</div>
 				<!-- MODAL OF START TASK -->
-				<div class="modal fade" id="startTask" role="dialog">
+				<div class="modal fade" id="startTask" role="dialog" onclick="$('#implement2').css('display', 'none')">
 					<div class="modal-dialog">
 						<!-- Modal content-->
 						<div class="modal-content modalTask">
@@ -156,14 +183,15 @@
 							<div class="modal-body infoTask">
 								{% trans 'FIELD' %}: <span id="fieldMoreInfo" class="infoModalTask"></span>
 								</br>
-								{% trans 'TRACTOR' %}: "<span id="tractorNameMoreInfo" class="infoModalTask"></span>"
+								{% trans 'TRACTOR' %}: <span id="tractorNameMoreInfo" class="infoModalTask"></span>
 								(<span id="tractorModelMoreInfo" class="infoModalTask"></span>)								
 								<br>								
-								{% trans 'IMPLEMENT' %}: "<span id="implementNameMoreInfo" class="infoModalTask"></span>"
+								{% trans 'IMPLEMENT' %}: <span id="implementNameMoreInfo" class="infoModalTask"></span>
 								(<span id="implementModelMoreInfo" class="infoModalTask"></span>)
 								<br>
-								{% trans 'IMPLEMENT 2' %}: "<span id="implement2NameMoreInfo" class="infoModalTask"></span>"
-								(<span id="implement2ModelMoreInfo" class="infoModalTask"></span>)
+								<span id="implement2" style="display: none;">{% trans 'IMPLEMENT 2' %}:</span>
+								<span id="implement2NameMoreInfo" class="infoModalTask"></span>
+								<span id="implement2ModelMoreInfo" class="infoModalTask"></span>
 								<!--br>ESTIMATED HOURS: <span id="hoursMoreInfo" class="infoModalTask"></span>-->
 							</div>
 							<a id="linkStartTask" href="">
