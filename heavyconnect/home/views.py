@@ -1294,7 +1294,7 @@ def loadImplementsImage(request):
 
 
 # Return pending tasks, which are tasks that have "approved" status or "paused" 
-# status (not "pending" status. This would be waiting for manager approval)
+# status (not "pending" status. This would be waiting for Manager approval)
 @login_required
 def retrievePendingTask(request):
 	result = {'success' : False}
