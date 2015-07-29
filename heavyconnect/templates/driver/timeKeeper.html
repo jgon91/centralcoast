@@ -12,6 +12,10 @@
 				$("#head").load("{%url 'headerDriver'%}");
 				$("#signature").jSignature()
 				
+				$("#stopShiftConfirm").click(function() {
+					stopShift("{{ csrf_token }}", "{% url 'stopShift' %}");
+				});
+
 				$("#clearSignature").click(function() {
 					var $sigdiv = $("#signature");
 					$sigdiv.jSignature("reset");
@@ -20,37 +24,37 @@
 				getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
 
 				$("#startShift").click(function() {
-					var confirmResult = confirm("Are you sure?");
-					if (confirmResult == true) {
+					//var confirmResult = confirm("Are you sure?");
+					//if (confirmResult == true) {
 						startShift("{{ csrf_token }}", "{% url 'startShift' %}");
-					}
+					//}
 				});
 				$(".btnBreaksGreen").click(function(){
-					var confirmResult = confirm("Are you sure?");
-					if (confirmResult == true) {
+					//var confirmResult = confirm("Are you sure?");
+					//if (confirmResult == true) {
 						startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);
-					}	
+					//}	
 				});	
 				$(".btnBreaksRed").click(function(){
-					var confirmResult = confirm("Are you sure?");
-					if (confirmResult == true){
+					//var confirmResult = confirm("Are you sure?");
+					//if (confirmResult == true){
 	   					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count);
-					}
+					//}
 				});
 				$("#addBreak").click(function() {
-					var confirmResult = confirm("Are you sure?");
-					if (confirmResult == true) {
+					//var confirmResult = confirm("Are you sure?");
+					//if (confirmResult == true) {
 						createBtnBreak(item_count);
-					}
+					//}
 				});
 				$("#stopShift").click(function(){
-					var confirmResult = confirm("Are you sure?");
-					if (confirmResult == true){
+					//var confirmResult = confirm("Are you sure?");
+					//if (confirmResult == true){
 						var $sigdiv = $("#signature");
 						//Get the signature in the 64base
 						var datapair = $sigdiv.jSignature("getData", "base30");
-   						stopShift("{{ csrf_token }}", "{% url 'stopShift' %}");
-   					}
+   						
+   					//}
 				});
 			});
 			function getEmployeeShifts(token, url) {
@@ -214,16 +218,16 @@
 				$(addBreak).attr("disabled", "disabled");
 				$( "#divBreaks").append('<div class="row"><div class="col-xs-1 col-md-1 btnColTime"></div><div class="col-xs-4 col-md-4 btnColTime"><input type="button" id="startBreak'+count+'" value="START BREAK" class="btnGreen btnBreaksGreen"/></div><div class="col-xs-2 col-md-2 btnColTime"></div><div class="col-xs-4 col-md-4 btnColTime"><input type="button" id="stopBreak'+count+'" value="STOP BREAK"  class="btnRed btnBreaksRed"/></div><div class="col-xs-1 col-md-1 btnColTime"></div></div>');
 				$(".btnBreaksGreen").click(function() {
-					var confirmResult = confirm("Are you sure?");
-					if (confirmResult == true) {
+					//var confirmResult = confirm("Are you sure?");
+					//if (confirmResult == true) {
 						startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);
-					}
+					//}
 				});
 				$(".btnBreaksRed").click(function(){
-					var confirmResult = confirm("Are you sure?");
-					if (confirmResult == true){
+					//var confirmResult = confirm("Are you sure?");
+					//if (confirmResult == true){
 						stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count);
-					}
+					//}
 				});
 			}
 		</script>
@@ -311,7 +315,7 @@
 			 		<div class="both"></div>
 			        <div class="modal-footer">
 			          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-			          <a href="{% url 'home' %}"><button type="button" id="stopShiftConfirm" class="btn btn-success">Confirmar</button></a>
+			          <a href=""><button type="button" id="stopShiftConfirm" class="btn btn-success">Confirmar</button></a>
 			        </div>
 			      </div>
 			      

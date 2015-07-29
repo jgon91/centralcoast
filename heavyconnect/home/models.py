@@ -143,6 +143,7 @@ class Machine(models.Model):
 	photo = models.URLField(max_length = 200, blank = True)
 	photo1 = models.URLField(max_length = 200, blank = True)
 	photo2 = models.URLField(max_length = 200, blank = True)
+	note = models.CharField(max_length = 250, blank = True)
 	beacon = models.ForeignKey(Beacon, blank = True, null = True) #DEMO
 
 	def __unicode__(self):
@@ -172,6 +173,7 @@ class Implement(models.Model):
 	photo = models.URLField(max_length = 200, blank = True)
 	photo1 = models.URLField(max_length = 200, blank = True)
 	photo2 = models.URLField(max_length = 200, blank = True)
+	note = models.CharField(max_length = 250, blank = True)
 	beacon = models.ForeignKey(Beacon, blank = True, null = True) #DEMO
 
 	def __unicode__(self):
@@ -235,7 +237,7 @@ class Employee(models.Model):
 	contact_number = models.CharField(max_length = 14)
 	permission_level = models.IntegerField(choices = ((1, 'Driver'), (2, 'Manager')))
 	photo = models.URLField(max_length = 200, blank = True)
-	notes = models.CharField(max_length = 250, null = True)
+	notes = models.CharField(max_length = 250, null = True, blank = True)
 
 	def __unicode__(self):
 		return  "First Name: " + str(self.user.first_name) + ", Last Name: " + str(self.user.last_name) + ", User ID: " + str(self.user.id) + ", ID: " + str(self.id)
@@ -438,7 +440,7 @@ class Question(models.Model):
 
 class MachineChecklist(models.Model):
 	question = models.ForeignKey(Question)
-	qrCode = models.ForeignKey(Machine)
+	qr_code = models.ForeignKey(Machine)
 	employee = models.ForeignKey(Employee, null = True, blank = True)
 	answer = models.BooleanField()
 	note = models.CharField(max_length = 200,blank = True)
@@ -451,7 +453,7 @@ class MachineChecklist(models.Model):
 
 class ImplementChecklist(models.Model):
 	question = models.ForeignKey(Question)
-	qrCode = models.ForeignKey(Implement)
+	qr_code = models.ForeignKey(Implement)
 	employee = models.ForeignKey(Employee, null = True, blank = True)
 	answer = models.BooleanField()
 	note = models.CharField(max_length = 200, blank = True)

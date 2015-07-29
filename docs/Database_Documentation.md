@@ -61,6 +61,7 @@ Machine
 	status									Machine status - CHOICES
 	hour_cost								Machine hour cost - FLOAT
 	equipment_type					EquipmentType identification number - FOREIGN KEY
+	note                            One brief note about the machine - VARCHAR(250)
 	photo										Path to the picture -  URL(200)
 
 Implements
@@ -84,6 +85,7 @@ Implements
 	status									Implement status - CHOICES
 	hour_cost								Implement hour cost - FLOAT
 	equipment_type					EquipmentType identification number - FOREIGN KEY
+	note                            One brief note about the machine - VARCHAR(250)
 	photo										Path until the picture -  URL(200)
 
 Employee
