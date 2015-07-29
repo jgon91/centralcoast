@@ -6,61 +6,38 @@
 		<script src="{% static 'jSignature/jSignature.min.js'%}"></script>
 		<script>
 			var item_count = 0;
+			var hour_start = 0;
 			var urlTest = "{% url 'stopBreak' %}";
 			$(document).ready(function() {
 				$("#foot").load("{%url 'footer'%}");
 				$("#head").load("{%url 'headerDriver'%}");
 				$("#signature").jSignature()
-				
-				$("#stopShiftConfirm").click(function() {
-					stopShift("{{ csrf_token }}", "{% url 'stopShift' %}");
-				});
-
 				$("#clearSignature").click(function() {
 					var $sigdiv = $("#signature");
 					$sigdiv.jSignature("reset");
 				});
-				
 				getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
-
 				$("#startShift").click(function() {
-					//var confirmResult = confirm("Are you sure?");
-					//if (confirmResult == true) {
-						startShift("{{ csrf_token }}", "{% url 'startShift' %}");
-					//}
+					startShift("{{ csrf_token }}", "{% url 'startShift' %}");
 				});
 				$(".btnBreaksGreen").click(function(){
-					//var confirmResult = confirm("Are you sure?");
-					//if (confirmResult == true) {
-						startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);
-					//}	
+					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);
 				});	
 				$(".btnBreaksRed").click(function(){
-					//var confirmResult = confirm("Are you sure?");
-					//if (confirmResult == true){
-	   					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count);
-					//}
+	   				stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count);
 				});
-				$("#addBreak").click(function() {
-					//var confirmResult = confirm("Are you sure?");
-					//if (confirmResult == true) {
-						createBtnBreak(item_count);
-					//}
+				$("#stopBreak").click(function() {
+					createBtnBreak(item_count);
 				});
 				$("#stopShift").click(function(){
-					//var confirmResult = confirm("Are you sure?");
-					//if (confirmResult == true){
-						var $sigdiv = $("#signature");
-						//Get the signature in the 64base
-						var datapair = $sigdiv.jSignature("getData", "base30");
-   						
-   					//}
+					$('#signModal').modal();
+					var $sigdiv = $("#signature"); //nao sei o que isso faz junior
+					//Get the signature in the 64base
+					var datapair = $sigdiv.jSignature("getData", "base30"); //nem isso
+   					stopShift("{{ csrf_token }}", "{% url 'stopShift' %}");
 				});
 			});
 			function getEmployeeShifts(token, url) {
-				$(addBreak).attr("disabled", "disabled");
-				$(startBreak1).attr("disabled", "disabled");
-				$(stopBreak1).attr("disabled", "disabled");
 				$.ajax({
 					method : "POST",
 					url : url,
@@ -76,26 +53,15 @@
 							for(var i = 0; i < data.breaks.length; i++) {
 								if (data.breaks[i][0] != "None") {
 									changeBtn("#startBreak" + i, data.breaks[i][0].substring(0, 8));
-									$(addBreak).attr("disabled", "disabled");
 								}
 								if (data.breaks[i][1] != "None") {
 									changeBtn("#stopBreak" + i, data.breaks[i][1].substring(0, 8));
-									if (data.breaks[0][1] != "None") {
-										$(startBreak1).removeAttr('disabled');
-										$(stopBreak1).removeAttr('disabled');
-									}
-									if (data.breaks[1][1] != "None") {
-										$(addBreak).removeAttr('disabled');
-									}
-									if (data.breaks[1][1] != "None" && i > 0 && i < data.breaks.length-1) {
-										createBtnBreak(i+1);
-									}
+									createBtnBreak(i+1);
 									item_count++;
 								}
 							}
 							if (data.hour_ended != "None") {
 								changeBtn("#stopShift", data.hour_ended.substring(0,8));
-								$(addBreak).attr("disabled", "disabled");
 							}
 						}
 					}
@@ -158,14 +124,8 @@
 						success: function(data, status, xhr){
 							if(data.success){
 								changeBtn("#stopBreak" + breaks, data.time.substring(11,19));
-								if(breaks == 0){	
-									$(startBreak1).removeAttr('disabled');
-									$(stopBreak1).removeAttr('disabled');
-								}
-								if(breaks >= 1){	
-									$(addBreak).removeAttr('disabled');
-								}
 								item_count++;
+								createBtnBreak(item_count);
 							} else if(data.code == 1){
 								alert("You need to start a break first.");
 							} else if(data.code == 2){
@@ -188,7 +148,7 @@
 						datatype: "json",
 						success: function(data, status, xhr){
 							if(data.success){
-								$('#signModal').modal("hide");
+								//$('#signModal').modal("hide");
 								changeBtn("#stopShift", data.hour_ended.substring(11,19));
 								window.redirec("%url 'timeKeeper'%")
 							} else if(data.code == 1){
@@ -208,26 +168,46 @@
 					});
 			}
 			function changeBtn(idBtn, hour) {
-				$(idBtn).attr("value", hour);
-				$(idBtn).attr("disabled", "disabled");
-  				$(idBtn).css('background', 'url("{% static 'imgSmall/buttons/startShiftHover.png' %}") no-repeat top left');
-  				$(idBtn).css('background-size', '100% 100%');
-  				$(idBtn).css('font-size', '25px');
+				if(idBtn.substring(0,11) == "#startBreak"){
+					hour_start = hour;
+					$(idBtn).attr("value", hour);
+					$(idBtn).css('font-size', '20px');
+					$(idBtn).css('font-weight', '600');
+					$(idBtn).css('font-style', 'italic');
+					$(idBtn).css('background', 'url("{% static 'imgSmall/buttons/startShiftHover.png' %}") no-repeat top left');
+  					$(idBtn).css('background-size', '100% 100%');
+				} else if(idBtn.substring(0,10) == "#stopBreak"){
+					$("#startBreak" + idBtn.substring(10,11)).attr("value", hour_start);
+					$("#startBreak" + idBtn.substring(10,11)).css('background', 'none');
+					$("#startBreak" + idBtn.substring(10,11)).css('color', 'black');
+					$("#startBreak" + idBtn.substring(10,11)).css('font-size', '20px');
+					$("#startBreak" + idBtn.substring(10,11)).css('font-weight', '600');
+					$("#startBreak" + idBtn.substring(10,11)).css('font-style', 'italic');
+					$("#startBreak" + idBtn.substring(10,11)).css('box-shadow', 'none');
+					$(idBtn).attr("value", hour);
+					$(idBtn).css('background', 'none');
+					$(idBtn).css('color', 'black');
+					$(idBtn).css('font-size', '20px');
+					$(idBtn).css('font-weight', '600');
+					$(idBtn).css('font-style', 'italic');
+					$(idBtn).css('box-shadow', 'none');
+				} else {
+					$(idBtn).attr("value", hour);
+					$(idBtn).css('background', 'none');
+					$(idBtn).css('color', 'black');
+					$(idBtn).css('font-size', '20px');
+					$(idBtn).css('font-weight', '600');
+					$(idBtn).css('font-style', 'italic');
+					$(idBtn).css('box-shadow', 'none');
+				}
 			}
 			function createBtnBreak(count) {
-				$(addBreak).attr("disabled", "disabled");
-				$( "#divBreaks").append('<div class="row"><div class="col-xs-1 col-md-1 btnColTime"></div><div class="col-xs-4 col-md-4 btnColTime"><input type="button" id="startBreak'+count+'" value="START BREAK" class="btnGreen btnBreaksGreen"/></div><div class="col-xs-2 col-md-2 btnColTime"></div><div class="col-xs-4 col-md-4 btnColTime"><input type="button" id="stopBreak'+count+'" value="STOP BREAK"  class="btnRed btnBreaksRed"/></div><div class="col-xs-1 col-md-1 btnColTime"></div></div>');
+				$( "#divBreaks").append('<div class="row"><div class="col-xs-3 col-md-3 btnColTime"></div><div class="col-xs-2 col-md-2 btnColTime"><input type="button" id="startBreak'+count+'" value="START" class="btnGreenTime btnBreaksGreen"/></div><div class="col-xs-2 col-md-2 btnColTime"></div><div class="col-xs-2 col-md-2 btnColTime"><input type="button" id="stopBreak'+count+'" value="STOP"  class="btnRedTime btnBreaksRed"/></div><div class="col-xs-3 col-md-3 btnColTime"></div></div>');
 				$(".btnBreaksGreen").click(function() {
-					//var confirmResult = confirm("Are you sure?");
-					//if (confirmResult == true) {
-						startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);
-					//}
+					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);
 				});
 				$(".btnBreaksRed").click(function(){
-					//var confirmResult = confirm("Are you sure?");
-					//if (confirmResult == true){
-						stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count);
-					//}
+					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count);
 				});
 			}
 		</script>
@@ -242,54 +222,27 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" id="startShift" value="START SHIFT"/>
+						<input type="button" id="startShift" value="START SHIFT" class=""/>
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-xs-1 col-md-1 btnColTime">
+					<div class="col-xs-3 col-md-3 btnColTime">
 					</div>
-					<div class="col-xs-4 col-md-4 btnColTime">
-						<input type="button" id="startBreak0" value="START BREAK" class="btnGreen btnBreaksGreen"/>
+					<div class="col-xs-2 col-md-2 btnColTime">
+						<input type="button" id="startBreak0" value="START" class="btnGreenTime btnBreaksGreen"/>
 					</div>
 					<div class="col-xs-2 col-md-2 btnColTime">
 					</div>
-					<div class="col-xs-4 col-md-4 btnColTime">
-						<input type="button" id="stopBreak0" value="STOP BREAK"  class="btnRed btnBreaksRed"/>
-					</div>
-					<div class="col-xs-1 col-md-1 btnColTime">
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-1 col-md-1 btnColTime">
-					</div>
-					<div class="col-xs-4 col-md-4 btnColTime">
-						<input type="button" id="startBreak1" value="START LUNCH" class="btnGreen btnBreaksGreen"/>
-					</div>
 					<div class="col-xs-2 col-md-2 btnColTime">
+						<input type="button" id="stopBreak0" value="STOP"  class="btnRedTime btnBreaksRed"/>
 					</div>
-					<div class="col-xs-4 col-md-4 btnColTime">
-						<input type="button" id="stopBreak1" value="STOP LUNCH" class="btnRed btnBreaksRed"/>
-					</div>
-					<div class="col-xs-1 col-md-1 btnColTime">
+					<div class="col-xs-3 col-md-3 btnColTime">
 					</div>
 				</div>
 				<div id="divBreaks"></div>
 				<div class="row">
-					<div class="col-xs-1 col-md-1 btnColTime">
-					</div>
-					<div class="col-xs-4 col-md-4 btnColTime">
-						<input type="button" id="addBreak" value="   ADD BREAK" />
-					</div>
-					<div class="col-xs-2 col-md-2 btnColTime">
-					</div>
-					<div class="col-xs-4 col-md-4 btnColTime">
-					</div>
-					<div class="col-xs-1 col-md-1 btnColTime">
-					</div>
-				</div>
-				<div class="row">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" id="stopShift" value="END SHIFT" onClick="$('#signModal').modal()"/>
+						<input type="button" id="stopShift" value="END SHIFT"/>
 					</div>
 				</div>
 			</div>
@@ -318,7 +271,6 @@
 			          <a href=""><button type="button" id="stopShiftConfirm" class="btn btn-success">Confirmar</button></a>
 			        </div>
 			      </div>
-			      
 			</div>
 		</div>
 	</body>
