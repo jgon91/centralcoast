@@ -30,9 +30,10 @@
 					createBtnBreak(item_count);
 				});
 				$("#stopShift").click(function(){
-					var $sigdiv = $("#signature");
+					$('#signModal').modal();
+					var $sigdiv = $("#signature"); //nao sei o que isso faz junior
 					//Get the signature in the 64base
-					var datapair = $sigdiv.jSignature("getData", "base30");
+					var datapair = $sigdiv.jSignature("getData", "base30"); //nem isso
    					stopShift("{{ csrf_token }}", "{% url 'stopShift' %}");
 				});
 			});
@@ -147,7 +148,6 @@
 						datatype: "json",
 						success: function(data, status, xhr){
 							if(data.success){
-								 $('#signModal').modal();
 								//$('#signModal').modal("hide");
 								changeBtn("#stopShift", data.hour_ended.substring(11,19));
 								window.redirec("%url 'timeKeeper'%")
