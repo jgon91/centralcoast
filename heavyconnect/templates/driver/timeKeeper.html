@@ -2,6 +2,7 @@
 <html lang="en">
 	<head>
 		{% load staticfiles %}
+		{% load i18n %}
 		<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
 		<script src="{% static 'jSignature/jSignature.min.js'%}"></script>
 		<script>
@@ -202,7 +203,8 @@
 				}
 			}
 			function createBtnBreak(count) {
-				$( "#divBreaks").append('<div class="row"><div class="col-xs-3 col-md-3 btnColTime"></div><div class="col-xs-2 col-md-2 btnColTime"><input type="button" id="startBreak'+count+'" value="START" class="btnGreenTime btnBreaksGreen"/></div><div class="col-xs-2 col-md-2 btnColTime"></div><div class="col-xs-2 col-md-2 btnColTime"><input type="button" id="stopBreak'+count+'" value="STOP"  class="btnRedTime btnBreaksRed"/></div><div class="col-xs-3 col-md-3 btnColTime"></div></div>');
+				//var s_start = "{% trans 'START' %}"
+				$( "#divBreaks").append('<div class="row"><div class="col-xs-3 col-md-3 btnColTime"></div><div class="col-xs-2 col-md-2 btnColTime"><input type="button" id="startBreak'+count+'" value= "{% trans 'START' %}" class="btnGreenTime btnBreaksGreen"/></div><div class="col-xs-2 col-md-2 btnColTime"></div><div class="col-xs-2 col-md-2 btnColTime"><input type="button" id="stopBreak'+count+'" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed"/></div><div class="col-xs-3 col-md-3 btnColTime"></div></div>');
 				$(".btnBreaksGreen").click(function() {
 					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);
 				});
@@ -218,23 +220,23 @@
 			<div id="content">
 				<div class="namePage">
 					<img src="{% static 'imgSmall/iconTimekeeper.png' %}"/>
-					HC TIMEKEEPER
+					{% trans 'HC TIMEKEEPER' %}
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" id="startShift" value="START SHIFT" class=""/>
+						<input type="button" id="startShift" value="{% trans 'START SHIFT' %}" class=""/>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-3 col-md-3 btnColTime">
 					</div>
 					<div class="col-xs-2 col-md-2 btnColTime">
-						<input type="button" id="startBreak0" value="START" class="btnGreenTime btnBreaksGreen"/>
+						<input type="button" id="startBreak0" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen"/>
 					</div>
 					<div class="col-xs-2 col-md-2 btnColTime">
 					</div>
 					<div class="col-xs-2 col-md-2 btnColTime">
-						<input type="button" id="stopBreak0" value="STOP"  class="btnRedTime btnBreaksRed"/>
+						<input type="button" id="stopBreak0" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed"/>
 					</div>
 					<div class="col-xs-3 col-md-3 btnColTime">
 					</div>
@@ -242,7 +244,7 @@
 				<div id="divBreaks"></div>
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" id="stopShift" value="END SHIFT"/>
+						<input type="button" id="stopShift" value="{% trans 'END SHIFT' %}"/>
 					</div>
 				</div>
 			</div>
@@ -256,19 +258,19 @@
 			      <div class="modal-content">
 			        <div class="modal-header">
 			          <button type="button" class="close" data-dismiss="modal">&times;</button>
-			          <h4 class="modal-title"><strong>Sign</strong></h4>
+			          <h4 class="modal-title"><strong>{% trans 'Sign' %}</strong></h4>
 			        </div>
 			        <div class="modal-body" id="signatureContent">
 			         
 			          <div id="signField">
 			          	<div id="signature"></div>
-			          	<button type="button" id="clearSignature" class="btn btn-default">Limpiar</button>
+			          	<button type="button" id="clearSignature" class="btn btn-default">{% trans 'Clear' %}</button>
 			          </div>
 			        </div>
 			 		<div class="both"></div>
 			        <div class="modal-footer">
-			          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-			          <a href=""><button type="button" id="stopShiftConfirm" class="btn btn-success">Confirmar</button></a>
+			          <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
+			          <a href=""><button type="button" id="stopShiftConfirm" class="btn btn-success">{% trans 'OK' %}</button></a>
 			        </div>
 			      </div>
 			</div>

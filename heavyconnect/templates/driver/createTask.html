@@ -188,7 +188,7 @@
 						var len = data.length;
 						$(".showEquipmentDiv").html("");
 						for (var i=1; i < len; i++){
-							$(".showEquipmentDiv").append("<a href=# id='"+ data[i].qr_code +"'><div class='tractorFiltered'><img id='"+ data[i].qr_code +"Img' src='"+ data[i].photo +"'><br><strong>Id:</strong> "+ data[i].asset_number +"<br><strong>Nickname:</strong> "+ data[i].nickname +"<br><strong>Drawbar Category:</strong> "+ data[i].drawbar_category +" </div></a>");
+							$(".showEquipmentDiv").append("<a href=# id='"+ data[i].qr_code +"'><div class='tractorFiltered'><img id='"+ data[i].qr_code +"Img' src='"+ data[i].photo +"'><br><strong>Id:</strong> "+ data[i].asset_number +"<br><strong>Nickname:</strong> "+ data[i].nickname +"<br><strong>{% trans 'Drawbar Category:' %}</strong> "+ data[i].drawbar_category +" </div></a>");
 							
 							$("#" + data[i].qr_code).click( function(){ 
 								
@@ -323,8 +323,8 @@
 								<div class="col-xs-6 col-md-6 alignCenterPage ">
 									<input type="hidden" id="machineSelectedId" />
 									<input type="text" id="machineSelected" class="inputCreateTask" name="machine"/></br>
-									<input type="button" id="findMachine" name="machine" value="Search" onClick="$('#findMachineModal').modal()" class="findEquipment" /> 
-									<input type="button" value="Scan" onClick="$('#scanQRCode').modal()" class="scanEquipment" id="scanMachine"/>
+									<input type="button" id="findMachine" name="machine" value="{% trans 'Search' %}" onClick="$('#findMachineModal').modal()" class="findEquipment" /> 
+									<input type="button" value="{% trans 'Scan' %}" onClick="$('#scanQRCode').modal()" class="scanEquipment" id="scanMachine"/>
 									<input type="hidden" id="machineBtn"></input>
 								</div>
 								<div class="col-xs-3 col-md-3">
@@ -355,8 +355,8 @@
 							<div class="col-xs-6 col-md-6  alignCenterPage ">
 								<input type="hidden" id="implementSelectedId" />
 								<input type="text" id="implementSelected" class="inputCreateTask"  name="implement"/>
-								<input type="button" id="implement" value="Search" onClick="$('#findImplementModal').modal()" class="findImplement findEquipment" />
-								<input type="button" value="Scan" onClick="$('#scanQRCode').modal()" class="scanEquipment" id="scanImplement" />
+								<input type="button" id="implement" value="{% trans 'Search' %}" onClick="$('#findImplementModal').modal()" class="findImplement findEquipment" />
+								<input type="button" value="{% trans 'Scan' %}" onClick="$('#scanQRCode').modal()" class="scanEquipment" id="scanImplement" />
 								<input type="hidden" id="implementBtn"></input>
 							</div>
 							<div class="col-xs-3 col-md-3">
@@ -366,14 +366,14 @@
 						
 						<div class="row" id="secondImplement">
 							<div class="col-xs-3 col-md-3  alignCenterPage textCreateTask">
-								{% trans 'IMPLEMENT:' %}
+								{% trans 'IMPLEMENT 2:' %}
 								<input type="button" id="delImplement" value="DEL Imp" class="addImplement" />
 							</div>
 							<div class="col-xs-6 col-md-6  alignCenterPage ">
 								<input type="hidden" id="implementSelectedId2" />
 								<input type="text" id="implement2Selected" class="inputCreateTask"  name="implement"/>
-								<input type="button" id="implement2" value="Search" onClick="$('#findImplementModal').modal()" class="findImplement findEquipment" />
-								<input type="button" value="Scan" onClick="$('#scanQRCode').modal()" class="scanEquipment" id="scanImplement2" />
+								<input type="button" id="implement2" value="{% trans 'Search' %}" onClick="$('#findImplementModal').modal()" class="findImplement findEquipment" />
+								<input type="button" value="{% trans 'Scan' %}" onClick="$('#scanQRCode').modal()" class="scanEquipment" id="scanImplement2" />
 								<input type="hidden" id="implementBtn2"></input>
 							</div>
 							<div class="col-xs-3 col-md-3">
@@ -398,7 +398,7 @@
 					      
 						    <div class="row" >
 								<div class="col-xs-3 col-md-3 alignCenterPage textCreateTask">
-									Field:
+									{% trans 'Field:' %}
 								</div>
 								<div class="col-xs-7 col-md-7">
 									<select id="field" name="field" class="inputCreateTask alignCenterPage" required>
@@ -606,7 +606,7 @@
 	                       					 <div style="margin auto 40px; text-align: center; padding-top: 10px;">                          
 	                           					 <select id="cameraId" class="form-control" style="display: inline-block;width: auto; display: none;"></select>
 	                           					 <a href="#">
-	                              					  <input id="play" value="Scan QR-Code" title="Play" type="button" class="btn btn-success btn-sm"></input>   
+	                              					  <input id="play" value="{% trans 'Scan QR-Code' %}" title="Play" type="button" class="btn btn-success btn-sm"></input>   
 	                          					  </a>
 	                       					 </div>  
 	                   					 <div class="panel-body" id="contentQRCode" style="padding-top: 10px; padding-bottom: 0px;">
