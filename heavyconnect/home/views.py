@@ -1331,7 +1331,7 @@ def retrievePendingTask(request):
 					except MachineTask.DoesNotExist:
 						aux['machine_id'] = "NONE"
 					try:
-						# If task uses more the one implement it will retrieve all. If It just have one, return only one
+						# If task uses more the one implement it will retrieve all. If It just have one, return the only one
 						aux2 = {}
 						aux_implement = []
 						implementTask = ImplementTask.objects.filter(task__id = item.task.id)
@@ -1361,33 +1361,35 @@ def retrievePendingTask(request):
 ##Return task that are not complished until today, the number of task returned is according to the number n
 @login_required
 def pastTaskList(request):
-	result = []
-	result.append({'success' : False})
+	result = {'success' : False}
 	if request.method == 'POST':
 	 	if request.is_ajax():
 			try:
 				aux = {}
 				off = int(request.POST['offset'])
 				limit = int(request.POST['limit'])
-				# Filter EmployeeTask by user, date and status task != Finished
+				# Filter EmployeeTask by user and status task == Finished
 				emploTask   =  EmployeeTask.objects.order_by('-end_time').filter(employee__user__id = request.user.id, task__status = 6)[off:limit+off]
 
+				each_task_info = []
 				for item in emploTask:
 					aux['category'] = item.task.description
 					aux['field'] = item.task.field.name
 					aux['date'] = str(item.start_time)
 					aux['description'] = item.task.description
-
 					# Calculate the duratio of the task based on EmployeeTask table (not in Task table)
 					duration = datetime.timedelta( hours = item.end_time.hour - item.start_time.hour,
 													minutes = item.end_time.minute - item.start_time.minute,
 													seconds=item.end_time.second - item.start_time.second)
+					# If work is overnight, is treats the "-1 day" that will appear in string "duration"
+					if "day" in str(duration):
+						duration = str(duration)[7:] 
 					aux['duration'] = str(duration)
 					aux['task_id'] = item.task.id
 					aux['employee_id'] = item.employee.id
 					aux['employee_first_name'] = item.employee.user.first_name
 					aux['employee_last_name'] = item.employee.user.last_name
-					
+	
 					try:
 						machineTask = MachineTask.objects.get(task__id = item.task.id)
 						aux['machine_model'] = machineTask.machine.manufacturer_model.model
@@ -1395,30 +1397,35 @@ def pastTaskList(request):
 						aux['machine_id'] = machineTask.machine.id
 					except MachineTask.DoesNotExist:
 						aux['machine_id'] = "NONE"
-					
+
 					try:
-						# Retrieve first implement always. If existent, retrieve the second as well.
+						# If task uses more the one implement it will retrieve all. If It just have one, return the only one
+						aux2 = {}
+						aux_implement = []
 						implementTask = ImplementTask.objects.filter(task__id = item.task.id)
-						aux['implement1_model'] = implementTask[0].implement.manufacturer_model.manufacturer.name
-						aux['implement1_nickname'] = implementTask[0].implement.nickname
-						aux['implement1_id'] = implementTask[0].implement.id
-						if len(implementTask) == 2:	# If Task uses two implements, get second implement information
-							aux['implement2_model'] = implementTask[1].implement.manufacturer_model.manufacturer.name
-							aux['implement2_nickname'] = implementTask[1].implement.nickname
-							aux['implement2_id'] = implementTask[1].implement.id
+						for each_implement in implementTask:
+							aux2['implement_model'] = each_implement.implement.manufacturer_model.model
+							aux2['implement_nickname'] = each_implement.implement.nickname
+							aux2['implement_id'] = each_implement.implement.id
+							aux_implement.append(aux2)
+							aux2 = {}
+						aux['implement'] = aux_implement
 					except ImplementTask.DoesNotExist:
-						aux['implement_id'] = "NONE"
-					
-					result.append(aux)
+						aux['implement'] = "NONE"
+					each_task_info.append(aux)
 					aux = {}
-				result[0] = {'success' : True}
+				result['each_task_info'] = each_task_info
+				result['success'] = True
 			except EmployeeTask.DoesNotExist:
-				result.append({'result' : 1})#There is no Implement associated with this
+				result['code'] = 1#There is no Implement associated with this
 		else:
-	 		result.append({'result' : 2}) #Use ajax to perform requests
+	 		result['code'] = 2 #Use ajax to perform requests
 	else:
-	 	result.append({'result' : 3}) #Request was not POST
+	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+
 
 # Get Employee current Task information if he is doing some task at the moment.
 # Retrieve what Field he is and what Machine and Implement he is using
