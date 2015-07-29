@@ -63,6 +63,7 @@ Machine
 	equipment_type					EquipmentType identification number - FOREIGN KEY
 	note                            One brief note about the machine - VARCHAR(250)
 	photo										Path to the picture -  URL(200)
+	beacon 							Beacon that is associated with this machine - INT FOREIGN KEY
 
 Implements
 	manufacturer_model			Model identification number - INT FOREIGN KEY
@@ -87,6 +88,7 @@ Implements
 	equipment_type					EquipmentType identification number - FOREIGN KEY
 	note                            One brief note about the machine - VARCHAR(250)
 	photo										Path until the picture -  URL(200)
+	beacon 							Beacon that is associated with this implement - INT FOREIGN KEY
 
 Employee
 	last_task								Foreign Key from task to tell us the last task the employee worked on
@@ -249,6 +251,11 @@ Question
 	category								This field will differentiate the question into groups - int
 	refers									This question is related to Machine or Implement - Choices
 
+TranslatedQuestion
+	question 							The original question in english - INT FOREIGN KEY
+	description 						The translated description - CHARFIELD(250)
+	idiom								The idiom code of the question - INT
+
 MachineChecklist
 	question								Question identification number - FOREIGN KEY
 	qrCode									QRCode referent of the equipment -  FOREIGN KEY
@@ -266,3 +273,12 @@ ImplementChecklist
 	note										Description of the problem -	CHARFIELD(200) NULL
 	date										Date of the service - DATE
 	photo										Path until the picture - URL(200) NULL
+
+Beacon
+	beacon_serial						Beacon serial located on the back of the device - CHARFIELD(10)
+	refers								Indicates if the beacon belongs to a machine or a implement - INT
+
+BeaconGPS
+	beacon 								Reference to a becon - INT FOREIGN KEY
+	gps 								Reference to a gps point - INT FOREING KEY
+	timestamp							the time the beacon was last seen in this gps position - DATE

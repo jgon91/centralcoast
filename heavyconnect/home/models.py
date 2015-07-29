@@ -438,6 +438,23 @@ class Question(models.Model):
 		return "Description: " + str(self.description)
 
 
+class TranslatedQuestion(models.Model):
+	SPANISH  = 1
+	BRPORTUGUESE = 2 
+
+	IDIOMS = (
+		(SPANISH, 'es'),
+		(BRPORTUGUESE, 'pt-br'),
+	)
+
+	question = models.ForeignKey(Question)
+	description = models.CharField(max_length = 250)
+	idiom = models.IntegerField(choices = IDIOMS, default = SPANISH)
+
+
+	def __unicode__(self):
+		return "Idiom: " + self.get_idiom_display() + " Description: " + self.description
+
 class MachineChecklist(models.Model):
 	question = models.ForeignKey(Question)
 	qr_code = models.ForeignKey(Machine)
