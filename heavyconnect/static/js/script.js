@@ -155,101 +155,36 @@ function saveTask(token, url, urlScheduler){
 /*End function getParametersUrl */
 
 /* Script checklist page */
-	function eventsCheckList() 
-	{
-		//Variables
-		var answer1 = undefined, 
-			answer2 = undefined,
-			answer3 = undefined,
-			answer4 = undefined, 
-			answer5 = undefined;
-		
-		$("#q1").css("border", "solid 5px #FFF");
-		//$("#q1").css("padding", "18px");
-		
-		// Events
-		$("input[name=q1]:radio").change(function(){
-			showQuestion("checkList2", "q2");
-			answer1 = questionChecked("q1");
-		});
-		
-		$("input[name=q2]:radio").change(function(){
-			showQuestion("checkList3", "q3");
-			answer2 = questionChecked("q2");
-		});
-		
-		$("input[name=q3]:radio").change(function(){
-			showQuestion("checkList4", "q4");
-			answer3 = questionChecked("q3");
-		});
-		
-		$("input[name=q4]:radio").change(function(){
-			showQuestion("checkList5", "q5");
-			answer4 = questionChecked("q4");
-		});
-		
-		$("input[name=q5]:radio").change(function(){
-			answer5 = questionChecked("q5");
-		});
-		
-		$("#q1").click(function(){
-			showQuestion("checkList1", "q1");
-		});
-		
-		$("#q2").click(function(){
-			showQuestion("checkList2", "q2");
-		});
-		
-		$("#q3").click(function(){
-			showQuestion("checkList3", "q3");
-		});
-		
-		$("#q4").click(function(){
-			showQuestion("checkList4", "q4");
-		});
-		
-		$("#q5").click(function(){
-			showQuestion("checkList5", "q5");
-		});
-	
-		$("#buttonSubmit").click(function() {
-			alert("Data has been updated!!" + "\n" + answer1 + "\n" + answer2 + "\n" + answer3 + "\n" + answer4 + "\n" + answer5);
-			return false;
-		});
+	function getCheckListQuestions(token, url, qr_code) {
+		var questions;
+		$.ajax({
+			method : "POST",
+			url : url,
+			async: false,
+			data : {
+				"csrfmiddlewaretoken" : token,
+				"qr_code" : qr_code,
+				"category" : 5
+			},
+			datatype : "json",
+			success : function(data, status, xhr) {	
+				questions = data.questions;
+				showQuestion(questions[0]);
+			}
+
+		});		
+		return questions;
 	}
-	
-	
-	//Functions
-	function showQuestion(checkedList, question){
-		
-		$("#q1").css("border", ""); $("#checkList1").hide();
-		$("#q2").css("border", ""); $("#checkList2").hide();
-		$("#q3").css("border", ""); $("#checkList3").hide();
-		$("#q4").css("border", ""); $("#checkList4").hide();
-		$("#q5").css("border", ""); $("#checkList5").hide();
-		$("#" + checkedList).fadeIn(500);
-		$("#" + checkedList).css("display", "block");
-		$("#" + question).css("border", "solid 5px #FFF");
-		//$("#" + question).css("padding", "18px");
+
+	function saveCheckList(){
+		//inside of ajax sucess
+		$("#checkListBtns").html("");
+
+		return true;
 	}
-	
-	function questionChecked(question) 
-	{
-		
-		var answer = 0;
-	
-		if ($("input[name='"+question+"']:checked").val() == 1) {
-			$("#" + question).css("background-color", "#80982D");
-			$("#" + question).css("color", "white");
-			answer = 1;
-			return answer;
-	
-		} else if ($("input[name='"+question+"']:checked").val() == 0) {
-			$("#" + question).css("background-color", "#B9341A");
-			$("#" + question).css("color", "white");
-			answer = 0;
-			return answer;
-		}
+
+	function showQuestion(question){
+		$("#question").html(question.description);
 	}
 	
 /*End checklist page */
