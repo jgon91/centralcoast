@@ -7,17 +7,22 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoAlertPresentException
 import unittest, time, re
 
-class SeleniumDriverLoginPython(unittest.TestCase):
+from django.test import LiveServerTestCase
+
+class DriverLoginPython(LiveServerTestCase):
     def setUp(self):
-        self.driver = webdriver.Firefox()
+        self.driver = webdriver.Chrome()
+        self.driver.maximize_window()
         self.driver.implicitly_wait(30)
-        self.base_url = "http://127.0.0.1:8000/"
         self.verificationErrors = []
         self.accept_next_alert = True
+        super(DriverLoginPython, self).setUp()
 
     def test_selenium_driver_login_python(self):
         driver = self.driver
-        driver.get(self.base_url + "en/home/")
+        driver.get(
+            '%s%s' % (self.live_server_url, "/home/")
+        )
         driver.find_element_by_id("username").click()
         driver.find_element_by_id("username").clear()
         driver.find_element_by_id("username").send_keys("Suzana")
@@ -28,6 +33,9 @@ class SeleniumDriverLoginPython(unittest.TestCase):
         driver.find_element_by_id("password").clear()
         driver.find_element_by_id("password").send_keys("123")
         driver.find_element_by_id("btn_login").click()
+        old_page = driver.find_element_by_tag_name('html')
+        yield
+        WebDriverWait(self, 30).until(staleness_of(old_page))
         self.assertEqual("", self.close_alert_and_get_its_text())
 
     def is_element_present(self, how, what):
@@ -54,6 +62,7 @@ class SeleniumDriverLoginPython(unittest.TestCase):
     def tearDown(self):
         self.driver.quit()
         self.assertEqual([], self.verificationErrors)
+        super(DriverLoginPython, self).tearDown()
 
 if __name__ == "__main__":
     unittest.main()

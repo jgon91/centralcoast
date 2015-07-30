@@ -402,3 +402,24 @@ class beaconForm(forms.Form):
 				return Beacon.objects.get(beacon_serial = serial)
 			except Beacon.DoesNotExist:
 				raise forms.ValidationError("This serial do not belong do any registered bluetooth beacon.")
+### End ###
+
+
+### Structure for Checlist ###
+class checkListForm(forms.Form):
+
+	CATEGORIES = (
+		(Question.CATDEFAULT, u'Default'),
+	)
+
+	category = forms.ChoiceField(choices = CATEGORIES, initial = Question.CATDEFAULT)
+	qr_code = forms.CharField(max_length = 10)
+
+	def clean_qr_code(self):
+		try:
+			return Machine.objects.get(qr_code = self.cleaned_data['qr_code'])
+		except Machine.DoesNotExist:
+			try:
+				return Implement.objects.get(qr_code = self.cleaned_data['qr_code'])
+			except:
+				raise forms.ValidationError('This QR code do not belong to any machine or implement')

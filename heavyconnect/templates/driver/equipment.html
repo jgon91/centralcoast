@@ -18,24 +18,30 @@
 			}
 
 			function showPosition(position) {
-				var lat = position.coords.latitude;
-				var lon = position.coords.longitude;
-				latlon = new google.maps.LatLng(lat, lon)
+				parseFloat(position.latitude);
+				var lat = parseFloat(position.latitude.toFixed(6));
+				parseFloat(position.longitude);
+				var lon = parseFloat(position.longitude.toFixed(6));
+				latlon = new google.maps.LatLng(lat, lon);				
 				mapholder = document.getElementById('mapholder')
 
 				var myOptions = {
 					center : latlon,
-					zoom : 17,
+					zoom : 15,
 					mapTypeId : google.maps.MapTypeId.ROADMAP,
 					mapTypeControl : false,
 					navigationControlOptions : {
 						style : google.maps.NavigationControlStyle.SMALL
 					}
 				};
+
+				//var nameImg = "tractor" + position.status + ".png";
+				//console.log(nameImg);
 				var map = new google.maps.Map(document.getElementById("mapholder"), myOptions);
 				var marker = new google.maps.Marker({
 					position : latlon,
 					map : map,
+					icon: "{% static 'imgSmall/tractor1.png' %}"
 				});
 			}
 
@@ -77,6 +83,7 @@
 
 				loadEquipmentInfo("{{ csrf_token }}", "{% url 'getEquipmentInfo' %}", item.qr_code);
 				loadEquipmentStatus("{{ csrf_token }}", "{% url 'equipmentStatus' %}", item.qr_code);
+				getLastLocalization("{{ csrf_token }}", "{% url 'equipmentLastLocalization' %}", item.qr_code);
 				//Broken
 
 				$("#btnTractor").click(function() {
@@ -181,6 +188,23 @@
 				});
 			}
 
+			function getLastLocalization(token, url, id) {
+				$.ajax({
+					method : "POST",
+					url : url,
+					data : {
+						"csrfmiddlewaretoken" : token,
+						"qr_code" : id						
+					}, // id could be qrCode 
+					datatype : "json",
+					success : function(data, status, xhr) {
+						//console.log("Status: " + data.status + " Latitude: " + data.latitude + " Longitude: " + data.longitude);
+						showPosition(data);
+
+					}
+				});
+			}
+
 			function setEquipmentStatus(token, url, id, status) {
 				$.ajax({
 					method : "POST",
@@ -189,7 +213,7 @@
 						"csrfmiddlewaretoken" : token,
 						"qr_code" : id,
 						"status" : status
-					}, // id could be qrCode or employeeId
+					}, // id could be qrCode 
 					datatype : "json",
 					success : function(data, status, xhr) {
 						//alert("Status has been update")
@@ -341,8 +365,8 @@
 										<img src="" id="img3" alt="img3" class="imgsEquip"/>
 									</div>
 								</div>
-								<a class="left carousel-control controlModalEquip" href="#myCarousel" role="button" data-slide="prev"> <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> <span class="sr-only">Previous</span> </a>
-								<a class="right carousel-control controlModalEquip" href="#myCarousel" role="button" data-slide="next"> <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> <span class="sr-only">Next</span> </a>
+								<a class="left carousel-control controlModalEquip" href="#myCarousel" role="button" data-slide="prev"> <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> <span class="sr-only">{% trans 'Previous' %}</span> </a>
+								<a class="right carousel-control controlModalEquip" href="#myCarousel" role="button" data-slide="next"> <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> <span class="sr-only">{% trans 'Next' %}</span> </a>
 							</div>
 						</div>
 						<div class="both"></div>

@@ -276,15 +276,43 @@ input[type=button]{
 
 /*** Timekeeper Page Begin ***/
 #startShift {
-	background: url('../imgSmall/buttons/startShift.png') no-repeat top left;
+	background: url('../imgSmall/buttons/btnGreen.png') no-repeat top left;
 	background-size: 100% 100%;
 	border-radius: 7px;
 	border: none;
 	box-shadow: 2px 2px 5px gray;
-	background-color: #809B21;
-	height: 45px;
+	height: 40px;
 	width: 200px;
 	color: white;
+	margin-top: -10px;
+	font-size: 25px;
+	font-weight: 700;
+}
+.btnGreenTime {
+	background: url('../imgSmall/buttons/btnGreen.png') no-repeat top left;
+	background-size: 100% 100%;
+	border-radius: 7px;
+	border: none;
+	box-shadow: 2px 2px 5px gray;
+	height: 50px;
+	width: 100px;
+	color: white;
+	font-size: 25px;
+	font-weight: 700;
+	margin-top: 10px;
+}
+.btnRedTime {
+	background: url('../imgSmall/buttons/btnRed.png') no-repeat top left;
+	background-size: 100% 100%;
+	border-radius: 7px;
+	border: none;
+	box-shadow: 2px 2px 5px gray;
+	height: 50px;
+	width: 100px;
+	color: white;
+	font-size: 25px;
+	font-weight: 700;
+	margin-top: 10px;
 }
 #stopShift {
 	background: url('../imgSmall/buttons/stopShift.png') no-repeat top left;
@@ -292,44 +320,13 @@ input[type=button]{
 	border-radius: 7px;
 	border: none;
 	box-shadow: 2px 2px 5px gray;
-	height: 45px;
+	height: 40px;
 	width: 200px;
 	color: white;
-	margin-top: 7px;
-	margin-bottom: 11px;
-}
-#addBreak {
-	background: url('../imgSmall/buttons/addBreak.png') no-repeat top left;
-	background-size: 100% 100%;
-	border-radius: 7px;
-	border: none;
-	box-shadow: 2px 2px 5px gray;
-	height: 35px;
-	width: 170px;
-	color: white;
-	margin-top: 7px;
-}
-.btnGreen {
-	background: url('../imgSmall/buttons/break.png') no-repeat top left;
-	background-size: 100% 100%;
-	border-radius: 7px;
-	border: none;
-	box-shadow: 2px 2px 5px gray;
-	height: 35px;
-	width: 170px;
-	color: white;
-	margin-top: 7px;
-}
-.btnRed {
-	background: url('../imgSmall/buttons/stopBreak.png') no-repeat top left;
-	background-size: 100% 100%;
-	border-radius: 7px;
-	border: none;
-	box-shadow: 2px 2px 5px gray;
-	height: 35px;
-	width: 170px;
-	color: white;
-	margin-top: 7px;
+	font-size: 25px;
+	font-weight: 700;
+	margin-top: 10px;
+	margin-bottom: 10px;
 }
 .btnColTime {
 	padding: 0px;
@@ -339,7 +336,6 @@ input[type=button]{
 	min-height: 300px;
 	min-width: 601px;
 }
-
 /*** Timekeeper Page End ***/
 
 /*** Taskflow Page Begin ***/
