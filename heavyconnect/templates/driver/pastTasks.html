@@ -23,7 +23,7 @@
 						alert("{% trans 'There is no past task to be displayed' %}");
 					}
 					else{
-						upgradePastBox(this.id, offset);
+						upgradePastBox(this.id);
 					}
 				});
 
@@ -33,15 +33,15 @@
 				
 				if(btn == "btnBack" && offset >= 0){
 					offset += 2;
-					getLastTasks("{{csrf_token}}", "{% url 'pastTaskList' %}", false);
+					getLastTasks("{{csrf_token}}", "{% url 'pastTaskList' %}", false, btn);
 				}else if(btn == "btnForward" && offset >= 2){ 
 					offset -= 2;
-					getLastTasks("{{csrf_token}}", "{% url 'pastTaskList' %}", false);
+					getLastTasks("{{csrf_token}}", "{% url 'pastTaskList' %}", false, btn);
 				}
 
 			}
 
-			function getLastTasks(token, url, async) {			
+			function getLastTasks(token, url, async, btn) {			
 			//alert(offset);	
 				$.ajax({
 					method: "POST",
@@ -50,15 +50,19 @@
 					data: {"csrfmiddlewaretoken": token, "offset": offset, "limit": 2},
 					datatype: "json",
 					success: function(data, status, xhr){		
-					//alert(data.each_task_info[1].field);
-						if (data.each_task_info.length < 2){
+					console.log(offset);
+					console.log(data.each_task_info.length);
+						if (data.each_task_info.length < 1){
 							//$("#btnBack").attr("disabled", true);
-							offset -= 2;
-							clearData();
-							//alert("{% trans 'There is no past task to be displayed' %}");
+							if(btn == "btnForward"){
+								clearData();
+							}							
+							else{
+								offset -= 2;
+								clearData();
+							}							
 						}
 						else{
-							//alert(data.length);
 							var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 							$(".pastBox").fadeOut(5);
 							$(".dateTasks").fadeOut(5);
@@ -85,18 +89,18 @@
 
 			function clearData(){
 				for (var i = 0; i < 2; i++) 
-							{	
-								//alert(data.length);
-								$("#task" + (i+1) + " .hour").html("");
-								$("#task" + (i+1) + " .date").html("NO TASK");
-								$("#past" + (i+1) + " .field").html("");
-								$("#past" + (i+1) + " .category").html("");
-								$("#past" + (i+1) + " .machine").html("");
-								$("#past" + (i+1) + " .task").html("");
-								$("#past" + (i+1) + " .duration").html("");
-								$("#past" + (i+1) + " .implement").html("");
-								$("#past" + (i+1) + " .task_id").html("");
-							}		
+				{	
+					//alert(data.length);
+					$("#task" + (i+1) + " .hour").html("");
+					$("#task" + (i+1) + " .date").html("NO TASK");
+					$("#past" + (i+1) + " .field").html("");
+					$("#past" + (i+1) + " .category").html("");
+					$("#past" + (i+1) + " .machine").html("");
+					$("#past" + (i+1) + " .task").html("");
+					$("#past" + (i+1) + " .duration").html("");
+					$("#past" + (i+1) + " .implement").html("");
+					$("#past" + (i+1) + " .task_id").html("");
+				}		
 			}
 			function formatAMPM(date) {
 				var d = new Date(date);

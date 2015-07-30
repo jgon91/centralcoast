@@ -624,7 +624,7 @@ input[type=button]{
 }
 #past1 {
 	margin-left: 2%;
-	margin-right: 2%;
+	margin-right: 0px;
 }
 #past2 {
 	float: left;
@@ -642,6 +642,7 @@ input[type=button]{
 	height: 34px;
 	color: white;
 	font-size: 20px;
+	margin: auto;
 }
 #btnReturn {
 	background: url('../imgSmall/buttons/returnPastTasks.png') no-repeat top left;
