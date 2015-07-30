@@ -11,6 +11,7 @@ from django import forms
 from django.contrib.auth.models import User
 
 import datetime
+import json
 
 from home.models import *
 
@@ -405,6 +406,15 @@ class beaconForm(forms.Form):
 ### End ###
 
 
+def getMachineOrImplement(self):
+	try:
+		return Machine.objects.get(qr_code = self.cleaned_data['qr_code'])
+	except Machine.DoesNotExist:
+		try:
+			return Implement.objects.get(qr_code = self.cleaned_data['qr_code'])
+		except:
+			raise forms.ValidationError('This QR code do not belong to any machine or implement')
+
 ### Structure for Checlist ###
 class checkListForm(forms.Form):
 
@@ -416,10 +426,65 @@ class checkListForm(forms.Form):
 	qr_code = forms.CharField(max_length = 10)
 
 	def clean_qr_code(self):
+		return getMachineOrImplement(self)
+
+class storeAnswersForm(forms.Form):
+	qr_code = forms.CharField(max_length = 10)
+	answers = forms.CharField(max_length = 1000)
+	engine_hours = forms.IntegerField()
+
+	def clean_qr_code(self):
+		return getMachineOrImplement(self)
+
+	def clean_answers(self):
 		try:
-			return Machine.objects.get(qr_code = self.cleaned_data['qr_code'])
-		except Machine.DoesNotExist:
-			try:
-				return Implement.objects.get(qr_code = self.cleaned_data['qr_code'])
-			except:
-				raise forms.ValidationError('This QR code do not belong to any machine or implement')
+			ans = json.loads(self.cleaned_data['answers'])
+			equipment = self.cleaned_data['qr_code']
+			now = datetime.datetime.now()
+			ret = []
+
+			if isinstance(equipment, Machine):
+				for iten in  ans:
+					awr = iten['answer']
+					note = ''
+
+					try:
+						note = iten['note']
+					except KeyError:
+						pass
+
+					ret.append(
+						MachineChecklist(
+							question = Question.objects.get(id = iten['id']),
+							qr_code = equipment,
+							answer = awr,
+							note = note,
+							date = now
+						)
+					)
+				return ret
+			elif isinstance(equipment, Implement):
+				for iten in ans:
+					awr = iten['answer']
+					note = ''
+
+					try:
+						note = iten['note']
+					except KeyError:
+						pass
+
+					ret.append(
+						ImplementChecklist(
+							question = Question.objects.get(id = iten['id']),
+							qr_code = equipment,
+							answer = awr,
+							note = note,
+							date = now
+						)
+					)
+				return ret
+			else:
+				return None
+		except ValueError:
+			raise forms.ValidationError('The json with the answers are invalid')
+

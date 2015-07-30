@@ -2081,6 +2081,38 @@ def continueTask(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 @login_required
+def storeChecklistAnswers(request):
+	result = {'success' : False}
+	form = storeAnswersForm(request.POST)
+
+	if request.method == 'POST':
+		if request.is_ajax():
+			if form.is_valid():
+				employee = Employee.objects.get(user = request.user)
+				responses = form.cleaned_data['answers']
+				engine_hours = form.cleaned_data['engine_hours']
+				equipment = form.cleaned_data['qr_code']
+
+				for r in responses:
+					r.employee = employee
+					r.save()
+
+				if isinstance(equipment, Machine):
+					equipment.engine_hours = engine_hours
+					equipment.save()
+
+				result['success'] = True
+			else:
+				result['code'] = 1
+				result['errorString'] = form.errors
+		else:
+			result['code'] = 2
+	else:
+		result['code'] = 3
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+@login_required
 def getChecklistEquipment(request):
 	result = {'success' : False}
 	form = checkListForm(request.POST)
