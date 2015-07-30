@@ -82,7 +82,7 @@ urlpatterns = [
     url(r'^endTask/$', main_views.endTask, name = 'endTask'),
     url(r'^timeKeeperReport/$', main_views.timeKeeperReport, name = 'timeKeeperReport'),
 	url(r'^getQRCodeStatusForEquipment/$', main_views.getQRCodeStatusForEquipment, name = 'getQRCodeStatusForEquipment'),
-    url(r'^equipmentQuestionsChecklist/$', main_views.equipmentQuestionsChecklist, name = 'equipmentQuestionsChecklist'),
+    url(r'^getChecklistEquipment/$', main_views.getChecklistEquipment, name = 'equipmentQuestionsChecklist'),
 	url(r'^getFilteredMachineWithGPS/$', main_views.getFilteredMachineWithGPS, name = 'getFilteredMachineWithGPS'),
 	url(r'^getFilteredImplementWithGPS/$', main_views.getFilteredImplementWithGPS, name = 'getFilteredImplementWithGPS'),
 	url(r'^beaconUpdate/$', main_views.beaconUpdate, name = 'beaconUpdate'),
@@ -129,6 +129,5 @@ urlpatterns = [
     url(r'^machineChecklistFormView/$', main_views.machineChecklistFormView, name = 'registerMachineChecklist'),
     url(r'^implementChecklistFormView/$', main_views.implementChecklistFormView, name = 'registerChecklistImplement'),
     url(r'^breakFormView/$', main_views.breakFormView, name = 'breakFormView'),
-    url(r'^equipmentQuestionsChecklist/$', main_views.equipmentQuestionsChecklist, name = 'equipmentQuestionsChecklist'),
     ### End ###
 ]

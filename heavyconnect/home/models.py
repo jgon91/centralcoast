@@ -420,15 +420,22 @@ class ImplementService(models.Model):
 		return "Description: " + str(self.description) + ", Expected Date: " + str(self.expected_date) + ", Price: " + str(self.price)
 
 class Question(models.Model):
+	NONE = 0
+	MACHINE = 1
+	IMPLEMENT = 2
+
+	CATDEFAULT = 5
+
 	QUESTION_CHOICES = (
 		(1, 'Before Lunch Break'),
 		(2, 'Post Lunch Pre Start'),
 		(3, 'Post Lunch Start'),
 		(4, 'End of Day Inspection'),
+		(5, 'Default'),
 	)
 	REFERS_CHOICES = (
-		(1, 'Machine'),
-		(2, 'Implement'),
+		(MACHINE, 'Machine'),
+		(IMPLEMENT, 'Implement'),
 	)
 	description = models.CharField(max_length = 250)
 	category = models.IntegerField(choices = QUESTION_CHOICES)
