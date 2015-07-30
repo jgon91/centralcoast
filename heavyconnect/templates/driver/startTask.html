@@ -244,7 +244,7 @@
 									<input type="hidden" id="machineSelectedId" />
 									<input type="text" id="machineSelectedStart" class="inputCreateTask" name="machine" readonly="true"/></br> 
 									<input type="hidden" id="machineScannedQRCode"></input>
-									<input type="button" value="Scan" onClick="$('#scanQRCode').modal()" class="scanEquipment" id="scanMachine"/>
+									<input type="button" value="{% trans 'Scan' %}" onClick="$('#scanQRCode').modal()" class="scanEquipment" id="scanMachine"/>
 									<input type="hidden" id="machineBtn"></input>
 								</div>
 								<div class="col-xs-3 col-md-3">
@@ -275,7 +275,7 @@
 								<input type="hidden" id="implementSelectedId" />
 								<input type="text" id="implementSelectedStart" class="inputCreateTask"  name="implement" readonly="true"/>
 								<input type="hidden" id="implementScannedQRCode"></input>
-								<input type="button" value="Scan" onClick="$('#scanQRCode').modal()" class="scanEquipment" id="scanImplement" />
+								<input type="button" value="{% trans 'Scan' %}" onClick="$('#scanQRCode').modal()" class="scanEquipment" id="scanImplement" />
 								<input type="hidden" id="implementBtn"></input>
 							</div>
 							<div class="col-xs-3 col-md-3">
@@ -285,13 +285,13 @@
 						
 						<div class="row" id="secondImplement">
 							<div class="col-xs-3 col-md-3  alignCenterPage textCreateTask">
-								{% trans 'IMPLEMENT' %} 
+								{% trans 'IMPLEMENT 2' %} 
 							</div>
 							<div class="col-xs-6 col-md-6  alignCenterPage taskRows4">
 								<input type="hidden" id="implementSelectedId2" />
 								<input type="text" id="implement2SelectedStart" class="inputCreateTask"  name="implement" readonly="true"/>
 								<input type="hidden" id="implement2ScannedQRCode"></input>
-								<input type="button" value="Scan" onClick="$('#scanQRCode').modal()" class="scanEquipment" id="scanImplement2" />
+								<input type="button" value="{% trans 'Scan' %}" onClick="$('#scanQRCode').modal()" class="scanEquipment" id="scanImplement2" />
 								<input type="hidden" id="implementBtn2"></input>
 							</div>
 							<div class="col-xs-3 col-md-3">
@@ -350,7 +350,7 @@
 	                       					 <div style="margin auto 40px; text-align: center; padding-top: 10px;">                          
 	                           					 <select id="cameraId" class="form-control" style="display: inline-block;width: auto; display: none;"></select>
 	                           					 <a href="#">
-	                              					  <input id="play" value="Scan QR-Code" title="Play" type="button" class="btn btn-success btn-sm"></input>   
+	                              					  <input id="play" value="{% trans 'Scan QR-Code' %}" title="Play" type="button" class="btn btn-success btn-sm"></input>   
 	                          					  </a>
 	                       					 </div>  
 	                   					 <div class="panel-body" id="contentQRCode" style="padding-top: 10px; padding-bottom: 0px;">
@@ -365,7 +365,7 @@
 					                        </div>
 					                    </div>    
 	                   				 <div style="margin auto 40px; text-align: center;">     
-		                                <input type="text" id="qr_code_typed" style="color:black;" placeholder="Type QR-Code"/> 
+		                                <input type="text" id="qr_code_typed" style="color:black;" placeholder="{% trans 'Type QR-Code' %}"/> 
 		                                <a id="linkStartTask" href="#">
 		                                    <button id="submitBtnModal" title="Play" type="button" class="btn btn-success btn-sm">
 		                                        <span class="glyphicon glyphicon-play"></span>

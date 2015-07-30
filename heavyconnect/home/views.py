@@ -2081,24 +2081,45 @@ def continueTask(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 @login_required
-def equipmentQuestionsChecklist(request):
+def getChecklistEquipment(request):
 	result = {'success' : False}
+	form = checkListForm(request.POST)
+	item = {}
+
 	if request.method == 'POST':
-		questions = Question.objects.filter(category_id = category.id).order_by('category')
-		date = request.POST['date']
 		if request.is_ajax():
-			try:
-				# date = datetime.datetime.now()
-				d = date.strftime("%Y-%m-%d")
-				time_keeping = Break.objects.filter(attendance__date = d, attendance__employee__user__id = request.user.id)
-				num = len(time_keeping)
-				for item in questions:
-					result['category'] = item.category
-					result['refers'] = item.refers
-					result['description'] = item.description
-				result[0] = {'success' : True}
-			except DoesNotExist:
-				result['code'] =  1 #There is no Implement associated with this
+			if form.is_valid():
+				language = request.LANGUAGE_CODE
+				equipment = form.cleaned_data['qr_code']
+				category = form.cleaned_data['category']
+				refer = Question.NONE
+
+				if isinstance(equipment, Machine):
+					refer= Question.MACHINE
+				elif isinstance(equipment, Implement):
+					refer = Question.IMPLEMENT
+
+				questions = Question.objects.filter(category = category, refers = refer).order_by('id')
+				temp = []
+
+				if 'es'in language:
+					translations = TranslatedQuestion.objects.filter(idiom = TranslatedQuestion.SPANISH, question__in = questions.values('id')).order_by('question')
+					for (q,t) in zip(questions,translations):
+						item['id'] = q.id
+						item['description'] = t.description
+						temp.append(item)
+						item = {}
+				else: #return the questions in english by default, unless another language was requested
+					for q in questions:
+						item['id'] = q.id
+						item['description'] = q.description
+						temp.append(item)
+						item = {}
+				result['questions'] = temp
+				result['success'] = True
+			else:
+				result['code'] = 2 #Not all data are valid
+				result['errorString'] = form.errors
 		else:
 			result['code'] = 2 #Use ajax to perform requests
 	else:

@@ -21,11 +21,9 @@
 				$("#btnForward").click(function(){
 					if(offset == 0){
 						alert("{% trans 'There is no past task to be displayed' %}");
-						//$("#btnForward").attr("disabled", true);
 					}
 					else{
-						//$("#btnForward").attr("disabled", false);
-						upgradePastBox(this.id, offset);
+						upgradePastBox(this.id);
 					}
 				});
 
@@ -35,15 +33,15 @@
 				
 				if(btn == "btnBack" && offset >= 0){
 					offset += 2;
-					getLastTasks("{{csrf_token}}", "{% url 'pastTaskList' %}", false);
+					getLastTasks("{{csrf_token}}", "{% url 'pastTaskList' %}", false, btn);
 				}else if(btn == "btnForward" && offset >= 2){ 
 					offset -= 2;
-					getLastTasks("{{csrf_token}}", "{% url 'pastTaskList' %}", false);
+					getLastTasks("{{csrf_token}}", "{% url 'pastTaskList' %}", false, btn);
 				}
 
 			}
 
-			function getLastTasks(token, url, async) {			
+			function getLastTasks(token, url, async, btn) {			
 			//alert(offset);	
 				$.ajax({
 					method: "POST",
@@ -52,31 +50,36 @@
 					data: {"csrfmiddlewaretoken": token, "offset": offset, "limit": 2},
 					datatype: "json",
 					success: function(data, status, xhr){		
-					//alert(data.length);
-						if (data.length < 2){
+					console.log(offset);
+					console.log(data.each_task_info.length);
+						if (data.each_task_info.length < 1){
 							//$("#btnBack").attr("disabled", true);
-							offset -= 2;
-							//alert("{% trans 'There is no past task to be displayed' %}");
+							if(btn == "btnForward"){
+								clearData();
+							}							
+							else{
+								offset -= 2;
+								clearData();
+							}							
 						}
 						else{
-							//alert(data.length);
 							var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 							$(".pastBox").fadeOut(5);
 							$(".dateTasks").fadeOut(5);
 							$(".dateTasks").fadeIn(1000);
 							$(".pastBox").fadeIn(1000);
-							for (var i = 1; i < data.length; i++) 
+							for (var i = 0; i < data.each_task_info.length; i++) 
 							{	
 								//alert(data.length);
-								$("#task" + i + " .hour").html(formatAMPM(data[i].date));
-								$("#task" + i + " .date").html(data[i].date.substring(8,10) + " " +months[parseInt(data[i].date.substring(6, 7))-1].toUpperCase());
-								$("#past" + i + " .field").html(data[i].field);
-								$("#past" + i + " .category").html(data[i].description);
-								$("#past" + i + " .machine").html(data[i].machine_model);
-								$("#past" + i + " .task").html(data[i].category);
-								$("#past" + i + " .duration").html(data[i].duration + " Hours");
-								$("#past" + i + " .implement").html(data[i].implement_model);
-								$("#past" + i + " .task_id").html(data[i].task_id);
+								$("#task" + (i+1) + " .hour").html(formatAMPM(data.each_task_info[i].date));
+								$("#task" + (i+1) + " .date").html(data.each_task_info[i].date.substring(8,10) + " " +months[parseInt(data.each_task_info[i].date.substring(6, 7))-1].toUpperCase());
+								$("#past" + (i+1) + " .field").html(data.each_task_info[i].field);
+								$("#past" + (i+1) + " .category").html(data.each_task_info[i].description);
+								$("#past" + (i+1) + " .machine").html(data.each_task_info[i].machine_model);
+								$("#past" + (i+1) + " .task").html(data.each_task_info[i].category);
+								$("#past" + (i+1) + " .duration").html(data.each_task_info[i].duration + " Hours");
+								$("#past" + (i+1) + " .implement").html(data.each_task_info[i].implement_model);
+								$("#past" + (i+1) + " .task_id").html(data.each_task_info[i].task_id);
 							}		
 								
 						}		
@@ -84,6 +87,21 @@
 				});			
 			}
 
+			function clearData(){
+				for (var i = 0; i < 2; i++) 
+				{	
+					//alert(data.length);
+					$("#task" + (i+1) + " .hour").html("");
+					$("#task" + (i+1) + " .date").html("NO TASK");
+					$("#past" + (i+1) + " .field").html("");
+					$("#past" + (i+1) + " .category").html("");
+					$("#past" + (i+1) + " .machine").html("");
+					$("#past" + (i+1) + " .task").html("");
+					$("#past" + (i+1) + " .duration").html("");
+					$("#past" + (i+1) + " .implement").html("");
+					$("#past" + (i+1) + " .task_id").html("");
+				}		
+			}
 			function formatAMPM(date) {
 				var d = new Date(date);
 				var hours = d.getHours();
