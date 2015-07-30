@@ -14,6 +14,7 @@
                 var item = {};
 
                 item = getParametersUrl();
+                $("#url").val(item.url + "?qr_code=");
 
                 $("#linkEquipmemtChecklist").click(function () {
                     $("#linkEquipmemtChecklist").attr("href", item.url + "?qr_code=" + $("#qr_code").val());
@@ -55,7 +56,7 @@
     </head>
     <body>
       <header id="head"></header>
-      <input type="hidden" value="{% url 'equipment' %}?qr_code=" id="url"></input>
+      <input type="hidden" value="" id="url"></input>
       <div id="wrapper">
         <div id="content">
             <div id="QR-Code" class="container">
