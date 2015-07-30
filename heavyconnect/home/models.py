@@ -472,7 +472,7 @@ class MachineChecklist(models.Model):
 	photo = models.URLField(max_length = 200, blank = True)
 
 	def __unicode__(self):
-		return "Machine: " + str(self.qrCode.manufacturer_model) + ", Answer: " + str(self.answer) + ", Note: " + str(self.note)
+		return "Machine: " + str(self.qr_code.manufacturer_model) + ", Answer: " + str(self.answer) + ", Note: " + str(self.note)
 
 
 class ImplementChecklist(models.Model):

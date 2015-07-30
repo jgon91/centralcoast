@@ -155,19 +155,36 @@ function saveTask(token, url, urlScheduler){
 /*End function getParametersUrl */
 
 /* Script checklist page */
-	function getCheckListQuestions(token, url) {
+	function getCheckListQuestions(token, url, qr_code) {
+		var questions;
 		$.ajax({
 			method : "POST",
 			url : url,
+			async: false,
 			data : {
-				"csrfmiddlewaretoken" : token
-			}, // id could be qrCode or employeeId
+				"csrfmiddlewaretoken" : token,
+				"qr_code" : qr_code,
+				"category" : 5
+			},
 			datatype : "json",
-			success : function(data, status, xhr) {
-				alert("Questions quant" + data.length	)
+			success : function(data, status, xhr) {	
+				questions = data.questions;
+				showQuestion(questions[0]);
 			}
 
-		});				
+		});		
+		return questions;
+	}
+
+	function saveCheckList(){
+		//inside of ajax sucess
+		$("#checkListBtns").html("");
+
+		return true;
+	}
+
+	function showQuestion(question){
+		$("#question").html(question.description);
 	}
 	
 /*End checklist page */

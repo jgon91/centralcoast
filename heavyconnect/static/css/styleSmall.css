@@ -19,9 +19,9 @@ body {
 	min-width: 640px;
 }
 footer {
-	color: white;
+	/*color: white;*	/
 	width: 100%;
-	background: #434343;
+	/*background: #434343;*/
 	position: relative;
 	bottom: 0px;
 	padding: 2px;
@@ -519,7 +519,7 @@ input[type=button]{
 
 /*** Checklist Page Begin ***/
 
-#checkNo {
+.checkNo {
 	width: 250px;
 	height: 90px;
 	background: url('../imgSmall/buttons/no.png') no-repeat top left;
@@ -531,7 +531,7 @@ input[type=button]{
 	border-radius: 15px;
 	box-shadow: 2px 2px 5px gray;
 }
-#checkYes {
+.checkYes {
 	width: 250px;
 	height: 90px;
 	background: url('../imgSmall/buttons/yes.png') no-repeat top left;
@@ -539,6 +539,11 @@ input[type=button]{
 	font-size: 50px;
 	margin: auto;
 	color: white;
+	border-radius: 15px;
+	box-shadow: 2px 2px 5px gray;
+}
+#engine_hours{
+	border: solid 2px #333;
 	border-radius: 15px;
 	box-shadow: 2px 2px 5px gray;
 }
