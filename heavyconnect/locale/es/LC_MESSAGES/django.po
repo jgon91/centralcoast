@@ -8,320 +8,495 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-23 15:52-0700\n"
+"POT-Creation-Date: 2015-07-30 16:01-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: es\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: heavyconnect/heavyconnect/settings.py:123
+#: heavyconnect/settings.py:119
 msgid "English"
-msgstr "Inglés"
+msgstr ""
 
-#: heavyconnect/heavyconnect/settings.py:124
+#: heavyconnect/settings.py:120
 msgid "Spanish"
-msgstr "Español"
+msgstr ""
 
-#: heavyconnect/heavyconnect/settings.py:125
+#: heavyconnect/settings.py:121
 msgid "Brazilian Portuguese"
-msgstr "Portugués Brasileño"
+msgstr ""
 
-#: heavyconnect/templates/driver/createTask.html:154
+#: templates/driver/checklist.html:26
+msgid "Engine hours"
+msgstr ""
+
+#: templates/driver/checklist.html:27
+msgid "Save"
+msgstr ""
+
+#: templates/driver/checklist.html:33
+msgid "Checklist Saved"
+msgstr ""
+
+#: templates/driver/checklist.html:51
+msgid "HC CHECKLIST"
+msgstr ""
+
+#: templates/driver/checklist.html:72
+msgid "YES"
+msgstr ""
+
+#: templates/driver/checklist.html:76
+msgid "NO"
+msgstr ""
+
+#: templates/driver/createTask.html:154
 msgid "Nickname:"
-msgstr "Sobre Nombre"
+msgstr ""
 
-#: heavyconnect/templates/driver/createTask.html:154
+#: templates/driver/createTask.html:154 templates/driver/createTask.html:191
 msgid "Drawbar Category:"
-msgstr "-------"
+msgstr ""
 
-#: heavyconnect/templates/driver/createTask.html:269
+#: templates/driver/createTask.html:279
 msgid "CREATE TASK"
-msgstr "CREAR TAREA"
+msgstr ""
 
-#: heavyconnect/templates/driver/createTask.html:273
-#: heavyconnect/templates/driver/startTask.html:202
-#: heavyconnect/templates/driver/startTask.html:215
+#: templates/driver/createTask.html:283 templates/driver/startTask.html:202
+#: templates/driver/startTask.html:215
 msgid "Task"
-msgstr "Tarea"
+msgstr ""
 
-#: heavyconnect/templates/driver/createTask.html:274
-#: heavyconnect/templates/driver/startTask.html:203
+#: templates/driver/createTask.html:284 templates/driver/startTask.html:203
 msgid "Machine"
-msgstr "Maquina"
+msgstr ""
 
-#: heavyconnect/templates/driver/createTask.html:275
-#: heavyconnect/templates/driver/startTask.html:204
+#: templates/driver/createTask.html:285 templates/driver/startTask.html:204
 msgid "Implement"
-msgstr "Implement"
+msgstr ""
 
-#: heavyconnect/templates/driver/createTask.html:276
-#: heavyconnect/templates/driver/startTask.html:205
-#: heavyconnect/templates/driver/startTask.html:319
-#: heavyconnect/templates/driver/taskFlow.html:105
-#: heavyconnect/templates/driver/taskFlow.html:114
-#: heavyconnect/templates/driver/taskFlow.html:123
+#: templates/driver/createTask.html:286 templates/driver/createTask.html:401
+#: templates/driver/startTask.html:205 templates/driver/startTask.html:319
+#: templates/driver/taskFlow.html:138 templates/driver/taskFlow.html.py:147
+#: templates/driver/taskFlow.html:156
 msgid "Field"
-msgstr "Fil"
+msgstr ""
 
-#: heavyconnect/templates/driver/createTask.html:277
+#: templates/driver/createTask.html:287
 msgid "Time"
-msgstr "Tiempo"
+msgstr ""
 
-#: heavyconnect/templates/driver/createTask.html:278
+#: templates/driver/createTask.html:288
 msgid "Add Info"
-msgstr "Aggregar Informacion"
+msgstr ""
 
-#: heavyconnect/templates/driver/createTask.html:286
+#: templates/driver/createTask.html:296
 msgid "Task:"
-msgstr "Tarea:"
+msgstr ""
 
-#: heavyconnect/templates/driver/createTask.html:303
-#: heavyconnect/templates/driver/createTask.html:333
-#: heavyconnect/templates/driver/createTask.html:382
-#: heavyconnect/templates/driver/createTask.html:408
-#: heavyconnect/templates/driver/createTask.html:448
-#: heavyconnect/templates/driver/startTask.html:233
-#: heavyconnect/templates/driver/startTask.html:263
-#: heavyconnect/templates/driver/startTask.html:311
+#: templates/driver/createTask.html:313 templates/driver/createTask.html:343
+#: templates/driver/createTask.html:392 templates/driver/createTask.html:418
+#: templates/driver/createTask.html:458 templates/driver/startTask.html:233
+#: templates/driver/startTask.html:263 templates/driver/startTask.html:311
 msgid "NEXT"
-msgstr "SIGUIENTE"
+msgstr ""
 
-#: heavyconnect/templates/driver/createTask.html:311
-#: heavyconnect/templates/driver/schedule.html:98
+#: templates/driver/createTask.html:321 templates/driver/schedule.html:78
 msgid "MACHINE:"
-msgstr "MAQUINA"
+msgstr ""
 
-#: heavyconnect/templates/driver/createTask.html:327
-#: heavyconnect/templates/driver/createTask.html:376
-#: heavyconnect/templates/driver/createTask.html:402
-#: heavyconnect/templates/driver/createTask.html:442
-#: heavyconnect/templates/driver/createTask.html:475
-#: heavyconnect/templates/driver/pastTasks.html:158
-#: heavyconnect/templates/driver/startTask.html:257
-#: heavyconnect/templates/driver/startTask.html:305
-#: heavyconnect/templates/driver/startTask.html:329
+#: templates/driver/createTask.html:326 templates/driver/createTask.html:358
+#: templates/driver/createTask.html:375
+msgid "Search"
+msgstr ""
+
+#: templates/driver/createTask.html:327 templates/driver/createTask.html:359
+#: templates/driver/createTask.html:376 templates/driver/startTask.html:247
+#: templates/driver/startTask.html:278 templates/driver/startTask.html:294
+msgid "Scan"
+msgstr ""
+
+#: templates/driver/createTask.html:337 templates/driver/createTask.html:386
+#: templates/driver/createTask.html:412 templates/driver/createTask.html:452
+#: templates/driver/createTask.html:485 templates/driver/pastTasks.html:176
+#: templates/driver/startTask.html:257 templates/driver/startTask.html:305
+#: templates/driver/startTask.html:329
 msgid "RETURN"
-msgstr "REGRESAR"
+msgstr ""
 
-#: heavyconnect/templates/driver/createTask.html:342
-#: heavyconnect/templates/driver/createTask.html:359
-#: heavyconnect/templates/driver/schedule.html:99
-msgid "IMPLEMENT:"
-msgstr "IMPLEMENTO"
-
-#: heavyconnect/templates/driver/createTask.html:417
-msgid "Date:"
-msgstr "Fecha:"
-
-#: heavyconnect/templates/driver/createTask.html:425
-msgid "Start Time:"
-msgstr "Hora de Inicio:"
-
-#: heavyconnect/templates/driver/createTask.html:433
-msgid "Hours Prediction:"
-msgstr "Horas de Predicaccion:"
-
-#: heavyconnect/templates/driver/createTask.html:457
-msgid "Passes:"
-msgstr "Pasadas:"
-
-#: heavyconnect/templates/driver/createTask.html:466
-msgid "Description:"
-msgstr "Descripcion:"
-
-#: heavyconnect/templates/driver/createTask.html:481
-msgid "SUBMIT"
-msgstr "ENTRAR"
-
-#: heavyconnect/templates/driver/createTask.html:498
-msgid "Find a Machine"
-msgstr "Encontrar Maquina"
-
-#: heavyconnect/templates/driver/createTask.html:502
-#: heavyconnect/templates/driver/createTask.html:550
-msgid "Filters"
-msgstr "Filtrar"
-
-#: heavyconnect/templates/driver/createTask.html:503
-#: heavyconnect/templates/driver/createTask.html:551
-msgid "Manufacturers:"
-msgstr "Fabricrador:"
-
-#: heavyconnect/templates/driver/createTask.html:505
-#: heavyconnect/templates/driver/createTask.html:510
-#: heavyconnect/templates/driver/createTask.html:518
-#: heavyconnect/templates/driver/createTask.html:553
-#: heavyconnect/templates/driver/createTask.html:558
-#: heavyconnect/templates/driver/createTask.html:566
-msgid "All"
-msgstr "Todos"
-
-#: heavyconnect/templates/driver/createTask.html:508
-msgid "HP:"
-msgstr "Caballos de Fuerza:"
-
-#: heavyconnect/templates/driver/createTask.html:511
-#: heavyconnect/templates/driver/createTask.html:559
-msgid "175 HP Or Greater"
-msgstr "175 Caballos de Fuera or Mas"
-
-#: heavyconnect/templates/driver/createTask.html:512
-#: heavyconnect/templates/driver/createTask.html:560
-msgid "100 HP Or Greater"
-msgstr "100 Caballos de Fuera or Mas"
-
-#: heavyconnect/templates/driver/createTask.html:513
-#: heavyconnect/templates/driver/createTask.html:561
-msgid "40 HP Or Greater"
-msgstr "40 Caballos de Fuera or Mas"
-
-#: heavyconnect/templates/driver/createTask.html:516
-msgid "Hitch Capacity:"
-msgstr "Capacidad de Enganche:"
-
-#: heavyconnect/templates/driver/createTask.html:519
-#: heavyconnect/templates/driver/createTask.html:567
-msgid "20 000 lbs or Greater"
-msgstr "20 000 Libras o Mas"
-
-#: heavyconnect/templates/driver/createTask.html:520
-#: heavyconnect/templates/driver/createTask.html:568
-msgid "15 000 lbs or Greater"
-msgstr "15 000 Libras o Mas"
-
-#: heavyconnect/templates/driver/createTask.html:521
-#: heavyconnect/templates/driver/createTask.html:569
-msgid "10 000 lbs or Greater"
-msgstr "10 000 Libras o Mas"
-
-#: heavyconnect/templates/driver/createTask.html:522
-#: heavyconnect/templates/driver/createTask.html:570
-msgid "5 000 lbs or Greater"
-msgstr "5 000 Libras o Mas"
-
-#: heavyconnect/templates/driver/createTask.html:532
-#: heavyconnect/templates/driver/createTask.html:580
-#: heavyconnect/templates/driver/createTask.html:617
-#: heavyconnect/templates/driver/startTask.html:380
-msgid "Close"
-msgstr "Cerrar"
-
-#: heavyconnect/templates/driver/createTask.html:546
-msgid "Find a implement"
-msgstr "Encontrar Implemento"
-
-#: heavyconnect/templates/driver/createTask.html:556
-msgid "HP required"
-msgstr "Caballos de Fuerza requirida"
-
-#: heavyconnect/templates/driver/createTask.html:564
-msgid "Hitch Capacity required:"
-msgstr "Capacidad Requerida del Enganche"
-
-#: heavyconnect/templates/driver/pastTasks.html:23
-#: heavyconnect/templates/driver/pastTasks.html:59
-msgid "There is no past task to be displayed"
-msgstr "No hay tareas anteriores para mostrar"
-
-#: heavyconnect/templates/driver/pastTasks.html:113
-msgid "HC PAST TASKS"
-msgstr "HC TAREAS ANTERIORES"
-
-#: heavyconnect/templates/driver/pastTasks.html:135
-#: heavyconnect/templates/driver/pastTasks.html:144
-#: heavyconnect/templates/driver/startTask.html:241
-msgid "MACHINE"
-msgstr "MAQUINA"
-
-#: heavyconnect/templates/driver/pastTasks.html:136
-#: heavyconnect/templates/driver/pastTasks.html:145
-#: heavyconnect/templates/driver/startTask.html:272
-#: heavyconnect/templates/driver/startTask.html:288
-#: heavyconnect/templates/driver/taskFlow.html:150
+#: templates/driver/createTask.html:352 templates/driver/createTask.html:369
+#: templates/driver/pastTasks.html:154 templates/driver/pastTasks.html:163
+#: templates/driver/startTask.html:272 templates/driver/taskFlow.html:188
 msgid "IMPLEMENT"
-msgstr "IMPLEMENTO"
+msgstr ""
 
-#: heavyconnect/templates/driver/pastTasks.html:137
-#: heavyconnect/templates/driver/pastTasks.html:146
-#: heavyconnect/templates/driver/taskFlow.html:160
-msgid "FIELD"
-msgstr "FIL"
+#: templates/driver/createTask.html:427
+msgid "Date:"
+msgstr ""
 
-#: heavyconnect/templates/driver/pastTasks.html:138
-#: heavyconnect/templates/driver/pastTasks.html:147
-msgid "TASK"
-msgstr "TAREA"
+#: templates/driver/createTask.html:435
+msgid "Start Time:"
+msgstr ""
 
-#: heavyconnect/templates/driver/pastTasks.html:139
-#: heavyconnect/templates/driver/pastTasks.html:148
-msgid "CATEGORY"
-msgstr "CATEGORIA"
+#: templates/driver/createTask.html:443
+msgid "Hours Prediction:"
+msgstr ""
 
-#: heavyconnect/templates/driver/pastTasks.html:140
-#: heavyconnect/templates/driver/pastTasks.html:149
-msgid "DURATION"
-msgstr "DURACION"
+#: templates/driver/createTask.html:467
+msgid "Passes:"
+msgstr ""
 
-#: heavyconnect/templates/driver/schedule.html:53
-msgid "There was an error while fetching events!"
-msgstr "¡Error al combinar eventos!"
+#: templates/driver/createTask.html:476
+msgid "Description:"
+msgstr ""
 
-#: heavyconnect/templates/driver/schedule.html:85
-msgid "HC Scheduler"
-msgstr "HC Horario"
+#: templates/driver/createTask.html:491
+msgid "SUBMIT"
+msgstr ""
 
-#: heavyconnect/templates/driver/schedule.html:93
-msgid "TASK INFORMATION"
-msgstr "INFORMACION DE TAREA"
+#: templates/driver/createTask.html:508
+msgid "Find a Machine"
+msgstr ""
 
-#: heavyconnect/templates/driver/schedule.html:95
-msgid "TASK:"
-msgstr "TAREA:"
+#: templates/driver/createTask.html:512 templates/driver/createTask.html:560
+msgid "Filters"
+msgstr ""
 
-#: heavyconnect/templates/driver/schedule.html:96
-msgid "DESCRIPTION:"
-msgstr "DESCRIPCION"
+#: templates/driver/createTask.html:513 templates/driver/createTask.html:561
+msgid "Manufacturers:"
+msgstr ""
 
-#: heavyconnect/templates/driver/schedule.html:97
-msgid "FIELD:"
-msgstr "FIL"
+#: templates/driver/createTask.html:515 templates/driver/createTask.html:520
+#: templates/driver/createTask.html:528 templates/driver/createTask.html:563
+#: templates/driver/createTask.html:568 templates/driver/createTask.html:576
+msgid "All"
+msgstr ""
 
-#: heavyconnect/templates/driver/schedule.html:103
-#: heavyconnect/templates/driver/startTask.html:335
-#: heavyconnect/templates/driver/taskFlow.html:164
-msgid "Start"
-msgstr "Iniciar"
+#: templates/driver/createTask.html:518
+msgid "HP:"
+msgstr ""
 
-#: heavyconnect/templates/driver/startTask.html:197
-msgid "Start Task"
-msgstr "Iniciar Tarea"
+#: templates/driver/createTask.html:521 templates/driver/createTask.html:569
+msgid "175 HP Or Greater"
+msgstr ""
 
-#: heavyconnect/templates/driver/startTask.html:217
-msgid "Description"
-msgstr "Descripcion"
+#: templates/driver/createTask.html:522 templates/driver/createTask.html:570
+msgid "100 HP Or Greater"
+msgstr ""
 
-#: heavyconnect/templates/driver/taskFlow.html:95
-msgid "HC TASKFLOW"
-msgstr "HC LISTA DE TAREA"
+#: templates/driver/createTask.html:523 templates/driver/createTask.html:571
+msgid "40 HP Or Greater"
+msgstr ""
 
-#: heavyconnect/templates/driver/taskFlow.html:107
-#: heavyconnect/templates/driver/taskFlow.html:116
-#: heavyconnect/templates/driver/taskFlow.html:125
-msgid "More Info"
-msgstr "Mas Informacion"
+#: templates/driver/createTask.html:526
+msgid "Hitch Capacity:"
+msgstr ""
 
-#: heavyconnect/templates/driver/taskFlow.html:154
+#: templates/driver/createTask.html:529 templates/driver/createTask.html:577
+msgid "20 000 lbs or Greater"
+msgstr ""
+
+#: templates/driver/createTask.html:530 templates/driver/createTask.html:578
+msgid "15 000 lbs or Greater"
+msgstr ""
+
+#: templates/driver/createTask.html:531 templates/driver/createTask.html:579
+msgid "10 000 lbs or Greater"
+msgstr ""
+
+#: templates/driver/createTask.html:532 templates/driver/createTask.html:580
+msgid "5 000 lbs or Greater"
+msgstr ""
+
+#: templates/driver/createTask.html:542 templates/driver/createTask.html:590
+#: templates/driver/createTask.html:627 templates/driver/startTask.html:380
+msgid "Close"
+msgstr ""
+
+#: templates/driver/createTask.html:556
+msgid "Find a implement"
+msgstr ""
+
+#: templates/driver/createTask.html:566
+msgid "HP required"
+msgstr ""
+
+#: templates/driver/createTask.html:574
+msgid "Hitch Capacity required:"
+msgstr ""
+
+#: templates/driver/createTask.html:609 templates/driver/scanQRCode.html:67
+#: templates/driver/startTask.html:353
+msgid "Scan QR-Code"
+msgstr ""
+
+#: templates/driver/equipment.html:284 templates/driver/equipment.html:350
+#: templates/driver/taskFlow.html:185
 msgid "TRACTOR"
-msgstr "TRACTOR"
+msgstr ""
 
-#: heavyconnect/templates/driver/taskFlow.html:157
-msgid "EMPLOYEE"
-msgstr "EMPLEADO"
-
-#: heavyconnect/templates/manager/map.html:116
+#: templates/driver/equipment.html:287 templates/driver/equipment.html:358
+#: templates/manager/map.html:116
 msgid "Status"
-msgstr "Estado"
+msgstr ""
+
+#: templates/driver/equipment.html:289
+msgid "OK - Ready to work"
+msgstr ""
+
+#: templates/driver/equipment.html:293
+msgid "SERVICE Needed"
+msgstr ""
+
+#: templates/driver/equipment.html:297
+msgid "BROKEN! Do not use"
+msgstr ""
+
+#: templates/driver/equipment.html:302
+msgid "Notes"
+msgstr ""
+
+#: templates/driver/equipment.html:307 templates/driver/equipment.html:351
+msgid "QR Sticker"
+msgstr ""
+
+#: templates/driver/equipment.html:309 templates/driver/equipment.html:352
+msgid "Reiter Asset"
+msgstr ""
+
+#: templates/driver/equipment.html:311 templates/driver/equipment.html:353
+msgid "Manufacturer"
+msgstr ""
+
+#: templates/driver/equipment.html:313 templates/driver/equipment.html:354
+msgid "Model"
+msgstr ""
+
+#: templates/driver/equipment.html:315 templates/driver/equipment.html:356
+msgid "Hours"
+msgstr ""
+
+#: templates/driver/equipment.html:317 templates/driver/equipment.html:357
+msgid "Horse Power"
+msgstr ""
+
+#: templates/driver/equipment.html:326
+msgid "SPEC"
+msgstr ""
+
+#: templates/driver/equipment.html:355
+msgid "Serial Number"
+msgstr ""
+
+#: templates/driver/equipment.html:359
+msgid "Hitch Capacity"
+msgstr ""
+
+#: templates/driver/equipment.html:360
+msgid "Hitch Category"
+msgstr ""
+
+#: templates/driver/equipment.html:361
+msgid "Drawn Category"
+msgstr ""
+
+#: templates/driver/equipment.html:362
+msgid "Acquired"
+msgstr ""
+
+#: templates/driver/equipment.html:363
+msgid "Speed Range Min"
+msgstr ""
+
+#: templates/driver/equipment.html:364
+msgid "Speed Range Max"
+msgstr ""
+
+#: templates/driver/equipment.html:365
+msgid "Engine Hours"
+msgstr ""
+
+#: templates/driver/equipment.html:366
+msgid "Base Cost"
+msgstr ""
+
+#: templates/driver/equipment.html:367
+msgid "Machine Type"
+msgstr ""
+
+#: templates/driver/equipment.html:368
+msgid "Front Tires"
+msgstr ""
+
+#: templates/driver/equipment.html:369
+msgid "Rear Tires"
+msgstr ""
+
+#: templates/driver/equipment.html:370
+msgid "Steering"
+msgstr ""
+
+#: templates/driver/equipment.html:371
+msgid "Operation Station"
+msgstr ""
+
+#: templates/driver/equipment.html:403
+msgid "Previous"
+msgstr ""
+
+#: templates/driver/equipment.html:404
+msgid "Next"
+msgstr ""
+
+#: templates/driver/home.html:18
+msgid "EQUIPMENT"
+msgstr ""
+
+#: templates/driver/home.html:23
+msgid "TASKFLOW"
+msgstr ""
+
+#: templates/driver/home.html:28
+msgid "SCHEDULE"
+msgstr ""
+
+#: templates/driver/home.html:33
+msgid "TIMEKEEPER"
+msgstr ""
+
+#: templates/driver/home.html:38
+msgid "CHECKLIST"
+msgstr ""
+
+#: templates/driver/pastTasks.html:23
+msgid "There is no past task to be displayed"
+msgstr ""
+
+#: templates/driver/pastTasks.html:131
+msgid "HC PAST TASKS"
+msgstr ""
+
+#: templates/driver/pastTasks.html:153 templates/driver/pastTasks.html:162
+#: templates/driver/startTask.html:241
+msgid "MACHINE"
+msgstr ""
+
+#: templates/driver/pastTasks.html:155 templates/driver/pastTasks.html:164
+#: templates/driver/taskFlow.html:183
+msgid "FIELD"
+msgstr ""
+
+#: templates/driver/pastTasks.html:156 templates/driver/pastTasks.html:165
+msgid "TASK"
+msgstr ""
+
+#: templates/driver/pastTasks.html:157 templates/driver/pastTasks.html:166
+msgid "CATEGORY"
+msgstr ""
+
+#: templates/driver/pastTasks.html:158 templates/driver/pastTasks.html:167
+msgid "DURATION"
+msgstr ""
+
+#: templates/driver/scanQRCode.html:82 templates/driver/startTask.html:368
+msgid "Type QR-Code"
+msgstr ""
+
+#: templates/driver/schedule.html:24
+msgid "There was an error while fetching events!"
+msgstr ""
+
+#: templates/driver/schedule.html:47 templates/driver/startTask.html:335
+#: templates/driver/taskFlow.html:197
+msgid "Start"
+msgstr ""
+
+#: templates/driver/schedule.html:65
+msgid "HC Scheduler"
+msgstr ""
+
+#: templates/driver/schedule.html:73
+msgid "TASK INFORMATION"
+msgstr ""
+
+#: templates/driver/schedule.html:75
+msgid "TASK:"
+msgstr ""
+
+#: templates/driver/schedule.html:76
+msgid "DESCRIPTION:"
+msgstr ""
+
+#: templates/driver/schedule.html:77
+msgid "FIELD:"
+msgstr ""
+
+#: templates/driver/schedule.html:79
+msgid "IMPLEMENT:"
+msgstr ""
+
+#: templates/driver/startTask.html:197
+msgid "Start Task"
+msgstr ""
+
+#: templates/driver/startTask.html:217
+msgid "Description"
+msgstr ""
+
+#: templates/driver/startTask.html:288 templates/driver/taskFlow.html:191
+msgid "IMPLEMENT 2"
+msgstr ""
+
+#: templates/driver/taskFlow.html:128
+msgid "HC TASKFLOW"
+msgstr ""
+
+#: templates/driver/taskFlow.html:140 templates/driver/taskFlow.html.py:149
+#: templates/driver/taskFlow.html:158
+msgid "More Info"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:249
+msgid "HC TIMEKEEPER"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:253
+msgid "START SHIFT"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:260
+msgid "START"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:264
+msgid "STOP"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:271
+msgid "END SHIFT"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:301
+msgid "Sign Here"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:306
+msgid "Limpiar"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:307
+msgid "Cerrar"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:310
+msgid "Confirmar"
+msgstr ""
+
+#: templates/template/headerDriver.html:35
+#: templates/template/headerHome.html:38
+msgid "EXIT"
+msgstr ""
