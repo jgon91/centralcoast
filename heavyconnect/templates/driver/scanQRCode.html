@@ -5,14 +5,19 @@
         {% load i18n %}
         <title>Scan QRCode</title>
         <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
-
+        <script src="{% static 'js/script.js' %}"></script>
         <script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
         <script>
             $(document).ready(function() {
                 $("#foot").load("{% url 'footer' %}");
                 $("#head").load("{% url 'headerDriver' %}");
-                $("#linkEquipmemt").click(function () {
-                    $("#linkEquipmemt").attr("href", "{% url 'equipment'%}?qr_code=" + $("#qr_code").val());
+                var item = {};
+
+                item = getParametersUrl();
+                $("#url").val(item.url + "?qr_code=");
+
+                $("#linkEquipmemtChecklist").click(function () {
+                    $("#linkEquipmemtChecklist").attr("href", item.url + "?qr_code=" + $("#qr_code").val());
                     //alert($("#qr_code").val());
                 });
             });
@@ -51,7 +56,7 @@
     </head>
     <body>
       <header id="head"></header>
-      <input type="hidden" value="{% url 'equipment' %}?qr_code=" id="url"></input>
+      <input type="hidden" value="" id="url"></input>
       <div id="wrapper">
         <div id="content">
             <div id="QR-Code" class="container">
@@ -75,7 +80,7 @@
                     </div>    
                     <div style="margin auto 40px; text-align: center;">     
                                 <input type="text" id="qr_code" style="color:black;" placeholder="{% trans 'Type QR-Code' %}"/> 
-                                <a id="linkEquipmemt" href="">
+                                <a id="linkEquipmemtChecklist" href="">
                                     <button id="submit" title="Play" type="button" class="btn btn-success btn-sm">
                                         <span class="glyphicon glyphicon-play"></span>
                                     </button>
