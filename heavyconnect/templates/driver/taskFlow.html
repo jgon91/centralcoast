@@ -62,8 +62,7 @@
 				datatype : "json",
 				success : function(data, status, xhr) {
 					if(data.success){
-						//alert(data.each_task_info[1].implement[0].implement_model);	
-						
+						//alert(data.each_task_info[1].implement[0].implement_model);							
 						if (data.each_task_info.length == 2) {
 							$("#next3 .category").html("No Task");
 							$("#next3 .titleField").html("");
