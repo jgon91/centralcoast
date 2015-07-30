@@ -2,76 +2,229 @@
 <html lang="en">
 	<head>
 		{% load staticfiles %}
-		<!--<link rel="stylesheet" type="text/css" href="{% static 'css/equipStyle.css' %}">-->
-		<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
-		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
-		<script src="{% static 'js/script.js' %}"></script>
+		<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
+		<script src="{% static 'jSignature/jSignature.min.js'%}"></script>
 		<script>
-			//variables
-
-			//Events
+			var item_count = 0;
+			var urlTest = "{% url 'stopBreak' %}";
 			$(document).ready(function() {
-				var item = {}; // Stores url's parameters
+				$("#foot").load("{%url 'footer'%}");
+				$("#head").load("{%url 'headerDriver'%}");
+				$("#signature").jSignature()
+				
+				$("#clearSignature").click(function() {
+					var $sigdiv = $("#signature");
+					$sigdiv.jSignature("reset");
+				});
+				
+				getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
 
-				$("#foot").load("{% url 'footer' %}");
-				$("#head").load("{% url 'headerDriver' %}");
-
-				getLocation();	
-				item = getParametersUrl();
-				$("#qr_code").html(item.qr_code);
-
-				loadEquipmentInfo("{{ csrf_token }}", "{% url 'getEquipmentInfo' %}", item.qr_code);
-				loadEquipmentStatus("{{ csrf_token }}", "{% url 'equipmentStatus' %}", item.qr_code); //Broken
+				$("#startShift").click(function() {
+					//var confirmResult = confirm("Are you sure?");
+					//if (confirmResult == true) {
+						startShift("{{ csrf_token }}", "{% url 'startShift' %}");
+					//}
+				});
+				$(".btnBreaksGreen").click(function(){
+					//var confirmResult = confirm("Are you sure?");
+					//if (confirmResult == true) {
+						startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);
+					//}	
+				});	
+				$(".btnBreaksRed").click(function(){
+					//var confirmResult = confirm("Are you sure?");
+					//if (confirmResult == true){
+	   					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count);
+					//}
+				});
+				$("#addBreak").click(function() {
+					//var confirmResult = confirm("Are you sure?");
+					//if (confirmResult == true) {
+						createBtnBreak(item_count);
+					//}
+				});
+				$("#stopShift").click(function(){
+					//var confirmResult = confirm("Are you sure?");
+					//if (confirmResult == true){
+						var $sigdiv = $("#signature");
+						//Get the signature in the 64base
+						var datapair = $sigdiv.jSignature("getData", "base30");
+   						stopShift("{{ csrf_token }}", "{% url 'stopShift' %}");
+   					//}
+				});
 			});
-			//Functions
-			function loadEquipmentInfo(token, url, id) {
+			function getEmployeeShifts(token, url) {
+				$(addBreak).attr("disabled", "disabled");
+				$(startBreak1).attr("disabled", "disabled");
+				$(stopBreak1).attr("disabled", "disabled");
 				$.ajax({
-					method: "POST",
-					url: url,
-					data: {"csrfmiddlewaretoken": token,
-						   "qr_code": id},  // id could be qrCode or employeeId
-					datatype: "json",
-					success: function(data, status, xhr){	 
-						if(data.success){
-							$("#manufacturer").html(data.manufacturer);
-							$("#serial_number").html(data.serial_number);
-							$("#model").html(data.model);
-							$("#asset_number").html(data.asset_number);
-							$("#hours_cost").html(data.hour_cost);
-							$("#nickname").html(data.hour_cost);
-							$("#hp").html(data.horse_power);
-							$("#hitch_sz").html(data.hitch_capacity);
-							$("#drawn_size").html(data.drawbar_category);
-							$("#acquired_date").html(data.year_purchased);
-						}
-					}
-				});			
-			}
-			function loadEquipmentStatus(token, url, id) {
-				$.ajax({
-					method: "POST",
-					url: url,
-					data: {"csrfmiddlewaretoken": token, "qr_code": id},  // id could be qrCode or employeeId
-					datatype: "json",
-					success: function(data, status, xhr){	
-						if(data.success){
-							if(data["status"] == 1){ // status Ok
-								changeColorStatus("btnStatus1", "btnStatus2", "btnStatus3");									
-							}else if(data["status"] == 2){ // Status Attention
-								changeColorStatus("btnStatus2", "btnStatus1", "btnStatus3");						
-							}else{ // status Broken
-								changeColorStatus("btnStatus3", "btnStatus2", "btnStatus1");							
+					method : "POST",
+					url : url,
+					data : {
+						"csrfmiddlewaretoken" : token
+					},
+					datatype : "json",
+					success : function(data, status, xhr) {
+						if (data.success) {
+							if (data.hour_started != 'None') {
+								changeBtn("#startShift", data.hour_started.substring(0,8));
+							}
+							for(var i = 0; i < data.breaks.length; i++) {
+								if (data.breaks[i][0] != "None") {
+									changeBtn("#startBreak" + i, data.breaks[i][0].substring(0, 8));
+									$(addBreak).attr("disabled", "disabled");
+								}
+								if (data.breaks[i][1] != "None") {
+									changeBtn("#stopBreak" + i, data.breaks[i][1].substring(0, 8));
+									if (data.breaks[0][1] != "None") {
+										$(startBreak1).removeAttr('disabled');
+										$(stopBreak1).removeAttr('disabled');
+									}
+									if (data.breaks[1][1] != "None") {
+										$(addBreak).removeAttr('disabled');
+									}
+									if (data.breaks[1][1] != "None" && i > 0 && i < data.breaks.length-1) {
+										createBtnBreak(i+1);
+									}
+									item_count++;
+								}
+							}
+							if (data.hour_ended != "None") {
+								changeBtn("#stopShift", data.hour_ended.substring(0,8));
+								$(addBreak).attr("disabled", "disabled");
 							}
 						}
 					}
-				});			
+				});
 			}
-			function changeColorStatus(btn1, btn2, btn3){
-				$("#" + btn2).css("background-color", "#666");
-				$("#" + btn3 ).css("background-color", "#666");
-				$("#" + btn1).css("border-bottom", "solid 2px #434300");
-				$("#" + btn2).css("border-bottom", "solid 2px #434300");
-				$("#" + btn3).css("border-bottom", "solid 2px #434300");				
+			function startShift(token, url) {
+				$.ajax({
+					method : "POST",
+					url : url,
+					data : {
+						"csrfmiddlewaretoken" : token
+					},
+					datatype : "json",
+					success : function(data, status, xhr) {
+						if (data.success) {
+							changeBtn("#startShift", data.hour_started.substring(11,19));
+						} else if (data.code == 1) {
+							alert("The shift for today was already created.");
+						} else if (data.code == 2) {
+							alert("There is no users associated whit this id.");
+						} else if (data.code == 3) {
+							alert("Error. Contact Suport.");
+						} else if (data.code == 4) {
+							alert("Error. Contact Suport.");
+						}
+					}
+				});
+			}
+			function startBreak(token, url, breaks) {
+				$.ajax({
+					method : "POST",
+					url : url,
+					data : {
+						"csrfmiddlewaretoken" : token
+					},
+					datatype : "json",
+					success : function(data, status, xhr) {
+						if (data.success) {
+							changeBtn("#startBreak" + breaks, data.time.substring(11,19));
+						} else if (data.code == 1) {
+							alert("You cannot start 2 breaks at the same time.");
+						} else if (data.code == 2) {
+							alert("The shift for today was already finished.");
+						} else if (data.code == 3) {
+							alert("You need to start a shift first.");
+						} else if (data.code == 4) {
+							alert("Error. Contact Suport.");
+						} else if (data.code == 5) {
+							alert("Error. Contact Suport.");
+						}
+					}
+				});
+			}
+			function stopBreak(token, url, breaks) {
+					$.ajax({
+						method: "POST",
+						url: url,
+						data: {"csrfmiddlewaretoken": token},
+						datatype: "json",
+						success: function(data, status, xhr){
+							if(data.success){
+								changeBtn("#stopBreak" + breaks, data.time.substring(11,19));
+								if(breaks == 0){	
+									$(startBreak1).removeAttr('disabled');
+									$(stopBreak1).removeAttr('disabled');
+								}
+								if(breaks >= 1){	
+									$(addBreak).removeAttr('disabled');
+								}
+								item_count++;
+							} else if(data.code == 1){
+								alert("You need to start a break first.");
+							} else if(data.code == 2){
+								alert("The shift for today was already finished.");
+							} else if(data.code == 3){
+								alert("You need to start a shift first.");
+							} else if(data.code == 4){
+								alert("Error. Contact Suport.");
+							} else if(data.code == 5){
+								alert("Error. Contact Suport.");
+							}
+						}
+					});
+			}
+			function stopShift(token, url) {
+					$.ajax({
+						method: "POST",
+						url: url,
+						data: {"csrfmiddlewaretoken": token},
+						datatype: "json",
+						success: function(data, status, xhr){
+							if(data.success){
+								$('#signModal').modal("hide");
+								changeBtn("#stopShift", data.hour_ended.substring(11,19));
+								window.redirec("%url 'timeKeeper'%")
+							} else if(data.code == 1){
+								alert("You need to have done at least 3 breaks.");
+							} else if(data.code == 2){
+								alert("The shift for today was already finished.");
+							} else if(data.code == 3){
+								alert("You need to start a shift first.");
+							} else if(data.code == 4){
+								alert("There is no users associated with this id.");
+							} else if(data.code == 5){
+								alert("Error. Contact Suport.");
+							} else if(data.code == 6){
+								alert("Error. Contact Suport.");
+							}
+						}
+					});
+			}
+			function changeBtn(idBtn, hour) {
+				$(idBtn).attr("value", hour);
+				$(idBtn).attr("disabled", "disabled");
+  				$(idBtn).css('background', 'url("{% static 'imgSmall/buttons/startShiftHover.png' %}") no-repeat top left');
+  				$(idBtn).css('background-size', '100% 100%');
+  				$(idBtn).css('font-size', '25px');
+			}
+			function createBtnBreak(count) {
+				$(addBreak).attr("disabled", "disabled");
+				$( "#divBreaks").append('<div class="row"><div class="col-xs-1 col-md-1 btnColTime"></div><div class="col-xs-4 col-md-4 btnColTime"><input type="button" id="startBreak'+count+'" value="START BREAK" class="btnGreen btnBreaksGreen"/></div><div class="col-xs-2 col-md-2 btnColTime"></div><div class="col-xs-4 col-md-4 btnColTime"><input type="button" id="stopBreak'+count+'" value="STOP BREAK"  class="btnRed btnBreaksRed"/></div><div class="col-xs-1 col-md-1 btnColTime"></div></div>');
+				$(".btnBreaksGreen").click(function() {
+					//var confirmResult = confirm("Are you sure?");
+					//if (confirmResult == true) {
+						startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);
+					//}
+				});
+				$(".btnBreaksRed").click(function(){
+					//var confirmResult = confirm("Are you sure?");
+					//if (confirmResult == true){
+						stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count);
+					//}
+				});
 			}
 		</script>
 	</head>
@@ -79,91 +232,90 @@
 		<header id="head"></header>
 		<div id="wrapper">
 			<div id="content">
-				<div id="namePage">
-					PROFILES
+				<div class="namePage">
+					<img src="{% static 'imgSmall/iconTimekeeper.png' %}"/>
+					HC TIMEKEEPER
 				</div>
-			<div id="equipmentContent">	
-				<div id="images">
-					<img src="{% static 'img/tractor-1.jpg' %}" class="imgs"/>
-					<img src="{% static 'img/tractor-2.jpg' %}" class="imgs"/>
-					<img src="{% static 'img/tractor-3.jpg' %}" class="imgs"/>
-				</div>
-				<div class="row rowEquip">
-					<div class="col-xs-3 col-md-3" style="padding: 0px; line-height: 18px; padding-top: 5px;">
-						QR Sticker: <span id="qr_code"></span>
-						</br>Reiter Asset: <span id="asset_number"></span>
-						</br>Manufacturer: <span id="manufacturer"></span>
-						</br>Model: <span id="model"></span>
-						</br>SN: <span id="serial_number"></span>
-						</br>Hours: <span id="hours_cost"></span>
-						</br></br> <strong>LOCATION:</strong>
-					</div>
-					<div class="col-xs-3 col-md-3" style="padding: 0px; line-height: 18px; padding-top: 5px;">
-						Horse Power: <span id="hp"></span> 
-					    </br>Nickname: <span id="nickname"></span>
-						</br>Hitch Size: <span id="hitch_sz"></span>
-						</br>Drawbar Size: <span id="drawn_size"></span>
-						</br>Date Acquired: <span id="acquired_date"></span>
-					</div>
-					<div class="col-xs-3 col-md-3" id="boxRight1">
-						<div style="padding-top: 5px;">
-							<strong>Implement:</strong>
-							</br><span id="implement"></span>
-						</div>
-						<div style="padding-top: 10px;">
-							<strong>Operator:</strong>
-						</br><span id="operator"></span>
-						</div>
-						<div style="padding-top: 10px;">
-							<strong>Task:</strong>
-						</br><span id="task"></span>
-						</div>
-					</div>
-					<div class="col-xs-3 col-md-3" id="boxRight2">
-						<div>
-							<a href="{% url 'updateStatus' %}" style="text-decoration: none;">
-							<input type="button" id="btnUpdate" value="Update Status"/>
-							</a>
-						</div>
-						<div>
-							<a href="{% url 'taskFlow' %}" style="text-decoration: none;">
-							<input type="button" id="btnNewTask" value="Start a New Task"/>
-							</a>
-						</div>
-						<div>
-							<a href="{% url 'checklist' %}" style="text-decoration: none;">
-							<input type="button" id="btnChecklist" value="Checklist">
-							</a>
-						</div>
+				<div class="row">
+					<div class="col-xs-12 col-md-12">
+						<input type="button" id="startShift" value="START SHIFT"/>
 					</div>
 				</div>
-
-				<div class="divDown">
-					<div class="col-xs-6 col-md-6" style="padding: 0px;">
-						<div class="map" id="mapholder"></div>
+				<div class="row">
+					<div class="col-xs-1 col-md-1 btnColTime">
 					</div>
-					<div class="col-xs-3 col-md-3" id="colStatus">
-						STATUS:
-						<div id="btnStatus1" class="pStatus">
-							OK! Ready to work
-						</div>
-						<div id="btnStatus2" class="pStatus">
-							SERVICE Needed
-						</div>
-						<div id="btnStatus3" class="pStatus">
-							BROKEN! Do not use
-						</div>
+					<div class="col-xs-4 col-md-4 btnColTime">
+						<input type="button" id="startBreak0" value="START BREAK" class="btnGreen btnBreaksGreen"/>
 					</div>
-					<div class="col-xs-3 col-md-3" id="colStatus">
-						NOTES:</br>
-						<textarea rows="6" cols="20" form="notesSubmit" id="notes"></textarea>
+					<div class="col-xs-2 col-md-2 btnColTime">
+					</div>
+					<div class="col-xs-4 col-md-4 btnColTime">
+						<input type="button" id="stopBreak0" value="STOP BREAK"  class="btnRed btnBreaksRed"/>
+					</div>
+					<div class="col-xs-1 col-md-1 btnColTime">
 					</div>
 				</div>
+				<div class="row">
+					<div class="col-xs-1 col-md-1 btnColTime">
+					</div>
+					<div class="col-xs-4 col-md-4 btnColTime">
+						<input type="button" id="startBreak1" value="START LUNCH" class="btnGreen btnBreaksGreen"/>
+					</div>
+					<div class="col-xs-2 col-md-2 btnColTime">
+					</div>
+					<div class="col-xs-4 col-md-4 btnColTime">
+						<input type="button" id="stopBreak1" value="STOP LUNCH" class="btnRed btnBreaksRed"/>
+					</div>
+					<div class="col-xs-1 col-md-1 btnColTime">
+					</div>
+				</div>
+				<div id="divBreaks"></div>
+				<div class="row">
+					<div class="col-xs-1 col-md-1 btnColTime">
+					</div>
+					<div class="col-xs-4 col-md-4 btnColTime">
+						<input type="button" id="addBreak" value="   ADD BREAK" />
+					</div>
+					<div class="col-xs-2 col-md-2 btnColTime">
+					</div>
+					<div class="col-xs-4 col-md-4 btnColTime">
+					</div>
+					<div class="col-xs-1 col-md-1 btnColTime">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-md-12">
+						<input type="button" id="stopShift" value="END SHIFT" onClick="$('#signModal').modal()"/>
+					</div>
 				</div>
 			</div>
-			<div id="clearBoth"></div>
+		</div>	
+		<footer>
+				&copy;2015 Heavy Connect, Inc.
+		</footer>
+		<div class="modal fade" id="signModal" role="dialog">
+		    <div class="modal-dialog signModalDialog">
+		    	 <!-- Modal content-->
+			      <div class="modal-content">
+			        <div class="modal-header">
+			          <button type="button" class="close" data-dismiss="modal">&times;</button>
+			          <h4 class="modal-title"><strong>Sign</strong></h4>
+			        </div>
+			        <div class="modal-body" id="signatureContent">
+			         
+			          <div id="signField">
+			          	<div id="signature"></div>
+			          	<button type="button" id="clearSignature" class="btn btn-default">Limpiar</button>
+			          </div>
+			        </div>
+			 		<div class="both"></div>
+			        <div class="modal-footer">
+			          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+			          <a href="{% url 'home' %}"><button type="button" id="stopShiftConfirm" class="btn btn-success">Confirmar</button></a>
+			        </div>
+			      </div>
+			      
+			</div>
 		</div>
-		<footer id="foot"></footer>
 	</body>
-
 </html>
