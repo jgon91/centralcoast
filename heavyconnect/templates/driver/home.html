@@ -2,6 +2,7 @@
 <html lang="en">
 	<head>
 		{% load staticfiles %}
+		{% load i18n %}
 		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
 		<script>
 			$(document).ready(function() {
@@ -12,28 +13,31 @@
 	<body> 
 		<header id="headHome"></header>
 		<div class="row" id="driverMenu">
-			
-			<div class="col-xs-3 col-md-3 driverMenu">
+			<div class="col-xs-2 col-md-2 btnHomeDriver">
 				<a href="{% url 'scanQRCode'%}">
-				<input type="button" class="btnMain" id="btnEquipment" />
+				<input type="button" class="btnMain" value="{% trans 'EQUIPMENT' %}" id="btnEquipment" />
 				</a>
 			</div>
-			<div class="col-xs-3 col-md-3 driverMenu">
+			<div class="col-xs-2 col-md-2 btnHomeDriver">
 				<a href="{% url 'taskFlow'%}">
-				<input type="button" class="btnMain" id="btnTaskflow" />
+				<input type="button" class="btnMain" value="{% trans 'TASKFLOW' %}" id="btnTaskflow" />
 				</a>
 			</div>
-			<div class="col-xs-3 col-md-3 driverMenu">
+			<div class="col-xs-2 col-md-2 btnHomeDriver">
 				<a href="{% url 'schedule'%}">
-				<input type="button" class="btnMain" id="btnScheduler" />
+				<input type="button" class="btnMain" value="{% trans 'SCHEDULE' %}" id="btnScheduler" />
 				</a>
 			</div>
-			<div class="col-xs-3 col-md-3 driverMenu">
+			<div class="col-xs-2 col-md-2 btnHomeDriver">
 				<a href="{% url 'time_keeper'%}">
-				<input type="button" class="btnMain" id="btnTimerkeeper" />
+				<input type="button" class="btnMain" value="{% trans 'TIMEKEEPER' %}" id="btnTimerkeeper" />
 				</a>
 			</div>
-			
+			<div class="col-xs-2 col-md-2 btnHomeDriver">
+				<a href="{% url 'checklist'%}">
+				<input type="button" class="btnMain" value="{% trans 'CHECKLIST' %}" id="btnChecklist" />
+				</a>
+			</div>
 		</div>
 	</body>
 	<div>

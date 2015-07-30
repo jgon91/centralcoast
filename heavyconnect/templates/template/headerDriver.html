@@ -2,6 +2,7 @@
 <html lang="en">
 	<head>
 		{% load staticfiles %}
+		{% load i18n %}
 		<meta charset="utf-8">
 		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
 		Remove this if you use the .htaccess -->
@@ -14,6 +15,7 @@
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 		<link rel="stylesheet" type="text/css" href="{% static 'css/styleSmall.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/styleMedium.css' %}" media="screen and (min-width: 801px) and (orientation: landscape)">
 		<!--<link rel="stylesheet" type="text/css" href="{% static 'css/styleSmall.css' %}" media="screen and (max-width: 800px) and (orientation: landscape)">
 		<link rel="stylesheet" type="text/css" href="{% static 'css/styleMedium.css' %}" media="screen and (min-width: 801px)">  -->
 		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
@@ -29,7 +31,8 @@
 				<a href="{% url 'taskFlow'%}"><input type="button" class="btnTop" id="btnTaskflowUp" /></a>
 				<a href="{% url 'schedule'%}"><input type="button" class="btnTop" id="btnSchedulerUp" /></a>
 				<a href="{% url 'time_keeper'%}"><input type="button" class="btnTop" id="btnTimerkeeperUp" /></a>
-				<a href="{% url 'logout' %}"><input type="button" id="logOff"/></a>
+				<a href="{% url 'checklist'%}"><input type="button" class="btnTop" id="btnChecklistUp" /></a>
+				<a href="{% url 'logout' %}"><input type="button" value="{% trans 'EXIT' %}" id="logOff"/></a>
 				<a href="#"><input type="button" id="userImg"/></a>
 			</div>
 		</div>

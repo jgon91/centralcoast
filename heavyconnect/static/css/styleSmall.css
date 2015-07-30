@@ -44,7 +44,6 @@ footer {
 	width: 100%;
 	margin: 0px;
 }
-
 .both {
 	clear: both;
 }
@@ -81,10 +80,6 @@ input[type=button]{
 	border-radius: 7px;
 	box-shadow: 2px 2px 5px gray;
 }
-/*#btn_login:hover {
-	background: url('../imgSmall/buttons/loginBtnHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
 .input_login[type=text] {
 	padding: 7px;
 	border: 2px solid #809256;
@@ -122,7 +117,7 @@ input[type=button]{
 /*** Header Home Begin ***/
 #top {
 	background-color: #1F3801;
-	height: 60px;
+	height: 60.5px;
 	width: 100%;
 	min-width: 640px;
 	text-align: left;
@@ -149,21 +144,21 @@ input[type=button]{
 	margin-top: 2.5px;
 	float: right;
 	border: none;
+	border-radius: 7px;
 }
 #logOff {
-	background: url('../imgSmall/buttons/logoff.png') no-repeat top left;
+	background: url('../imgSmall/buttons/exit.png') no-repeat top left;
 	background-size: 100% 100%;
 	width: 55px;
-	height: 35px;
+	height: 40px;
 	margin-right: 2.5px;
-	margin-top: 12.5px;
+	margin-top: 10px;
 	float: right;
 	border: none;
+	border-radius: 7px;
+	color: white;
+	font-size: 20px;
 }
-/*#logOff:hover {
-	background: url('../imgSmall/buttons/logoffHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
 /*** Header Home End ***/
 
 /*** Header Driver Begin ***/
@@ -171,49 +166,33 @@ input[type=button]{
 	width: 55px;
 	height: 55px;
 	margin-top: 2.5px;
-	margin-right: -2.5px;
 	border: none;
+	border-radius: 5px;
 }
 #btnHomeUp {
 	background: url('../imgSmall/buttons/btnHomeTop.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-/*#btnHomeUp:hover {
-	background: url('../imgSmall/buttons/btnHomeTopHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
 #btnEquipmentUp {
 	background: url('../imgSmall/buttons/btnEquipmentTop.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-/*#btnEquipmentUp:hover {
-	background: url('../imgSmall/buttons/btnEquipmentTopHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
 #btnTaskflowUp {
 	background: url('../imgSmall/buttons/btnTaskflowTop.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-/*#btnTaskflowUp:hover {
-	background: url('../imgSmall/buttons/btnTaskflowTopHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
 #btnSchedulerUp {
-	background: url('../imgSmall/buttons/btnSchedulerTop.png') no-repeat top left;
+	background: url('../imgSmall/buttons/btnScheduleTop.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-/*#btnSchedulerUp:hover {
-	background: url('../imgSmall/buttons/btnSchedulerTopHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
 #btnTimerkeeperUp {
 	background: url('../imgSmall/buttons/btnTimekeeperTop.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-/*#btnTimerkeeperUp:hover {
-	background: url('../imgSmall/buttons/btnTimekeeperTopHover.png') no-repeat top left;
+#btnChecklistUp {
+	background: url('../imgSmall/buttons/btnChecklistTop.png') no-repeat top left;
 	background-size: 100% 100%;
-}*/
+}
 /*** Header Driver End ***/
 
 /*** Home Page Begin ***/
@@ -221,49 +200,43 @@ input[type=button]{
 	width: 105px;
 	height: 105px;
 	border: none;
-	border-radius: 8px;
+	border-radius: 10px;
 	box-shadow: 2px 2px 5px gray;
+	color: white;
+	padding-top: 82px;
+	font-size: 15px;
+	font-weight: 600;
 }
 #driverMenu{
+	min-width: 640px;
 	margin: auto;
-	text-align: center;
 	width: 80%;
 	margin-top: 60px;
 	margin-bottom: 103px;
-	min-width: 640px;
+}
+.btnHomeDriver {
+	margin-left: 2%;
 }
 #btnEquipment {
 	background: url('../imgSmall/buttons/equipment.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-/*#btnEquipment:hover {
-	background: url('../imgSmall/buttons/equipmentHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
 #btnTaskflow {
 	background: url('../imgSmall/buttons/taskflow.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-/*#btnTaskflow:hover {
-	background: url('../imgSmall/buttons/taskflowHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
 #btnScheduler {
-	background: url('../imgSmall/buttons/scheduler.png') no-repeat top left;
+	background: url('../imgSmall/buttons/schedule.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-/*#btnScheduler:hover {
-	background: url('../imgSmall/buttons/schedulerHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
 #btnTimerkeeper {
 	background: url('../imgSmall/buttons/timekeeper.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-/*#btnTimerkeeper:hover {
-	background: url('../imgSmall/buttons/timekeeperHover.png') no-repeat top left;
+#btnChecklist {
+	background: url('../imgSmall/buttons/checklist.png') no-repeat top left;
 	background-size: 100% 100%;
-}*/
+}
 #backgroundFooter {
 	background-size: 100% 100%;
 	width: 100%;
@@ -326,7 +299,7 @@ input[type=button]{
 	font-size: 25px;
 	font-weight: 700;
 	margin-top: 10px;
-	margin-bottom: 10px;
+	margin-bottom: 90px;
 }
 .btnColTime {
 	padding: 0px;

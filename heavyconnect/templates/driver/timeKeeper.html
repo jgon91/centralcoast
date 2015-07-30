@@ -3,7 +3,7 @@
 	<head>
 		{% load staticfiles %}
 		<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
-		<script src="{% static 'jSignature/jSignature.min.js'%}"></script>
+		<!--<script src="{% static 'jSignature/jSignature.min.js'%}"></script>-->
 		<script>
 			var item_count = 0;
 			var hour_start = 0;
@@ -11,11 +11,11 @@
 			$(document).ready(function() {
 				$("#foot").load("{%url 'footer'%}");
 				$("#head").load("{%url 'headerDriver'%}");
-				$("#signature").jSignature()
-				$("#clearSignature").click(function() {
-					var $sigdiv = $("#signature");
-					$sigdiv.jSignature("reset");
-				});
+				//$("#signature").jSignature()
+				//$("#clearSignature").click(function() {
+				//	var $sigdiv = $("#signature");
+				//	$sigdiv.jSignature("reset");
+				//});
 				getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
 				$("#startShift").click(function() {
 					startShift("{{ csrf_token }}", "{% url 'startShift' %}");
@@ -30,10 +30,10 @@
 					createBtnBreak(item_count);
 				});
 				$("#stopShift").click(function(){
-					$('#signModal').modal();
-					var $sigdiv = $("#signature"); //nao sei o que isso faz junior
+				//	$('#signModal').modal();
+				//	var $sigdiv = $("#signature"); //nao sei o que isso faz junior
 					//Get the signature in the 64base
-					var datapair = $sigdiv.jSignature("getData", "base30"); //nem isso
+				//	var datapair = $sigdiv.jSignature("getData", "base30"); //nem isso
    					stopShift("{{ csrf_token }}", "{% url 'stopShift' %}");
 				});
 			});
@@ -62,7 +62,15 @@
 							}
 							if (data.hour_ended != "None") {
 								changeBtn("#stopShift", data.hour_ended.substring(0,8));
+								$("#startBreak" + item_count).hide();
+								$("#stopBreak" + item_count).hide();
 							}
+						} else if (data.code == 1) {
+							alert("There is no shift records for this employee.");
+						} else if (data.code == 2) {
+							alert("Error. Contact Suport.");
+						} else if (data.code == 3) {
+							alert("Error. Contact Suport.");
 						}
 					}
 				});
@@ -79,7 +87,7 @@
 						if (data.success) {
 							changeBtn("#startShift", data.hour_started.substring(11,19));
 						} else if (data.code == 1) {
-							alert("The shift for today was already created.");
+							alert("You need to finish the shift you started already before create a new one.");
 						} else if (data.code == 2) {
 							alert("There is no users associated whit this id.");
 						} else if (data.code == 3) {
@@ -150,15 +158,16 @@
 							if(data.success){
 								//$('#signModal').modal("hide");
 								changeBtn("#stopShift", data.hour_ended.substring(11,19));
-								window.redirec("%url 'timeKeeper'%")
+								$("#startBreak" + item_count).hide();
+								$("#stopBreak" + item_count).hide();
 							} else if(data.code == 1){
-								alert("You need to have done at least 3 breaks.");
+								alert("You need to take at least 3 breaks.");
 							} else if(data.code == 2){
 								alert("The shift for today was already finished.");
 							} else if(data.code == 3){
-								alert("You need to start a shift first.");
+								alert("You have not started your shift yet.");
 							} else if(data.code == 4){
-								alert("There is no users associated with this id.");
+								alert("This user is not authorized to use the system.");
 							} else if(data.code == 5){
 								alert("Error. Contact Suport.");
 							} else if(data.code == 6){
@@ -183,14 +192,14 @@
 					$("#startBreak" + idBtn.substring(10,11)).css('font-size', '20px');
 					$("#startBreak" + idBtn.substring(10,11)).css('font-weight', '600');
 					$("#startBreak" + idBtn.substring(10,11)).css('font-style', 'italic');
-					$("#startBreak" + idBtn.substring(10,11)).css('box-shadow', 'none');
+					$("#startBreak" + idBtn.substring(10,11)).css('box-shadow', '0px 0px 10px gray');
 					$(idBtn).attr("value", hour);
 					$(idBtn).css('background', 'none');
 					$(idBtn).css('color', 'black');
 					$(idBtn).css('font-size', '20px');
 					$(idBtn).css('font-weight', '600');
 					$(idBtn).css('font-style', 'italic');
-					$(idBtn).css('box-shadow', 'none');
+					$(idBtn).css('box-shadow', '0px 0px 10px gray');
 				} else {
 					$(idBtn).attr("value", hour);
 					$(idBtn).css('background', 'none');
@@ -198,7 +207,7 @@
 					$(idBtn).css('font-size', '20px');
 					$(idBtn).css('font-weight', '600');
 					$(idBtn).css('font-style', 'italic');
-					$(idBtn).css('box-shadow', 'none');
+					$(idBtn).css('box-shadow', '0px 0px 10px gray');
 				}
 			}
 			function createBtnBreak(count) {
