@@ -31,10 +31,10 @@
 				createBtnBreak(item_count);
 			});
 			$("#stopShift").click(function(){
-				$('#signModal').modal();
-				var $sigdiv = $("#signature");
+				//$('#signModal').modal();
+				//var $sigdiv = $("#signature");
 				//Get the signature in the 64base
-				var datapair = $sigdiv.jSignature("getData", "base30");
+				//var datapair = $sigdiv.jSignature("getData", "base30");
 				stopShift("{{ csrf_token }}", "{% url 'stopShift' %}");
 			});
 		});
