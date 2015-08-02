@@ -8,38 +8,56 @@
 		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
 		<script src="{% static 'js/script.js' %}"></script>
 		<script>
+			var questions;
+			var quantQuestions = 0;
+			var answers = [];
+			item = getParametersUrl();
+			var qr_code = item.qr_code;
+			var i = 1;
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerDriver' %}");
-				var questions;
-				var answers;
-				var i = 1;
-				//progress bar events
-				var quantQuestions = 0;
-				questions = getCheckListQuestions("{{ csrf_token }}", "{% url 'equipmentQuestionsChecklist' %}", 123456);
-				$('.checkYes').click(function(){
-					quantQuestions += 100 / (questions.length + 1);
 					
-					if (i < questions.length) { //showQuestions
-						showQuestion(questions[i]);
-					}else if (i == questions.length){ //get engine hours
-						$("#question").html("{% trans 'Engine hours'%}</br><input type='number' id='engine_hours' required />");
-						$("#checkListBtns").html("<input type='button' class='checkYes' id='saveBtn' value='{% trans 'Save' %}' />");
-						$("#saveBtn").click(function(){
+				//progress bar events
+				questions = getCheckListQuestions("{{ csrf_token }}", "{% url 'equipmentQuestionsChecklist' %}", qr_code);
+				$('.checkYes').click(function(){
+					saveQuestion(true);
+				});		
+				$('.checkNo').click(function(){
+					saveQuestion(false);
+				});		
+
+			});
+
+			//This function saves the question in the array. In addition, go to the next question
+			function saveQuestion(answer){
+
+				answers.push({"id": questions[i-1].id, "answer": answer});
+
+				quantQuestions += 100 / (questions.length + 1);
+				if (i < questions.length) { //showQuestions
+					showQuestion(questions[i]);
+				}else if (i == questions.length){ //get engine hours
+					$("#question").html("{% trans 'Engine hours'%}</br><input type='number' id='engine_hours' required />");
+					$("#checkListBtns").html("<input type='button' class='checkYes' id='saveBtn' value='{% trans 'Save' %}' />");
+					$("#saveBtn").click(function(){
+						
+						if($("#engine_hours").val() != "" ){
 							$('.progress-bar').css('width', 100 +'%').attr('aria-valuenow', 100); 
 							$('.progress-bar').html(100 + '%');
-							var saveSucess = saveCheckList(answers);
+							var saveSucess = saveCheckList("{{ csrf_token }}", "{% url 'storeChecklistAnswers' %}", item.qr_code, answers);
 							if (true) {
 								$("#checkList").html("{% trans 'Checklist Saved' %}");
 							}
-						});
-					}
-					i++;
-					$('.progress-bar').css('width', quantQuestions +'%').attr('aria-valuenow', quantQuestions); 
-					$('.progress-bar').html(quantQuestions.toFixed(0) + '%'); 	
-			
-				});				
-			});
+						}else{
+							alert("{% trans 'Engine hours required'%}");
+						}
+					});
+				}
+				i++;
+				$('.progress-bar').css('width', quantQuestions +'%').attr('aria-valuenow', quantQuestions); 
+				$('.progress-bar').html(quantQuestions.toFixed(0) + '%'); 	
+			}
 
 		</script>
 	</head>

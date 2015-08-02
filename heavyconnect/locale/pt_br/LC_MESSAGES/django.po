@@ -32,15 +32,15 @@ msgstr ""
 
 #: templates/driver/checklist.html:26
 msgid "Engine hours"
-msgstr ""
+msgstr "Horas do motor"
 
 #: templates/driver/checklist.html:27
 msgid "Save"
-msgstr ""
+msgstr "Salvar"
 
 #: templates/driver/checklist.html:33
 msgid "Checklist Saved"
-msgstr ""
+msgstr "Checklist salvo"
 
 #: templates/driver/checklist.html:51
 msgid "HC CHECKLIST"
@@ -48,11 +48,11 @@ msgstr ""
 
 #: templates/driver/checklist.html:72
 msgid "YES"
-msgstr ""
+msgstr "SIM"
 
 #: templates/driver/checklist.html:76
 msgid "NO"
-msgstr ""
+msgstr "NÃO"
 
 #: templates/driver/createTask.html:154
 msgid "Nickname:"

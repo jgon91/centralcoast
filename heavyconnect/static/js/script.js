@@ -168,19 +168,44 @@ function saveTask(token, url, urlScheduler){
 			},
 			datatype : "json",
 			success : function(data, status, xhr) {	
-				questions = data.questions;
-				showQuestion(questions[0]);
+				if(data.success){
+					questions = data.questions;
+					showQuestion(questions[0]);
+				}else{
+					window.history.back(-1);
+				}
 			}
 
 		});		
 		return questions;
 	}
 
-	function saveCheckList(){
+	function saveCheckList(token, url, qr_code, answers){
+		var saveSucess;
+
+		console.log(answers);
+
+		$.ajax({
+			method : "POST",
+			url : url,
+			async: false,
+			data : {
+				"csrfmiddlewaretoken" : token,
+				"qr_code" : qr_code,
+				"answers" : JSON.stringify(answers),
+				"engine_hours" : $("#engine_hours").val()
+			},
+			datatype : "json",
+			success : function(data, status, xhr) {	
+				console.log(data);
+			}
+
+		});	
+
 		//inside of ajax sucess
 		$("#checkListBtns").html("");
 
-		return true;
+		return saveSucess;
 	}
 
 	function showQuestion(question){
