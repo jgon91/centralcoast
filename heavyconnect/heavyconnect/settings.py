@@ -116,7 +116,7 @@ USE_L10N = True
 USE_TZ = False
 
 LANGUAGES = (
-    ('en', _('English')),
+    ('en-us', _('English')),
     ('es', _('Spanish')),
     ('pt-br', _('Brazilian Portuguese')),
 )

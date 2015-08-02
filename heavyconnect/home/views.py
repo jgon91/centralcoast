@@ -2095,11 +2095,14 @@ def storeChecklistAnswers(request):
 
 				for r in responses:
 					r.employee = employee
+					if r.answer is False: #If one of the answers was no the machine will have they status changed to broken
+						equipment.status = Machine.STBR
 					r.save()
 
-				if isinstance(equipment, Machine):
-					equipment.engine_hours = engine_hours
-					equipment.save()
+				if isinstance(equipment, Machine): #If we have a machine we need to account the 
+					equipment.engine_hours = engine_hours 
+				
+				equipment.save()
 
 				result['success'] = True
 			else:

@@ -80,6 +80,12 @@ class BeaconGPS(models.Model):
 ### DEMO ###
 
 class Machine(models.Model):
+	#Status
+	STOK = 1 #Status ok
+	STAT = 2 #Status needs attentions
+	STBR = 3 #Status broken
+	STQU = 4 #Status quarentine
+
 	HITCH_CHOICES = (
 		(1, '1'),
 		(2, '2'),
@@ -98,10 +104,10 @@ class Machine(models.Model):
 		(7, '5WS'),
 	)
 	STATUS_CHOICES = (
-		(1, 'Ok'),
-		(2, 'Attention'),
-		(3, 'Broken'),
-		(4, 'Quarantine'),
+		(STOK, 'Ok'),
+		(STAT, 'Attention'),
+		(STBR, 'Broken'),
+		(STQU, 'Quarantine'),
 	)
 	OPERATORSTATION_CHOICES = (
 		('a', 'Cab'),
