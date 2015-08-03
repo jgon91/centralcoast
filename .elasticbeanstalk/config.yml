@@ -1,0 +1,10 @@
+branch-defaults:
+  staging:
+    environment: heavyconnect-dev
+global:
+  application_name: heavyconnect
+  default_ec2_keyname: hc-aws-eb
+  default_platform: 64bit Amazon Linux 2015.03 v1.4.3 running Python 2.7
+  default_region: us-west-2
+  profile: eb-cli
+  sc: git
