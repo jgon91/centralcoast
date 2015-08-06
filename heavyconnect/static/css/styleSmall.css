@@ -209,7 +209,6 @@ input[type=button]{
 #driverMenu{
 	min-width: 360px;
 	margin: auto;
-	width: 80%;
 	margin-top: 60px;
 	margin-bottom: 103px;
 }
@@ -218,8 +217,7 @@ input[type=button]{
     float: left;
     margin-right: 5%;
     padding-left: 5%;
-    padding-right: 5%;
-    margin-bottom: 7%;
+    margin-bottom: 10%;
 }
 #btnEquipment {
 	background: url('../imgSmall/buttons/equipment.png') no-repeat top left;
@@ -1059,8 +1057,8 @@ input[type=button]{
 	margin: auto;
 	color: black;
 	font-size: 20px;
-	font-weight: 300;
-	text-align: left;
+    font-weight: 700;
+    text-align: left;
 	line-height: 25px;
 }
 #colBtnsEquip {
