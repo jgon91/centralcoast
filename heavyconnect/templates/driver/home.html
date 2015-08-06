@@ -13,27 +13,27 @@
 	<body> 
 		<header id="headHome"></header>
 		<div class="row" id="driverMenu">
-			<div class="col-xs-2 col-md-2 btnHomeDriver">
+			<div class="btnHomeDriver">
 				<a href="{% url 'scanQRCode'%}?url={% url 'equipment' %}">
 				<input type="button" class="btnMain" value="{% trans 'EQUIPMENT' %}" id="btnEquipment" />
 				</a>
 			</div>
-			<div class="col-xs-2 col-md-2 btnHomeDriver">
+			<div class="btnHomeDriver">
 				<a href="{% url 'taskFlow'%}">
 				<input type="button" class="btnMain" value="{% trans 'TASKFLOW' %}" id="btnTaskflow" />
 				</a>
 			</div>
-			<div class="col-xs-2 col-md-2 btnHomeDriver">
+			<div class="btnHomeDriver">
 				<a href="{% url 'schedule'%}">
 				<input type="button" class="btnMain" value="{% trans 'SCHEDULE' %}" id="btnScheduler" />
 				</a>
 			</div>
-			<div class="col-xs-2 col-md-2 btnHomeDriver">
+			<div class="btnHomeDriver">
 				<a href="{% url 'time_keeper'%}">
 				<input type="button" class="btnMain" value="{% trans 'TIMEKEEPER' %}" id="btnTimerkeeper" />
 				</a>
 			</div>
-			<div class="col-xs-2 col-md-2 btnHomeDriver">
+			<div class="btnHomeDriver">
 				<a href="{% url 'scanQRCode' %}?url={% url 'checklist' %}">
 				<input type="button" class="btnMain" value="{% trans 'CHECKLIST' %}" id="btnChecklist" />
 				</a>

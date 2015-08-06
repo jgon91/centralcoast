@@ -9,7 +9,6 @@ body {
 #wrapper {
 	text-align: center;
 	width: 100%;
-	min-width: 640px;
 	height: 100%;
 	padding: 0px;
 	margin: 0px;
@@ -119,7 +118,7 @@ input[type=button]{
 	background-color: #1F3801;
 	height: 60.5px;
 	width: 100%;
-	min-width: 640px;
+	min-width: 360px;
 	text-align: left;
 	margin: 0 auto;
 	padding: 0px;
@@ -208,14 +207,19 @@ input[type=button]{
 	font-weight: 600;
 }
 #driverMenu{
-	min-width: 640px;
+	min-width: 360px;
 	margin: auto;
 	width: 80%;
 	margin-top: 60px;
 	margin-bottom: 103px;
 }
 .btnHomeDriver {
-	margin-left: 2%;
+	margin-left: 5%;
+    float: left;
+    margin-right: 5%;
+    padding-left: 5%;
+    padding-right: 5%;
+    margin-bottom: 7%;
 }
 #btnEquipment {
 	background: url('../imgSmall/buttons/equipment.png') no-repeat top left;
