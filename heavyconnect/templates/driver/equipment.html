@@ -283,7 +283,7 @@
 			<div id="content" class="divEquip">
 				{% trans 'TRACTOR' %}: <span id="nickname"></span>
 				<div class="row rowUpEquip">
-					<div class="col-xs-3 col-md-3" id="colBtnsEquip">
+					<div id="colBtnsEquip">
 						{% trans 'Status' %}:
 						<a href="#">
 						<input type="button" id="btnOk" id="btn3nStatus1" class="btnStatusEquip" value="{% trans 'OK - Ready to work' %}"/>
@@ -298,12 +298,12 @@
 						<input type="hidden" id="btnRed" value="3"/>
 						</a>
 					</div>
-					<div class="col-xs-3 col-md-3" id="colNoteEquip">
+					<div id="colNoteEquip">
 						{% trans 'Notes' %}:
 						<br>
 						<textarea rows="2" cols="2" form="notesSubmit" id="notesEquip"></textarea>
 					</div>
-					<div class="col-xs-6 col-md-6" id="colSpecEquip">
+					<div id="colSpecEquip">
 						{% trans 'QR Sticker' %}: <span id="qr_code"></span>
 						<br>
 						{% trans 'Reiter Asset' %}: <span id="asset_number"></span>
@@ -312,7 +312,7 @@
 						<br>
 						{% trans 'Model' %}: <span id="model"></span>
 						<br>
-						{% trans 'Hours' %}: <span id="hours_cost"></span>
+						{% trans 'Hours' %}: <span id="engineHoursM"></span>
 						<br>
 						{% trans 'Horse Power' %}: <span id="hp"></span>
 					</div>
