@@ -236,18 +236,18 @@ def stopShift(request):
 					time_delta = (datetime.datetime.now() - datetime.datetime.combine(attendance.date,attendance.hour_started))
 
 					if ((time_delta.seconds / 3600.0) < 16.17) or (time_delta.days == 0):
-						t_break = Break.objects.filter(attendance_id = attendance).order_by('start')
-						amount = t_break.count()
+						# t_break = Break.objects.filter(attendance_id = attendance).order_by('start')
+						# amount = t_break.count()
 						
 						if attendance.hour_ended is None:
-							if amount >= 3:
-								attendance.hour_ended = datetime.datetime.now()
-								attendance.signature = request.POST.get('signature','NOT PROVIDED')
-								attendance.save()
-								result['success'] = True
-								result['hour_ended'] = str(attendance.hour_ended)
-							else:
-								result['code'] = 1 #You need to take at least tree breaks
+							# if amount >= 3:
+							attendance.hour_ended = datetime.datetime.now()
+							attendance.signature = request.POST.get('signature','NOT PROVIDED')
+							attendance.save()
+							result['success'] = True
+							result['hour_ended'] = str(attendance.hour_ended)
+							# else:
+							# 	result['code'] = 1 #You need to take at least tree breaks
 						else:
 							result['code'] = 2 #The shift for today was already finished
 					else:
@@ -2093,15 +2093,25 @@ def storeChecklistAnswers(request):
 				engine_hours = form.cleaned_data['engine_hours']
 				equipment = form.cleaned_data['qr_code']
 
+				print responses
+
+				broken = False
+
 				for r in responses:
 					r.employee = employee
-					if r.answer is False: #If one of the answers was no the machine will have they status changed to broken
-						equipment.status = Machine.STBR
+					equipment.status
+					if r.answer is False:
+						broken = True #If one of the answers was no the machine will have they status changed to broken
 					r.save()
 
+				if broken == True:
+					equipment.status = Machine.STBR
+				else:
+					equipment.status = Machine.STOK
+
 				if isinstance(equipment, Machine): #If we have a machine we need to account the 
-					equipment.engine_hours = engine_hours 
-				
+					equipment.engine_hours = engine_hours
+
 				equipment.save()
 
 				result['success'] = True
