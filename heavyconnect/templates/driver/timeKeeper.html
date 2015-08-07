@@ -12,15 +12,16 @@
 		$(document).ready(function() {
 			$("#foot").load("{%url 'footer'%}");
 			$("#head").load("{%url 'headerDriver'%}");
-			$("#signature").jSignature()
-			$("#clearSignature").click(function() {
-			var $sigdiv = $("#signature");
-				$sigdiv.jSignature("reset");
-			});
+			<!--$("#signature").jSignature()-->
+			<!--$("#clearSignature").click(function() {-->
+			<!--var $sigdiv = $("#signature");-->
+				<!--$sigdiv.jSignature("reset");-->
+			<!--});-->
 			getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
 			$("#startShift").click(function() {
 				startShift("{{ csrf_token }}", "{% url 'startShift' %}");
 			});
+
 			$(".btnBreaksGreen").click(function(){
 				startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);
 			});
@@ -28,13 +29,13 @@
 				stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count);
 			});
 			$("#stopBreak").click(function() {
-				createBtnBreak(item_count);
+				<!--createBtnBreak(item_count);-->
 			});
 			$("#stopShift").click(function(){
-				//$('#signModal').modal();
-				//var $sigdiv = $("#signature");
+				<!--$('#signModal').modal();-->
+				<!--var $sigdiv = $("#signature");-->
 				//Get the signature in the 64base
-				//var datapair = $sigdiv.jSignature("getData", "base30");
+				<!--var datapair = $sigdiv.jSignature("getData", "base30");-->
 				stopShift("{{ csrf_token }}", "{% url 'stopShift' %}");
 			});
 		});
@@ -49,20 +50,49 @@
 						if (data.hour_started != 'None') {
 							changeBtn("#startShift", data.hour_started.substring(0,8));
 						}
+
+						var numStartBreaksEntered = 0;
+						var numStopBreaksEntered = 0;
+
 						for(var i = 0; i < data.breaks.length; i++) {
 							if (data.breaks[i][0] != "None") {
 								changeBtn("#startBreak" + i, data.breaks[i][0].substring(0, 8));
+								numStartBreaksEntered++;
 							}
 							if (data.breaks[i][1] != "None") {
 								changeBtn("#stopBreak" + i, data.breaks[i][1].substring(0, 8));
-								createBtnBreak(i+1);
+								<!--createBtnBreak(i+1);-->
 								item_count++;
+								numStopBreaksEntered++;
+
 							}
+
 						}
+
+						for(var i=numStopBreaksEntered; i <= 6; i++) {
+							$('#stopBreak' + i).attr("disabled", "disabled");
+						}
+
+						for(var i=numStartBreaksEntered; i <= 6; i++) {
+							$('#startBreak' + i).attr("disabled", "disabled");
+						}
+
+						if(numStopBreaksEntered == numStartBreaksEntered) {
+							$('#startBreak' + numStartBreaksEntered).removeAttr("disabled");
+							$('#stopShift').removeAttr("disabled");
+						}else {
+							$('#stopBreak' + numStopBreaksEntered).removeAttr("disabled");
+							$('#stopShift').attr("disabled", "disabled");
+						}
+
+
 						if (data.hour_ended != "None") {
 							changeBtn("#stopShift", data.hour_ended.substring(0,8));
-							$("#startBreak" + item_count).hide();
-							$("#stopBreak" + item_count).hide();
+							<!--$("#startBreak" + item_count).hide();-->
+							<!--$("#stopBreak" + item_count).hide();-->
+
+						}else {
+
 						}
 					} else if (data.code == 1) {
 						$('#showTimekeeperModal').modal();
@@ -86,6 +116,9 @@
 				success : function(data, status, xhr) {
 					if (data.success) {
 						changeBtn("#startShift", data.hour_started.substring(11,19));
+						$('#startBreak0').removeAttr("disabled");
+						$('#stopShift').removeAttr("disabled");
+
 					} else if (data.code == 1) {
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("You need to finish the shift you started already before create a new one.");
@@ -111,6 +144,10 @@
 				success : function(data, status, xhr) {
 					if (data.success) {
 						changeBtn("#startBreak" + breaks, data.time.substring(11,19));
+						$("#stopBreak" + breaks).removeAttr("disabled");
+						$("#stopShift").attr("disabled", "disabled");
+
+
 					} else if (data.code == 1) {
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("You cannot start 2 breaks at the same time.");
@@ -139,8 +176,12 @@
 				success: function(data, status, xhr){
 					if(data.success){
 						changeBtn("#stopBreak" + breaks, data.time.substring(11,19));
+						nextBreak = breaks + 1;
+						$("#startBreak" + nextBreak).removeAttr("disabled");
+						$("#stopShift").removeAttr("disabled");
+
 						item_count++;
-						createBtnBreak(item_count);
+						<!--createBtnBreak(item_count);-->
 					} else if(data.code == 1){
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("You need to start a break first.");
@@ -170,8 +211,8 @@
 					if(data.success){
 						//$('#signModal').modal("hide");
 						changeBtn("#stopShift", data.hour_ended.substring(11,19));
-						$("#startBreak" + item_count).hide();
-						$("#stopBreak" + item_count).hide();
+						<!--$("#startBreak" + item_count).hide();-->
+						<!--$("#stopBreak" + item_count).hide();-->
 					} else if(data.code == 1){
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("You need to take at least 3 breaks.");
@@ -203,6 +244,7 @@
 				$(idBtn).css('font-style', 'italic');
 				$(idBtn).css('background', 'url("{% static 'imgSmall/buttons/startShiftHover.png' %}") no-repeat top left');
 				$(idBtn).css('background-size', '100% 100%');
+				$(idBtn).attr("disabled","disabled");
 			} else if(idBtn.substring(0,10) == "#stopBreak"){
 				$("#startBreak" + idBtn.substring(10,11)).attr("value", hour_start);
 				$("#startBreak" + idBtn.substring(10,11)).css('background', 'none');
@@ -212,6 +254,7 @@
 				$("#startBreak" + idBtn.substring(10,11)).css('font-style', 'italic');
 				$("#startBreak" + idBtn.substring(10,11)).css('box-shadow', '0px 0px 10px gray');
 				$(idBtn).attr("value", hour);
+				$(idBtn).attr("disabled","disabled");
 				$(idBtn).css('background', 'none');
 				$(idBtn).css('color', 'black');
 				$(idBtn).css('font-size', '20px');
@@ -220,6 +263,7 @@
 				$(idBtn).css('box-shadow', '0px 0px 10px gray');
 			} else {
 				$(idBtn).attr("value", hour);
+				$(idBtn).attr("disabled","disabled");
 				$(idBtn).css('background', 'none');
 				$(idBtn).css('color', 'black');
 				$(idBtn).css('font-size', '20px');
@@ -228,15 +272,15 @@
 				$(idBtn).css('box-shadow', '0px 0px 10px gray');
 			}
 		}
-		function createBtnBreak(count) {
-			$( "#divBreaks").append('<div class="row"><div class="col-xs-3 col-md-3 btnColTime"></div><div class="col-xs-2 col-md-2 btnColTime"><input type="button" id="startBreak'+count+'" value="START" class="btnGreenTime btnBreaksGreen"/></div><div class="col-xs-2 col-md-2 btnColTime"></div><div class="col-xs-2 col-md-2 btnColTime"><input type="button" id="stopBreak'+count+'" value="STOP"  class="btnRedTime btnBreaksRed"/></div><div class="col-xs-3 col-md-3 btnColTime"></div></div>');
-			$(".btnBreaksGreen").click(function() {
-				startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);
-			});
-			$(".btnBreaksRed").click(function(){
-				stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count);
-			});
-		}
+		<!--function createBtnBreak(count) {-->
+			<!--$( "#divBreaks").append('<div class="row"><div class="col-xs-3 col-md-3 btnColTime"></div><div class="col-xs-2 col-md-2 btnColTime"><input type="button" id="startBreak'+count+'" value="START" class="btnGreenTime btnBreaksGreen"/></div><div class="col-xs-2 col-md-2 btnColTime"></div><div class="col-xs-2 col-md-2 btnColTime"><input type="button" id="stopBreak'+count+'" value="STOP"  class="btnRedTime btnBreaksRed"/></div><div class="col-xs-3 col-md-3 btnColTime"></div></div>');-->
+			<!--$(".btnBreaksGreen").click(function() {-->
+				<!--startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);-->
+			<!--});-->
+			<!--$(".btnBreaksRed").click(function(){-->
+				<!--stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count);-->
+			<!--});-->
+		<!--}-->
 		</script>
 	</head>
 	<body>
@@ -253,21 +297,75 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-xs-2 col-md-2 btnColTime"></div>
-					<div class="col-xs-1 col-md-1 btnColTime"></div>
-					<div class="col-xs-2 col-md-2 btnColTime">
-						<input type="button" id="startBreak0" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen"/>
+					<div class="bigFontTitle">
+					1st Break :
 					</div>
-					<div class="col-xs-2 col-md-2 btnColTime"></div>
+					<div class="col-xs-2 col-md-2 btnColTime">
+						<input type="button" id="startBreak0" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen" />
+					</div>
 					<div class="col-xs-2 col-md-2 btnColTime">
 						<input type="button" id="stopBreak0" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed"/>
 					</div>
-					<div class="col-xs-3 col-md-3 btnColTime"></div>
+				</div>
+				<div class="row">
+					<div class="bigFontTitle">
+					1st Lunch:
+					</div>
+					<div class="col-xs-2 col-md-2 btnColTime">
+						<input type="button" id="startBreak1" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen"/>
+					</div>
+					<div class="col-xs-2 col-md-2 btnColTime">
+						<input type="button" id="stopBreak1" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="bigFontTitle">
+					2nd Break:
+					</div>
+					<div class="col-xs-2 col-md-2 btnColTime">
+						<input type="button" id="startBreak2" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen" />
+					</div>
+					<div class="col-xs-2 col-md-2 btnColTime">
+						<input type="button" id="stopBreak2" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="bigFontTitle">
+					3rd Break :
+					</div>
+					<div class="col-xs-2 col-md-2 btnColTime">
+						<input type="button" id="startBreak3" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen"/>
+					</div>
+					<div class="col-xs-2 col-md-2 btnColTime">
+						<input type="button" id="stopBreak3" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="bigFontTitle">
+					2nd Lunch
+					</div>
+					<div class="col-xs-2 col-md-2 btnColTime">
+						<input type="button" id="startBreak4" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen" />
+					</div>
+					<div class="col-xs-2 col-md-2 btnColTime">
+						<input type="button" id="stopBreak4" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="bigFontTitle">
+					4th Break    :
+					</div>
+					<div class="col-xs-2 col-md-2 btnColTime">
+						<input type="button" id="startBreak5" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen" />
+					</div>
+					<div class="col-xs-2 col-md-2 btnColTime">
+						<input type="button" id="stopBreak5" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed" />
+					</div>
 				</div>
 				<div id="divBreaks"></div>
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" id="stopShift" value="{% trans 'END SHIFT' %}"/>
+						<input type="button" id="stopShift" value="{% trans 'END SHIFT' %}" />
 					</div>
 				</div>
 			</div>
@@ -298,7 +396,7 @@
 				<div class="modal-content signModalDialog">
 					<button type="button" class="closeSignature" data-dismiss="modal"></button>
 					<div class="modal-title" id="titleSign">{% trans 'Sign Here' %}</div>
-					<div class="modal-body" id="signatureContent"">
+					<div class="modal-body" id="signatureContent">
 
 					<div id="signField" style="margin-top: 100px;">
 						<div id="signature"></div>

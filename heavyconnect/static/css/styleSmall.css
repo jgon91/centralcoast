@@ -135,7 +135,7 @@ input[type=button]{
 	margin-top: 2.5px;
 }
 #userImg {
-	background: url('../imgSmall/buttons/userPicture.png') no-repeat top left;
+	background: url('../imgSmall/buttons/user.png') no-repeat top left;
 	background-size: 100% 100%;
 	width: 55px;
 	height: 55px;
@@ -250,6 +250,14 @@ input[type=button]{
 /*** Home Page End ***/
 
 /*** Timekeeper Page Begin ***/
+
+.bigFontTitle {
+	font-weight: 700;
+    float: left;
+    font-size: x-large;
+    line-height: 3;
+}
+
 #startShift {
 	background: url('../imgSmall/buttons/btnGreen.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -307,6 +315,7 @@ input[type=button]{
 }
 .btnColTime {
 	padding: 0px;
+	margin-left: 10%;
 }
 	/* MODAL SGNATURE BEGIN */
 #titleSign {
