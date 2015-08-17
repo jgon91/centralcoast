@@ -36,7 +36,7 @@ function saveTask(token, url, urlScheduler){
 		method: "POST",
 		url: url,
 		data: {"csrfmiddlewaretoken": token,
-				"category": $("#category").val(), 
+				"code": $("#code").val(),
 				"field": $("#field").val(), 
 				"passes": $("#passes").val(), 
 				"hours_prediction": $("#hours_prediction").val(), 
@@ -55,8 +55,8 @@ function saveTask(token, url, urlScheduler){
 				document.location = urlScheduler;
 			}else if(data.code == 3){
 				var errorsMessage = "";
-				if(data.errors.category != null){
-					errorsMessage += "\nCategory: " + data.errors.category;
+				if(data.errors.code != null){
+					errorsMessage += "\nCode: " + data.errors.code;
 				}
 				if(data.errors.machine != null){
 					errorsMessage += "\nMachine: " + data.errors.machine;

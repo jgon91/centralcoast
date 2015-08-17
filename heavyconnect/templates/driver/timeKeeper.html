@@ -8,37 +8,234 @@
 		<script>
 		var item_count = 0;
 		var hour_start = 0;
-		var urlTest = "{% url 'stopBreak' %}";
 		$(document).ready(function() {
 			$("#foot").load("{%url 'footer'%}");
 			$("#head").load("{%url 'headerDriver'%}");
-			<!--$("#signature").jSignature()-->
-			<!--$("#clearSignature").click(function() {-->
-			<!--var $sigdiv = $("#signature");-->
-				<!--$sigdiv.jSignature("reset");-->
-			<!--});-->
-			getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
-			$("#startShift").click(function() {
-				startShift("{{ csrf_token }}", "{% url 'startShift' %}");
+			$("#signature").jSignature()
+			$("#clearSignature").click(function() {
+			var $sigdiv = $("#signature");
+				$sigdiv.jSignature("reset");
 			});
 
-			$(".btnBreaksGreen").click(function(){
-				startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);
+			$("#taskFlowSubmit").click(function() {
+				$('#signModal').modal();
 			});
-			$(".btnBreaksRed").click(function(){
-				stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count);
+
+			$("#start-shift").blur(function() {
+			    var enteredDatetime = getAdjustedDatetime("start-shift");
+				var enteredTime = getAdjustedTime("start-shift");
+    			startShift("{{ csrf_token }}", "{% url 'startShift' %}", enteredDatetime, "start-shift", enteredTime);
 			});
-			$("#stopBreak").click(function() {
-				<!--createBtnBreak(item_count);-->
+
+			$("#stop-shift").blur(function() {
+				var enteredDatetime = getAdjustedDatetime("stop-shift");
+				var enteredTime = getAdjustedTime("stop-shift");
+    			stopShift("{{ csrf_token }}", "{% url 'stopShift' %}", enteredDatetime, "stop-shift", enteredTime);
 			});
+
+
+			$("#start-break0").blur(function() {
+					var enteredDatetime = getAdjustedDatetime("start-break0");
+					var enteredTime = getAdjustedTime("start-break0");
+					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 0, enteredDatetime, "start-break0", enteredTime);
+			});
+
+			$("#start-break1").blur(function() {
+					var enteredDatetime = getAdjustedDatetime("start-break1");
+					var enteredTime = getAdjustedTime("start-break1");
+					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 1, enteredDatetime, "start-break1", enteredTime);
+			});
+
+			$("#start-break2").blur(function() {
+					var enteredDatetime = getAdjustedDatetime("start-break2");
+					var enteredTime = getAdjustedTime("start-break2");
+					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 2, enteredDatetime, "start-break2", enteredTime);
+			});
+
+			$("#start-break3").blur(function() {
+					var enteredDatetime = getAdjustedDatetime("start-break3");
+					var enteredTime = getAdjustedTime("start-break3");
+					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 3, enteredDatetime, "start-break3", enteredTime);
+			});
+
+			$("#start-break4").blur(function() {
+					var enteredDatetime = getAdjustedDatetime("start-break4");
+					var enteredTime = getAdjustedTime("start-break4");
+					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 4, enteredDatetime, "start-break4", enteredTime);
+			});
+
+			$("#start-break5").blur(function() {
+					var enteredDatetime = getAdjustedDatetime("start-break5");
+					var enteredTime = getAdjustedTime("start-break5");
+					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 5, enteredDatetime, "start-break5", enteredTime);
+			});
+
+			function getAdjustedDatetime(id){
+
+				datetime = getDate() +" "+document.getElementById(id).value;
+				return datetime;
+			}
+
+			function getAdjustedTime(id){
+				return document.getElementById(id).value;
+			}
+
+			$("#stop-break0").blur(function() {
+					var enteredDatetime = getAdjustedDatetime("stop-break0");
+					var enteredTime = getAdjustedTime("stop-break0");
+					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 0, enteredDatetime, "stop-break0", enteredTime);
+			});
+
+			$("#stop-break1").blur(function() {
+					var enteredDatetime = getAdjustedDatetime("stop-break1");
+					var enteredTime = getAdjustedTime("stop-break1");
+					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 1, enteredDatetime, "stop-break1", enteredTime);
+			});
+
+			$("#stop-break2").blur(function() {
+					var enteredDatetime = getAdjustedDatetime("stop-break2");
+					var enteredTime = getAdjustedTime("stop-break2");
+					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 2, enteredDatetime,"stop-break2", enteredTime);
+			});
+
+			$("#stop-break3").blur(function() {
+					var enteredDatetime = getAdjustedDatetime("stop-break3");
+					var enteredTime = getAdjustedTime("stop-break3");
+					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 3, enteredDatetime, "stop-break3", enteredTime);
+			});
+
+			$("#stop-break4").blur(function() {
+					var enteredDatetime = getAdjustedDatetime("stop-break4");
+					var enteredTime = getAdjustedTime("stop-break4");
+					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 4, enteredDatetime, "stop-break4", enteredTime);
+			});
+
+			$("#stop-break5").blur(function() {
+					var enteredDatetime = getAdjustedDatetime("stop-break5");
+					var enteredTime = getAdjustedTime("stop-break5");
+					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 5, enteredDatetime, "stop-break5", enteredTime);
+			});
+
+
+			$("#stopBreak0").click(function(){
+					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 0, getTimeNow(), "stop-break0", getTime());
+			});
+
+			$("#stopBreak1").click(function(){
+					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 1, getTimeNow(), "stop-break1", getTime());
+			});
+
+			$("#stopBreak2").click(function(){
+					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 2, getTimeNow(), "stop-break2", getTime());
+			});
+
+			$("#stopBreak3").click(function(){
+					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 3, getTimeNow(), "stop-break3", getTime());
+			});
+			$("#stopBreak4").click(function(){
+					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 4, getTimeNow(), "stop-break4", getTime());
+			});
+			$("#stopBreak5").click(function(){
+					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 5, getTimeNow(), "stop-break5", getTime());
+			});
+
+			$("#startBreak0").click(function(){
+					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 0, getTimeNow(), "start-break0", getTime());
+			});
+
+			$("#startBreak1").click(function(){
+					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 1, getTimeNow(), "start-break1", getTime());
+			});
+
+			$("#startBreak2").click(function(){
+					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 2, getTimeNow(), "start-break2", getTime());
+			});
+
+			$("#startBreak3").click(function(){
+					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 3, getTimeNow(), "start-break3", getTime());
+			});
+			$("#startBreak4").click(function(){
+					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 4, getTimeNow(), "start-break4", getTime());
+			});
+			$("#startBreak5").click(function(){
+					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 5, getTimeNow(), "start-break5", getTime());
+			});
+
+			getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
+
+			$("#startShift").click(function() {
+				startShift("{{ csrf_token }}", "{% url 'startShift' %}", getTimeNow(), "start-shift", getTime());
+
+			});
+
 			$("#stopShift").click(function(){
-				<!--$('#signModal').modal();-->
-				<!--var $sigdiv = $("#signature");-->
-				//Get the signature in the 64base
-				<!--var datapair = $sigdiv.jSignature("getData", "base30");-->
-				stopShift("{{ csrf_token }}", "{% url 'stopShift' %}");
+				stopShift("{{ csrf_token }}", "{% url 'stopShift' %}", getTimeNow(), "stop-shift", getTime());
+
+			});
+
+			$("#stopShiftConfirm").click(function(){
+				var $sigdiv = $("#signature");
+				var datapair = $sigdiv.jSignature("getData", "base30");
+				updateSignature("{{ csrf_token }}", "{% url 'updateSignature' %}", datapair[1]);
+
 			});
 		});
+
+		function timeNow(i, time) {
+  			document.getElementById(i).value = time;
+		}
+
+		function getTime() {
+			var d = new Date(),
+      		h = (d.getHours()<10?'0':'') + d.getHours(),
+      		m = (d.getMinutes()<10?'0':'') + d.getMinutes();
+      		return h + ":" + m
+		}
+
+		function getDate() {
+
+			var d = new Date(),
+      		h = (d.getHours()<10?'0':'') + d.getHours(),
+      		m = (d.getMinutes()<10?'0':'') + d.getMinutes(),
+      		s = (d.getSeconds()<10?'0':'') + d.getSeconds(),
+      		y = d.getFullYear(),
+      		M = (d.getMonth()<10?'0':'') + (d.getMonth()+1),
+      		D = (d.getDate()<10?'0':'') + d.getDate();
+      		return y + "-" + M + "-" + D
+
+		}
+		function getTimeNow() {
+
+			var d = new Date(),
+      		h = (d.getHours()<10?'0':'') + d.getHours(),
+      		m = (d.getMinutes()<10?'0':'') + d.getMinutes(),
+      		s = (d.getSeconds()<10?'0':'') + d.getSeconds(),
+      		y = d.getFullYear(),
+      		M = (d.getMonth()<10?'0':'') + (d.getMonth()+1),
+      		D = (d.getDate()<10?'0':'') + d.getDate();
+      		return y + "-" + M + "-" + D + " " + h + ":" + m
+		}
+
+		function updateSignature(token, url, signature) {
+			$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token, "signature": signature},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					if (data.success) {
+
+					} else if (data.code == 2) {
+						$('#showTimekeeperModal').modal();
+						$("#messageTimekeeper").html("There is already a signature for this shift");
+					} else if (data.code == 3) {
+						$('#showTimekeeperModal').modal();
+						$("#messageTimekeeper").html("You have not started a shift yet");
+					}
+				}
+			});
+		}
+
 		function getEmployeeShifts(token, url) {
 			$.ajax({
 				method : "POST",
@@ -48,50 +245,21 @@
 				success : function(data, status, xhr) {
 					if (data.success) {
 						if (data.hour_started != 'None') {
-							changeBtn("#startShift", data.hour_started.substring(0,8));
+							document.getElementById("start-shift").value = data.hour_started.substring(0,8);
 						}
-
-						var numStartBreaksEntered = 0;
-						var numStopBreaksEntered = 0;
 
 						for(var i = 0; i < data.breaks.length; i++) {
 							if (data.breaks[i][0] != "None") {
-								changeBtn("#startBreak" + i, data.breaks[i][0].substring(0, 8));
-								numStartBreaksEntered++;
+								document.getElementById("start-break"+i).value = data.breaks[i][0].substring(0, 8);
 							}
 							if (data.breaks[i][1] != "None") {
-								changeBtn("#stopBreak" + i, data.breaks[i][1].substring(0, 8));
-								<!--createBtnBreak(i+1);-->
-								item_count++;
-								numStopBreaksEntered++;
-
+								document.getElementById("stop-break"+i).value = data.breaks[i][1].substring(0, 8);
 							}
 
 						}
 
-						for(var i=numStopBreaksEntered; i <= 6; i++) {
-							$('#stopBreak' + i).attr("disabled", "disabled");
-						}
-
-						for(var i=numStartBreaksEntered; i <= 6; i++) {
-							$('#startBreak' + i).attr("disabled", "disabled");
-						}
-
-						if(numStopBreaksEntered == numStartBreaksEntered) {
-							$('#startBreak' + numStartBreaksEntered).removeAttr("disabled");
-							$('#stopShift').removeAttr("disabled");
-						}else {
-							$('#stopBreak' + numStopBreaksEntered).removeAttr("disabled");
-							$('#stopShift').attr("disabled", "disabled");
-						}
-
-
 						if (data.hour_ended != "None") {
-							changeBtn("#stopShift", data.hour_ended.substring(0,8));
-							<!--$("#startBreak" + item_count).hide();-->
-							<!--$("#stopBreak" + item_count).hide();-->
-
-						}else {
+							document.getElementById("stop-shift").value = data.hour_ended.substring(0,8);
 
 						}
 					} else if (data.code == 1) {
@@ -107,21 +275,23 @@
 				}
 			});
 		}
-		function startShift(token, url) {
+		function startShift(token, url, currentDate, startShiftId, time) {
 			$.ajax({
 				method : "POST",
 				url : url,
-				data : {"csrfmiddlewaretoken" : token},
+				data : {
+					"csrfmiddlewaretoken" : token,
+					"currentTime" : currentDate
+				},
 				datatype : "json",
 				success : function(data, status, xhr) {
 					if (data.success) {
-						changeBtn("#startShift", data.hour_started.substring(11,19));
-						$('#startBreak0').removeAttr("disabled");
-						$('#stopShift').removeAttr("disabled");
-
+						timeNow(startShiftId, time);
 					} else if (data.code == 1) {
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("You need to finish the shift you started already before create a new one.");
+						document.getElementById("start-shift").value = "";
+
 					} else if (data.code == 2) {
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("There is no users associated whit this id.");
@@ -135,28 +305,23 @@
 				}
 			});
 		}
-		function startBreak(token, url, breaks) {
+		function startBreak(token, url, breaks, currentDate, breakId, time) {
 			$.ajax({
 				method : "POST",
 				url : url,
-				data : {"csrfmiddlewaretoken" : token},
+				data : {"csrfmiddlewaretoken" : token,
+						"currentTime" : currentDate,
+						"breakNumber" : breaks,
+				},
 				datatype : "json",
 				success : function(data, status, xhr) {
 					if (data.success) {
-						changeBtn("#startBreak" + breaks, data.time.substring(11,19));
-						$("#stopBreak" + breaks).removeAttr("disabled");
-						$("#stopShift").attr("disabled", "disabled");
-
-
-					} else if (data.code == 1) {
-						$('#showTimekeeperModal').modal();
-						$("#messageTimekeeper").html("You cannot start 2 breaks at the same time.");
-					} else if (data.code == 2) {
-						$('#showTimekeeperModal').modal();
-						$("#messageTimekeeper").html("The shift for today was already finished.");
+						timeNow(breakId, time);
 					} else if (data.code == 3) {
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("You need to start a shift first.");
+						document.getElementById(breakId).value = "";
+
 					} else if (data.code == 4) {
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("Error. Contact Suport.");
@@ -167,30 +332,22 @@
 				}
 			});
 		}
-		function stopBreak(token, url, breaks) {
+		function stopBreak(token, url, breaks, currentDate, breakId, time) {
 			$.ajax({
 				method: "POST",
 				url: url,
-				data: {"csrfmiddlewaretoken": token},
+				data: {"csrfmiddlewaretoken": token,
+						"currentTime": currentDate,
+						"breakNumber" : breaks,
+				},
 				datatype: "json",
 				success: function(data, status, xhr){
 					if(data.success){
-						changeBtn("#stopBreak" + breaks, data.time.substring(11,19));
-						nextBreak = breaks + 1;
-						$("#startBreak" + nextBreak).removeAttr("disabled");
-						$("#stopShift").removeAttr("disabled");
-
-						item_count++;
-						<!--createBtnBreak(item_count);-->
-					} else if(data.code == 1){
-						$('#showTimekeeperModal').modal();
-						$("#messageTimekeeper").html("You need to start a break first.");
-					} else if(data.code == 2){
-						$('#showTimekeeperModal').modal();
-						$("#messageTimekeeper").html("The shift for today was already finished.");
+						timeNow(breakId, time);
 					} else if(data.code == 3){
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("You need to start a shift first.");
+						document.getElementById(breakId).value = "";
 					} else if(data.code == 4){
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("Error. Contact Suport.");
@@ -201,27 +358,21 @@
 				}
 			});
 		}
-		function stopShift(token, url) {
+		function stopShift(token, url, currentDate, stopShiftId, time) {
 			$.ajax({
 				method: "POST",
 				url: url,
-				data: {"csrfmiddlewaretoken": token},
+				data: {"csrfmiddlewaretoken": token,
+						"currentTime": currentDate
+				},
 				datatype: "json",
 				success: function(data, status, xhr){
 					if(data.success){
-						//$('#signModal').modal("hide");
-						changeBtn("#stopShift", data.hour_ended.substring(11,19));
-						<!--$("#startBreak" + item_count).hide();-->
-						<!--$("#stopBreak" + item_count).hide();-->
-					} else if(data.code == 1){
-						$('#showTimekeeperModal').modal();
-						$("#messageTimekeeper").html("You need to take at least 3 breaks.");
-					} else if(data.code == 2){
-						$('#showTimekeeperModal').modal();
-						$("#messageTimekeeper").html("The shift for today was already finished.");
+						timeNow(stopShiftId, time);
 					} else if(data.code == 3){
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("You have not started your shift yet.");
+						document.getElementById("stop-shift").value = "";
 					} else if(data.code == 4){
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("This user is not authorized to use the system.");
@@ -235,52 +386,8 @@
 				}
 			});
 		}
-		function changeBtn(idBtn, hour) {
-			if(idBtn.substring(0,11) == "#startBreak"){
-				hour_start = hour;
-				$(idBtn).attr("value", hour);
-				$(idBtn).css('font-size', '20px');
-				$(idBtn).css('font-weight', '600');
-				$(idBtn).css('font-style', 'italic');
-				$(idBtn).css('background', 'url("{% static 'imgSmall/buttons/startShiftHover.png' %}") no-repeat top left');
-				$(idBtn).css('background-size', '100% 100%');
-				$(idBtn).attr("disabled","disabled");
-			} else if(idBtn.substring(0,10) == "#stopBreak"){
-				$("#startBreak" + idBtn.substring(10,11)).attr("value", hour_start);
-				$("#startBreak" + idBtn.substring(10,11)).css('background', 'none');
-				$("#startBreak" + idBtn.substring(10,11)).css('color', 'black');
-				$("#startBreak" + idBtn.substring(10,11)).css('font-size', '20px');
-				$("#startBreak" + idBtn.substring(10,11)).css('font-weight', '600');
-				$("#startBreak" + idBtn.substring(10,11)).css('font-style', 'italic');
-				$("#startBreak" + idBtn.substring(10,11)).css('box-shadow', '0px 0px 10px gray');
-				$(idBtn).attr("value", hour);
-				$(idBtn).attr("disabled","disabled");
-				$(idBtn).css('background', 'none');
-				$(idBtn).css('color', 'black');
-				$(idBtn).css('font-size', '20px');
-				$(idBtn).css('font-weight', '600');
-				$(idBtn).css('font-style', 'italic');
-				$(idBtn).css('box-shadow', '0px 0px 10px gray');
-			} else {
-				$(idBtn).attr("value", hour);
-				$(idBtn).attr("disabled","disabled");
-				$(idBtn).css('background', 'none');
-				$(idBtn).css('color', 'black');
-				$(idBtn).css('font-size', '20px');
-				$(idBtn).css('font-weight', '600');
-				$(idBtn).css('font-style', 'italic');
-				$(idBtn).css('box-shadow', '0px 0px 10px gray');
-			}
-		}
-		<!--function createBtnBreak(count) {-->
-			<!--$( "#divBreaks").append('<div class="row"><div class="col-xs-3 col-md-3 btnColTime"></div><div class="col-xs-2 col-md-2 btnColTime"><input type="button" id="startBreak'+count+'" value="START" class="btnGreenTime btnBreaksGreen"/></div><div class="col-xs-2 col-md-2 btnColTime"></div><div class="col-xs-2 col-md-2 btnColTime"><input type="button" id="stopBreak'+count+'" value="STOP"  class="btnRedTime btnBreaksRed"/></div><div class="col-xs-3 col-md-3 btnColTime"></div></div>');-->
-			<!--$(".btnBreaksGreen").click(function() {-->
-				<!--startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);-->
-			<!--});-->
-			<!--$(".btnBreaksRed").click(function(){-->
-				<!--stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count);-->
-			<!--});-->
-		<!--}-->
+
+
 		</script>
 	</head>
 	<body>
@@ -293,81 +400,78 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" id="startShift" value="{% trans 'START SHIFT' %}" class=""/>
+						<input type="button" id="startShift" value="{% trans 'START SHIFT' %}" />
+						<input type="time" id="start-shift" id="startShiftInput"/>
+
 					</div>
 				</div>
-				<div class="row">
-					<div class="bigFontTitle">
-					1st Break :
-					</div>
-					<div class="col-xs-2 col-md-2 btnColTime">
-						<input type="button" id="startBreak0" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen" disabled="disabled"/>
-					</div>
-					<div class="col-xs-2 col-md-2 btnColTime">
+				<div class="form-inline row">
+					<div class="form-group">
+						<label for="startBreak0">1st Break:</label>
+						<input type="button" id="startBreak0" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen" />
+						<input type="time" id="start-break0" />
 						<input type="button" id="stopBreak0" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed"/>
+						<input type="time" id="stop-break0" />
 					</div>
 				</div>
-				<div class="row">
-					<div class="bigFontTitle">
-					1st Lunch:
-					</div>
-					<div class="col-xs-2 col-md-2 btnColTime">
-						<input type="button" id="startBreak1" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen"/>
-					</div>
-					<div class="col-xs-2 col-md-2 btnColTime">
-						<input type="button" id="stopBreak1" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed" />
+				<div class="form-inline row">
+					<div class="form-group">
+						<label for="startBreak1">1st Lunch:</label>
+						<input type="button" id="startBreak1" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen" />
+						<input type="time" id="start-break1" />
+						<input type="button" id="stopBreak1" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed"/>
+						<input type="time" id="stop-break1" />
 					</div>
 				</div>
-				<div class="row">
-					<div class="bigFontTitle">
-					2nd Break:
-					</div>
-					<div class="col-xs-2 col-md-2 btnColTime">
-						<input type="button" id="startBreak2" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen" />
-					</div>
-					<div class="col-xs-2 col-md-2 btnColTime">
-						<input type="button" id="stopBreak2" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed" />
+				<div class="form-inline row">
+					<div class="form-group">
+						<label for="startBreak2">2nd Break:</label>
+						<input type="button" id="startBreak2" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen"/>
+						<input type="time" id="start-break2" />
+						<input type="button" id="stopBreak2" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed"/>
+						<input type="time" id="stop-break2" />
 					</div>
 				</div>
-				<div class="row">
-					<div class="bigFontTitle">
-					3rd Break :
-					</div>
-					<div class="col-xs-2 col-md-2 btnColTime">
+				<div class="form-inline row">
+					<div class="form-group">
+						<label for="startBreak3">2nd Lunch:</label>
 						<input type="button" id="startBreak3" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen"/>
-					</div>
-					<div class="col-xs-2 col-md-2 btnColTime">
-						<input type="button" id="stopBreak3" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed" />
-					</div>
-				</div>
-				<div class="row">
-					<div class="bigFontTitle">
-					2nd Lunch
-					</div>
-					<div class="col-xs-2 col-md-2 btnColTime">
-						<input type="button" id="startBreak4" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen" />
-					</div>
-					<div class="col-xs-2 col-md-2 btnColTime">
-						<input type="button" id="stopBreak4" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed" />
+						<input type="time" id="start-break3" />
+						<input type="button" id="stopBreak3" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed"/>
+						<input type="time" id="stop-break3" />
 					</div>
 				</div>
-				<div class="row">
-					<div class="bigFontTitle">
-					4th Break    :
+				<div class="form-inline row">
+					<div class="form-group">
+						<label for="startBreak4">3rd Break:</label>
+						<input type="button" id="startBreak4" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen"/>
+						<input type="time" id="start-break4" />
+						<input type="button" id="stopBreak4" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed"/>
+						<input type="time" id="stop-break4" />
 					</div>
-					<div class="col-xs-2 col-md-2 btnColTime">
+				</div>
+				<div class="form-inline row">
+					<div class="form-group">
+						<label for="startBreak5">4th Break:</label>
 						<input type="button" id="startBreak5" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen" />
-					</div>
-					<div class="col-xs-2 col-md-2 btnColTime">
-						<input type="button" id="stopBreak5" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed" />
+						<input type="time" id="start-break5" />
+						<input type="button" id="stopBreak5" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed"/>
+						<input type="time" id="stop-break5" />
 					</div>
 				</div>
+
 				<div id="divBreaks"></div>
-				<div class="row">
-					<div class="col-xs-12 col-md-12">
+				<div class="form-inline row">
+					<div class="form-group">
 						<input type="button" id="stopShift" value="{% trans 'END SHIFT' %}" />
+						<input type="time" id="stop-shift" />
 					</div>
+					<div class="form-inline row">
+					<a href="#"><input type="button" class="btnSubmitTF" value="SUBMIT" id="taskFlowSubmit"></a>
 				</div>
+				</div>
+
+
 			</div>
 		</div>
 		<footer>
@@ -394,19 +498,19 @@
 			<div class="modal-dialog">
 				<!-- Modal content-->
 				<div class="modal-content signModalDialog">
-					<button type="button" class="closeSignature" data-dismiss="modal"></button>
 					<div class="modal-title" id="titleSign">{% trans 'Sign Here' %}</div>
 					<div class="modal-body" id="signatureContent">
 
-					<div id="signField" style="margin-top: 100px;">
+					<div id="signField" >
 						<div id="signature"></div>
+						<div style="margin-top: 75px;">
 						<button type="button" id="clearSignature" class="btn btn-default">{% trans 'Limpiar' %}</button>
-						<button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>
 						<a href="">
 							<button type="button" id="stopShiftConfirm" class="btn btn-success">
 								{% trans 'Confirmar' %}
 							</button>
 						</a>
+						</div>
 					</div>
 				</div>
 			</div>

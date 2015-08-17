@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{% load staticfiles %}
+		{% load i18n %}
+		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
+        <script src="{% static 'js/script.js' %}"></script>
+        <script src="{% static 'jSignature/jSignature.min.js'%}"></script>
+
+		<link rel="stylesheet" type="text/css" href="{% static 'css/styleSmall.css' %}">
+		<script>
+		//variables
+		var taskMoreInfo;
+		taskMoreInfo = {};
+		//Events
+		$(document).ready(function() {
+			$("#foot").load("{% url 'footer' %}");
+			$("#head").load("{% url 'headerDriver' %}");
+
+			$("#taskFlowSubmit").click(function() {
+
+			        var task1 = []
+			        var task2 = []
+			        var task3 = []
+			        var task4 = []
+			        var taskData = []
+
+			        var table = document.getElementById('taskTable');
+
+			        var rowNum = table.rows.length;
+
+                    $('.form-control').each(function () {
+                        taskData.push($(this).val());
+                    });
+
+					updateTaskFlow("{{ csrf_token }}", "{% url 'updateLightTaskFlow' %}", JSON.stringify(taskData));
+			});
+
+			$(".taskHours").each(function () {
+                $(this).keyup(function () {
+                    calculateSum();
+                });
+            });
+
+        });
+
+        function updateTaskFlow(token, url, taskData) {
+            $.ajax({
+					method : "POST",
+					url : url,
+					data : {
+						"csrfmiddlewaretoken" : token,
+						"task_data" : taskData
+					},
+					datatype : "json",
+					success : function(data, status, xhr) {
+					    if(data.success){
+                            $("#showTimeKeeperModal").modal();
+                            $("#messageTimekeeper").html("Submitted Successfully");
+
+					    } else {
+						    $('#showTimekeeperModal').modal();
+						    $("#messageTimekeeper").html("There was an error. Not Submitted.");
+					    }
+					}
+
+			});
+        }
+
+        function calculateSum() {
+            var sum = 0;
+            $(".taskHours").each(function () {
+                //add only if the value is number
+                if (!isNaN(this.value) && this.value.length != 0) {
+                    sum += parseFloat(this.value);
+                }
+            });
+            $("#sum").html(sum.toFixed(2));
+        }
+
+		</script>
+	</head>
+	<body>
+		<header id="head"></header>
+		<div id="wrapper">
+			<div id="content">
+				<div class="namePage">
+					<img src="{% static 'imgSmall/iconTaskflow.png' %}"/>{% trans 'HC TASKFLOW' %}
+				</div>
+                <div class="container">
+                    <table class="table table-condensed" id="taskTable">
+                    <thead>
+                      <tr>
+                        <th>Trabajo</th>
+                        <th>Rancho</th>
+                        <th>Horas</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><input type="text" class="job form-control" /></td>
+                        <td><input type="text" class="ranch form-control" /></td>
+                        <td><input type="number" class="taskHours form-control" /></td>
+                      </tr>
+                      <tr>
+                        <td><input type="text" class="job form-control" /></td>
+                        <td><input type="text" class="ranch form-control" /></td>
+                        <td><input type="number" class="taskHours form-control" /></td>
+                      </tr>
+                      <tr>
+                        <td><input type="text" class="job form-control" /></td>
+                        <td><input type="text" class="ranch form-control" /></td>
+                        <td><input type="number" class="taskHours form-control" /></td>
+                      </tr>
+                      <tr>
+                        <td><input type="text" class="job form-control" /></td>
+                        <td><input type="text" class="ranch form-control" /></td>
+                        <td><input type="number" class="taskHours form-control"/></td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td >Total:</td>
+                        <td id="sum">x</td>
+                      </tr>
+
+                    </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <a href="#"><input type="button" class="btnSubmitTF" value="SUBMIT" id="taskFlowSubmit"></a>
+        </div>
+		<footer id="foot"></footer>
+        <!-- MODAL OF ALERT - TIMEKEEPER -->
+        <div id="clearBoth"></div>
+
+		<div class="modal fade" id="showTimekeeperModal" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal-content modalTimekeeper">
+					<div class="modal-body">
+						<button type="button" class="closeEquip" data-dismiss="modal"></button>
+						<span id="messageTimekeeper"></span>
+						<br>
+						<div class="both"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+        <div id="clearBoth"></div>
+
+	</body>
+</html>

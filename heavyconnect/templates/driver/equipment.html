@@ -140,6 +140,9 @@
 						setEquipmentStatus("{{ csrf_token }}", "{% url 'updateEquipmentStatus' %}", item.qr_code, $("#btnRed").val());
 						changeColorStatus("btnBroken", "btnOk", "btnService");
 				});
+				$("#notesSubmit").click(function() {
+					updateEquipmentNotes("{{ csrf_token }}", "{% url 'updateEquipmentNotes' %}", item.qr_code, $("#notesEquip").val());
+				});
 
 			});
 			//Functions
@@ -161,6 +164,7 @@
 							$("#model").html(data.model);
 							$("#hours_cost").html(data.hour_cost);
 							$("#hp").html(data.horse_power);
+							$("#notesEquip").html(data.note);
 							//all specs to modal
 							$("#nicknameM").html(data.nickname);
 							$("#asset_numberM").html(data.asset_number);
@@ -193,10 +197,26 @@
 							$("#img2").attr("src", photo2);
 							$("#img3").attr("src", photo3);
 						} else if(data.code == 1){
-							alert("Equipment not found.");
+							<!--alert("Equipment not found.");-->
 							window.location.href = "{% url 'scanQRCode'%}";
 						}
 					}
+				});
+			}
+
+			function updateEquipmentNotes(token, url, id, notes) {
+				$.ajax({
+					method : "POST",
+					url : url,
+					data : {
+						"csrfmiddlewaretoken" : token,
+						"qr_code" : id,
+						"notes" : notes
+					},
+					datatype : "json",
+					success : function(data, status, xhr) {
+					}
+
 				});
 			}
 
@@ -301,7 +321,8 @@
 					<div id="colNoteEquip">
 						{% trans 'Notes' %}:
 						<br>
-						<textarea rows="2" cols="2" form="notesSubmit" id="notesEquip"></textarea>
+						<textarea rows="2" cols="2" id="notesEquip"></textarea>
+
 					</div>
 					<div id="colSpecEquip">
 						{% trans 'QR Sticker' %}: <span id="qr_code"></span>
@@ -319,7 +340,7 @@
 				</div>
 				<div class="row rowDownEquip">
 					<div class="col-xs-6 col-md-6" id="colMapHolder">
-						<div class="map" id="mapholder"></div>
+						<!--<div class="map" id="mapholder"></div>-->
 					</div>
 					<div class="col-xs-2 col-md-2" id="colSpecImg1">
 						<a href="#">
@@ -333,8 +354,8 @@
 					</div>
 					<div class="col-xs-2 col-md-2" id="colSpecImg3">
 						<a href="#">
+  							<input type="button" class="btnSubmitNotes" value="UPDATE" id="notesSubmit">
 						</a>
-					</div>	
 					</div>
 				</div>
 			</div>
@@ -380,7 +401,11 @@
 					<!-- Modal content-->
 					<div class="modal-content modalEquip">
 						<div class="modal-body" id="slideModalEquip">
-							<div id="myCarousel" class="carousel slide" data-ride="carousel">
+							<div class="modal-header" style="border-bottom: none; margin-bottom: 10px;  padding-right: 10px; padding-top: 5px; padding-bottom: 15px;">
+        						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      						</div>
+							<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
+
 								<!-- Indicators -->
 								<ol class="carousel-indicators">
 									<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
