@@ -12,13 +12,19 @@
 			$("#foot").load("{%url 'footer'%}");
 			$("#head").load("{%url 'headerDriver'%}");
 			$("#signature").jSignature()
+
 			$("#clearSignature").click(function() {
 			var $sigdiv = $("#signature");
 				$sigdiv.jSignature("reset");
 			});
 
 			$("#taskFlowSubmit").click(function() {
-				$('#signModal').modal();
+				if(checkBoxCheckedAppropriately()){
+					$('#signModal').modal();
+				}else{
+					$('#showTimekeeperModal').modal();
+					$("#messageTimekeeper").html("Check appropriate checkboxes.");
+				}
 			});
 
 			$("#start-shift").blur(function() {
@@ -193,7 +199,6 @@
 		}
 
 		function getDate() {
-
 			var d = new Date(),
       		h = (d.getHours()<10?'0':'') + d.getHours(),
       		m = (d.getMinutes()<10?'0':'') + d.getMinutes(),
@@ -202,8 +207,8 @@
       		M = (d.getMonth()<10?'0':'') + (d.getMonth()+1),
       		D = (d.getDate()<10?'0':'') + d.getDate();
       		return y + "-" + M + "-" + D
-
 		}
+
 		function getTimeNow() {
 
 			var d = new Date(),
@@ -215,6 +220,57 @@
       		D = (d.getDate()<10?'0':'') + d.getDate();
       		return y + "-" + M + "-" + D + " " + h + ":" + m
 		}
+
+		function getTotalMinutes(startTimeId, endTimeId){
+			var totalMin = 0;
+			start = document.getElementById(startTimeId).value
+			end = document.getElementById(endTimeId).value
+
+			var startHour = start.substring(0, 2);
+			var endHour = end.substring(0, 2);
+			var startMin = start.substring(3, 5);
+			var endMin = end.substring(3, 5);
+            var totalMin = (endHour*60 +  endMin*1) - (startHour*60 + startMin*1);
+
+            return totalMin;
+		}
+
+		function checkBoxCheckedAppropriately(){
+			var minutesWorked = getTotalMinutes("start-shift", "stop-shift");
+			return hasCorrectLunchMinutes(minutesWorked);
+		}
+
+		function hasCorrectLunchMinutes(minutesWorked){
+			if(minutesWorked >= 600) {
+				var lunch1Minutes = getTotalMinutes("start-break1","stop-break1");
+				var lunch2Minutes = getTotalMinutes("start-break3", "stop-break3");
+				var totalLunchMin = lunch1Minutes + lunch2Minutes;
+				if(totalLunchMin >= 60){
+					return true;
+				} else {
+					if(document.getElementById('firstLunch').checked && document.getElementById('secondLunch').checked) {
+						return true;
+					} else {
+						return false;
+					}
+				}
+			} else {
+				if(minutesWorked >= 360) {
+					if(totalLunchMin >= 30) {
+						return true;
+					} else {
+						if(document.getElementById('firstLunch').checked){
+							return true;
+						} else {
+							return false;
+						}
+					}
+				} else {
+					return true;
+				}
+			}
+		}
+
 
 		function updateSignature(token, url, signature) {
 			$.ajax({
@@ -245,21 +301,27 @@
 				success : function(data, status, xhr) {
 					if (data.success) {
 						if (data.hour_started != 'None') {
-							document.getElementById("start-shift").value = data.hour_started.substring(0,8);
+							document.getElementById("start-shift").value = data.hour_started.substring(0,5);
+
 						}
 
 						for(var i = 0; i < data.breaks.length; i++) {
 							if (data.breaks[i][0] != "None") {
-								document.getElementById("start-break"+i).value = data.breaks[i][0].substring(0, 8);
+								document.getElementById("start-break"+i).value = data.breaks[i][0].substring(0, 5);
 							}
 							if (data.breaks[i][1] != "None") {
-								document.getElementById("stop-break"+i).value = data.breaks[i][1].substring(0, 8);
+								document.getElementById("stop-break"+i).value = data.breaks[i][1].substring(0, 5);
+							}
+
+							if(data.breaks[i][1] != "None" && data.breaks[i][0] != "None") {
+								var breakMin = getTotalMinutes("start-break"+i, "stop-break"+i);
+								document.getElementById("min"+i).innerHTML = breakMin + " min";
 							}
 
 						}
 
 						if (data.hour_ended != "None") {
-							document.getElementById("stop-shift").value = data.hour_ended.substring(0,8);
+							document.getElementById("stop-shift").value = data.hour_ended.substring(0,5);
 
 						}
 					} else if (data.code == 1) {
@@ -317,6 +379,10 @@
 				success : function(data, status, xhr) {
 					if (data.success) {
 						timeNow(breakId, time);
+						if(document.getElementById("stop-break"+breaks).value != ""){
+							var breakMin = getTotalMinutes("start-break"+breaks, "stop-break"+breaks);
+							document.getElementById("min"+breaks).innerHTML = breakMin + " min";
+						}
 					} else if (data.code == 3) {
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("You need to start a shift first.");
@@ -344,6 +410,10 @@
 				success: function(data, status, xhr){
 					if(data.success){
 						timeNow(breakId, time);
+						if(document.getElementById("start-break"+breaks).value != ""){
+							var breakMin = getTotalMinutes("start-break"+breaks, "stop-break"+breaks);
+							document.getElementById("min"+breaks).innerHTML = breakMin + " min";
+						}
 					} else if(data.code == 3){
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("You need to start a shift first.");
@@ -412,6 +482,7 @@
 						<input type="time" id="start-break0" />
 						<input type="button" id="stopBreak0" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed"/>
 						<input type="time" id="stop-break0" />
+						<label class="total-min" id="min0">-- min</label>
 					</div>
 				</div>
 				<div class="form-inline row">
@@ -421,6 +492,8 @@
 						<input type="time" id="start-break1" />
 						<input type="button" id="stopBreak1" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed"/>
 						<input type="time" id="stop-break1" />
+						<label class="total-min" id="min1">-- min</label>
+
 					</div>
 				</div>
 				<div class="form-inline row">
@@ -430,6 +503,7 @@
 						<input type="time" id="start-break2" />
 						<input type="button" id="stopBreak2" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed"/>
 						<input type="time" id="stop-break2" />
+						<label class="total-min" id="min2">-- min</label>
 					</div>
 				</div>
 				<div class="form-inline row">
@@ -439,6 +513,7 @@
 						<input type="time" id="start-break3" />
 						<input type="button" id="stopBreak3" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed"/>
 						<input type="time" id="stop-break3" />
+						<label class="total-min" id="min3">-- min</label>
 					</div>
 				</div>
 				<div class="form-inline row">
@@ -448,6 +523,7 @@
 						<input type="time" id="start-break4" />
 						<input type="button" id="stopBreak4" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed"/>
 						<input type="time" id="stop-break4" />
+						<label class="total-min" id="min4">-- min</label>
 					</div>
 				</div>
 				<div class="form-inline row">
@@ -457,6 +533,8 @@
 						<input type="time" id="start-break5" />
 						<input type="button" id="stopBreak5" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed"/>
 						<input type="time" id="stop-break5" />
+						<label class="total-min" id="min5">-- min</label>
+
 					</div>
 				</div>
 
@@ -466,12 +544,25 @@
 						<input type="button" id="stopShift" value="{% trans 'END SHIFT' %}" />
 						<input type="time" id="stop-shift" />
 					</div>
+				</div>
+				<div class="form-inline row">
+					<div class="checkbox checkboxImp" style="margin-left: 74px; text-align: left;">
+						<label><input type="checkbox" value="" id="firstLunch">Elijo a renunciar a mi PRIMER periodo de comida de treinta (30) minutos</label>
+						<div class="help-tip" id="legalFirst" data-toggle="modal" data-target="#myModal">
+						</div>
+					</div>
+				</div>
+				<div class="form-inline row">
+					<div class="checkbox checkboxImp" style="margin-left: 74px; text-align: left;">
+						<label><input type="checkbox" value="" id="secondLunch">Elijo a renunciar a mi SEGUNDO periodo de comida de treinta (30) minutos</label>
+						<div class="help-tip" id="legalSecond" data-toggle="modal" data-target="#myModal">
+						</div>
+					</div>
+				</div>
 					<div class="form-inline row">
 					<a href="#"><input type="button" class="btnSubmitTF" value="SUBMIT" id="taskFlowSubmit"></a>
+					</div>
 				</div>
-				</div>
-
-
 			</div>
 		</div>
 		<footer>
@@ -498,12 +589,11 @@
 			<div class="modal-dialog">
 				<!-- Modal content-->
 				<div class="modal-content signModalDialog">
-					<div class="modal-title" id="titleSign">{% trans 'Sign Here' %}</div>
+					<div class="modal-title" id="titleSign">{% trans 'Firme Aquí' %}</div>
 					<div class="modal-body" id="signatureContent">
-
 					<div id="signField" >
 						<div id="signature"></div>
-						<div style="margin-top: 75px;">
+						<div style="margin-top: 20px;">
 						<button type="button" id="clearSignature" class="btn btn-default">{% trans 'Limpiar' %}</button>
 						<a href="">
 							<button type="button" id="stopShiftConfirm" class="btn btn-success">
@@ -512,8 +602,31 @@
 						</a>
 						</div>
 					</div>
+					</div>
 				</div>
 			</div>
 		</div>
+		<div id="myModal" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title">POLÍTICA DEL PERIODO DE DESCANSO</h4>
+					</div>
+					<div class="modal-body">
+						<p>RENUNCIA AL SEGUNDO PERIODO DE COMIDA DE 30 MINUTOS O DEL PRIMER PERIODO DE COMIDA DE 30 MINUTOS EN MENOS DE (6) HORAS DE UN DIA DE TRABAJO<p>
+						<p>La Compañía autoriza y permite a los empleados a tomar periodos de comida de treinta (30) minutos tal como lo especifica la Política de la Compañía y la Ley Laboral, Orden 14-2001 del IWC. Los periodos de la comida de treinta (30) minutos deben de ser tomados antes de cada cinco (5) horas trabajadas, excepto cuando un día de trabajo no será más de seis (6) horas y terminara el trabajo del día. En este caso el periodo de comida de treinta (30) minutos puede ser renunciado con el consentimiento mutuo de la Compañía y la del Empleado. Esta renuncia puede ser aplicada en los periodos de trabajo de la mañana o de la tarde según sea aplicable.</p>
+						<p>RENUNCIA DEL EMPLEADO(A) DEL PERIODO DE COMIDA DE TREINTA (30) MINUTOS Entiendo que me autorizan y estoy permitido a tomar periodos de comida de treinta (30) minutos según lo especificado por la Política de la Compañía y la orden laboral 14-2001 del IWC. También entiendo que puedo renunciar al derecho al periodo de comida de treinta (30) minutos de acuerdo con la Política mencionada en al aparte de arriba. Entiendo que puedo revocar este acuerdo en cualquier momento.</p>
+						<p>Elijo a renunciar a mi PRIMER periodo de comida de treinta (30) minutos según las provisiones mencionadas en la parte de arriba-Recuerde solo puede renunciar a su primer periodo de comida si va a trabajar seis (6) horas:</p>
+						<p>Elijo a renunciar a mi SEGUNDO periodo de comida de treinta (30) minutos según las provisiones mencionadas en la parte de arriba-Recuerde solo puede renunciar a su segundo periodo de comida si va a trabajar entre diez (10) a doce (12) horas:</p>
+						<p>Al firmar abajo, reconozco y entiendo que: 1) estoy autorizado y permitido tomar 10 minutos de descanso por cada cuatro horas que trabajo, o fracción mayor, y 2) tomar mi descansos en medio de cada período de trabajo en la medida en como sea posible.</p>
+					</div>
+
+				</div>
+					<!-- /.modal-content -->
+			</div>
+				<!-- /.modal-dialog -->
+		</div>
+			<!-- /.modal -->
 	</body>
 </html>

@@ -286,6 +286,31 @@ input[type=button]{
 
 /*** Timekeeper Page Begin ***/
 
+.help-tip {
+    margin-left: 10px;
+    text-align: center;
+    background-color: #BCDBEA;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+    line-height: 26px;
+    cursor: default;
+    display:inline-block;
+}
+
+.checkbox {
+	margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+
+.help-tip:before {
+    content: '?';
+    font-weight: bold;
+    color: #fff;
+}
+
 .bigFontTitle {
 	font-weight: 700;
     float: left;
@@ -352,6 +377,19 @@ input[type=button]{
 	margin-left: 10%;
 }
 	/* MODAL SGNATURE BEGIN */
+
+input[type='time'] {
+    border-radius: 5px;
+}
+
+#total-min {
+	margin-left: 10px;
+}
+
+.checkboxImp {
+    margin-left: 74px;
+    text-align: left;
+}
 #titleSign {
 	text-align: center;
 	font-size: 25px;
@@ -381,6 +419,18 @@ input[type=button]{
 }
 	/* MODAL SGNATURE BEGIN */
 	/* MODAL TIMEKEEPER BEGIN */
+
+.modal-body {
+    max-height: calc(100vh - 210px);
+    overflow-y: auto;
+}
+
+#myModal .modal-content
+{
+  height:200px;
+  overflow:auto;
+}
+
 .modalTimekeeper {
 	font-size: 30px;
 	font-weight: 600;

@@ -192,7 +192,6 @@ def startShift(request):
 				timeStartShift = datetime.datetime.strptime(timeSubmitted, "%Y-%m-%d %H:%M")
 
 				if attendance is not None:
-					
 					#If more than 16 hours was passed since the last shift was started we can consider that now we are creating a new shift
 					time_delta = (datetime.datetime.now() - datetime.datetime.combine(attendance.date,attendance.hour_started))
 					
