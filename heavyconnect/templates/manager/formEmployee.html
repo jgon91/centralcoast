@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Welcome to Employee registration</title>
+</head>
+<body>
+	<form method="POST" action=".">
+		{% csrf_token %}
+		Firt Name: {{ form.first_name }}<br>
+		Last name: {{ form.last_name }}<br>
+		Username: {{ form.username }}<br>
+		Password: {{ form.password }}<br>
+		Company id: {{ form1.company_id }}<br>
+		Language: {{ form1.language }}<br>
+		QrCode: {{ form1.qr_code }}<br>
+		Start date: {{ form1.start_date }}<br>
+		Hour cost: {{ form1.hour_cost }}<br>
+		Permission Level: {{ form1.permission_level }}<br>
+		Photo: {{ form1.photo }}<br>
+  	<input type=submit value="Save">
+	</form>
+</body>
+</html>
