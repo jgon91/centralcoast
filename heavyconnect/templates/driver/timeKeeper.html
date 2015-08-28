@@ -11,10 +11,10 @@
 		$(document).ready(function() {
 			$("#foot").load("{%url 'footer'%}");
 			$("#head").load("{%url 'headerDriver'%}");
-			$("#signature").jSignature()
+			$("#signature").jSignature({width:525,height:110})
 
 			$("#clearSignature").click(function() {
-			var $sigdiv = $("#signature");
+				var $sigdiv = $("#signature");
 				$sigdiv.jSignature("reset");
 			});
 
@@ -353,7 +353,6 @@
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("You need to finish the shift you started already before create a new one.");
 						document.getElementById("start-shift").value = "";
-
 					} else if (data.code == 2) {
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("There is no users associated whit this id.");
@@ -593,7 +592,9 @@
 					<div class="modal-body" id="signatureContent">
 					<div id="signField" >
 						<div id="signature"></div>
-						<div style="margin-top: 20px;">
+					</div>
+					</div>
+					<div id="modalBtns">
 						<button type="button" id="clearSignature" class="btn btn-default">{% trans 'Limpiar' %}</button>
 						<a href="">
 							<button type="button" id="stopShiftConfirm" class="btn btn-success">
@@ -601,8 +602,6 @@
 							</button>
 						</a>
 						</div>
-					</div>
-					</div>
 				</div>
 			</div>
 		</div>
