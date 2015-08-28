@@ -2486,7 +2486,7 @@ def employeeFormadd(request):
 		userform = UserForm(request.POST)
 		employform = employeeForm(request.POST)
 		employform['language'].initial = '2'
-	return render(request,'formEmployee.html', {'form': userform, 'form1': employform})
+	return render(request,'manager/formEmployee.html', {'form': userform, 'form1': employform})
 
 def employeeAttendanceFormView(request):
 	form = employeeAttendanceForm(request.POST)
