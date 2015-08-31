@@ -20,10 +20,6 @@
 			$("#taskFlowSubmit").click(function() {
 			        var taskData = []
 
-			        var table = document.getElementById('taskTable');
-
-			        var rowNum = table.rows.length;
-
                     $('.form-control').each(function () {
                         taskData.push($(this).val());
                     });

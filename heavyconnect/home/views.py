@@ -1639,7 +1639,7 @@ def getHoursWeek(employeeid, desired_date):
 def createLightTask(task, task_init, employee):
 
 	if '' not in task:
-		created = Task.objects.create(field = str(task[0]), code = str(task[1]), hours_spent = float(task[2]), task_init = task_init)
+		created = Task.objects.create(field = str(task[1]), code = str(task[0]), hours_spent = float(task[2]), task_init = task_init)
 		empTask = EmployeeTask(employee = employee, task = created, start_time = task_init, hours_spent = float(task[2]))
 		empTask.save()
 		return created
