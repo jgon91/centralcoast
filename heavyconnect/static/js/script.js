@@ -1,4 +1,5 @@
 //SCRIPT LOGIN PAGE***
+
 function process_login() {
 	$.ajax({
 		method: "POST",
@@ -265,87 +266,126 @@ function saveTask(token, url, urlScheduler){
 
 /* Begin Fleet page*/
 	
-	//Events
-	function loadEventsFleet() {
-		$("#greenTab").click(function() {
-			//alert("Show Good Tractors");
+	// Variables
+	var status_ok = 1;
+	var	status_attention = false;
+	var	status_broken = false;
+	var	status_quarantine = false;
 
-			showTractors($(this).val());
-		});
-
-		$("#yellowTab").click(function() {
-			//alert("Show Good Tractors");
-
-			showTractors($(this).val());
-		});
-
-		$("#redTab").click(function() {
-			//alert("Show Good Tractors");
-
-			showTractors($(this).val());
-		});
-
-		$("#grayTab").click(function() {
-			//alert("Show Good Tractors");
-
-			showTractors($(this).val());
-		});
-		$("#viewMore").click(function() {
-			$(".hideout").slideDown(500);
-		});
+	function switchStatus(status) {
+		switch (status){
+			case 1:
+				status_attention = false;
+				status_broken = false;
+				status_quarantine = false;
+				status_ok = 1;
+				break;
+			case 2:
+				status_ok = false;
+				status_broken = false;
+				status_quarantine = false;
+				status_attention = 1;
+				break;
+			case 3:
+				status_attention = false;
+				status_ok = false;
+				status_quarantine = false;
+				status_broken = 1;
+				break;
+			case 4:
+				status_attention = false;
+				status_broken = false;
+				status_ok = false;
+				status_quarantine = 1;
+				break;
+			default:
+				status_attention = false;
+				status_broken = false;
+				status_ok = false;
+				status_quarantine = false;
+		}
 	}
+	//Events
 
 	// Functions
-	function showTractorStatus(tab, number_of_tractors, imgs) {
+	function showTractorStatus(tab, number_of_tractors, imgs, tractor) {
 		$("#" + tab).html("");
 
-		for (var i = 0; i < number_of_tractors; i++) {
+		for (var i = 1; i < number_of_tractors; i++) {
 
 			if (i > 35) {
-				$("#" + tab).append("<div class=\"infoTractor hideout\"><a href=\"equipmentManager.html?equipmentId\"><img src=\"/static/img/" + imgs + "\"/><p>7364538</p></a></div>");
+				$("#" + tab).append("<div class=\"infoTractor hideout\"><a href=\"../equipmentManager/?qr_code="+ tractor[i].qr_code+"\"><img src=\"/static/img/" + imgs + "\"/><p>"+ tractor[i].qr_code+"</p></a></div>");
 				//if(i == 36)
 				//$("#container").append("<button id=\"viewMore\" type=\"button\" class=\"btn btn-info btn-block\">View More</button>")
 			} else
 				//$("#" + tab).append("<div class=\"infoTractor\"><a href=\"equipmentManager.html?equipmentId\"><img src=\"../img/" + imgs + "\"/><p>ID</p></a></div>");
-				$("#" + tab).append("<div class=\"infoTractor\"><a href=\"equipmentManager.html?equipmentId\"><img src=\"/static/img/" + imgs + "\"/><p>8371782</p></a></div>");
+				$("#" + tab).append("<div class=\"infoTractor\"><a href=\"../equipmentManager/?qr_code="+ tractor[i].qr_code+"\"><img src=\"/static/img/" + imgs + "\"/><p>"+ tractor[i].qr_code+"</p></a></div>");
 
 		}
 
 		$("#" + tab + " .hideout").hide();
 	}
 
-	function showTractors(tractorStatus) {
+	function showTractors(token, url) {
 		
 		//Variables 
-		//Number of tractors static
+		//Number of tractors 
 		var tractors = {
-			good : 54,
-			service : 45,
-			broken : 27,
-			repair : 18
+			good : 0,
+			service : 0,
+			broken : 0,
+			repair : 0
 		};
 
-		if (tractorStatus == 0)//Green Tab
-		{
-			$("#viewMore").css("background-color", "#809A21");
-			showTractorStatus("goodTab", tractors["good"], "TractorGood.png");
+		$.ajax({
+			method: "POST",
+			url: url,
+			data: {"csrfmiddlewaretoken": token, 
+					"manufacturer": "", 
+					"hitch_capacity": 0, 
+					"horse_power": 0, 
+					"implement_qr_code": "",
+					"status_ok": status_ok,
+					"status_attention": status_attention,
+					"status_broken": status_broken,
+					"status_quarantine": status_quarantine},
+			datatype: "json",
 
-		} else if (tractorStatus == 1)//Yellow Tab
-		{
-			$("#viewMore").css("background-color", "#F3C902");
-			showTractorStatus("serviceTab", tractors["service"], "TractorService.png");
+			success: function(data, status, xhr){
+				var len = data.length;
 
-		} else if (tractorStatus == 2)//Red Tab
-		{
+				if (status_ok == 1)//Green Tab
+				{
+					tractors.good = len;
+					$("#viewMore").css("background-color", "#809A21");
+					showTractorStatus("goodTab", tractors["good"], "TractorGood.png", data);
 
-			$("#viewMore").css("background-color", "#BB330C");
-			showTractorStatus("brokenTab", tractors["broken"], "TractorBroken.png");
+				}else if (status_attention == 1)//Yellow Tab
+				{
+					tractors.service = len;
+					$("#viewMore").css("background-color", "#F3C902");
+					showTractorStatus("serviceTab", tractors["service"], "TractorService.png", data);
 
-		} else//Gray Tab
-		{
-			$("#viewMore").css("background-color", "#434343");
-			showTractorStatus("repairTab", tractors["repair"],"TractorRepair.png");
-		}
+				}else if (status_broken == 1)//Red Tab
+				{
+
+					tractors.broken = len;
+					$("#viewMore").css("background-color", "#BB330C");
+					showTractorStatus("brokenTab", tractors["broken"], "TractorBroken.png", data);
+
+				}else if (status_quarantine == 1)//Gray Tab
+				{
+
+					tractors.repair = len;
+					$("#viewMore").css("background-color", "#434343");
+					showTractorStatus("repairTab", tractors["repair"], "TractorRepair.png", data);
+
+				}else
+				{
+					return false;
+				}
+			}
+		});
 
 	}
 

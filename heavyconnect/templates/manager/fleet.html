@@ -5,6 +5,7 @@
 		<link rel="stylesheet" type="text/css" href="{% static 'css/equipStyle.css' %}">
 		<link rel="stylesheet" type="text/css" href="{% static 'css/styleManager.css' %}">
 		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
 		<script src="{% static 'js/script.js' %}"></script>
@@ -14,8 +15,38 @@
 				$("#head").load("{% url 'headerManager' %}");
 				
 				loadEventsFleet();// Load functions from the script.js
-				showTractors(0);//show Green Tractors
+				showTractors("{{ csrf_token}}", "{% url 'getFilteredMachine' %}");// Show Tractors
 			});
+
+			function loadEventsFleet() {
+
+				$("#greenTab").click(function() {
+					//alert("Show Good Tractors");
+					switchStatus($(this).val());
+					showTractors("{{ csrf_token}}", "{% url 'getFilteredMachine' %}");
+				});
+
+				$("#yellowTab").click(function() {
+					//alert("Show Attention Tractors");
+					switchStatus($(this).val());
+					showTractors("{{ csrf_token}}", "{% url 'getFilteredMachine' %}");
+				});
+
+				$("#redTab").click(function() {
+					//alert("Show Broken Tractors");
+					switchStatus($(this).val());
+					showTractors("{{ csrf_token}}", "{% url 'getFilteredMachine' %}");
+				});
+
+				$("#grayTab").click(function() {
+					//alert("Show Quarantine Tractors");
+					switchStatus($(this).val());
+					showTractors("{{ csrf_token}}", "{% url 'getFilteredMachine' %}");
+				});
+				$("#viewMore").click(function() {
+					$(".hideout").slideDown(500);
+				});
+			}
 		</script>
 		<style>
 			
@@ -29,10 +60,10 @@
 			</div>	
 			<div id="containerFleet">
 				  <ul class="nav nav-pills nav-justified" id="menu">
-				  	  <li class="active" value="0" id="greenTab" ><a data-toggle="pill" href="#goodTab">GOOD CONDITION</a></li>
-				  	  <li id="yellowTab" value="1"><a data-toggle="pill" href="#serviceTab">NEEDING ATTENTION</a></li>
-				  	  <li id="redTab"  value="2" ><a data-toggle="pill" href="#brokenTab">BROKEN</a></li>
-				  	  <li id="grayTab"  value="3"><a data-toggle="pill" href="#repairTab">OUT FOR REPAIR</a></li>
+				  	  <li class="active" value="1" id="greenTab" ><a data-toggle="pill" href="#goodTab">GOOD CONDITION</a></li>
+				  	  <li id="yellowTab" value="2"><a data-toggle="pill" href="#serviceTab">NEEDING ATTENTION</a></li>
+				  	  <li id="redTab"  value="3" ><a data-toggle="pill" href="#brokenTab">BROKEN</a></li>
+				  	  <li id="grayTab"  value="4"><a data-toggle="pill" href="#repairTab">OUT FOR REPAIR</a></li>
 				   </ul>
 				   <div class="tab-content" id="tractorContent">
 					    <div id="goodTab" class="tab-pane fade in active">
