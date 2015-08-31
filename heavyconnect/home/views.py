@@ -2490,7 +2490,7 @@ def employeeFormadd(request):
 					return render(request, 'manager/formError.html')
 			else:
 				result['code'] = 3 #this user is already registered as a employee
-				return HttpResponse(json.dumps(result),content_type='application/json')
+				return render(request, 'manager/formError.html')
 			return HttpResponse(json.dumps(result),content_type='application/json')
 	else:
 		userform = UserForm(request.POST)
