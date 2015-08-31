@@ -39,6 +39,7 @@ urlpatterns = [
 	url(r'^geofence/$', main_views.geofence, name = 'geofence'),
     url(r'^map/$', main_views.map, name = 'map'),
     url(r'^formTEST/$', main_views.manufacturerForm, name='registerManufacturer'),
+    url(r'^formSuccess/$', main_views.formSuccess, name='formSuccess'),
 
     ### Functions ###
     url(r'^employeeLocation/$', main_views.getEmployeeLocation, name = 'employeeLocation'),

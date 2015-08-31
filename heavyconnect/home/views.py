@@ -2018,6 +2018,10 @@ def indexManager(request):
     return render(request, 'manager/home.html')
 
 @login_required
+def formSuccess(request):
+    return render(request, 'manager/formSuccess.html')
+
+@login_required
 def fleet(request):
     return render(request, 'manager/fleet.html')
 
@@ -2479,7 +2483,11 @@ def employeeFormadd(request):
 					result['success'] = True
 				except:
 					User.objects.get(username = new_user_username).delete()
-				return HttpResponse(json.dumps(result),content_type='application/json') 
+				if result['success'] == True :
+					#return HttpResponse(json.dumps(result),content_type='application/json') 
+					return render(request, 'manager/formSuccess.html')
+				else:
+					return render(request, 'manager/formError.html')
 			else:
 				result['code'] = 3 #this user is already registered as a employee
 				return HttpResponse(json.dumps(result),content_type='application/json')
