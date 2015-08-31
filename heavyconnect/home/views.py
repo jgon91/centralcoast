@@ -2472,7 +2472,7 @@ def employeeFormadd(request):
 				emplo_photo = employform.cleaned_data['photo']
 				emplo_notes = employform.cleaned_data['notes']
 				try:
-					employee = Employee(user = new_user, company_id = emplo_company, language = emplo_language, qr_code = emplo_qr_code, start_date =  emplo_start, hour_cost = emplo_cost, contact_number = emplo_contact, permission_level = emplo_permission, photo = emplo_photo, notes = emplo_notes)
+					employee = Employee(user = new_user, language = emplo_language, permission_level = emplo_permission, active = '1', company_id = emplo_company, qr_code = emplo_qr_code, start_date = emplo_start, hour_cost = emplo_cost,contact_number = emplo_contact, notes = emplo_notes, photo = emplo_photo)
 					employee.save()
 					result['success'] = True
 				except:
