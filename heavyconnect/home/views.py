@@ -2460,8 +2460,10 @@ def employeeFormadd(request):
 			new_user_password = userform.cleaned_data['password']
 			new_user_first_name = userform.cleaned_data['first_name']
 			new_user_last_name = userform.cleaned_data['last_name']
-			new_user, created = User.objects.get_or_create(username = new_user_username, defaults = {'password' : new_user_password , 'first_name' : new_user_first_name, 'last_name' : new_user_last_name})
+			new_user, created = User.objects.get_or_create(username = new_user_username, defaults = {'first_name' : new_user_first_name, 'last_name' : new_user_last_name})
 			if created:
+				new_user.set_password(new_user_password)
+				new_user.save()
 				emplo_company = employform.cleaned_data['company_id']
 				emplo_language = employform.cleaned_data['language']
 				emplo_qr_code = employform.cleaned_data['qr_code']
