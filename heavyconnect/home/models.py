@@ -80,6 +80,12 @@ class BeaconGPS(models.Model):
 ### DEMO ###
 
 class Machine(models.Model):
+	#Status
+	STOK = 1 #Status ok
+	STAT = 2 #Status needs attentions
+	STBR = 3 #Status broken
+	STQU = 4 #Status quarentine
+
 	HITCH_CHOICES = (
 		(1, '1'),
 		(2, '2'),
@@ -98,10 +104,10 @@ class Machine(models.Model):
 		(7, '5WS'),
 	)
 	STATUS_CHOICES = (
-		(1, 'Ok'),
-		(2, 'Attention'),
-		(3, 'Broken'),
-		(4, 'Quarantine'),
+		(STOK, 'Ok'),
+		(STAT, 'Attention'),
+		(STBR, 'Broken'),
+		(STQU, 'Quarantine'),
 	)
 	OPERATORSTATION_CHOICES = (
 		('a', 'Cab'),
@@ -228,15 +234,15 @@ class Employee(models.Model):
 	)
 	last_task = models.ForeignKey(Task,null = True, blank = True)
 	user = models.OneToOneField(User)
-	active = models.BooleanField()
-	company_id = models.CharField(max_length = 10)
-	language = models.IntegerField(choices = LANGUAGE_CHOICES)
-	qr_code = models.CharField(max_length = 10)
-	start_date = models.DateField()
-	hour_cost = models.FloatField()
-	contact_number = models.CharField(max_length = 14)
-	permission_level = models.IntegerField(choices = ((1, 'Driver'), (2, 'Manager')))
-	photo = models.URLField(max_length = 200, blank = True)
+	active = models.BooleanField(default = True)
+	company_id = models.CharField(max_length = 10, blank = True, null = True)
+	language = models.IntegerField(choices = LANGUAGE_CHOICES, default = 3)
+	qr_code = models.CharField(max_length = 10, blank  = True, null = True)
+	start_date = models.DateField(blank = True, null = True)
+	hour_cost = models.FloatField(blank = True, null = True)
+	contact_number = models.CharField(max_length = 14, blank = True)
+	permission_level = models.IntegerField(choices = ((1, 'Driver'), (2, 'Manager')), default = 1)
+	photo = models.URLField(max_length = 200, blank = True, null = True)
 	notes = models.CharField(max_length = 250, null = True, blank = True)
 
 	def __unicode__(self):

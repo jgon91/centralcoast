@@ -2095,11 +2095,14 @@ def storeChecklistAnswers(request):
 
 				for r in responses:
 					r.employee = employee
+					if r.answer is False: #If one of the answers was no the machine will have they status changed to broken
+						equipment.status = Machine.STBR
 					r.save()
 
-				if isinstance(equipment, Machine):
-					equipment.engine_hours = engine_hours
-					equipment.save()
+				if isinstance(equipment, Machine): #If we have a machine we need to account the 
+					equipment.engine_hours = engine_hours 
+				
+				equipment.save()
 
 				result['success'] = True
 			else:
@@ -2445,6 +2448,47 @@ def employeeFormView(request):
 		return redirect('formOk')
 	else:
 		return render(request, 'formTest.html', {'form': form})
+
+### Form to add employee
+def employeeFormadd(request):
+	result = {'success' : False}
+	if request.method == "POST":
+		userform = UserForm(request.POST)
+		employform = employeeForm(request.POST)
+		if userform.is_valid() and employform.is_valid():
+			new_user_username = userform.cleaned_data['username']
+			new_user_password = userform.cleaned_data['password']
+			new_user_first_name = userform.cleaned_data['first_name']
+			new_user_last_name = userform.cleaned_data['last_name']
+			new_user, created = User.objects.get_or_create(username = new_user_username, defaults = {'first_name' : new_user_first_name, 'last_name' : new_user_last_name})
+			if created:
+				new_user.set_password(new_user_password)
+				new_user.save()
+				emplo_company = employform.cleaned_data['company_id']
+				emplo_language = employform.cleaned_data['language']
+				emplo_qr_code = employform.cleaned_data['qr_code']
+				emplo_start = employform.cleaned_data['start_date']
+				emplo_cost = employform.cleaned_data['hour_cost']
+				emplo_contact = employform.cleaned_data['contact_number']
+				emplo_permission = employform.cleaned_data['permission_level']
+				emplo_photo = employform.cleaned_data['photo']
+				emplo_notes = employform.cleaned_data['notes']
+				try:
+					employee = Employee(user = new_user, language = emplo_language, permission_level = emplo_permission, active = '1', company_id = emplo_company, qr_code = emplo_qr_code, start_date = emplo_start, hour_cost = emplo_cost,contact_number = emplo_contact, notes = emplo_notes, photo = emplo_photo)
+					employee.save()
+					result['success'] = True
+				except:
+					User.objects.get(username = new_user_username).delete()
+				return HttpResponse(json.dumps(result),content_type='application/json') 
+			else:
+				result['code'] = 3 #this user is already registered as a employee
+				return HttpResponse(json.dumps(result),content_type='application/json')
+			return HttpResponse(json.dumps(result),content_type='application/json')
+	else:
+		userform = UserForm(request.POST)
+		employform = employeeForm(request.POST)
+		employform['language'].initial = '2'
+	return render(request,'manager/formEmployee.html', {'form': userform, 'form1': employform})
 
 def employeeAttendanceFormView(request):
 	form = employeeAttendanceForm(request.POST)
