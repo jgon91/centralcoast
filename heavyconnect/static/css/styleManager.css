@@ -180,37 +180,38 @@ input[type="button"] {
 	height: 190px;
 }
 #btnEquipment {
-	background: url('../img/buttons/equipment.jpg') no-repeat top left;
-	background-size: 100% 100%;
-}
-#btnEquipment:hover {
-	background: url('../img/buttons/equipmentHover.jpg') no-repeat top left;
+	background: url('../img/buttons/btnEquipmentUp.jpg') no-repeat top left;
 	background-size: 100% 100%;
 }
 #btnTaskflow {
-	background: url('../img/buttons/taskflow.jpg') no-repeat top left;
-	background-size: 100% 100%;
-}
-#btnTaskflow:hover {
-	background: url('../img/buttons/taskflowHover.jpg') no-repeat top left;
+	background: url('../img/buttons/btnTaskflowUp.jpg') no-repeat top left;
 	background-size: 100% 100%;
 }
 #btnScheduler {
-	background: url('../img/buttons/scheduler.jpg') no-repeat top left;
-	background-size: 100% 100%;
-}
-#btnScheduler:hover {
-	background: url('../img/buttons/schedulerHover.jpg') no-repeat top left;
+	background: url('../img/buttons/btnSchedulerUp.jpg') no-repeat top left;
 	background-size: 100% 100%;
 }
 #btnTimerkeeper {
-	background: url('../img/buttons/timekepper.jpg') no-repeat top left;
+	background: url('../img/buttons/btnTimekeeperUp.jpg') no-repeat top left;
 	background-size: 100% 100%;
 }
-#btnTimerkeeper:hover {
-	background: url('../img/buttons/timekepperHover.jpg') no-repeat top left;
+#btnEmployee {
+	background: url('../img/buttons/btnEmployee.png') no-repeat top left;
 	background-size: 100% 100%;
 }
+#btnRecorder {
+	background: url('../img/buttons/btnRecorder.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnFleet {
+	background: url('../img/buttons/btnFleet.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnManage {
+	background: url('../img/buttons/btnManage	.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+
 #btnHomeUp {
 	background: url('../img/buttons/btnHomeUp.jpg') no-repeat top left;
 	background-size: 100% 100%;
