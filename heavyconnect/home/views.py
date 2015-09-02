@@ -2453,7 +2453,7 @@ def employeeFormView(request):
 	else:
 		return render(request, 'formTest.html', {'form': form})
 
-### Form to add employee
+### Form to add employee ###
 def employeeFormadd(request):
 	result = {'success' : False}
 	if request.method == "POST":
@@ -2500,7 +2500,34 @@ def employeeFormadd(request):
 	return render(request,'manager/formEmployee.html', {'form': userform, 'form1': employform})
 ### End ###
 
+### Password update view ###
+@login_required
+def employeeUpdatePasswordForm(request):
+	result = {'success' : False}
+	if request.method == "POST":
+		userform = employeePasswordForm(request.POST)
+		if userform.is_valid():
+			password = userform.cleaned_data['password']
+			password1 = userform.cleaned_data['password1']
+			password2 = userform.cleaned_data['password2']
+			if password1 == password2:
+				user_password = User.objects.get(id = request.user.id)
+				user_password.set_password(password1)
+				user_password.save()
+			else:
+				result['code'] = 3 # New password does not match
+		else:
+			result['code'] = 4 # form not valid
+	else:
+		userform = employeePasswordForm()
+		return render(request,'formTEST.html', {'form': userform})
+
+### End  ###
+
+
+
 ### Form to update employee ###
+@login_required
 def employeeUpdateFormView(request):
 	result = {'success' : False}
 	if request.method == "POST":
