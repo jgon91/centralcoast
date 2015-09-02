@@ -2496,7 +2496,40 @@ def employeeFormadd(request):
 		userform = UserForm(request.POST)
 		employform = employeeForm(request.POST)
 		employform['language'].initial = '2'
+	employform = employeeForm(initial = {'start_date' : datetime.datetime.now()})
 	return render(request,'manager/formEmployee.html', {'form': userform, 'form1': employform})
+### End ###
+
+### Form to update employee ###
+def employeeUpdateFormView(request):
+	result = {'success' : False}
+	if request.method == "POST":
+		userform = UserFormUpdate(request.POST)
+		employform = employeeForm(request.POST)
+		emplo = Employee.objects.get(user_id = request.user.id)
+		if userform.is_valid() and employform.is_valid():
+			emplo.user.first_name = userform.cleaned_data['first_name']
+			emplo.user.last_name = userform.cleaned_data['last_name']
+			emplo.language = employform.cleaned_data['language']
+			emplo.contact_number = employform.cleaned_data['contact_number']
+			emplo.photo = employform.cleaned_data['photo']
+			emplo.notes = employform.cleaned_data['notes']
+			emplo.user.save()
+			emplo.save()
+			result['success'] = True
+			return render(request, 'manager/formSuccess.html')
+	else:
+		try:
+			emplo = Employee.objects.get(user_id = request.user.id)
+			userform = UserFormUpdate(initial = {'first_name' : emplo.user.first_name, 'last_name' : emplo.user.last_name})
+			# employform = employeeForm(initial = {'notes' : emplo.notes, 'photo' : emplo.photo, 'permission_level' : emplo.permission_level ,'contact_number' : emplo.contact_number ,'hour_cost' : emplo.hour_cost, 'qr_code' : emplo.qr_code ,'language' : emplo.language , 'active' : emplo.active, 'last_task' : emplo.last_task ,'start_date' : emplo.start_date,'company_id' : emplo.company_id})
+			employform = employeeForm(initial = {'notes' : emplo.notes, 'photo' : emplo.photo, 'contact_number' : emplo.contact_number,'language' : emplo.language})
+			result['success'] = True
+		except:
+			result['code'] = 3 # this user does not exist
+			return HttpResponse(json.dumps(result),content_type='application/json')
+		return render(request,'driver/employeeUpdate', {'form': userform, 'form1': employform})
+### end ###
 
 def employeeAttendanceFormView(request):
 	form = employeeAttendanceForm(request.POST)

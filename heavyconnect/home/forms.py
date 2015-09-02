@@ -156,6 +156,12 @@ class UserForm(forms.Form):
 
 ### End ###
 
+### Structor for user update ###
+class UserFormUpdate(forms.Form):
+	first_name = forms.CharField()
+	last_name = forms.CharField()
+### End ###
+
 class employeeForm(forms.Form):
 	PERMISSION_LEVEL_CHOICES = (
 		(1, 'Driver'),
