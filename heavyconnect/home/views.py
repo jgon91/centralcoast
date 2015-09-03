@@ -2433,12 +2433,59 @@ def equipmentTypeFormView(request):
 	else:
 		return render(request, 'formTest.html', {'form': form})
 
+#Form to add machine
 def machineFormView(request):
-	form = machineForm(request.POST)
-	if form.is_valid():
-		return redirect('formOk')
+	result = {'success' : False}
+	if request.method == "POST":
+		machineform = machineForm(request.POST)
+		if machineform.is_valid():
+			new_machine_manufacturer_model = machineform.cleaned_data['manufacturer_model']
+			new_machine_repair_shop = machineform.cleaned_data['repair_shop']
+			new_machine_shop = machineform.cleaned_data['shop']
+			#new_machine_equipment_type = machineform.cleaned_data['equipment_type']
+			new_machine_nickname = machineform.cleaned_data['nickname']
+			new_machine_qr_code = machineform.cleaned_data['qr_code']
+			new_machine_asset_number = machineform.cleaned_data['asset_number']
+			new_machine_serial_number = machineform.cleaned_data['serial_number']
+			new_machine_horsepower = machineform.cleaned_data['horsepower']
+			new_machine_hitch_capacity = machineform.cleaned_data['hitch_capacity']
+			new_machine_hitch_category = machineform.cleaned_data['hitch_category']
+			new_machine_drawbar_category = machineform.cleaned_data['drawbar_category']
+			new_machine_speed_range_min = machineform.cleaned_data['speed_range_min']
+			new_machine_speed_range_max = machineform.cleaned_data['speed_range_max']
+			new_machine_year_purchased = machineform.cleaned_data['year_purchased']
+			new_machine_engine_hours = machineform.cleaned_data['engine_hours']
+			new_machine_service_interval = machineform.cleaned_data['service_interval']
+			new_machine_base_cost = machineform.cleaned_data['base_cost']
+			new_machine_m_type = machineform.cleaned_data['m_type']
+			new_machine_front_tires = machineform.cleaned_data['front_tires']
+			new_machine_rear_tires = machineform.cleaned_data['rear_tires']
+			new_machine_steering = machineform.cleaned_data['steering']
+			new_machine_operator_station = machineform.cleaned_data['operator_station']
+			new_machine_status = machineform.cleaned_data['status']
+			new_machine_hour_cost = machineform.cleaned_data['hour_cost']
+			new_machine_photo = machineform.cleaned_data['photo']
+			new_machine_photo1 = machineform.cleaned_data['photo1']
+			new_machine_photo2 = machineform.cleaned_data['photo2']
+			try:
+				machine = Machine(manufacturer_model = new_machine_manufacturer_model, repair_shop = new_machine_repair_shop, shop = new_machine_shop, nickname = new_machine_nickname, qr_code = new_machine_qr_code, asset_number = new_machine_asset_number, serial_number = new_machine_serial_number, horsepower = new_machine_horsepower, hitch_capacity = new_machine_hitch_capacity, hitch_category = new_machine_hitch_category, drawbar_category = new_machine_drawbar_category, speed_range_min = new_machine_speed_range_min, speed_range_max = new_machine_speed_range_max, year_purchased = new_machine_year_purchased, engine_hours = new_machine_engine_hours, service_interval = new_machine_service_interval, base_cost = new_machine_base_cost, m_type = new_machine_m_type, front_tires = new_machine_front_tires, rear_tires = new_machine_rear_tires, steering = new_machine_steering, operator_station = new_machine_operator_station, status = new_machine_status, hour_cost = new_machine_hour_cost, photo = new_machine_photo, photo1 = new_machine_photo1, photo2 = new_machine_photo2)
+				machine.save()
+				result['success'] = True
+			except:
+				Machine.objects.get(qr_code = new_user_qr_code).delete()
+			if result['success'] == True :
+				#return HttpResponse(json.dumps(result),content_type='application/json') 
+				return render(request, 'manager/formSuccess.html')
+			else:
+				return render(request, 'manager/formError.html')
+		else:
+			result['code'] = 3 #this user is already registered as a employee
+			return render(request, 'manager/formError.html')
+		return HttpResponse(json.dumps(result),content_type='application/json')
 	else:
-		return render(request, 'formTest.html', {'form': form})
+		machineform = machineForm(request.POST)
+	return render(request,'manager/formMachine.html', {'form': machineform})
+
 
 def implementFormView(request):
 	form = implementForm(request.POST)

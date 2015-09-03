@@ -96,7 +96,7 @@ class machineForm(forms.Form):
 	manufacturer_model = forms.ModelChoiceField(queryset = ManufacturerModel.objects.all())
 	repair_shop = forms.ModelChoiceField(queryset = RepairShop.objects.all())
 	shop = forms.ModelChoiceField(queryset = Shop.objects.all())
-	equipment_type = forms.ModelChoiceField(queryset = EquipmentType.objects.all())
+	#equipment_type = forms.ModelChoiceField(queryset = EquipmentType.objects.all(), required = False)
 	nickname = forms.CharField(max_length = 20)
 	qr_code = forms.CharField(max_length = 10)
 	asset_number = forms.CharField(max_length = 15)
@@ -118,7 +118,10 @@ class machineForm(forms.Form):
 	operator_station = forms.ChoiceField(choices = OPERATORSTATION_CHOICES)
 	status = forms.ChoiceField(choices = STATUS_CHOICES, required = True)
 	hour_cost = forms.FloatField()
-	photo = forms.URLField(max_length = 200)
+	beacon = forms.ModelChoiceField(queryset = Beacon.objects.all(), required = False)
+	photo = forms.URLField(max_length = 200, required = False)
+	photo1 = forms.URLField(max_length = 200, required = False)
+	photo2 = forms.URLField(max_length = 200, required = False)
 ### End ###
 
 ### Structure for implementForm ###
