@@ -18,21 +18,37 @@
 
 					var formOK = true;
 
-    				if($('input[name=first_name]').val() == ""){						
+    				if($('input[name=first_name]').val() == ""){
+    					if(formOK == true)						
+    						$('input[name=first_name]').focus()
 						$('input[name=first_name]').css('box-shadow', '0px 0px 10px red');
 						formOK = false;
+					}else{
+						$('input[name=first_name]').css('box-shadow', '1px 1px 5px 0px');
 					}
-					if($('input[name=last_name]').val() == ""){						
+					if($('input[name=last_name]').val() == ""){			
+						if(formOK == true)			
+							$('input[name=last_name]').focus()
 						$('input[name=last_name]').css('box-shadow', '0px 0px 10px red');
 						formOK = false;
+					}else{
+						$('input[name=last_name]').css('box-shadow', '1px 1px 5px 0px');
 					}
-					if($('input[name=username]').val() == ""){						
+					if($('input[name=username]').val() == ""){		
+						if(formOK == true)				
+							$('input[name=username]').focus()
 						$('input[name=username]').css('box-shadow', '0px 0px 10px red');
 						formOK = false;
+					}else{
+						$('input[name=username]').css('box-shadow', '1px 1px 5px 0px');
 					}
-					if($('input[name=password]').val() == ""){						
+					if($('input[name=password]').val() == ""){	
+						if(formOK == true)
+							$('input[name=password]').focus()					
 						$('input[name=password]').css('box-shadow', '0px 0px 10px red');
 						formOK = false;
+					}else{
+						$('select[name=password]').css('box-shadow', '1px 1px 5px 0px');
 					}
 
 				    return formOK;

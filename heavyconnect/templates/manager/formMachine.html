@@ -12,27 +12,45 @@
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerManager' %}");
+				$(".errorlist").hide();
+				$( "label:lt(4)" ).append("*");
 				
 
 				$("form").submit(function(){
 
 					var formOK = true;
 
-    				if($('input[name=first_name]').val() == ""){						
-						$('input[name=first_name]').css('box-shadow', '0px 0px 10px red');
+    				if($('select[name=manufacturer_model]').val() == ""){
+    					if(formOK == true)						
+    						$('select[name=manufacturer_model]').focus();
+						$('select[name=manufacturer_model]').css('box-shadow', '0px 0px 10px red');
 						formOK = false;
+					}else{
+						$('select[name=manufacturer_model]').css('box-shadow', '1px 1px 5px 0px');
 					}
-					if($('input[name=last_name]').val() == ""){						
-						$('input[name=last_name]').css('box-shadow', '0px 0px 10px red');
+					if($('input[name=nickname]').val() == ""){		
+						if(formOK == true)	
+							$('input[name=nickname]').focus();				
+						$('input[name=nickname]').css('box-shadow', '0px 0px 10px red');
 						formOK = false;
+					}else{
+						$('input[name=nickname]').css('box-shadow', '1px 1px 5px 0px');
 					}
-					if($('input[name=username]').val() == ""){						
-						$('input[name=username]').css('box-shadow', '0px 0px 10px red');
+					if($('input[name=asset_number]').val() == ""){	
+						if(formOK == true)	
+							$('input[name=asset_number]').focus();				
+						$('input[name=asset_number]').css('box-shadow', '0px 0px 10px red');
 						formOK = false;
+					}else{
+						$('input[name=asset_number]').css('box-shadow', '1px 1px 5px 0px');
 					}
-					if($('input[name=password]').val() == ""){						
-						$('input[name=password]').css('box-shadow', '0px 0px 10px red');
+					if($('input[name=serial_number]').val() == ""){		
+						if(formOK == true)
+							$('input[name=serial_number]').focus();				
+						$('input[name=serial_number]').css('box-shadow', '0px 0px 10px red');
 						formOK = false;
+					}else{
+						$('input[name=serial_number]').css('box-shadow', '1px 1px 5px 0px');
 					}
 
 				    return formOK;
@@ -45,9 +63,9 @@
 	<body>
 		<header id="head"></header>
 		<div id="contentForm">
-			<form method="POST" action="." id="formPage" onsubmit="checkFields()">
+			<form method="POST" action="." id="formPage">
 				{% csrf_token %}
-				{{ form.as_table }}
+				{{ form.as_p }}
 				
 				<input type="submit" id="saveForm" value="{% trans 'SAVE' %}"/>
 			</form>
