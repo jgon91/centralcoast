@@ -134,5 +134,6 @@ urlpatterns = [
     url(r'^machineChecklistFormView/$', main_views.machineChecklistFormView, name = 'registerMachineChecklist'),
     url(r'^implementChecklistFormView/$', main_views.implementChecklistFormView, name = 'registerChecklistImplement'),
     url(r'^breakFormView/$', main_views.breakFormView, name = 'breakFormView'),
+    url(r'^manageForms/$', main_views.manageForms, name = 'manageForms'),
     ### End ###
 ]

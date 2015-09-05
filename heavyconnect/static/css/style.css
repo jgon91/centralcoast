@@ -702,7 +702,7 @@ div.notes {
 }
 #filterDiv{
 	width: 20%;
-	border-right: 2px solid grey;
+	border-right: 2px solid gray;
 	float: left;
 	min-height: 400px;
 }

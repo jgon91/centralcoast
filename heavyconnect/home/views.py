@@ -2041,6 +2041,10 @@ def profileManager(request):
     return render(request, 'manager/profile.html')
 
 @login_required
+def manageForms(request):
+	return render(request, 'manager/manageForms.html')
+
+@login_required
 def geofence(request):
 	return render(request, 'geoFence.html')
 
@@ -2596,8 +2600,6 @@ def employeeUpdatePasswordForm(request):
 		return render(request,'formTEST.html', {'form': userform})
 
 ### End  ###
-
-
 
 ### Form to update employee ###
 @login_required

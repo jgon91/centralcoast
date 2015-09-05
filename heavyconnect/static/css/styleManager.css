@@ -546,3 +546,48 @@ input[type="button"] {
 	margin-left: 47px;
 }
 /*** Form Page End ***/
+
+/*** Manage Forms Page Begin ***/
+#contentManageForm {
+	width: 50%;
+	margin: auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	border: 1px solid gray;
+	box-shadow: 2px 2px 8px 0px gray;
+	border-radius: 10px;
+	font-size: 20px;
+	font-weight: 700;
+	padding-bottom: 20px;
+}
+.colManageForm {
+	height: 50px;
+	width: 200px;
+	box-shadow: 2px 2px 8px 0px gray;
+	border-radius: 10px;
+	background: white;
+}
+.rowManageForm {
+	margin: 0 !important;
+	text-align: center;
+	margin-top: 20px !important;
+}
+.btnManageForm {
+	background: url('../imgSmall/buttons/btnGreen.png') no-repeat top left;
+	background-size: 100% 100%;
+	border-radius: 7px;
+	border: none;
+	box-shadow: 2px 2px 5px gray;
+	height: 50px;
+	width: 200px;
+	color: white;
+}
+	
+}
+/*** Manage Forms Page End ***/
+
+
+
+
+
+
