@@ -92,6 +92,7 @@ urlpatterns = [
 	url(r'^getFieldLocalization/$', main_views.getFieldLocalization, name = 'getFieldLocalization'),
     url(r'^equipmentLastLocalization/$', main_views.equipmentLastLocalization, name = 'equipmentLastLocalization'),
     url(r'^storeChecklistAnswers/$', main_views.storeChecklistAnswers, name = 'storeChecklistAnswers'),
+    url(r'^getAllEmployees/$', main_views.getAllEmployees, name = 'getAllEmployees'),
     ### End ###
 
     ###Insert###

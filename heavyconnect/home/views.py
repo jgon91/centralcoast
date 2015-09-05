@@ -1957,6 +1957,9 @@ def driver(request):
 def profile(request):
     return render(request, 'driver/profile.html')
 
+def test1(request):
+    return render(request, 'manager/test.html')
+
 @login_required
 def headerDriver(request):
     return render(request, 'template/headerDriver.html')
@@ -2357,7 +2360,31 @@ def getFieldLocalization(request):
 
 	return HttpResponse(json.dumps(result), content_type='application/json')
 
+def getAllEmployees(request):
+	each_result = {}
+	result = {'success' : False}
+	if request.method == 'POST':
+		if request.is_ajax():
+			try:
+				all_employee = Employee.objects.all()
+				employees = []
+				for each in all_employee:
+					each_result['first_name'] = each.user.first_name
+					each_result['last_name'] = each.user.last_name
+					each_result['user_id'] = each.user.id					
+					employees.append(each_result)
+					each_result = {}
+				result['success'] = True
+				result['employees'] = employees
+				print employees
+			except DoesNotExist: #There is no employee registered
+				result['code'] = 1
+		else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else:
+		result['code'] = 3  #Request was not POST
 
+	return HttpResponse(json.dumps(result), content_type='application/json')
 
 # @menezescode: Page only to show the form was correctly sended.
 def formOk(request):
@@ -2485,7 +2512,6 @@ def machineFormView(request):
 		machineform = machineForm(request.POST)
 	return render(request,'manager/formMachine.html', {'form': machineform})
 ##End
-
 
 def implementFormView(request):
 	form = implementForm(request.POST)
