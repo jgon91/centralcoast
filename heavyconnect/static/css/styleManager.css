@@ -582,7 +582,14 @@ input[type="button"] {
 	width: 200px;
 	color: white;
 }
-	
+#tableManageForm {
+	margin: auto;
+	margin-top: 20px;
+}
+#tableManageForm tr td {
+	padding: 20px;
+	padding-left: 55px;
+	padding-right: 55px;
 }
 /*** Manage Forms Page End ***/
 

@@ -26,50 +26,31 @@
 	<div id="wrapper">
 		<div id="content">
 		<div id="contentManageForm">
-			<div class="row rowManageForm">
-				<div class="col-xs-4 col-md-4">
-					<input type="button" class="colManageForm" value="{% trans 'EMPLOYEE' %}"/>
-				</div>
-				<div class="col-xs-4 col-md-4">	
-					<input type="button" class="btnManageForm" value="{% trans 'ADD' %}"/>
-				</div>
-				<div class="col-xs-4 col-md-4">
-					<input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/>
-				</div>
-			</div>
-			<div class="row rowManageForm">
-				<div class="col-xs-4 col-md-4">
-					<input type="button" class="colManageForm" value="{% trans 'MACHINE' %}"/>
-				</div>
-				<div class="col-xs-4 col-md-4">	
-					<input type="button" class="btnManageForm" value="{% trans 'ADD' %}"/>
-				</div>
-				<div class="col-xs-4 col-md-4">
-					<input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/>
-				</div>
-			</div>
-			<div class="row rowManageForm">
-				<div class="col-xs-4 col-md-4">
-					<input type="button" class="colManageForm" value="{% trans 'SHOP' %}"/>
-				</div>
-				<div class="col-xs-4 col-md-4">	
-					<input type="button" class="btnManageForm" value="{% trans 'ADD' %}"/>
-				</div>
-				<div class="col-xs-4 col-md-4">
-					<input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/>
-				</div>
-			</div>
-			<div class="row rowManageForm">
-				<div class="col-xs-4 col-md-4">
-					<input type="button" class="colManageForm" value="{% trans 'REPAIR SHOP' %}"/>
-				</div>
-				<div class="col-xs-4 col-md-4">	
-					<input type="button" class="btnManageForm" value="{% trans 'ADD' %}"/>
-				</div>
-				<div class="col-xs-4 col-md-4">
-					<input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/>
-				</div>
-			</div>
+			<table id="tableManageForm">
+				<tr style="background: #E0E0A7; color: black;">
+					<td>EMPLOYEE</td>
+					<td><a href="{% url 'registerEmployee'%}">
+							<input type="button" class="btnManageForm" value="{% trans 'ADD' %}"/>
+						</a></td>
+					<td><input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/></td>
+				</tr>
+				<tr style="background: #968072; color: white;">
+					<td>MACHINE</td>
+					<td><input type="button" class="btnManageForm" value="{% trans 'ADD' %}"/></td>
+					<td><input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/></td>
+				</tr>
+				<tr style="background: #E0E0A7; color: black;">
+					<td>SHOP</td>
+					<td><input type="button" class="btnManageForm" value="{% trans 'ADD' %}"/></td>
+					<td><input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/></td>
+				</tr>
+				<tr style="background: #968072; color: white;">
+					<td>REPAIR SHOP</td>
+					<td><input type="button" class="btnManageForm" value="{% trans 'ADD' %}"/></td>
+					<td><input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/></td>
+				</tr>
+			</table>
+			
 		</div>
 		</div>
 	</div>
