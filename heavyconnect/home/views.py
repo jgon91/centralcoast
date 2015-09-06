@@ -2464,6 +2464,7 @@ def equipmentTypeFormView(request):
 	else:
 		return render(request, 'formTest.html', {'form': form})
 
+
 #Form to add machine
 def machineFormView(request):
 	result = {'success' : False}
@@ -2529,6 +2530,42 @@ def employeeFormView(request):
 		return redirect('formOk')
 	else:
 		return render(request, 'formTest.html', {'form': form})
+
+
+
+### View to update employee by manager
+def employeeManagerUpdate(request):
+	result = {'success' : False}
+	if request.method == "POST":
+		userform = UserFormUpdate(request.POST)
+		employform = employeeForm(request.POST)
+		userid = request.POST['user_id']
+		emplo = Employee.objects.get(user_id = userid)
+		emplo.user.first_name = userform.cleaned_data['first_name']
+		emplo.user.last_name = userform.cleaned_data['last_name']
+		emplo.company_id = employform.cleaned_data['company_id']
+		emplo.start_date = employform.cleaned_data['start_date']
+		emplo.active = employform.cleaned_data['active']
+		emplo.language = employform.cleaned_data['language']
+		emplo.qr_code = employform.cleaned_data['qr_code']
+		emplo.hour_cost = employform.cleaned_data['hour_cost']
+		emplo.contact_number = employform.cleaned_data['contact_number']
+		emplo.permission_level = employform.cleaned_data['permission_level']
+		emplo.photo = employform.cleaned_data['photo']
+		emplo.notes = employform.cleaned_data['notes']
+
+	else:
+		try:
+			emplo_id = request.POST['user_id']
+			emplo = Employee.objects.get(user_id = emplo_id)
+			userform = UserFormUpdate(initial = {'first_name' : emplo.user.first_name, 'last_name' : emplo.user.last_name})
+			employform = employeeForm(initial = {'notes' : emplo.notes, 'photo' : emplo.photo, 'permission_level' : emplo.permission_level ,'contact_number' : emplo.contact_number ,'hour_cost' : emplo.hour_cost, 'qr_code' : emplo.qr_code ,'language' : emplo.language , 'active' : emplo.active, 'last_task' : emplo.last_task ,'start_date' : emplo.start_date,'company_id' : emplo.company_id})
+			result['success'] = True
+		except:
+			result['code'] = 3 # this user does not exist
+			return HttpResponse(json.dumps(result),content_type='application/json')
+		return render(request,'driver/employeeUpdate', {'form': userform, 'form1': employform})
+
 
 ### Form to add employee ###
 def employeeFormadd(request):
