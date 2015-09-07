@@ -26,17 +26,17 @@
 						success: function(data, status, xhr){							
 							console.log(data);
 							for(var i = 0; i < data.employees.length; i++){
-								$(".listEmployee").append("<tr><td>" + data.employees[i].first_name + " " + data.employees[i].last_name + "</td><td><a class='editEmployee' id='"+ data.employees[i].user_id +"' > Edit </a></td></tr>");
+								$(".listEmployee").append("<tr><td>" + data.employees[i].first_name + " " + data.employees[i].last_name + "</td><td><a href='{% url 'employeeManagerUpdateForm' %}?user_id="+ data.employees[i].user_id +"' > Edit </a></td></tr>");
 							}
 
-							$(".editEmployee").click( function(){ 
-								editEmployee(token, this.id);
-							});
+							//$(".editEmployee").click( function(){ 
+							//	editEmployee(token, this.id);
+							//});
 							
 						}
 					});			
 			}
-
+			/*
 			function editEmployee(token, id) {
 				
 					$.ajax({
@@ -51,6 +51,7 @@
 						}
 					});			
 			}
+			*/
 
 
 
