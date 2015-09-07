@@ -2570,7 +2570,7 @@ def employeeManagerUpdateForm(request):
 					emplo = Employee.objects.get(user_id = user_id)
 					userform = UserFormUpdate(initial = {'first_name' : emplo.user.first_name, 'last_name' : emplo.user.last_name})
 					employform = employeeUpdateForm(initial = {'user' : user_id,'notes' : emplo.notes, 'photo' : emplo.photo, 'permission_level' : emplo.permission_level ,'contact_number' : emplo.contact_number ,'hour_cost' : emplo.hour_cost, 'qr_code' : emplo.qr_code ,'language' : emplo.language , 'active' : emplo.active, 'last_task' : emplo.last_task ,'start_date' : emplo.start_date,'company_id' : emplo.company_id})
-					return render(request,'driver/employeeUpdate', {'form': userform, 'form1': employform})
+					return render(request,'driver/employeeUpdate.html', {'form': userform, 'form1': employform})
 				except:
 					result['code'] = 2 #Employee does not exist
 					return HttpResponse(json.dumps(result),content_type='application/json')
@@ -2591,11 +2591,16 @@ def employeeManagerUpdateForm(request):
 					emplo.permission_level = employform.cleaned_data['permission_level']
 					emplo.photo = employform.cleaned_data['photo']
 					emplo.notes = employform.cleaned_data['notes']
+					emplo.user.save()
+					emplo.save()
+					return render(request, 'manager/formSuccess.html')
 				except:
 					result['code'] = 2 #Employee does not exist
+					return HttpResponse(json.dumps(result),content_type='application/json')
 	else:
 		result['code'] = 1 #method is not POST
 		return HttpResponse(json.dumps(result),content_type='application/json')
+	return HttpResponse(json.dumps(result),content_type='application/json')
 ### End ###
 
 
@@ -2641,7 +2646,6 @@ def employeeFormadd(request):
 	else:
 		userform = UserForm(request.POST)
 		employform = employeeForm(request.POST)
-		employform['language'].initial = '2'
 	employform = employeeForm(initial = {'start_date' : datetime.datetime.now()})
 	return render(request,'manager/formEmployee.html', {'form': userform, 'form1': employform})
 ### End ###
