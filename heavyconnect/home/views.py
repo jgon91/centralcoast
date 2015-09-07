@@ -2605,13 +2605,13 @@ def employeeFormView(request):
 # 		return HttpResponse(json.dumps(result),content_type='application/json')
 # 	return HttpResponse(json.dumps(result),content_type='application/json')
 # ### End ###
-
+@login_required
 def employeeManagerUpdateForm(request):
 	result = {'success' : False}
 	if request.method == "POST":
-		user_id = request.POST['user_id']
 		userform = UserFormUpdate(request.POST)
-		employform = employeeForm(request.POST)
+		employform = employeeUpdateForm(request.POST)
+		user_id = request.POST['user']
 		if userform.is_valid() and employform.is_valid():
 			try:
 				emplo = Employee.objects.get(user_id = user_id)
@@ -2637,10 +2637,11 @@ def employeeManagerUpdateForm(request):
 			result['code'] = 3 #Form not valid
 	else:
 		try:
+			user_id = request.GET.get('user_id')
 			emplo = Employee.objects.get(user__id = user_id)
 			userform = UserFormUpdate(initial = {'first_name' : emplo.user.first_name, 'last_name' : emplo.user.last_name})
 			employform = employeeUpdateForm(initial = {'user' : user_id,'notes' : emplo.notes, 'photo' : emplo.photo, 'permission_level' : emplo.permission_level ,'contact_number' : emplo.contact_number ,'hour_cost' : emplo.hour_cost, 'qr_code' : emplo.qr_code ,'language' : emplo.language , 'active' : emplo.active, 'last_task' : emplo.last_task ,'start_date' : emplo.start_date,'company_id' : emplo.company_id})
-			return render(request,'manager/employeeUpdate.html', {'form': user_id, 'form1': employform})
+			return render(request,'manager/employeeUpdate.html', {'form': userform, 'form1': employform})
 		except:
 			result['code'] = 2 #Employee does not exist
 			return HttpResponse(json.dumps(result),content_type='application/json')

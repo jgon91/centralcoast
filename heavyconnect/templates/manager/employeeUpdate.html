@@ -60,7 +60,10 @@
 				Permission Level: {{ form1.permission_level }}
 				<br>
 				Photo: {{ form1.photo }}
-				<br>		
+				<br>
+				<br>
+				{{ form1.user.as_hidden }}
+				<br>				
 				
 				<input type="submit" id="saveForm" value="{% trans 'SAVE' %}"/>
 			</form>
