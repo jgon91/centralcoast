@@ -2570,7 +2570,7 @@ def employeeManagerUpdateForm(request):
 					emplo = Employee.objects.get(user_id = user_id)
 					userform = UserFormUpdate(initial = {'first_name' : emplo.user.first_name, 'last_name' : emplo.user.last_name})
 					employform = employeeUpdateForm(initial = {'user' : user_id,'notes' : emplo.notes, 'photo' : emplo.photo, 'permission_level' : emplo.permission_level ,'contact_number' : emplo.contact_number ,'hour_cost' : emplo.hour_cost, 'qr_code' : emplo.qr_code ,'language' : emplo.language , 'active' : emplo.active, 'last_task' : emplo.last_task ,'start_date' : emplo.start_date,'company_id' : emplo.company_id})
-					return render(request,'driver/employeeUpdate.html', {'form': userform, 'form1': employform})
+					return render(request,'manager/employeeUpdate.html', {'form': userform, 'form1': employform})
 				except:
 					result['code'] = 2 #Employee does not exist
 					return HttpResponse(json.dumps(result),content_type='application/json')

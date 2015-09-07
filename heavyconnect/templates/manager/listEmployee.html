@@ -45,7 +45,9 @@
 						data: {"csrfmiddlewaretoken": token, "user_id": id, "controler": true },
 						datatype: "json",
 						success: function(data, status, xhr){							
-							console.log('sucess');
+							console.log(data);
+							//document.write(data);
+							$("#content").html(data);
 						}
 					});			
 			}
@@ -58,7 +60,7 @@
 	<body>
 		<header id="head"></header>
 			<br><br>
-			<div style="text-align: center;">
+			<div id="content" style="text-align: center;">
 				<table class="listEmployee" id="tableManageForm">
 					
 				</table>

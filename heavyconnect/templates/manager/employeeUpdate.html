@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{% load staticfiles %}
+		{% load i18n %}
+
+		<script>
+			$(document).ready(function() {
+				$("#foot").load("{% url 'footer' %}");
+				$("#head").load("{% url 'headerManager' %}");
+				
+
+				$("form").submit(function(){
+
+					var formOK = true;
+
+    				if($('input[name=first_name]').val() == ""){						
+						$('input[name=first_name]').css('box-shadow', '0px 0px 10px red');
+						formOK = false;
+					}
+					if($('input[name=last_name]').val() == ""){						
+						$('input[name=last_name]').css('box-shadow', '0px 0px 10px red');
+						formOK = false;
+					}
+					if($('input[name=username]').val() == ""){						
+						$('input[name=username]').css('box-shadow', '0px 0px 10px red');
+						formOK = false;
+					}
+					if($('input[name=password]').val() == ""){						
+						$('input[name=password]').css('box-shadow', '0px 0px 10px red');
+						formOK = false;
+					}
+
+				    return formOK;
+				});
+			});
+
+
+		</script>
+	</head>
+	<body>
+		<header id="head"></header>
+		<div id="contentForm">
+			<form method="POST" action="." id="formPage" onsubmit="checkFields()">
+				{% csrf_token %}
+				First Name: * {{ form.first_name }}
+				<br>
+				Last name: * {{ form.last_name }}
+				<br>
+				Company id: {{ form1.company_id }}
+				<br>
+				Language: {{ form1.language }}
+				<br>
+				QrCode: {{ form1.qr_code }}
+				<br>
+				Start date: {{ form1.start_date }}
+				<br>
+				Hour cost: {{ form1.hour_cost }}
+				<br>
+				Permission Level: {{ form1.permission_level }}
+				<br>
+				Photo: {{ form1.photo }}
+				<br>		
+				
+				<input type="submit" id="saveForm" value="{% trans 'SAVE' %}"/>
+			</form>
+		</div>
+		
+	</body>
+</html>
