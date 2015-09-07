@@ -2045,6 +2045,10 @@ def manageForms(request):
 	return render(request, 'manager/manageForms.html')
 
 @login_required
+def listEmployee(request):
+	return render(request, 'manager/listEmployee.html')
+
+@login_required
 def geofence(request):
 	return render(request, 'geoFence.html')
 

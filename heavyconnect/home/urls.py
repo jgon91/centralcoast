@@ -40,6 +40,7 @@ urlpatterns = [
     url(r'^map/$', main_views.map, name = 'map'),
     url(r'^formTEST/$', main_views.manufacturerForm, name='registerManufacturer'),
     url(r'^formSuccess/$', main_views.formSuccess, name='formSuccess'),
+    url(r'^listEmployee/$', main_views.listEmployee, name='listEmployee'),
 
     ### Functions ###
     url(r'^employeeLocation/$', main_views.getEmployeeLocation, name = 'employeeLocation'),
