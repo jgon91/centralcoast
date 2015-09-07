@@ -2440,19 +2440,61 @@ def manufacturerModelFormView(request):
 	else:
 		return render(request, 'formTest.html', {'form': form})
 
+# Form to add a repair shop
 def repairShopFormView(request):
-	form = repairShopForm(request.POST)
-	if form.is_valid():
-		return redirect('formOk')
-	else:
-		return render(request, 'formTest.html', {'form': form})
+	result = {'success': False}
+	if request.method == "POST":
+		repair_shop_form = repairShopForm(request.POST)
+		if repair_shop_form.is_valid():
+			new_repair_shop_name = repair_shop_form.cleaned_data['name']
+			new_repair_shop_number = repair_shop_form.cleaned_data['number']
+			new_repair_shop_address = repair_shop_form.cleaned_data['address']
 
-def shopFormView(request):
-	form = shopForm(request.POST)
-	if form.is_valid():
-		return redirect('formOk')
+			repair_shop = RepairShop(name = new_repair_shop_name, number = new_repair_shop_number, address = new_repair_shop_address)
+			repair_shop.save()
+			result['success'] = True
+
+			if result['success'] == True :
+				#return HttpResponse(json.dumps(result),content_type='application/json') 
+				return render(request, 'manager/formSuccess.html')
+			else:
+				return render(request, 'manager/formError.html')
+		else:
+			result['code'] = 3 #this repair shop is already registered
+			return render(request, 'manager/formError.html')
+		return HttpResponse(json.dumps(result),content_type='application/json')
 	else:
-		return render(request, 'formTest.html', {'form': form})
+		repair_shop_form = repairShopForm(request.POST)
+	return render(request,'manager/formRepairShop.html', {'form': repair_shop_form})
+# End
+
+# Form to add a shop
+def shopFormView(request):
+	result = {'success': False}
+	if request.method == "POST":
+		shop_form = shopForm(request.POST)
+		if shop_form.is_valid():
+			new_shop_name = shop_form.cleaned_data['name']
+			new_shop_number = shop_form.cleaned_data['number']
+			new_shop_address = shop_form.cleaned_data['address']
+
+			shop = Shop(name = new_shop_name, number = new_shop_number, address = new_shop_address)
+			shop.save()
+			result['success'] = True
+
+			if result['success'] == True :
+				#return HttpResponse(json.dumps(result),content_type='application/json') 
+				return render(request, 'manager/formSuccess.html')
+			else:
+				return render(request, 'manager/formError.html')
+		else:
+			result['code'] = 3 #this shop is already registered
+			return render(request, 'manager/formError.html')
+		return HttpResponse(json.dumps(result),content_type='application/json')
+	else:
+		shop_form = shopForm(request.POST)
+	return render(request,'manager/formShop.html', {'form': shop_form})
+# End
 
 def equipmentCategoryFormView(request):
 	form = EquipmentCategoryForm(request.POST)

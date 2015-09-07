@@ -40,9 +40,9 @@ class repairShopForm(forms.Form):
 
 ### Structure for shopForm ###
 class shopForm(forms.Form):
-	name = forms.CharField()
-	number = forms.CharField()
-	address = forms.CharField()
+	name = forms.CharField(max_length = 20)
+	number = forms.CharField(max_length = 14)
+	address = forms.CharField(max_length = 150)
 ### End ###
 
 ### Structure for EquipmentCategoryForm ###
