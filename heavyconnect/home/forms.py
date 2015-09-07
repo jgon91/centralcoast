@@ -198,6 +198,32 @@ class employeeForm(forms.Form):
 	notes = forms.CharField(max_length = 250, required = False)
 ### End ###
 
+
+### Structor for employee Update###
+class employeeUpdateForm(forms.Form):
+	PERMISSION_LEVEL_CHOICES = (
+		(1, 'Driver'),
+		(2, 'Manager'),
+	)
+	LANGUAGE_CHOICES = (
+		(3, 'en'),
+		(2, 'es'),
+		(1, 'pt-br'),
+	)
+	last_task = forms.ModelChoiceField(queryset = Task.objects.all(), required = False)
+	user = forms.IntegerField(required = False)
+	active = forms.BooleanField(required = False)
+	company_id = forms.CharField(required = False)
+	language = forms.ChoiceField(choices = LANGUAGE_CHOICES)
+	qr_code = forms.CharField(required = False)
+	start_date = forms.DateField(widget=SelectDateWidget(empty_label=("Choose Year", "Choose Month", "Choose Day")), required = False)
+	hour_cost = forms.FloatField(required = False)
+	contact_number = forms.CharField(required = False)
+	permission_level = forms.ChoiceField(choices = PERMISSION_LEVEL_CHOICES)
+	photo = forms.URLField(required = False)
+	notes = forms.CharField(max_length = 250, required = False)
+### End ###
+
 ### Structure for employeeAttendanceForm ###
 class employeeAttendanceForm(forms.Form):
 	employee = forms.ModelChoiceField(queryset = Employee.objects.all())
