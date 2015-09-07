@@ -2573,19 +2573,22 @@ def employeeManagerUpdateForm(request):
 			except:
 				userform = UserFormUpdate(request.POST)
 				employform = employeeForm(request.POST)
-				emplo = Employee.objects.get(user_id = user_id)
-				emplo.user.first_name = userform.cleaned_data['first_name']
-				emplo.user.last_name = userform.cleaned_data['last_name']
-				emplo.company_id = employform.cleaned_data['company_id']
-				emplo.start_date = employform.cleaned_data['start_date']
-				emplo.active = employform.cleaned_data['active']
-				emplo.language = employform.cleaned_data['language']
-				emplo.qr_code = employform.cleaned_data['qr_code']
-				emplo.hour_cost = employform.cleaned_data['hour_cost']
-				emplo.contact_number = employform.cleaned_data['contact_number']
-				emplo.permission_level = employform.cleaned_data['permission_level']
-				emplo.photo = employform.cleaned_data['photo']
-				emplo.notes = employform.cleaned_data['notes']
+				try:
+					emplo = Employee.objects.get(user_id = user_id)
+					emplo.user.first_name = userform.cleaned_data['first_name']
+					emplo.user.last_name = userform.cleaned_data['last_name']
+					emplo.company_id = employform.cleaned_data['company_id']
+					emplo.start_date = employform.cleaned_data['start_date']
+					emplo.active = employform.cleaned_data['active']
+					emplo.language = employform.cleaned_data['language']
+					emplo.qr_code = employform.cleaned_data['qr_code']
+					emplo.hour_cost = employform.cleaned_data['hour_cost']
+					emplo.contact_number = employform.cleaned_data['contact_number']
+					emplo.permission_level = employform.cleaned_data['permission_level']
+					emplo.photo = employform.cleaned_data['photo']
+					emplo.notes = employform.cleaned_data['notes']
+				except:
+					result['code'] = 2 #Employee does not exist
 	else:
 		result['code'] = 1 #method is not POST
 		return HttpResponse(json.dumps(result),content_type='application/json')
