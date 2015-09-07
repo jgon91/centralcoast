@@ -42,7 +42,7 @@
 					$.ajax({
 						method: "POST",
 						url: "{% url 'employeeManagerUpdateForm' %}",
-						data: {"csrfmiddlewaretoken": token, "user_id": id },
+						data: {"csrfmiddlewaretoken": token, "user_id": id, "controler": true },
 						datatype: "json",
 						success: function(data, status, xhr){							
 							console.log('sucess');
