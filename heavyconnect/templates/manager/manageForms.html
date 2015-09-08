@@ -28,25 +28,43 @@
 		<div id="contentManageForm">
 			<table id="tableManageForm">
 				<tr style="background: #E0E0A7; color: black;">
-					<td>EMPLOYEE</td>
-					<td><a href="{% url 'registerEmployee'%}">
+					<td>{% trans 'EMPLOYEE' %}</td>
+					<td>
+						<a href="{% url 'registerEmployee'%}">
 							<input type="button" class="btnManageForm" value="{% trans 'ADD' %}"/>
-						</a></td>
-					<td><input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/></td>
+						</a>
+					</td>
+					<td>
+						<a href="{% url 'listEmployee'%}">
+							<input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/>
+						</a>
+					</td>
 				</tr>
 				<tr style="background: #968072; color: white;">
-					<td>MACHINE</td>
-					<td><input type="button" class="btnManageForm" value="{% trans 'ADD' %}"/></td>
+					<td>{% trans 'MACHINE' %}</td>
+					<td>
+						<a href="{% url 'registerMachine'%}">
+							<input type="button" class="btnManageForm" value="{% trans 'ADD' %}"/>
+						</a>
+					</td>
 					<td><input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/></td>
 				</tr>
 				<tr style="background: #E0E0A7; color: black;">
-					<td>SHOP</td>
-					<td><input type="button" class="btnManageForm" value="{% trans 'ADD' %}"/></td>
+					<td>{% trans 'SHOP' %}</td>
+					<td>
+						<a href="{% url 'registerShop'%}">
+							<input type="button" class="btnManageForm" value="{% trans 'ADD' %}"/>
+						</a>
+					</td>
 					<td><input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/></td>
 				</tr>
 				<tr style="background: #968072; color: white;">
-					<td>REPAIR SHOP</td>
-					<td><input type="button" class="btnManageForm" value="{% trans 'ADD' %}"/></td>
+					<td>{% trans 'REPAIR SHOP' %}</td>
+					<td>
+						<a href="{% url 'registerRepairShop'%}">
+							<input type="button" class="btnManageForm" value="{% trans 'ADD' %}"/>
+						</a>
+					</td>
 					<td><input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/></td>
 				</tr>
 			</table>
