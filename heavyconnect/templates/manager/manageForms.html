@@ -26,8 +26,8 @@
 	<div id="wrapper">
 		<div id="content">
 		<div id="contentManageForm">
-			<table id="tableManageForm">
-				<tr style="background: #E0E0A7; color: black;">
+			<table class="tableListForm">
+				<tr class="rowCream">
 					<td>{% trans 'EMPLOYEE' %}</td>
 					<td>
 						<a href="{% url 'registerEmployee'%}">
@@ -40,7 +40,7 @@
 						</a>
 					</td>
 				</tr>
-				<tr style="background: #968072; color: white;">
+				<tr class="rowGray">
 					<td>{% trans 'MACHINE' %}</td>
 					<td>
 						<a href="{% url 'registerMachine'%}">
@@ -49,7 +49,7 @@
 					</td>
 					<td><input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/></td>
 				</tr>
-				<tr style="background: #E0E0A7; color: black;">
+				<tr class="rowCream">
 					<td>{% trans 'SHOP' %}</td>
 					<td>
 						<a href="{% url 'registerShop'%}">
@@ -58,7 +58,7 @@
 					</td>
 					<td><input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/></td>
 				</tr>
-				<tr style="background: #968072; color: white;">
+				<tr class="rowGray">
 					<td>{% trans 'REPAIR SHOP' %}</td>
 					<td>
 						<a href="{% url 'registerRepairShop'%}">

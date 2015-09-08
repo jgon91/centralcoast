@@ -560,18 +560,6 @@ input[type="button"] {
 	font-weight: 700;
 	padding-bottom: 20px;
 }
-.colManageForm {
-	height: 50px;
-	width: 200px;
-	box-shadow: 2px 2px 8px 0px gray;
-	border-radius: 10px;
-	background: white;
-}
-.rowManageForm {
-	margin: 0 !important;
-	text-align: center;
-	margin-top: 20px !important;
-}
 .btnManageForm {
 	background: url('../imgSmall/buttons/btnGreen.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -582,14 +570,22 @@ input[type="button"] {
 	width: 200px;
 	color: white;
 }
-#tableManageForm {
+.tableListForm {
 	margin: auto;
 	margin-top: 20px;
 }
-#tableManageForm tr td {
+.tableListForm tr td {
 	padding: 20px;
 	padding-left: 55px;
 	padding-right: 55px;
+}
+.rowCream {
+	background: #E0E0A7;
+	color: black;
+}
+.rowGray {
+	background: #968072;
+	color: white;
 }
 /*** Manage Forms Page End ***/
 
