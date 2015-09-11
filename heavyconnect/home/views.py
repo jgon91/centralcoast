@@ -2611,28 +2611,6 @@ def employeeFormView(request):
 
 
 
-### Views to update employee by manager
-# def employeeManagerUpdate(request):
-# 	result = {'success' : False}
-# 	if request.method == "POST":
-# 		userform = UserFormUpdate(request.POST)
-# 		employform = employeeForm(request.POST)
-# 		userid = request.POST['user_id']
-# 		emplo = Employee.objects.get(user_id = userid)
-# 		emplo.user.first_name = userform.cleaned_data['first_name']
-# 		emplo.user.last_name = userform.cleaned_data['last_name']
-# 		emplo.company_id = employform.cleaned_data['company_id']
-# 		emplo.start_date = employform.cleaned_data['start_date']
-# 		emplo.active = employform.cleaned_data['active']
-# 		emplo.language = employform.cleaned_data['language']
-# 		emplo.qr_code = employform.cleaned_data['qr_code']
-# 		emplo.hour_cost = employform.cleaned_data['hour_cost']
-# 		emplo.contact_number = employform.cleaned_data['contact_number']
-# 		emplo.permission_level = employform.cleaned_data['permission_level']
-# 		emplo.photo = employform.cleaned_data['photo']
-# 		emplo.notes = employform.cleaned_data['notes']
-# 	else:
-# 		result['code'] = 1 #Method is not POST
 
 # def employeeManagerUpdateForm(request):
 # 	result = {'success' : False}
@@ -2679,6 +2657,68 @@ def employeeFormView(request):
 # 		return HttpResponse(json.dumps(result),content_type='application/json')
 # 	return HttpResponse(json.dumps(result),content_type='application/json')
 # ### End ###
+
+
+
+### View To update Machine ###
+@login_required
+def machineUpdateView(request):
+	result = {'success' : False}
+	if request.method == "POST":
+		machiForm = machineUpdateForm(request.POST)
+		machi_id = request.POST['machine_id']
+		if machiForm.is_valid():
+			try:
+				machi = Machine.objects.get(id = machi_id)
+				machi.manufacturer_model = machiForm.cleaned_data['manufacturer_model']
+				machi.repair_shop = machiForm.cleaned_data['repair_shop']
+				machi.shop = machiForm.cleaned_data['shop']
+				machi.nickname = machiForm.cleaned_data['nickname']
+				machi.qr_code = machiForm.cleaned_data['qr_code']
+				machi.asset_number = machiForm.cleaned_data['asset_number']
+				machi.serial_number = machiForm.cleaned_data['serial_number']
+				machi.horsepower = machiForm.cleaned_data['horsepower']
+				machi.hitch_capacity = machiForm.cleaned_data['hitch_capacity']
+				machi.hitch_category = machiForm.cleaned_data['hitch_category']
+				machi.drawbar_category = machiForm.cleaned_data['drawbar_category']
+				machi.speed_range_min = machiForm.cleaned_data['speed_range_min']
+				machi.speed_range_max = machiForm.cleaned_data['speed_range_max']
+				machi.year_purchased = machiForm.cleaned_data['year_purchased']
+				machi.engine_hours = machiForm.cleaned_data['engine_hours']
+				machi.service_interval = machiForm.cleaned_data['service_interval']
+				machi.base_cost = machiForm.cleaned_data['base_cost']
+				machi.m_type = machiForm.cleaned_data['m_type']
+				machi.front_tires = machiForm.cleaned_data['front_tires']
+				machi.rear_tires = machiForm.cleaned_data['rear_tires']
+				machi.steering = machiForm.cleaned_data['steering']
+				machi.operator_station = machiForm.cleaned_data['operator_station']
+				machi.status = machiForm.cleaned_data['status']
+				machi.hour_cost = machiForm.cleaned_data['hour_cost']
+				machi.photo = machiForm.cleaned_data['photo']
+				machi.photo1 = machiForm.cleaned_data['photo1']
+				machi.photo2 = machiForm.cleaned_data['photo2']
+				machi.note = machiForm.cleaned_data['note']
+				machi.beacon = machiForm.cleaned_data['beacon']
+				machi.save()
+				return render(request, 'manager/formSuccess.html')
+			except:
+				result['code'] = 2 #Employee does not exist
+				return HttpResponse(json.dumps(result),content_type='application/json')
+		return HttpResponse(json.dumps(result),content_type='application/json')
+	else:
+		try:
+			machine_id = request.GET.get("machine_id")
+			machineReturn = Machine.objects.get(id = machine_id)
+			if machineReturn != None:
+				machi = machineUpdateForm(initial = {'machine_id' : machine_id,'beacon' : machineReturn.beacon,'shop' : machineReturn.shop,'repair_shop' : machineReturn.repair_shop ,'manufacturer_model' :  machineReturn.manufacturer_model,'nickname' : machineReturn.nickname , 'asset_number' : machineReturn.asset_number , 'serial_number' : machineReturn.serial_number , 'qr_code' : machineReturn.qr_code , 'horsepower' : machineReturn.horsepower , 'hitch_capacity' : machineReturn.hitch_capacity , 'hitch_category' : machineReturn.hitch_category , 'drawbar_category' : machineReturn.drawbar_category , 'speed_range_min' : machineReturn.speed_range_min , 'speed_range_max' : machineReturn.speed_range_max , 'year_purchased' : machineReturn.year_purchased , 'engine_hours' : machineReturn.engine_hours , 'service_interval' : machineReturn.service_interval , 'base_cost' : machineReturn.base_cost , 'm_type' : machineReturn.m_type , 'front_tires' : machineReturn.front_tires , 'rear_tires' : machineReturn.rear_tires , 'steering' : machineReturn.steering , 'operator_station' : machineReturn.operator_station , 'status' : machineReturn.status , 'hour_cost' : machineReturn.hour_cost , 'photo' : machineReturn.photo , 'photo1' : machineReturn.photo1 ,'note' : machineReturn.note , 'photo2' : machineReturn.photo2 })
+			else:
+				machi = machineForm()
+			return render(request,'manager/machineUpdate.html', {'form3' : machi})
+		except:
+			result['code'] = 2 #Employee does not exist
+			return HttpResponse(json.dumps(result),content_type='application/json')
+
+
 @login_required
 def employeeManagerUpdateForm(request):
 	result = {'success' : False}
