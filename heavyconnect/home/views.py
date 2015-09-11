@@ -2397,8 +2397,8 @@ def getAllEmployees(request):
 def getAllMachines(request):
 	each_result = {}
 	result = {"success": True}
-	if request.method == "GET":
-		if not(request.is_ajax()):
+	if request.method == "POST":
+		if request.is_ajax():
 			try:
 				all_machine = Machine.objects.all()
 				machines = []
