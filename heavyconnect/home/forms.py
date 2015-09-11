@@ -56,6 +56,80 @@ class equipmentTypeForm(forms.Form):
 	name = forms.CharField(max_length = 25)
 ### End ###
 
+
+### Structure for MachineUpdateForm ###
+class machineUpdateForm(forms.Form):
+	HITCH_CHOICES = (
+		(1, u'1'),
+		(2, u'2'),
+		(3, u'3'),
+		(4, u'4N'),
+		(5, u'4'),
+		(6, u'5'),
+	)
+	DRAWBAR_CHOICES = (
+		(1, '1'),
+		(2, '2'),
+		(3, '3'),
+		(4, '4'),
+		(5, '4WS'),
+		(6, '5'),
+		(7, '5WS'),
+	)
+	MTYPE_CHOICES = (
+		('T', 'Track'),
+		('W', 'Wheels'),
+	)
+	STEERING_CHOICES = (
+		('M', 'Manual'),
+		('G', 'GPS')
+	)
+	OPERATORSTATION_CHOICES = (
+		('C', 'Cab'),
+		('O', 'Open'),
+	)
+	STATUS_CHOICES = (
+		(1, 'Ok'),
+		(2, 'Attention'),
+		(3, 'Broken'),
+		(4, 'Quarantine'),
+	)
+	machine_id = forms.IntegerField()
+	manufacturer_model = forms.ModelChoiceField(queryset = ManufacturerModel.objects.all())
+	nickname = forms.CharField(max_length = 20)
+	asset_number = forms.CharField(max_length = 15)
+	serial_number = forms.CharField(max_length = 25)
+	repair_shop = forms.ModelChoiceField(queryset = RepairShop.objects.all(), required = False)
+	shop = forms.ModelChoiceField(queryset = Shop.objects.all(), required = False)
+	#equipment_type = forms.ModelChoiceField(queryset = EquipmentType.objects.all(), required = False)
+	qr_code = forms.CharField(max_length = 10, required = False)
+	horsepower = forms.IntegerField(required = False)
+	hitch_capacity = forms.IntegerField(required = False)
+	hitch_category = forms.ChoiceField(choices = HITCH_CHOICES, required = False)
+	drawbar_category = forms.ChoiceField(choices = DRAWBAR_CHOICES, required = False)
+	speed_range_min = forms.FloatField(required = False)
+	speed_range_max = forms.FloatField(required = False)
+	year_purchased = forms.IntegerField(required = False)
+	engine_hours = forms.IntegerField(required = False)
+	service_interval = forms.IntegerField(required = False)
+	base_cost = forms.FloatField(required = False)
+	m_type = forms.ChoiceField(choices = MTYPE_CHOICES, required = False)
+	front_tires = forms.CharField(max_length = 20, required = False)
+	rear_tires = forms.CharField(max_length = 20, required = False)
+	steering = forms.ChoiceField(choices = STEERING_CHOICES, required = False)
+	operator_station = forms.ChoiceField(choices = OPERATORSTATION_CHOICES, required = False)
+	status = forms.ChoiceField(choices = STATUS_CHOICES, required = False)
+	hour_cost = forms.FloatField(required = False)
+	beacon = forms.ModelChoiceField(queryset = Beacon.objects.all(), required = False)
+	note = forms.CharField(max_length = 250, required = False)
+	photo = forms.URLField(max_length = 200, required = False)
+	photo1 = forms.URLField(max_length = 200, required = False)
+	photo2 = forms.URLField(max_length = 200, required = False)
+### End ###
+
+
+### End ###
+
 ### Structure for machineForm ###
 class machineForm(forms.Form):
 	HITCH_CHOICES = (
@@ -119,6 +193,7 @@ class machineForm(forms.Form):
 	status = forms.ChoiceField(choices = STATUS_CHOICES, required = False)
 	hour_cost = forms.FloatField(required = False)
 	beacon = forms.ModelChoiceField(queryset = Beacon.objects.all(), required = False)
+	note = forms.CharField(max_length = 250, required = False)
 	photo = forms.URLField(max_length = 200, required = False)
 	photo1 = forms.URLField(max_length = 200, required = False)
 	photo2 = forms.URLField(max_length = 200, required = False)
