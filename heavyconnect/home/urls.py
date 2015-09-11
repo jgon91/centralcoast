@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^headerManager/$', main_views.headerManager, name='headerManager'),
     url(r'^pastTasks/$', main_views.pastTasks, name='pastTasks'),
     url(r'^createTask/$', main_views.createTask, name='createTask'),
+    url(r'^createTaskManager/$', main_views.createTaskManager, name='createTaskManager'),
     url(r'^startTask/$', main_views.startTask, name='startTask'),
     url(r'^scanQRCode/$', main_views.scanQRCode, name='scanQRCode'),
     url(r'^indexManager/$', main_views.indexManager, name='indexManager'),

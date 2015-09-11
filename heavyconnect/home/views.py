@@ -42,9 +42,12 @@ def createNewTask(request):
 		if request.is_ajax():
 			if form.is_valid():
 				try:
-					#Getting the employee that are logged in
-					employee = Employee.objects.get(user_id = request.user.id)
-
+					#Getting the employee that are logged in or passed in the ajax call	        
+					if 'employeeId' not in request.POST:
+					    employee = Employee.objects.get(user_id = request.user.id)
+					else:
+						employee = Employee.objects.get(user_id = request.POST['employeeId'])		
+					
 					#Extracting the fields from the form
 					field = form.cleaned_data['field']
 					category = form.cleaned_data['category']
@@ -71,7 +74,6 @@ def createNewTask(request):
 						#Creating association between Implement and Task
 						impTask = ImplementTask(task = task, machine_task = macTask, implement = implement)
 						impTask.save()
-
 						if implement2 is not None:
 							#Creating association between Implement2 and Task
 							impTask2 = ImplementTask(task = task, machine_task = macTask, implement = implement2)
@@ -2003,6 +2005,10 @@ def headerManager(request):
 @login_required
 def createTask(request):
     return render(request, 'driver/createTask.html')
+   
+@login_required
+def createTaskManager(request):
+    return render(request, 'manager/createTaskManager.html')
 
 @login_required
 def pastTasks(request):
