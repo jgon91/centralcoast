@@ -94,6 +94,7 @@ urlpatterns = [
     url(r'^equipmentLastLocalization/$', main_views.equipmentLastLocalization, name = 'equipmentLastLocalization'),
     url(r'^storeChecklistAnswers/$', main_views.storeChecklistAnswers, name = 'storeChecklistAnswers'),
     url(r'^getAllEmployees/$', main_views.getAllEmployees, name = 'getAllEmployees'),
+    url(r'^getAllMachines/$', main_views.getAllMachines, name = 'getAllMachines'),
     ### End ###
 
     ###Insert###

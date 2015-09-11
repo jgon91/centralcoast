@@ -2394,6 +2394,32 @@ def getAllEmployees(request):
 
 	return HttpResponse(json.dumps(result), content_type='application/json')
 
+def getAllMachines(request):
+	each_result = {}
+	result = {"success": True}
+	if request.method == "GET":
+		if not(request.is_ajax()):
+			try:
+				all_machine = Machine.objects.all()
+				machines = []
+				for each in all_machine:
+					each_result["nickname"] = each.nickname
+					each_result["manufacturer_name"] = each.manufacturer_model.manufacturer.name
+					each_result["manufacturer_model"] = each.manufacturer_model.model
+					each_result["id"] = each.id
+					machines.append(each_result)
+					each_result = {}
+				result['success'] = True
+				result['machines'] = machines
+			except DoesNotExist:
+				result['code'] = 1
+		else:
+			result['code'] = 2
+	else:
+		result['code'] = 3
+
+	return HttpResponse(json.dumps(result), content_type='application/json')	
+
 # @menezescode: Page only to show the form was correctly sended.
 def formOk(request):
 	return render(request, 'formOk.html')
