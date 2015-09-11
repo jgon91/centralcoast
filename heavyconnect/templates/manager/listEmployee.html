@@ -26,8 +26,11 @@
 						success: function(data, status, xhr){							
 							console.log(data);
 							for(var i = 0; i < data.employees.length; i++){
-								$(".listEmployee").append("<tr><td>" + data.employees[i].first_name + " " + data.employees[i].last_name + "</td><td><a href='{% url 'employeeManagerUpdateForm' %}?user_id="+ data.employees[i].user_id +"' > Edit </a></td></tr>");
-							}
+								if(i%2 == 0) {
+									$(".tableListForm").append("<tr class='rowCream'><td>" + data.employees[i].first_name + " " + data.employees[i].last_name + "</td><td><a href='{% url 'employeeManagerUpdateForm' %}?user_id="+ data.employees[i].user_id +"' ><input type='button' class='btnManageForm' value='{% trans 'EDIT' %}'/></a></td><td><a href='#' ><input type='button' class='btnManageForm' value='{% trans 'SEE' %}'/></a></tr>");
+							} else {
+								$(".tableListForm").append("<tr class='rowGray'><td>" + data.employees[i].first_name + " " + data.employees[i].last_name + "</td><td><a href='{% url 'employeeManagerUpdateForm' %}?user_id="+ data.employees[i].user_id +"' ><input type='button' class='btnManageForm' value='{% trans 'EDIT' %}'/></a></td><td><a href='#' ><input type='button' class='btnManageForm' value='{% trans 'SEE' %}'/></a></tr>");
+							}}
 
 							//$(".editEmployee").click( function(){ 
 							//	editEmployee(token, this.id);
@@ -52,19 +55,19 @@
 					});			
 			}
 			*/
-
-
-
 		</script>
 		
 	</head>
 	<body>
 		<header id="head"></header>
-			<br><br>
-			<div id="content" style="text-align: center;">
-				<table class="listEmployee" id="tableManageForm">
-					
-				</table>
+			<div id="wrapper">
+				<div id="content" style="text-align: center;">
+					<div id="contentManageForm">
+						<table class="tableListForm" style="width: 90%;">					
+	
+						</table>
+					</div>
+				</div>
 			</div>
 		<footer id="foot"></footer>
 	</body>
