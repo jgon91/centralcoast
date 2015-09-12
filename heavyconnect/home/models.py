@@ -244,6 +244,7 @@ class Employee(models.Model):
 	permission_level = models.IntegerField(choices = ((1, 'Driver'), (2, 'Manager')), default = 1)
 	photo = models.URLField(max_length = 200, blank = True, null = True)
 	notes = models.CharField(max_length = 250, null = True, blank = True)
+	manager = models.ForeignKey('self', null = True, blank = True)
 
 	def __unicode__(self):
 		return  "First Name: " + str(self.user.first_name) + ", Last Name: " + str(self.user.last_name) + ", User ID: " + str(self.user.id) + ", ID: " + str(self.id)

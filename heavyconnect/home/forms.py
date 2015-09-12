@@ -271,6 +271,7 @@ class employeeForm(forms.Form):
 	permission_level = forms.ChoiceField(choices = PERMISSION_LEVEL_CHOICES)
 	photo = forms.URLField(required = False)
 	notes = forms.CharField(max_length = 250, required = False)
+	manager = forms.ModelChoiceField(queryset = Employee.objects.filter(permission_level = '1'))
 ### End ###
 
 
