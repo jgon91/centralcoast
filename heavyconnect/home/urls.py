@@ -96,6 +96,8 @@ urlpatterns = [
     url(r'^storeChecklistAnswers/$', main_views.storeChecklistAnswers, name = 'storeChecklistAnswers'),
     url(r'^getAllEmployees/$', main_views.getAllEmployees, name = 'getAllEmployees'),
     url(r'^getAllMachines/$', main_views.getAllMachines, name = 'getAllMachines'),
+    url(r'^getAllShops/$', main_views.getAllShops, name = 'getAllShops'),
+    url(r'^getAllRepairShops/$', main_views.getAllRepairShops, name = 'getAllRepairShops'),
     ### End ###
 
     ###Insert###
@@ -109,8 +111,10 @@ urlpatterns = [
     url(r'^repairShopFormadd/$', main_views.repairShopFormView, name = 'registerRepairShop'),
     url(r'^shopFormadd/$', main_views.shopFormView, name = 'registerShop'),
     url(r'^machineFormadd/$', main_views.machineFormView, name = 'registerMachine'),
+    url(r'^machineManagerDelete/$', main_views.machineManagerDelete, name = 'machineManagerDelete'),
     url(r'^machineUpdateView/$', main_views.machineUpdateView, name = 'machineUpdateView'),
     url(r'^employeeManagerUpdateForm/$', main_views.employeeManagerUpdateForm, name = 'employeeManagerUpdateForm'),
+    url(r'^employeeManagerDelete/$', main_views.employeeManagerDelete, name = 'employeeManagerDelete'),
     url(r'^implementFormView/$', main_views.implementFormView, name = 'registerImplement'),
     url(r'^employeeUpdateFormView/$', main_views.employeeUpdateFormView, name = 'updateEmployee'),
     url(r'^employeeManagerUpdateForm/$', main_views.employeeManagerUpdateForm, name = 'employeeManagerUpdateForm'),
