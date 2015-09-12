@@ -2403,6 +2403,33 @@ def getAllEmployees(request):
 
 	return HttpResponse(json.dumps(result), content_type='application/json')
 
+@login_required
+def employeeManagerDelete(request):
+	result = {'success' : False}
+	if request.method == "POST":
+		if request.is_ajax():
+			try:
+				user_id = request.POST['user']
+				emplo = Employee.objects.get(user_id = user_id)
+				emplo.user.delete()
+				emplo.delete()
+				result['success'] = True;
+
+				if result['success'] == True :
+					#return HttpResponse(json.dumps(result),content_type='application/json') 
+					return render(request, 'manager/formSuccess.html')
+				else:
+					return render(request, 'manager/formError.html')
+			except:
+					result['code'] = 1 #Employee does not exist
+					return HttpResponse(json.dumps(result),content_type='application/json')
+		else:
+			result['code'] = 2 #Request is not Ajax
+			return HttpResponse(json.dumps(result),content_type='application/json')
+	else:
+		result['code'] = 3 #Request is not POST
+		return HttpResponse(json.dumps(result),content_type='application/json')
+
 def getAllMachines(request):
 	each_result = {}
 	result = {"success": True}
@@ -2431,6 +2458,32 @@ def getAllMachines(request):
 		return HttpResponse(json.dumps(result), content_type='application/json')
 
 	return HttpResponse(json.dumps(result), content_type='application/json')	
+
+@login_required
+def machineManagerDelete(request):
+	result = {'success' : False}
+	if request.method == "POST":
+		if request.is_ajax():
+			try:
+				machine_id = request.POST['machine_id']
+				machine = Machine.objects.get(id = machine_id)
+				machine.delete()
+				result['success'] = True;
+
+				if result['success'] == True :
+					#return HttpResponse(json.dumps(result),content_type='application/json') 
+					return render(request, 'manager/formSuccess.html')
+				else:
+					return render(request, 'manager/formError.html')
+			except:
+					result['code'] = 1 #Machine does not exist
+					return HttpResponse(json.dumps(result),content_type='application/json')
+		else:
+			result['code'] = 2 #Request is not Ajax
+			return HttpResponse(json.dumps(result),content_type='application/json')
+	else:
+		result['code'] = 3 #Request is not POST
+		return HttpResponse(json.dumps(result),content_type='application/json')
 
 def getAllShops(request):
 	each_result = {}
@@ -2729,58 +2782,7 @@ def machineUpdateView(request):
 			result['code'] = 2 #Employee does not exist
 			return HttpResponse(json.dumps(result),content_type='application/json')
 
-@login_required
-def machineManagerDelete(request):
-	result = {'success' : False}
-	if request.method == "POST":
-		if request.is_ajax():
-			try:
-				machine_id = request.POST['machine_id']
-				machine = Machine.objects.get(id = machine_id)
-				machine.delete()
-				result['success'] = True;
 
-				if result['success'] == True :
-					#return HttpResponse(json.dumps(result),content_type='application/json') 
-					return render(request, 'manager/formSuccess.html')
-				else:
-					return render(request, 'manager/formError.html')
-			except:
-					result['code'] = 1 #Machine does not exist
-					return HttpResponse(json.dumps(result),content_type='application/json')
-		else:
-			result['code'] = 2 #Request is not Ajax
-			return HttpResponse(json.dumps(result),content_type='application/json')
-	else:
-		result['code'] = 3 #Request is not POST
-		return HttpResponse(json.dumps(result),content_type='application/json')
-
-@login_required
-def employeeManagerDelete(request):
-	result = {'success' : False}
-	if request.method == "POST":
-		if request.is_ajax():
-			try:
-				user_id = request.POST['user']
-				emplo = Employee.objects.get(user_id = user_id)
-				emplo.user.delete()
-				emplo.delete()
-				result['success'] = True;
-
-				if result['success'] == True :
-					#return HttpResponse(json.dumps(result),content_type='application/json') 
-					return render(request, 'manager/formSuccess.html')
-				else:
-					return render(request, 'manager/formError.html')
-			except:
-					result['code'] = 1 #Employee does not exist
-					return HttpResponse(json.dumps(result),content_type='application/json')
-		else:
-			result['code'] = 2 #Request is not Ajax
-			return HttpResponse(json.dumps(result),content_type='application/json')
-	else:
-		result['code'] = 3 #Request is not POST
-		return HttpResponse(json.dumps(result),content_type='application/json')
 
 ### End ###
 @login_required
@@ -2826,8 +2828,6 @@ def employeeManagerUpdateForm(request):
 			return HttpResponse(json.dumps(result),content_type='application/json')
 	return HttpResponse(json.dumps(result),content_type='application/json')
 ### End ###
-
-
 
 ### Form to add employee ###
 def employeeFormadd(request):
