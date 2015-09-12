@@ -2741,6 +2741,7 @@ def employeeManagerUpdateForm(request):
 				emplo.permission_level = employform.cleaned_data['permission_level']
 				emplo.photo = employform.cleaned_data['photo']
 				emplo.notes = employform.cleaned_data['notes']
+				emplo.manager = employform.cleaned_data['manager']
 				emplo.user.save()
 				emplo.save()
 				return render(request, 'manager/formSuccess.html')
@@ -2754,7 +2755,7 @@ def employeeManagerUpdateForm(request):
 			user_id = request.GET.get('user_id')
 			emplo = Employee.objects.get(user__id = user_id)
 			userform = UserFormUpdate(initial = {'first_name' : emplo.user.first_name, 'last_name' : emplo.user.last_name})
-			employform = employeeUpdateForm(initial = {'user' : user_id,'notes' : emplo.notes, 'photo' : emplo.photo, 'permission_level' : emplo.permission_level ,'contact_number' : emplo.contact_number ,'hour_cost' : emplo.hour_cost, 'qr_code' : emplo.qr_code ,'language' : emplo.language , 'active' : emplo.active, 'last_task' : emplo.last_task ,'start_date' : emplo.start_date,'company_id' : emplo.company_id})
+			employform = employeeUpdateForm(initial = {'user' : user_id,'notes' : emplo.notes, 'photo' : emplo.photo, 'permission_level' : emplo.permission_level ,'contact_number' : emplo.contact_number ,'hour_cost' : emplo.hour_cost, 'qr_code' : emplo.qr_code ,'language' : emplo.language , 'active' : emplo.active, 'last_task' : emplo.last_task ,'start_date' : emplo.start_date,'company_id' : emplo.company_id, 'manager' : emplo.manager})
 			return render(request,'manager/employeeUpdate.html', {'form': userform, 'form1': employform})
 		except:
 			result['code'] = 2 #Employee does not exist
@@ -2788,8 +2789,9 @@ def employeeFormadd(request):
 				emplo_permission = employform.cleaned_data['permission_level']
 				emplo_photo = employform.cleaned_data['photo']
 				emplo_notes = employform.cleaned_data['notes']
+				emplo_manager = employform.cleaned_data['manager']
 				try:
-					employee = Employee(user = new_user, language = emplo_language, permission_level = emplo_permission, active = '1', company_id = emplo_company, qr_code = emplo_qr_code, start_date = emplo_start, hour_cost = emplo_cost,contact_number = emplo_contact, notes = emplo_notes, photo = emplo_photo)
+					employee = Employee(user = new_user, language = emplo_language, permission_level = emplo_permission, active = '1', company_id = emplo_company, qr_code = emplo_qr_code, start_date = emplo_start, hour_cost = emplo_cost,contact_number = emplo_contact, notes = emplo_notes, photo = emplo_photo, manager = emplo_manager)
 					employee.save()
 					result['success'] = True
 				except:
