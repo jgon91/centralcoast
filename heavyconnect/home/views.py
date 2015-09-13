@@ -1829,6 +1829,67 @@ def timeKeeperReportAux(attendance, finished):
 		result += u'\t\tEnded shift: Ongoing or Not provided\n'
 	return result
 
+
+def getEmployeescheduleManager(request):
+	result = []
+	color = ['#F7F003','#05C60E', '#FF0000', '#B3D1FF','#FF6600', '#A2A9AF']
+	# if request.method == 'GET':
+	# 	if request.is_ajax():
+			# aux = request.GET['start'] #get the date in the POST request
+			# aux2 = request.GET['end']
+	date_start = datetime.datetime.strptime("2015-09-10", '%Y-%m-%d')
+	date_end = datetime.datetime.strptime("2015-09-14", '%Y-%m-%d') + datetime.timedelta(days = 1)
+	date_end = datetime.datetime.combine(date_end, datetime.time.max)
+	emplo = Employee.objects.filter(manager__user_id = request.user.id)
+	for item in emplo:
+		emploTask = EmployeeTask.objects.filter(employee__user__id = item.user.id, task__date_assigned__range = (date_start, date_end))
+		for taskEmplo in emploTask:
+			if taskEmplo.task.status != 6:
+				aux = {}
+				auxHour = int(taskEmplo.task.hours_prediction)
+				auxMin = float(taskEmplo.task.hours_prediction - auxHour) * 60
+				data_prediction = taskEmplo.task.date_assigned + datetime.timedelta(hours = auxHour, minutes = auxMin)
+				equipment = getTaskImplementMachine(taskEmplo.task.id, taskEmplo.id)
+				aux['employee'] = taskEmplo.employee.user.first_name + " " + taskEmplo.employee.user.last_name
+				aux['start'] = str(taskEmplo.task.date_assigned)
+				aux['end'] = str(data_prediction)
+				aux['task_id'] = taskEmplo.task.id
+				aux['status'] = taskEmplo.task.status
+				aux['description'] = taskEmplo.task.description
+				aux['field'] = taskEmplo.task.field.name
+				aux['category'] =  taskEmplo.task.category.description
+				aux['color'] = color[taskEmplo.task.status - 1]
+				if len(equipment['implement']) > 0:
+					aux['machine'] = equipment['machine']
+					aux['implement'] = equipment['implement']
+				else:
+					aux['machine'] = []
+					aux['implement'] = []
+				result.append(aux)
+		else:
+			aux = {}
+			aux['start'] = str(taskEmplo.task.date_assigned)
+			aux['end'] = str(taskEmplo.task.task_end)
+			aux['task_id'] = taskEmplo.task.id
+			aux['status'] = taskEmplo.task.status
+			aux['description'] = taskEmplo.task.description
+			aux['field'] = taskEmplo.task.field.name
+			aux['category'] =  taskEmplo.task.category.description
+			aux['color'] = color[taskEmplo.task.status - 1]
+			equipment = getTaskImplementMachine(taskEmplo.task.id, item.id)
+			if len(equipment['implement']) > 0:
+				aux['machine'] = equipment['machine']
+				aux['implement'] = equipment['implement']
+			else:
+				aux['machine'] = []
+				aux['implement'] = []
+			result.append(aux)
+	# 	else:
+	#  		result.append({'code' : 2}) #Use ajax to perform requests
+	# else:
+	#  	result.append({'code' : 3}) #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
 #This function generates a report for the timekeeper for the current day
 #This function will also generate the body of the e-mail
 def timeKeeperReport(request):
