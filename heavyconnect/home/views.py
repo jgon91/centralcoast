@@ -2573,6 +2573,32 @@ def getAllShops(request):
 
 	return HttpResponse(json.dumps(result), content_type='application/json')
 
+@login_required
+def shopManagerDelete(request):
+	result = {'success' : False}
+	if request.method == "POST":
+		if request.is_ajax():
+			try:
+				shop_id = request.POST['shop_id']
+				shop = Shop.objects.get(id = shop_id)
+				shop.delete()
+				result['success'] = True;
+
+				if result['success'] == True :
+					#return HttpResponse(json.dumps(result),content_type='application/json') 
+					return render(request, 'manager/formSuccess.html')
+				else:
+					return render(request, 'manager/formError.html')
+			except:
+					result['code'] = 1 #Machine does not exist
+					return HttpResponse(json.dumps(result),content_type='application/json')
+		else:
+			result['code'] = 2 #Request is not Ajax
+			return HttpResponse(json.dumps(result),content_type='application/json')
+	else:
+		result['code'] = 3 #Request is not POST
+		return HttpResponse(json.dumps(result),content_type='application/json')
+
 def getAllRepairShops(request):
 	each_result = {}
 	result = {"success": True}
@@ -2599,6 +2625,33 @@ def getAllRepairShops(request):
 		return HttpResponse(json.dumps(result), content_type='application/json')
 
 	return HttpResponse(json.dumps(result), content_type='application/json')
+
+@login_required
+def repairShopManagerDelete(request):
+	result = {'success' : False}
+	if request.method == "POST":
+		if request.is_ajax():
+			try:
+				repair_shop_id = request.POST['repair_shop_id']
+				repair_shop = RepairShop.objects.get(id = repair_shop_id)
+				repair_shop.delete()
+				result['success'] = True;
+
+				if result['success'] == True :
+					#return HttpResponse(json.dumps(result),content_type='application/json') 
+					return render(request, 'manager/formSuccess.html')
+				else:
+					return render(request, 'manager/formError.html')
+			except:
+					result['code'] = 1 #Machine does not exist
+					return HttpResponse(json.dumps(result),content_type='application/json')
+		else:
+			result['code'] = 2 #Request is not Ajax
+			return HttpResponse(json.dumps(result),content_type='application/json')
+	else:
+		result['code'] = 3 #Request is not POST
+		return HttpResponse(json.dumps(result),content_type='application/json')
+
 
 # @menezescode: Page only to show the form was correctly sended.
 def formOk(request):
@@ -2762,7 +2815,7 @@ def shopUpdateView(request):
 			shop_id = request.GET.get("shop_id")
 			shopReturn = Shop.objects.get(id = shop_id)
 			if shopReturn != None:
-				shop = shopUpdateForm(initial = {'shop_id' : shop_id, 'name' : shopReturn.name, 'number' : shopReturn.number, 'address' : shopReturn.address})
+				shop = repairShopUpdateFormm(initial = {'shop_id' : shop_id, 'name' : shopReturn.name, 'number' : shopReturn.number, 'address' : shopReturn.address})
 			else:
 				shop = shopForm()
 			return render(request,'manager/shopUpdate.html', {'form4' : shop})
