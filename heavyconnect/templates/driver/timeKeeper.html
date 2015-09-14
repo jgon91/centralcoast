@@ -245,7 +245,7 @@
 				var lunch1Minutes = getTotalMinutes("start-break1","stop-break1");
 				var lunch2Minutes = getTotalMinutes("start-break3", "stop-break3");
 				var totalLunchMin = lunch1Minutes + lunch2Minutes;
-				if(totalLunchMin >= 60){
+				if(totalLunchMin > 0){
 					return true;
 				} else {
 					if(document.getElementById('firstLunch').checked && document.getElementById('secondLunch').checked) {
@@ -256,7 +256,7 @@
 				}
 			} else {
 				if(minutesWorked >= 360) {
-					if(totalLunchMin >= 30) {
+					if(totalLunchMin > 0) {
 						return true;
 					} else {
 						if(document.getElementById('firstLunch').checked){
