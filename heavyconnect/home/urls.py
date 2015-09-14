@@ -42,6 +42,7 @@ urlpatterns = [
     url(r'^formTEST/$', main_views.manufacturerForm, name='registerManufacturer'),
     url(r'^formSuccess/$', main_views.formSuccess, name='formSuccess'),
     url(r'^listEmployee/$', main_views.listEmployee, name='listEmployee'),
+    url(r'^scheduleManager/$', main_views.scheduleManager, name='scheduleManager'),
 
     ### Functions ###
     url(r'^employeeLocation/$', main_views.getEmployeeLocation, name = 'employeeLocation'),
@@ -126,7 +127,7 @@ urlpatterns = [
     url(r'^employeeQualificationsFormView/$', main_views.employeeQualificationsFormView, name = 'registerEmployeeQualification'),
     url(r'^machineQualificationFormView/$', main_views.machineQualificationFormView, name = 'registerMachineQualification'),
     url(r'^implementQualificationFormView/$', main_views.implementQualificationFormView, name = 'registerImplementQualification'),
-    url(r'^getEmployeescheduleManager/$', main_views.getEmployeescheduleManager, name = 'getEmployeescheduleManager'),
+    url(r'^getEmployeeScheduleManager/$', main_views.getEmployeeScheduleManager, name = 'getEmployeeScheduleManager'),
     url(r'^fieldFormView/$', main_views.fieldFormView, name = 'registerField'),
     url(r'^gpsFormView/$', main_views.gpsFormView, name = 'registerGps'),
     url(r'^employeeLocalizationFormView/$', main_views.employeeLocalizationFormView, name = 'registerEmployeeLocalization'),

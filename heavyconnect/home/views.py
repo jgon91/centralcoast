@@ -1830,7 +1830,7 @@ def timeKeeperReportAux(attendance, finished):
 	return result
 
 
-def getEmployeescheduleManager(request):
+def getEmployeeScheduleManager(request):
 	result = []
 	color = ['#F7F003','#05C60E', '#FF0000', '#B3D1FF','#FF6600', '#A2A9AF']
 	if request.method == 'GET':
@@ -1851,6 +1851,7 @@ def getEmployeescheduleManager(request):
 						data_prediction = taskEmplo.task.date_assigned + datetime.timedelta(hours = auxHour, minutes = auxMin)
 						equipment = getTaskImplementMachine(taskEmplo.task.id, taskEmplo.id)
 						aux['employee'] = taskEmplo.employee.user.first_name + " " + taskEmplo.employee.user.last_name
+						aux['title'] = aux['employee']
 						aux['start'] = str(taskEmplo.task.date_assigned)
 						aux['end'] = str(data_prediction)
 						aux['task_id'] = taskEmplo.task.id
@@ -1866,24 +1867,7 @@ def getEmployeescheduleManager(request):
 							aux['machine'] = []
 							aux['implement'] = []
 						result.append(aux)
-				else:
-					aux = {}
-					aux['start'] = str(taskEmplo.task.date_assigned)
-					aux['end'] = str(taskEmplo.task.task_end)
-					aux['task_id'] = taskEmplo.task.id
-					aux['status'] = taskEmplo.task.status
-					aux['description'] = taskEmplo.task.description
-					aux['field'] = taskEmplo.task.field.name
-					aux['category'] =  taskEmplo.task.category.description
-					aux['color'] = color[taskEmplo.task.status - 1]
-					equipment = getTaskImplementMachine(taskEmplo.task.id, item.id)
-					if len(equipment['implement']) > 0:
-						aux['machine'] = equipment['machine']
-						aux['implement'] = equipment['implement']
-					else:
-						aux['machine'] = []
-						aux['implement'] = []
-					result.append(aux)
+				
 		else:
 	 		result.append({'code' : 2}) #Use ajax to perform requests
 	else:
@@ -2070,6 +2054,10 @@ def createTask(request):
 @login_required
 def createTaskManager(request):
     return render(request, 'manager/createTaskManager.html')
+   
+@login_required
+def scheduleManager(request):
+    return render(request, 'manager/scheduleManager.html')
 
 @login_required
 def pastTasks(request):
