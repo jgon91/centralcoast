@@ -27,9 +27,9 @@
 							console.log(data);
 							for(var i = 0; i < data.machines.length; i++){
 								if(i%2 == 0) {
-									$(".tableListForm").append("<tr class='rowCream'><td>" + data.machines[i].nickname + " " + data.machines[i].manufacturer_name + " " + data.machines[i].manufacturer_model + "</td><td><a href='#' ><input type='button' class='btnManageForm' value='{% trans 'EDIT' %}'/></a></td><td><a href='#' ><input type='button' class='btnManageForm' value='{% trans 'INFO' %}'/></a></tr>");
+									$(".tableListForm").append("<tr class='rowCream'><td>" + data.machines[i].nickname + " " + data.machines[i].manufacturer_name + " " + data.machines[i].manufacturer_model + "</td><td><a href='{% url 'machineUpdateView' %}?machine_id="+ data.machines[i].machine_id +"' ><input type='button' class='btnManageForm' value='{% trans 'EDIT' %}'/></a></td><td><a href='#' ><input type='button' class='btnManageForm' value='{% trans 'INFO' %}'/></a></tr>");
 							} else {
-								$(".tableListForm").append("<tr class='rowGray'><td>" + data.machines[i].nickname + " " + data.machines[i].manufacturer_name + " " + data.machines[i].manufacturer_model + "</td><td><a href='#' ><input type='button' class='btnManageForm' value='{% trans 'EDIT' %}'/></a></td><td><a href='#' ><input type='button' class='btnManageForm' value='{% trans 'INFO' %}'/></a></tr>");
+								$(".tableListForm").append("<tr class='rowGray'><td>" + data.machines[i].nickname + " " + data.machines[i].manufacturer_name + " " + data.machines[i].manufacturer_model + "</td><td><a href='{% url 'machineUpdateView' %}?machine_id="+ data.machines[i].machine_id +"' ><input type='button' class='btnManageForm' value='{% trans 'EDIT' %}'/></a></td><td><a href='#' ><input type='button' class='btnManageForm' value='{% trans 'INFO' %}'/></a></tr>");
 							}}
 						}
 					});			

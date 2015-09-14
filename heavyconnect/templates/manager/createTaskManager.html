@@ -85,7 +85,7 @@
 				
 				//Call a function that will send the data to the backend to be saved in the data base when click in the button save
 				$("#btnSubmit").click(function(){
-					saveTask("{{ csrf_token }}", "{% url 'createNewTask' %}", "{% url 'schedule' %}");
+					saveTask("{{ csrf_token }}", "{% url 'createNewTask' %}", "{% url 'scheduleManager' %}");
 				});
 				//Call function to get machines informations when click in the button.
 				$("#findMachine").click(function(){

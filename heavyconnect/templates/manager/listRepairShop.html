@@ -18,21 +18,22 @@
 
 			function getAllRepairShops(token, url) {
 				
-					$.ajax({
-						method: "POST",
-						url: url,
-						data: {"csrfmiddlewaretoken": token },
-						datatype: "json",
-						success: function(data, status, xhr){							
-							console.log(data);
-							for(var i = 0; i < data.repair_shops.length; i++){
-								if(i%2 == 0) {
-									$(".tableListForm").append("<tr class='rowCream'><td>" + data.repair_shops[i].name + "</td><td><a href='#' ><input type='button' class='btnManageForm' value='{% trans 'EDIT' %}'/></a></td><td><a href='#' ><input type='button' class='btnManageForm' value='{% trans 'INFO' %}'/></a></tr>");
+				$.ajax({
+					method: "POST",
+					url: url,
+					data: {"csrfmiddlewaretoken": token },
+					datatype: "json",
+					success: function(data, status, xhr){							
+						console.log(data);
+						for(var i = 0; i < data.repair_shops.length; i++){
+							if(i%2 == 0) {
+								$(".tableListForm").append("<tr class='rowCream'><td>" + data.repair_shops[i].name + "</td><td><a href='{% url 'repairShopUpdateView' %}?repair_shop_id="+ data.repair_shops[i].repair_shop_id +"' ><input type='button' class='btnManageForm' value='{% trans 'EDIT' %}'/></a></td><td><a href='#' ><input type='button' class='btnManageForm' value='{% trans 'INFO' %}'/></a></tr>");
 							} else {
-								$(".tableListForm").append("<tr class='rowGray'><td>" + data.repair_shops[i].name + "</td><td><a href='#' ><input type='button' class='btnManageForm' value='{% trans 'EDIT' %}'/></a></td><td><a href='#' ><input type='button' class='btnManageForm' value='{% trans 'INFO' %}'/></a></tr>");
-							}}
+								$(".tableListForm").append("<tr class='rowGray'><td>" + data.repair_shops[i].name + "</td><td><a href='{% url 'repairShopUpdateView' %}?repair_shop_id="+ data.repair_shops[i].repair_shop_id +"' ><input type='button' class='btnManageForm' value='{% trans 'EDIT' %}'/></a></td><td><a href='#' ><input type='button' class='btnManageForm' value='{% trans 'INFO' %}'/></a></tr>");
+							}
 						}
-					});			
+					}
+				});			
 			}
 		</script>
 	</head>
