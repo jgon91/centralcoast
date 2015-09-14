@@ -2104,6 +2104,18 @@ def listEmployee(request):
 	return render(request, 'manager/listEmployee.html')
 
 @login_required
+def listMachine(request):
+	return render(request, 'manager/listMachine.html')
+
+@login_required
+def listShop(request):
+	return render(request, 'manager/listShop.html')
+
+@login_required
+def listRepairShop(request):
+	return render(request, 'manager/listRepairShop.html')
+
+@login_required
 def geofence(request):
 	return render(request, 'geoFence.html')
 

@@ -99,6 +99,9 @@ urlpatterns = [
     url(r'^getAllMachines/$', main_views.getAllMachines, name = 'getAllMachines'),
     url(r'^getAllShops/$', main_views.getAllShops, name = 'getAllShops'),
     url(r'^getAllRepairShops/$', main_views.getAllRepairShops, name = 'getAllRepairShops'),
+    url(r'^listMachine/$', main_views.listMachine, name='listMachine'),
+    url(r'^listShop/$', main_views.listShop, name='listShop'),
+    url(r'^listRepairShop/$', main_views.listRepairShop, name='listRepairShop'),
     ### End ###
 
     ###Insert###
