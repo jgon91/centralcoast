@@ -42,11 +42,14 @@ def createNewTask(request):
 		if request.is_ajax():
 			if form.is_valid():
 				try:
+					status = 1
 					#Getting the employee that are logged in or passed in the ajax call	        
 					if 'employeeId' not in request.POST:
 					    employee = Employee.objects.get(user_id = request.user.id)
 					else:
-						employee = Employee.objects.get(user_id = request.POST['employeeId'])		
+						employee = Employee.objects.get(user_id = request.POST['employeeId'])
+						#need put this when employee is a manager
+						status = 1	
 					
 					#Extracting the fields from the form
 					field = form.cleaned_data['field']
@@ -61,7 +64,7 @@ def createNewTask(request):
 					implement2 = form.cleaned_data['implement2']
 					#Creating Task
 					date = date + datetime.timedelta(hours = time.hour, minutes = time.minute)
-					task, created = Task.objects.get_or_create(field = field, category = category, hours_prediction = hours_prediction, description = description, passes = passes, date_assigned = date)
+					task, created = Task.objects.get_or_create(field = field, category = category, hours_prediction = hours_prediction, description = description, passes = passes, date_assigned = date, status = status)
 					if created:
 						#Creating association between Employee and Task
 						empTask = EmployeeTask(employee = employee, task = task)
@@ -2523,12 +2526,17 @@ def getAllMachines(request):
 @login_required
 def machineManagerDelete(request):
 	result = {'success' : False}
+	print "teste 1.1"
 	if request.method == "POST":
+		print "teste 1.2"
 		if request.is_ajax():
 			try:
+				print "teste 1.3"
 				machine_id = request.POST['machine_id']
 				machine = Machine.objects.get(id = machine_id)
+				print "teste 2"
 				machine.delete()
+				print "teste 3"
 				result['success'] = True;
 
 				if result['success'] == True :

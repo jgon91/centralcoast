@@ -27,9 +27,9 @@
 							console.log(data);
 							for(var i = 0; i < data.shops.length; i++){
 								if(i%2 == 0) {
-									$(".tableListForm").append("<tr class='rowCream'><td>" + data.shops[i].name + "</td><td><a href='#' ><input type='button' class='btnManageForm' value='{% trans 'EDIT' %}'/></a></td><td><a href='#' ><input type='button' class='btnManageForm' value='{% trans 'INFO' %}'/></a></tr>");
+									$(".tableListForm").append("<tr class='rowCream'><td>" + data.shops[i].name + "</td><td><a href='{% url 'shopUpdateView' %}?shop_id="+ data.shops[i].shop_id +"' ><input type='button' class='btnManageForm' value='{% trans 'EDIT' %}'/></a></td><td><a href='#' ><input type='button' class='btnManageForm' value='{% trans 'INFO' %}'/></a></tr>");
 							} else {
-								$(".tableListForm").append("<tr class='rowGray'><td>" + data.shops[i].name + "</td><td><a href='#' ><input type='button' class='btnManageForm' value='{% trans 'EDIT' %}'/></a></td><td><a href='#' ><input type='button' class='btnManageForm' value='{% trans 'INFO' %}'/></a></tr>");
+								$(".tableListForm").append("<tr class='rowGray'><td>" + data.shops[i].name + "</td><td><a href='{% url 'shopUpdateView' %}?shop_id="+ data.shops[i].shop_id +"' ><input type='button' class='btnManageForm' value='{% trans 'EDIT' %}'/></a></td><td><a href='#' ><input type='button' class='btnManageForm' value='{% trans 'INFO' %}'/></a></tr>");
 							}}
 						}
 					});			

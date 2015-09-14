@@ -111,7 +111,7 @@ class machineUpdateForm(forms.Form):
 		(3, 'Broken'),
 		(4, 'Quarantine'),
 	)
-	machine_id = forms.IntegerField()
+	machine_id = forms.IntegerField(widget = forms.HiddenInput())
 	manufacturer_model = forms.ModelChoiceField(queryset = ManufacturerModel.objects.all())
 	nickname = forms.CharField(max_length = 20)
 	asset_number = forms.CharField(max_length = 15)

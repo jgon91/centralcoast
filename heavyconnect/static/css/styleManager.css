@@ -492,7 +492,7 @@ input[type="button"] {
 }
 /*End Fleet Page*/
 
-/*** Form Page End ***/
+/*** Form Page Beggin ***/
 #contentForm {
 	width: 50%;
 	margin: auto;
@@ -533,6 +533,21 @@ input[type="button"] {
 }
 #saveForm {
 	background: url('../imgSmall/buttons/btnGreen.png') no-repeat top left;
+	background-size: 100% 100%;
+	border-radius: 10px !important;
+	border: none !important;
+	box-shadow: 2px 2px 5px gray !important;
+	height: 50px !important;
+	width: 70% !important;
+	color: white;
+	font-size: 30px !important;
+	font-weight: 700;
+	margin-top: 10px !important;
+	margin-left: 47px;
+}
+
+#deleteForm {
+	background: url('../imgSmall/buttons/btnRed.png') no-repeat top left;
 	background-size: 100% 100%;
 	border-radius: 10px !important;
 	border: none !important;
@@ -589,6 +604,30 @@ input[type="button"] {
 	color: white;
 }
 /*** Manage Forms Page End ***/
+
+/*** Scheduler page Begin ***/
+
+.fc-button {
+	width: 60px;
+	height: 10px;
+}
+.fc-toolbar {
+	margin-bottom: 2px;
+}
+.fc-time span {
+	font-size: 14px;
+	padding: 5px;
+}
+.fc-title{
+	font-size: 14px;
+	margin-left: 5px;
+	font-weight: bold;
+}
+.fc-event .fc-bg {
+	border: solid black 2px;
+}
+
+
 
 /*** Modal Scheduler Begin ***/
 .modalSchedule {
