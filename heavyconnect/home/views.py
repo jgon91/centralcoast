@@ -2674,6 +2674,41 @@ def repairShopFormView(request):
 	return render(request,'manager/formRepairShop.html', {'form': repair_shop_form})
 # End
 
+#Updating Repair Shop
+def repairShopUpdateView(request):
+	result = {'success': False}
+	if request.method == "POST":
+		repairshopform = repairShopUpdateForm(request.POST)
+		repair_shop_id = request.POST['repair_shop_id']
+		if repairshopform.is_valid():
+			try:
+				repairshop = RepairShop.objects.get(id = repair_shop_id)
+				new_repair_shop_name = repairshopform.cleaned_data['name']
+				new_repair_shop_number = repairshopform.cleaned_data['number']
+				new_repair_shop_address = repairshopform.cleaned_data['address']
+
+				repair_shop = RepairShop(id = repair_shop_id, name = new_repair_shop_name, number = new_repair_shop_number, address = new_repair_shop_address)
+				repair_shop.save()
+				result['success'] = True
+
+				return render(request, 'manager/formSuccess.html')
+
+			except:
+				result['code'] = 2 #RepairShop does not exist
+				return HttpResponse(json.dumps(result),content_type='application/json')
+	else:
+		try:
+			repair_shop_id = request.GET.get("repair_shop_id")
+			repairShopReturn = RepairShop.objects.get(id = repair_shop_id)
+			if repairShopReturn != None:
+				repairshop = repairShopUpdateForm(initial = {'repair_shop_id' : repair_shop_id, 'name' : repairShopReturn.name, 'number' : repairShopReturn.number, 'address' : repairShopReturn.address})
+			else:
+				repairshop = repairShopForm()
+			return render(request,'manager/repairShopUpdate.html', {'form5' : repairshop})
+		except:
+			result['code'] = 2 #RepairShop does not exist
+			return HttpResponse(json.dumps(result),content_type='application/json')
+
 # Form to add a shop
 def shopFormView(request):
 	result = {'success': False}
@@ -2701,6 +2736,40 @@ def shopFormView(request):
 		shop_form = shopForm(request.POST)
 	return render(request,'manager/formShop.html', {'form': shop_form})
 # End
+
+#Updating Shop
+def shopUpdateView(request):
+	result = {'success': False}
+	if request.method == "POST":
+		shopform = shopUpdateForm(request.POST)
+		shop_id = request.POST['shop_id']
+		if shopform.is_valid():
+			try:
+				shop = Shop.objects.get(id = shop_id)
+				new_shop_name = shopform.cleaned_data['name']
+				new_shop_number = shopform.cleaned_data['number']
+				new_shop_address = shopform.cleaned_data['address']
+				shop = Shop(id = shop_id, name = new_shop_name, number = new_shop_number, address = new_shop_address)
+				shop.save()
+
+				return render(request, 'manager/formSuccess.html')
+
+			except:
+				result['code'] = 2 #Shop does not exist
+				return HttpResponse(json.dumps(result),content_type='application/json')
+	else:
+		try:
+			shop_id = request.GET.get("shop_id")
+			shopReturn = Shop.objects.get(id = shop_id)
+			if shopReturn != None:
+				shop = shopUpdateForm(initial = {'shop_id' : shop_id, 'name' : shopReturn.name, 'number' : shopReturn.number, 'address' : shopReturn.address})
+			else:
+				shop = shopForm()
+			return render(request,'manager/shopUpdate.html', {'form4' : shop})
+		except:
+			result['code'] = 2 #Shop does not exist
+			return HttpResponse(json.dumps(result),content_type='application/json')
+
 
 def equipmentCategoryFormView(request):
 	form = EquipmentCategoryForm(request.POST)
@@ -2827,7 +2896,7 @@ def machineUpdateView(request):
 				machi.save()
 				return render(request, 'manager/formSuccess.html')
 			except:
-				result['code'] = 2 #Employee does not exist
+				result['code'] = 2 #Machine does not exist
 				return HttpResponse(json.dumps(result),content_type='application/json')
 		return HttpResponse(json.dumps(result),content_type='application/json')
 	else:
@@ -2840,7 +2909,7 @@ def machineUpdateView(request):
 				machi = machineForm()
 			return render(request,'manager/machineUpdate.html', {'form3' : machi})
 		except:
-			result['code'] = 2 #Employee does not exist
+			result['code'] = 2 #Machine does not exist
 			return HttpResponse(json.dumps(result),content_type='application/json')
 
 

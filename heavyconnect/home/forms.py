@@ -38,12 +38,29 @@ class repairShopForm(forms.Form):
 	address = forms.CharField(max_length = 150)
 ### End ###
 
+## Structure for repairShopUpdateForm ###
+class repairShopUpdateForm(forms.Form):
+	repair_shop_id = forms.IntegerField(widget = forms.HiddenInput())
+	name = forms.CharField(max_length = 20)
+	number = forms.CharField(max_length = 14)
+	address = forms.CharField(max_length = 150)
+### End ###
+
 ### Structure for shopForm ###
 class shopForm(forms.Form):
 	name = forms.CharField(max_length = 20)
 	number = forms.CharField(max_length = 14)
 	address = forms.CharField(max_length = 150)
 ### End ###
+
+## Structure for shopUpdateForm ###
+class shopUpdateForm(forms.Form):
+	shop_id = forms.IntegerField(widget = forms.HiddenInput())
+	name = forms.CharField(max_length = 20)
+	number = forms.CharField(max_length = 14)
+	address = forms.CharField(max_length = 150)
+### End ###
+
 
 ### Structure for EquipmentCategoryForm ###
 class equipmentCategoryForm(forms.Form):
