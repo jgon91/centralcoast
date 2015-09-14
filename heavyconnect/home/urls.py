@@ -42,6 +42,7 @@ urlpatterns = [
     url(r'^formTEST/$', main_views.manufacturerForm, name='registerManufacturer'),
     url(r'^formSuccess/$', main_views.formSuccess, name='formSuccess'),
     url(r'^listEmployee/$', main_views.listEmployee, name='listEmployee'),
+    url(r'^scheduleManager/$', main_views.scheduleManager, name='scheduleManager'),
 
     ### Functions ###
     url(r'^employeeLocation/$', main_views.getEmployeeLocation, name = 'employeeLocation'),
@@ -98,6 +99,9 @@ urlpatterns = [
     url(r'^getAllMachines/$', main_views.getAllMachines, name = 'getAllMachines'),
     url(r'^getAllShops/$', main_views.getAllShops, name = 'getAllShops'),
     url(r'^getAllRepairShops/$', main_views.getAllRepairShops, name = 'getAllRepairShops'),
+    url(r'^listMachine/$', main_views.listMachine, name='listMachine'),
+    url(r'^listShop/$', main_views.listShop, name='listShop'),
+    url(r'^listRepairShop/$', main_views.listRepairShop, name='listRepairShop'),
     ### End ###
 
     ###Insert###
@@ -128,7 +132,7 @@ urlpatterns = [
     url(r'^employeeQualificationsFormView/$', main_views.employeeQualificationsFormView, name = 'registerEmployeeQualification'),
     url(r'^machineQualificationFormView/$', main_views.machineQualificationFormView, name = 'registerMachineQualification'),
     url(r'^implementQualificationFormView/$', main_views.implementQualificationFormView, name = 'registerImplementQualification'),
-    url(r'^getEmployeescheduleManager/$', main_views.getEmployeescheduleManager, name = 'getEmployeescheduleManager'),
+    url(r'^getEmployeeScheduleManager/$', main_views.getEmployeeScheduleManager, name = 'getEmployeeScheduleManager'),
     url(r'^fieldFormView/$', main_views.fieldFormView, name = 'registerField'),
     url(r'^gpsFormView/$', main_views.gpsFormView, name = 'registerGps'),
     url(r'^employeeLocalizationFormView/$', main_views.employeeLocalizationFormView, name = 'registerEmployeeLocalization'),

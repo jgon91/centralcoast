@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{% load staticfiles %}
+		{% load i18n %}
+		<script src="//code.jquery.com/jquery.js"></script>
+		<script src='{% static "fullcalendar/lib/moment.min.js" %}'></script>
+		<script src='{% static "fullcalendar/fullcalendar.min.js" %}'></script>
+		<link href='{% static "fullcalendar/fullcalendar.css" %}' rel='stylesheet' />
+		<!-- Don't required <link href='../fullcalendar.min.css' rel='stylesheet' media='print' />-->
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+		<script>
+			//var source = 'cal.json'; We can use a variable in events, to fill the calendar
+			$(document).ready(function() {
+				$("#foot").load("{% url 'footer' %}");
+				$("#head").load("{% url 'headerManager' %}");
+
+				$('#cal').fullCalendar({
+					
+					events: {
+				        url: "{% url 'getEmployeeScheduleManager'%}",
+				        error: function() {
+				            alert('{% trans "There was an error while fetching events!" %}');
+				        },
+				        color: 'yellow',   // a non-ajax option
+				        textColor: 'black' // a non-ajax option
+				   },
+					header : {
+						left : '',
+						center : 'prev title next',
+						right : 'month,agendaWeek,agendaDay'
+					},
+					defaultView : 'agendaWeek',
+					height : 650,
+					eventClick : function(event, jsEvent, view) {
+						console.log(event);
+						$('#modalTitle').html(event.category);
+						$('#description').html(event.description);
+						$('#field').html(event.field);
+						$('#machine').html(event.machine);
+						$('#implement').html(event.implement);
+						//$('#taskDuration').html(event.taskDuration);
+						if(event.status == 2){
+							$('#btnStartTaskScheduler').html(' <a id="eventUrl" href="{% url "startTask" %}?task_id='+ event.task_id +'" >' +
+													'<button class="btn btn-primary" id="btnAprove">' +
+													'{% trans "Start" %}' +
+													'</button> </a>');
+						}else{
+							$('#btnStartTaskScheduler').html(" ");
+						}
+						//$('#eventUrl').attr('href', );
+						$('#fullCalModal').modal();
+						return false;
+					}
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<header id="head"></header>
+		<div id="wrapper">
+			<div id="content" style="color:black">
+				<div class="namePageCenter">
+					{% trans 'HC Scheduler' %}
+				</div>
+				<div id="cal"></div>
+				<div class="modal fade" id="fullCalModal" role="dialog">
+					<div class="modal-dialog">
+						<div class="modal-content modalSchedule">
+							<button type="button" class="closeSchedule" data-dismiss="modal">
+							</button>
+							<span class="modal-title" id="titleModalSchedule">{% trans 'TASK INFORMATION' %}</span>
+							<div class="modal-body infoSchedule">
+								{% trans 'TASK:' %} <span id="modalTitle" class="infoModalSchedule"></span><br>
+								{% trans 'DESCRIPTION:' %} <span id="description" class="infoModalSchedule"></span><br>
+								{% trans 'FIELD:' %} <span id="field" class="infoModalSchedule"></span><br>
+								{% trans 'MACHINE:' %} <span id="machine" class="infoModalSchedule"></span><br>
+								{% trans 'IMPLEMENT:' %} <span id="implement" class="infoModalSchedule"></span><br>
+							</div>
+							
+							<span id="btnStartTaskScheduler"></span>
+
+							<div class="both"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--<footer id="foot"></footer>-->
+	</body>
+</html>

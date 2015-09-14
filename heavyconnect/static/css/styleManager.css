@@ -38,17 +38,17 @@ body {
 	background-position: center;
 }
 #logOff {
-	background: url('../img/buttons/logOffHover.jpg') no-repeat top left;
+	background: url('../img/buttons/exit.png') no-repeat top left;
 	background-size: 100% 100%;
 	width: 60px;
-	height: 90px;
+	height: 50px;
 	margin-right: 5px;
-	margin-top: 5px;
+	margin-top: 25px;
 	float: right;
-}
-#logOff:hover {
-	background: url('../img/buttons/logOff.jpg') no-repeat top left;
-	background-size: 100% 100%;
+	border: none;
+	border-radius: 7px;
+	color: white;
+	font-size: 20px;
 }
 .btnTop {
 	width: 105px;
@@ -549,7 +549,7 @@ input[type="button"] {
 
 /*** Manage Forms Page Begin ***/
 #contentManageForm {
-	width: 50%;
+	width: 80%;
 	margin: auto;
 	margin-top: 10px;
 	margin-bottom: 10px;
@@ -573,6 +573,7 @@ input[type="button"] {
 .tableListForm {
 	margin: auto;
 	margin-top: 20px;
+	width: 95%;
 }
 .tableListForm tr td {
 	padding: 20px;
@@ -589,7 +590,64 @@ input[type="button"] {
 }
 /*** Manage Forms Page End ***/
 
-
+/*** Modal Scheduler Begin ***/
+.modalSchedule {
+	border-radius: 20px;
+	width: 90%;
+	margin: auto;
+	margin-top: 70px;
+	color: #466C00;
+}
+#titleModalSchedule {
+	font-size: 25px;
+	font-weight: 700;
+}
+#btnAprove {
+	background: url('../imgSmall/buttons/startNow.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 140px;
+	height: 40px;
+	float: right;
+	border: none;
+	border-radius: 10px;
+	box-shadow: 2px 2px 5px gray;
+	margin-right: 20px;
+	margin-bottom: 20px;
+	text-decoration: none;
+	color: white;
+	font-size: 20px;
+}
+/*#btnAprove:hover {
+	background: url('../imgSmall/buttons/startNowHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}*/
+.closeSchedule {
+	background: url('../imgSmall/buttons/esc.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 50px;
+	height: 50px;
+	float: right;
+	border: none;
+	border-radius: 7px;
+	box-shadow: -1px 1px 7px gray;
+	margin: 0px;
+	padding: 0px;
+}
+/*.closeSchedule:hover {
+	background: url('../imgSmall/buttons/escHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}*/
+.infoSchedule {
+	text-align: left;
+	padding-left: 20px;
+	font-size: 20px;
+	font-weight: 600;
+}
+.infoModalSchedule {
+	color: #434343;
+}
+	/*** Modal Scheduler End ***/
+/*** Scheduler Page End ***/
 
 
 

@@ -47,7 +47,10 @@
 							<input type="button" class="btnManageForm" value="{% trans 'ADD' %}"/>
 						</a>
 					</td>
-					<td><input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/></td>
+					<td>
+						<a href="{% url 'listMachine'%}">
+							<input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/></td>
+						</a>
 				</tr>
 				<tr class="rowCream">
 					<td>{% trans 'SHOP' %}</td>
@@ -56,7 +59,10 @@
 							<input type="button" class="btnManageForm" value="{% trans 'ADD' %}"/>
 						</a>
 					</td>
-					<td><input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/></td>
+					<td>
+						<a href="{% url 'listShop'%}">
+							<input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/></td>
+						</a>
 				</tr>
 				<tr class="rowGray">
 					<td>{% trans 'REPAIR SHOP' %}</td>
@@ -65,7 +71,10 @@
 							<input type="button" class="btnManageForm" value="{% trans 'ADD' %}"/>
 						</a>
 					</td>
-					<td><input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/></td>
+					<td>
+						<a href="{% url 'listRepairShop'%}">
+							<input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/></td>
+						</a>
 				</tr>
 			</table>
 			
