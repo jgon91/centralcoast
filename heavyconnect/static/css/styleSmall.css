@@ -318,6 +318,13 @@ input[type=button]{
     line-height: 3;
 }
 
+#modalBtns {
+    margin-bottom: 5px;
+    margin-left: 5px;
+    float: left;
+    margin-top: 5px;
+}
+
 #startShift {
 	background: url('../imgSmall/buttons/btnGreen.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -330,6 +337,16 @@ input[type=button]{
 	margin-top: -10px;
 	font-size: 25px;
 	font-weight: 700;
+}
+
+#clock {
+    left: 50%;
+    top:0%;
+    font-size: 20px;
+    padding: 20px;
+    position: absolute;
+    display: inline;
+    color: white;
 }
 
 
