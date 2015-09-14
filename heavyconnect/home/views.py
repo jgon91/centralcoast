@@ -2823,7 +2823,7 @@ def shopUpdateView(request):
 			shop_id = request.GET.get("shop_id")
 			shopReturn = Shop.objects.get(id = shop_id)
 			if shopReturn != None:
-				shop = repairShopUpdateFormm(initial = {'shop_id' : shop_id, 'name' : shopReturn.name, 'number' : shopReturn.number, 'address' : shopReturn.address})
+				shop = repairShopUpdateForm(initial = {'shop_id' : shop_id, 'name' : shopReturn.name, 'number' : shopReturn.number, 'address' : shopReturn.address})
 			else:
 				shop = shopForm()
 			return render(request,'manager/shopUpdate.html', {'form4' : shop})

@@ -15,6 +15,24 @@
 				$(".errorlist").hide();
 				$( "label:lt(4)" ).append("*");
 				
+				//This function delete a Shop
+				$("#deleteForm").click( function (){
+					var url = "{% url 'shopManagerDelete' %}";
+					var parameter = getParametersUrl();
+					
+					if(confirm("Do you really want to delete this shop?")){
+						$.ajax({
+							method: "POST",
+							url: url,
+							data: {"csrfmiddlewaretoken": '{{csrf_token}}', "shop_id": parameter['shop_id'] },
+							datatype: "json",
+							success: function(data, status, xhr){		
+								alert("Shop deleted.");					
+								window.location="{% url 'listShop' %}";
+							}
+						});	
+					}
+				});
 
 				$("form").submit(function(){
 
@@ -60,6 +78,7 @@
 				{{ form4.as_p }}
 				
 				<input type="submit" id="saveForm" value="{% trans 'SAVE' %}"/>
+				<input type="button" id="deleteForm" value="{% trans 'DELETE' %}" />
 			</form>
 		</div>
 		<footer id="foot"></footer>
