@@ -1888,8 +1888,92 @@ def getEmployeeScheduleManager(request):
 		else:
 	 		result.append({'code' : 2}) #Use ajax to perform requests
 	else:
-	 	result.append({'code' : 3}) #Request was not POST
+	 	result.append({'code' : 3}) #Request was not GET
 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+### Function to retrieve tasks by field ###
+def getFieldTasksManager(request):
+	result = []
+	if request.method == 'GET':
+		if request.is_ajax():
+			color = 0
+			control = {} #this dicionary will keep all fields and it colors
+			taskStatus = 0;
+			aux = request.GET['start'] #get the date in the POST request
+			aux2 = request.GET['end']	
+			date_start = datetime.datetime.strptime(aux, '%Y-%m-%d')
+			date_end = datetime.datetime.strptime(aux2, '%Y-%m-%d') + datetime.timedelta(days = 1)	
+			date_end = datetime.datetime.combine(date_end, datetime.time.max)
+			condition = request.Get.get['condition']
+			emplo = Employee.objects.filter(manager__user_id = request.user.id)
+			if(condition == 0): #It depends on the filter
+				for item in emplo: 
+					emploTask = EmployeeTask.objects.filter(employee__user__id = item.user.id, task__date_assigned__range = (date_start, date_end))
+					for taskEmplo in emploTask:
+						if taskEmplo.task.status != 6:
+							aux = {}
+							auxHour = int(taskEmplo.task.hours_prediction)
+							auxMin = float(taskEmplo.task.hours_prediction - auxHour) * 60
+							data_prediction = taskEmplo.task.date_assigned + datetime.timedelta(hours = auxHour, minutes = auxMin)
+							equipment = getTaskImplementMachine(taskEmplo.task.id, taskEmplo.id)
+							aux['employee'] = taskEmplo.employee.user.first_name + " " + taskEmplo.employee.user.last_name
+							aux['title'] = aux['employee']
+							aux['start'] = str(taskEmplo.task.date_assigned)
+							aux['end'] = str(data_prediction)
+							aux['task_id'] = taskEmplo.task.id
+							aux['status'] = taskEmplo.task.status
+							aux['description'] = taskEmplo.task.description
+							aux['field'] = taskEmplo.task.field.name
+							aux['category'] =  taskEmplo.task.category.description
+							if not taskEmplo.task.field.name in control:
+								control[taskEmplo.task.field.name] = color
+								color += 1
+							aux['color'] = getColor(control[taskEmplo.task.field.name])
+							if len(equipment['implement']) > 0:
+								aux['machine'] = equipment['machine']
+								aux['implement'] = equipment['implement']
+							else:
+								aux['machine'] = []
+								aux['implement'] = []
+							result.append(aux)
+			else:
+				for item in emplo: 
+					emploTask = EmployeeTask.objects.filter(employee__user__id = item.user.id, task__date_assigned__range = (date_start, date_end))
+					for taskEmplo in emploTask:
+						if taskEmplo.task.status == condition:
+							aux = {}
+							auxHour = int(taskEmplo.task.hours_prediction)
+							auxMin = float(taskEmplo.task.hours_prediction - auxHour) * 60
+							data_prediction = taskEmplo.task.date_assigned + datetime.timedelta(hours = auxHour, minutes = auxMin)
+							equipment = getTaskImplementMachine(taskEmplo.task.id, taskEmplo.id)
+							aux['employee'] = taskEmplo.employee.user.first_name + " " + taskEmplo.employee.user.last_name
+							aux['title'] = aux['employee']
+							aux['start'] = str(taskEmplo.task.date_assigned)
+							aux['end'] = str(data_prediction)
+							aux['task_id'] = taskEmplo.task.id
+							aux['status'] = taskEmplo.task.status
+							aux['description'] = taskEmplo.task.description
+							aux['field'] = taskEmplo.task.field.name
+							aux['category'] =  taskEmplo.task.category.description
+							if not taskEmplo.task.field.name in control:
+								control[taskEmplo.task.field.name] = color
+								color += 1
+							aux['color'] = getColor(control[taskEmplo.task.field.name])
+							if len(equipment['implement']) > 0:
+								aux['machine'] = equipment['machine']
+								aux['implement'] = equipment['implement']
+							else:
+								aux['machine'] = []
+								aux['implement'] = []
+							result.append(aux)
+		else:
+	 		result.append({'code' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'code' : 3}) #Request was not GET
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+### end ###
+
 
 #This function generates a report for the timekeeper for the current day
 #This function will also generate the body of the e-mail

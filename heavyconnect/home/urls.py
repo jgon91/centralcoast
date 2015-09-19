@@ -135,6 +135,7 @@ urlpatterns = [
     url(r'^machineQualificationFormView/$', main_views.machineQualificationFormView, name = 'registerMachineQualification'),
     url(r'^implementQualificationFormView/$', main_views.implementQualificationFormView, name = 'registerImplementQualification'),
     url(r'^getEmployeeScheduleManager/$', main_views.getEmployeeScheduleManager, name = 'getEmployeeScheduleManager'),
+    url(r'^getFieldTasksManager/$', main_views.getFieldTasksManager, name = 'getFieldTasksManager'),
     url(r'^fieldFormView/$', main_views.fieldFormView, name = 'registerField'),
     url(r'^gpsFormView/$', main_views.gpsFormView, name = 'registerGps'),
     url(r'^employeeLocalizationFormView/$', main_views.employeeLocalizationFormView, name = 'registerEmployeeLocalization'),
