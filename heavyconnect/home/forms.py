@@ -144,9 +144,6 @@ class machineUpdateForm(forms.Form):
 	photo2 = forms.URLField(max_length = 200, required = False)
 ### End ###
 
-
-### End ###
-
 ### Structure for machineForm ###
 class machineForm(forms.Form):
 	HITCH_CHOICES = (
@@ -216,29 +213,61 @@ class machineForm(forms.Form):
 	photo2 = forms.URLField(max_length = 200, required = False)
 ### End ###
 
+### Structure for implementUpdateForm ###
+class implementUpdateForm(forms.Form):
+	implement_id = forms.IntegerField(widget = forms.HiddenInput())
+	manufacturer_model = forms.ModelChoiceField(queryset = ManufacturerModel.objects.all())
+	nickname = forms.CharField(max_length = 20)
+	asset_number = forms.CharField(max_length = 15)
+	serial_number = forms.CharField(max_length = 25)
+	repair_shop = forms.ModelChoiceField(queryset = RepairShop.objects.all(), required = False)
+	shop = forms.ModelChoiceField(queryset = Shop.objects.all(), required = False)
+	#equipment_type = forms.ModelChoiceField(queryset = EquipmentType.objects.all())
+	qr_code = forms.CharField(required = False, max_length = 10)
+	horse_power_req = forms.IntegerField(required = False)
+	hitch_capacity_req = forms.IntegerField(required = False)
+	hitch_category = forms.ChoiceField(choices = Machine.HITCH_CHOICES, required = False)
+	drawbar_category = forms.ChoiceField(choices = Machine.DRAWBAR_CHOICES, required = False)
+	speed_range_min = forms.FloatField(required = False)
+	speed_range_max = forms.FloatField(required = False)
+	year_purchased = forms.IntegerField(required = False)
+	implement_hours = forms.IntegerField(required = False)
+	service_interval = forms.IntegerField(required = False)
+	base_cost = forms.FloatField(required = False)
+	hour_cost = forms.FloatField(required = False)
+	beacon = forms.ModelChoiceField(queryset = Beacon.objects.all(), required = False)
+	status = forms.ChoiceField(choices = Machine.STATUS_CHOICES, required = False)
+	photo = forms.URLField(max_length = 200, required = False)
+	photo1 = forms.URLField(max_length = 200, required = False)
+	photo2 = forms.URLField(max_length = 200, required = False)
+### End ###
+
 ### Structure for implementForm ###
 class implementForm(forms.Form):
 	manufacturer_model = forms.ModelChoiceField(queryset = ManufacturerModel.objects.all())
-	repair_shop = forms.ModelChoiceField(queryset = RepairShop.objects.all())
-	shop = forms.ModelChoiceField(queryset = Shop.objects.all())
-	equipment_type = forms.ModelChoiceField(queryset = EquipmentType.objects.all())
 	nickname = forms.CharField(max_length = 20)
-	qr_code = forms.CharField()
-	asset_number = forms.CharField()
-	serial_number = forms.CharField()
-	horse_power_req = forms.IntegerField()
-	hitch_capacity_req = forms.IntegerField()
-	hitch_category = forms.ChoiceField(choices = Machine.HITCH_CHOICES)
-	drawbar_category = forms.ChoiceField(choices = Machine.DRAWBAR_CHOICES)
-	speed_range_min = forms.FloatField()
-	speed_range_max = forms.FloatField()
-	year_purchased = forms.IntegerField()
-	implement_hours = forms.IntegerField()
-	service_interval = forms.IntegerField()
-	base_cost = forms.FloatField()
-	hour_cost = forms.FloatField()
-	status = forms.ChoiceField(choices = Machine.STATUS_CHOICES)
-	photo = forms.URLField()
+	asset_number = forms.CharField(max_length = 15)
+	serial_number = forms.CharField(max_length = 25)
+	repair_shop = forms.ModelChoiceField(queryset = RepairShop.objects.all(), required = False)
+	shop = forms.ModelChoiceField(queryset = Shop.objects.all(), required = False)
+	#equipment_type = forms.ModelChoiceField(queryset = EquipmentType.objects.all())
+	qr_code = forms.CharField(required = False, max_length = 10)
+	horse_power_req = forms.IntegerField(required = False)
+	hitch_capacity_req = forms.IntegerField(required = False)
+	hitch_category = forms.ChoiceField(choices = Machine.HITCH_CHOICES, required = False)
+	drawbar_category = forms.ChoiceField(choices = Machine.DRAWBAR_CHOICES, required = False)
+	speed_range_min = forms.FloatField(required = False)
+	speed_range_max = forms.FloatField(required = False)
+	year_purchased = forms.IntegerField(required = False)
+	implement_hours = forms.IntegerField(required = False)
+	service_interval = forms.IntegerField(required = False)
+	base_cost = forms.FloatField(required = False)
+	hour_cost = forms.FloatField(required = False)
+	beacon = forms.ModelChoiceField(queryset = Beacon.objects.all(), required = False)
+	status = forms.ChoiceField(choices = Machine.STATUS_CHOICES, required = False)
+	photo = forms.URLField(max_length = 200, required = False)
+	photo1 = forms.URLField(max_length = 200, required = False)
+	photo2 = forms.URLField(max_length = 200, required = False)
 ### End ###
 
 

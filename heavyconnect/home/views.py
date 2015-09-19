@@ -2536,6 +2536,7 @@ def getFieldLocalization(request):
 
 	return HttpResponse(json.dumps(result), content_type='application/json')
 
+@login_required
 def getAllEmployees(request):
 	each_result = {}
 	result = {'success' : False}
@@ -2592,6 +2593,63 @@ def employeeManagerDelete(request):
 		result['code'] = 3 #Request is not POST
 		return HttpResponse(json.dumps(result),content_type='application/json')
 
+@login_required
+def getAllImplements(request):
+	each_result = {}
+	result = {"success": True}
+	if request.method == "POST":
+		if request.is_ajax():
+			try:
+				all_implement = Implement.objects.all()
+				implements = []
+				for each in all_implement:
+					each_result["nickname"] = each.nickname
+					each_result["manufacturer_name"] = each.manufacturer_model.manufacturer.name
+					each_result["manufacturer_model"] = each.manufacturer_model.model
+					each_result["implement_id"] = each.id
+					implements.append(each_result)
+					each_result = {}
+				result['success'] = True
+				result['implements'] = implements
+			except DoesNotExist:
+				result['code'] = 1 # There is no shop registered
+				return HttpResponse(json.dumps(result), content_type='application/json')
+		else:
+			result['code'] = 2 #Use ajax to perform requests
+			return HttpResponse(json.dumps(result), content_type='application/json')
+	else:
+		result['code'] = 3 #Request was not POST
+		return HttpResponse(json.dumps(result), content_type='application/json')
+
+	return HttpResponse(json.dumps(result), content_type='application/json')	
+
+@login_required
+def implementManagerDelete(request):
+	result = {'success' : False}
+	if request.method == "POST":
+		if request.is_ajax():
+			try:
+				implement_id = request.POST['implement_id']
+				implement = Implement.objects.get(id = implement_id)
+				implement.delete()
+				result['success'] = True;
+
+				if result['success'] == True :
+					#return HttpResponse(json.dumps(result),content_type='application/json') 
+					return render(request, 'manager/formSuccess.html')
+				else:
+					return render(request, 'manager/formError.html')
+			except:
+					result['code'] = 1 #Machine does not exist
+					return HttpResponse(json.dumps(result),content_type='application/json')
+		else:
+			result['code'] = 2 #Request is not Ajax
+			return HttpResponse(json.dumps(result),content_type='application/json')
+	else:
+		result['code'] = 3 #Request is not POST
+		return HttpResponse(json.dumps(result),content_type='application/json')
+
+@login_required
 def getAllMachines(request):
 	each_result = {}
 	result = {"success": True}
@@ -2624,17 +2682,12 @@ def getAllMachines(request):
 @login_required
 def machineManagerDelete(request):
 	result = {'success' : False}
-	print "teste 1.1"
 	if request.method == "POST":
-		print "teste 1.2"
 		if request.is_ajax():
 			try:
-				print "teste 1.3"
 				machine_id = request.POST['machine_id']
 				machine = Machine.objects.get(id = machine_id)
-				print "teste 2"
 				machine.delete()
-				print "teste 3"
 				result['success'] = True;
 
 				if result['success'] == True :
@@ -2652,6 +2705,7 @@ def machineManagerDelete(request):
 		result['code'] = 3 #Request is not POST
 		return HttpResponse(json.dumps(result),content_type='application/json')
 
+@login_required
 def getAllShops(request):
 	each_result = {}
 	result = {"success": True}
@@ -2705,6 +2759,7 @@ def shopManagerDelete(request):
 		result['code'] = 3 #Request is not POST
 		return HttpResponse(json.dumps(result),content_type='application/json')
 
+@login_required
 def getAllRepairShops(request):
 	each_result = {}
 	result = {"success": True}
@@ -2944,6 +2999,108 @@ def equipmentTypeFormView(request):
 	else:
 		return render(request, 'formTest.html', {'form': form})
 
+@login_required
+def implementUpdateView(request):
+	result = {'success' : False}
+	if request.method == "POST":
+		impleForm = implementUpdateForm(request.POST)
+		imple_id = request.POST['implement_id']
+		if impleForm.is_valid():
+			try:
+				imple = Implement.objects.get(id = imple_id)
+				imple.manufacturer_model = impleForm.cleaned_data['manufacturer_model']
+				imple.repair_shop = impleForm.cleaned_data['repair_shop']
+				imple.shop = impleForm.cleaned_data['shop']
+				imple.nickname = impleForm.cleaned_data['nickname']
+				imple.qr_code = impleForm.cleaned_data['qr_code']
+				imple.asset_number = impleForm.cleaned_data['asset_number']
+				imple.serial_number = impleForm.cleaned_data['serial_number']
+				imple.horse_power_req = impleForm.cleaned_data['horse_power_req']
+				imple.hitch_capacity_req = impleForm.cleaned_data['hitch_capacity_req']
+				imple.hitch_category = impleForm.cleaned_data['hitch_category']
+				imple.drawbar_category = impleForm.cleaned_data['drawbar_category']
+				imple.speed_range_min = impleForm.cleaned_data['speed_range_min']
+				imple.speed_range_max = impleForm.cleaned_data['speed_range_max']
+				imple.year_purchased = impleForm.cleaned_data['year_purchased']
+				imple.implement_hours = impleForm.cleaned_data['implement_hours']
+				imple.service_interval = impleForm.cleaned_data['service_interval']
+				imple.base_cost = impleForm.cleaned_data['base_cost']
+				imple.status = impleForm.cleaned_data['status']
+				imple.hour_cost = impleForm.cleaned_data['hour_cost']
+				imple.photo = impleForm.cleaned_data['photo']
+				imple.photo1 = impleForm.cleaned_data['photo1']
+				imple.photo2 = impleForm.cleaned_data['photo2']
+				#imple.note = impleForm.cleaned_data['note']
+				imple.beacon = impleForm.cleaned_data['beacon']
+				print "test2"
+				imple.save()
+				return render(request, 'manager/formSuccess.html')
+			except:
+				result['code'] = 2 #Implement does not exist
+				return HttpResponse(json.dumps(result),content_type='application/json')
+		return HttpResponse(json.dumps(result),content_type='application/json')
+	else:
+		try:
+			implement_id = request.GET.get("implement_id")
+			implementReturn = Implement.objects.get(id = implement_id)
+			if implementReturn != None:
+				imple = implementUpdateForm(initial = {'implement_id' : implement_id,'beacon' : implementReturn.beacon,'shop' : implementReturn.shop,'repair_shop' : implementReturn.repair_shop ,'manufacturer_model' :  implementReturn.manufacturer_model,'nickname' : implementReturn.nickname , 'asset_number' : implementReturn.asset_number , 'serial_number' : implementReturn.serial_number , 'qr_code' : implementReturn.qr_code , 'horse_power_req' : implementReturn.horse_power_req , 'hitch_capacity_req' : implementReturn.hitch_capacity_req , 'hitch_category' : implementReturn.hitch_category , 'drawbar_category' : implementReturn.drawbar_category , 'speed_range_min' : implementReturn.speed_range_min , 'speed_range_max' : implementReturn.speed_range_max , 'year_purchased' : implementReturn.year_purchased , 'implement_hours' : implementReturn.implement_hours , 'service_interval' : implementReturn.service_interval , 'base_cost' : implementReturn.base_cost, 'status' : implementReturn.status , 'hour_cost' : implementReturn.hour_cost , 'photo' : implementReturn.photo , 'photo1' : implementReturn.photo1, 'photo2' : implementReturn.photo2 })
+			else:
+				imple = implementForm()
+			return render(request,'manager/formImplement.html', {'form' : imple})
+		except:
+			result['code'] = 2 #Implement does not exist
+			return HttpResponse(json.dumps(result),content_type='application/json')
+
+#Form to add implement
+@login_required
+def implementFormView(request):
+	result = {'success' : False}
+	if request.method == "POST":
+		implementform = implementForm(request.POST)
+		if implementform.is_valid():
+			new_implement_manufacturer_model = implementform.cleaned_data['manufacturer_model']
+			new_implement_repair_shop = implementform.cleaned_data['repair_shop']
+			new_implement_shop = implementform.cleaned_data['shop']
+			#new_machine_equipment_type = machineform.cleaned_data['equipment_type']
+			new_implement_nickname = implementform.cleaned_data['nickname']
+			new_implement_qr_code = implementform.cleaned_data['qr_code']
+			new_implement_asset_number = implementform.cleaned_data['asset_number']
+			new_implement_serial_number = implementform.cleaned_data['serial_number']
+			new_implement_horsepower_req = implementform.cleaned_data['horse_power_req']
+			new_implement_hitch_capacity_req = implementform.cleaned_data['hitch_capacity_req']
+			new_implement_hitch_category = implementform.cleaned_data['hitch_category']
+			new_implement_drawbar_category = implementform.cleaned_data['drawbar_category']
+			new_implement_speed_range_min = implementform.cleaned_data['speed_range_min']
+			new_implement_speed_range_max = implementform.cleaned_data['speed_range_max']
+			new_implement_year_purchased = implementform.cleaned_data['year_purchased']
+			new_implement_implement_hours = implementform.cleaned_data['implement_hours']
+			new_implement_service_interval = implementform.cleaned_data['service_interval']
+			new_implement_base_cost = implementform.cleaned_data['base_cost']
+			new_implement_status = implementform.cleaned_data['status']
+			new_implement_beacon = implementform.cleaned_data['beacon']
+			new_implement_hour_cost = implementform.cleaned_data['hour_cost']
+			new_implement_photo = implementform.cleaned_data['photo']
+			new_implement_photo1 = implementform.cleaned_data['photo1']
+			new_implement_photo2 = implementform.cleaned_data['photo2']
+			
+			implement = Implement(manufacturer_model = new_implement_manufacturer_model, repair_shop = new_implement_repair_shop, shop = new_implement_shop, nickname = new_implement_nickname, qr_code = new_implement_qr_code, asset_number = new_implement_asset_number, serial_number = new_implement_serial_number, horse_power_req = new_implement_horsepower_req, hitch_capacity_req = new_implement_hitch_capacity_req, hitch_category = new_implement_hitch_category, drawbar_category = new_implement_drawbar_category, speed_range_min = new_implement_speed_range_min, speed_range_max = new_implement_speed_range_max, year_purchased = new_implement_year_purchased, implement_hours = new_implement_implement_hours, service_interval = new_implement_service_interval, base_cost = new_implement_base_cost, status = new_implement_status, hour_cost = new_implement_hour_cost, photo = new_implement_photo, photo1 = new_implement_photo1, photo2 = new_implement_photo2, beacon = new_implement_beacon)
+			implement.save()
+			result['success'] = True
+		
+			if result['success'] == True :
+				#return HttpResponse(json.dumps(result),content_type='application/json') 
+				return render(request, 'manager/formSuccess.html')
+			else:
+				return render(request, 'manager/formError.html')
+		else:
+			result['code'] = 3 #this implement is already registered
+			return render(request, 'manager/formError.html')
+		return HttpResponse(json.dumps(result),content_type='application/json')
+	else:
+		implementform = implementForm(request.POST)
+	return render(request,'manager/formImplement.html', {'form': implementform})
+##End
 
 #Form to add machine
 @login_required
@@ -2981,7 +3138,7 @@ def machineFormView(request):
 			new_machine_photo1 = machineform.cleaned_data['photo1']
 			new_machine_photo2 = machineform.cleaned_data['photo2']
 			
-			machine = Machine(manufacturer_model = new_machine_manufacturer_model, repair_shop = new_machine_repair_shop, shop = new_machine_shop, nickname = new_machine_nickname, qr_code = new_machine_qr_code, asset_number = new_machine_asset_number, serial_number = new_machine_serial_number, horsepower = new_machine_horsepower, hitch_capacity = new_machine_hitch_capacity, hitch_category = new_machine_hitch_category, drawbar_category = new_machine_drawbar_category, speed_range_min = new_machine_speed_range_min, speed_range_max = new_machine_speed_range_max, year_purchased = new_machine_year_purchased, engine_hours = new_machine_engine_hours, service_interval = new_machine_service_interval, base_cost = new_machine_base_cost, m_type = new_machine_m_type, front_tires = new_machine_front_tires, rear_tires = new_machine_rear_tires, steering = new_machine_steering, operator_station = new_machine_operator_station, status = new_machine_status, hour_cost = new_machine_hour_cost, photo = new_machine_photo, photo1 = new_machine_photo1, photo2 = new_machine_photo2)
+			machine = Machine(manufacturer_model = new_machine_manufacturer_model, repair_shop = new_machine_repair_shop, shop = new_machine_shop, nickname = new_machine_nickname, qr_code = new_machine_qr_code, asset_number = new_machine_asset_number, serial_number = new_machine_serial_number, horsepower = new_machine_horsepower, hitch_capacity = new_machine_hitch_capacity, hitch_category = new_machine_hitch_category, drawbar_category = new_machine_drawbar_category, speed_range_min = new_machine_speed_range_min, speed_range_max = new_machine_speed_range_max, year_purchased = new_machine_year_purchased, engine_hours = new_machine_engine_hours, service_interval = new_machine_service_interval, base_cost = new_machine_base_cost, m_type = new_machine_m_type, front_tires = new_machine_front_tires, rear_tires = new_machine_rear_tires, steering = new_machine_steering, operator_station = new_machine_operator_station, status = new_machine_status, hour_cost = new_machine_hour_cost, photo = new_machine_photo, photo1 = new_machine_photo1, photo2 = new_machine_photo2, beacon = new_machine_beacon)
 			machine.save()
 			result['success'] = True
 		
@@ -2991,20 +3148,13 @@ def machineFormView(request):
 			else:
 				return render(request, 'manager/formError.html')
 		else:
-			result['code'] = 3 #this user is already registered as a employee
+			result['code'] = 3 #this machine is already registered
 			return render(request, 'manager/formError.html')
 		return HttpResponse(json.dumps(result),content_type='application/json')
 	else:
 		machineform = machineForm(request.POST)
 	return render(request,'manager/formMachine.html', {'form': machineform})
 ##End
-
-def implementFormView(request):
-	form = implementForm(request.POST)
-	if form.is_valid():
-		return redirect('formOk')
-	else:
-		return render(request, 'formTest.html', {'form': form})
 
 def employeeFormView(request):
 	form = employeeForm(request.POST)

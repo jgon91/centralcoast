@@ -65,7 +65,7 @@
 		<div id="contentForm">
 			<form method="POST" action="." id="formPage">
 				{% csrf_token %}
-				{{ form3.as_p }}
+				{{ form.as_p }}
 				
 				<input type="submit" id="saveForm" value="{% trans 'SAVE' %}"/>
 			</form>
