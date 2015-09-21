@@ -75,6 +75,13 @@ body {
 	margin-top: 5px;
 	color: white;
 }
+.namePageCenter {
+	float: center;
+	color: #809A21;
+	font-weight: 600;
+	margin-top: 5px;
+	font-size: 20px;
+}
 #content {
 	width: 100%;
 	min-width: 800px;
@@ -624,6 +631,15 @@ input[type="button"] {
 
 /*** Scheduler page Begin ***/
 
+#scheduleFilters{
+	padding: 5px;
+	margin: auto;
+	margin-bottom: 10px;
+	text-align: center;
+	border: #DDD solid 1px;
+	width: 80%;
+}
+
 .fc-button {
 	width: 60px;
 	height: 10px;
@@ -634,11 +650,13 @@ input[type="button"] {
 .fc-time span {
 	font-size: 14px;
 	padding: 5px;
+	color: black;
 }
 .fc-title{
 	font-size: 14px;
 	margin-left: 5px;
 	font-weight: bold;
+	color: black;
 }
 .fc-event .fc-bg {
 	border: solid black 2px;
@@ -705,6 +723,234 @@ input[type="button"] {
 	/*** Modal Scheduler End ***/
 /*** Scheduler Page End ***/
 
+/*** Create Task modal Page Begin ***/
+#contentCreateTask {
+	width: 95%;
+	margin: auto;
+	margin-top: 4px;
+	margin-bottom: 10px;
+	min-width: 600px;
+	max-width: 800px;
+	min-height: 230px;
+	border-radius: 20px 20px 0px 0px;
+	box-shadow: 0px 5px 10px grey;
+}
+#contentCreateTask .nav {
+	margin-bottom: 7px;
+}
+.inputCreateTask {
+	width: 100%;
+	height: 35px;
+	font-size: 16px;
+	text-align: left;
+	border: 2px solid #809A21;
+	border-radius: 10px 10px 10px 10px;
+	margin-bottom: 10px;
+}
+.imgCreateTask {
+	width: 110px;
+	height: 110px;
+	margin-left: -10px;	
+	margin-top: 10px;
+	border-radius: 10px 10px 10px 10px;
+}
+.descriptionTask {
+	width: 100%;
+	height: 70px;
+	font-size: 20px;
+	text-align: left;
+	border: 2px solid #809A21;
+	border-radius: 10px 10px 10px 10px;
+	margin-bottom: 10px;
+	padding: 5px;
+}
+.alignCenterPage {
+	margin-top: 40px;
+}
+.textCreateTask {
+	font-size: 18px;
+	text-align: right;
+	color: #809A21;
+	font-weight: bold;
+	line-height: 35px;
+}
+#AddImplement {
+	background: url('../imgSmall/buttons/addImplement.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 140px;
+	height: 35px;
+	margin-top: 10px;
+	margin-left: 5px;
+	margin-bottom: 5px;
+	box-shadow: 2px 2px 5px gray;
+	border-radius: 7px;
+	border: none;
+	color: white;
+}
+/*#AddImplement:hover {
+	background: url('../imgSmall/buttons/addImplementHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}*/
+
+#delImplement {
+	background: url('../imgSmall/buttons/startNow.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 140px;
+	height: 35px;
+	margin-top: 10px;
+	margin-left: 5px;
+	margin-bottom: 5px;
+	box-shadow: 2px 2px 5px gray;
+	border-radius: 7px;
+	border: none;
+	color: white;
+}
+#delImplement:hover {
+	background: url('../imgSmall/buttons/startNow.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+.findEquipment {
+	background: url('../imgSmall/buttons/search.png') no-repeat top left;
+	background-size: 100% 100%;
+	min-width: 120px;
+	width: 48%;
+	height: 35px;
+	box-shadow: 2px 2px 5px gray;
+	border-radius: 7px;
+	border: none;
+	text-align: left;
+	padding-left: 15%;
+	color: white;
+	font-size: 18px;
+	font-weight: bold;
+}
+/*.findEquipment:hover {
+	background: url('../imgSmall/buttons/searchHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}*/
+.scanEquipment {
+	background: url('../imgSmall/buttons/scan.png') no-repeat top left;
+	background-size: 100% 100%;
+	min-width: 120px;
+	width: 48%;
+	height: 35px;
+	box-shadow: 2px 2px 5px gray;
+	border-radius: 7px;
+	border: none;
+	text-align: left;
+	padding-left: 20%;
+	color: white;
+	font-size: 18px;
+	font-weight: bold;
+}
+/*.scanEquipment:hover {
+	background: url('../imgSmall/buttons/scanHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}*/
+.nextTab {
+	background: url('../imgSmall/buttons/next.png') no-repeat top left !important;
+	background-size: 100% 100%;
+	border-radius: 7px;
+	border: none;
+	box-shadow: 2px 2px 5px gray;
+	height: 35px;
+	width: 170px;
+	color: white;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: left;
+	padding-left: 35px;
+}
+/*.nextTab:hover {
+	background: url('../imgSmall/buttons/nextHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}*/
+.prevTab {
+	background: url('../imgSmall/buttons/prev.png') no-repeat top left !important;
+	background-size: 100% 100%;
+	border-radius: 7px;
+	border: none;
+	box-shadow: 2px 2px 5px gray;
+	height: 35px;
+	width: 170px;
+	color: white;
+	margin-top: 10px;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: right;
+	padding-right: 25px;
+}
+/*.prevTab:hover {
+	background: url('../imgSmall/buttons/backHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}*/
+	/* Nav tabs */
+.nav>li {
+	width: 100px;
+	font-weight: bold;
+}
+	/* Tabs status begin */
+.nav>li>a {
+	color: white;
+	background-color: #989898;
+	border-radius: 10px 10px 0px 0px;
+}
+.nav>li>a.tabError {
+	background-color: red;
+	color: white;
+}
+.nav>li>a.tabSucess {
+	background-color: #4F7219;
+	color: white;
+}
+	/*	Tabs status end */
+.findTractor {
+	width: 90%;
+	min-width: 300px;
+	overflow-y: scroll; 
+	max-height: 85%;
+}
+#filterDiv {
+	width: 20%;
+	border-right: 2px solid grey;
+	float: left;
+	min-height: 300px;
+}
+#filterDiv h3 {
+	margin-top: 0px;	
+}
+.selectFilters {
+	font-size: 20px;
+	width: 90%;
+}
+.showEquipmentDiv {
+	width: 79%;
+	float:right;
+	min-height: 400px;
+}
+.showImplementDiv {
+	width: 79%;
+	float:right;
+	min-height: 400px;
+}
+.tractorFiltered {
+	width: 31%;
+	min-width: 200px;
+	min-height: 300px;
+	margin-right: 10px;
+	margin-bottom: 30px;
+	background-color: #EEE;
+	float: left;
+	font-size: 20px;
+}
+.tractorFiltered img {
+	width: 200px;
+	height: 200px;
+}
+
+/*** Create Task Modal Page End ***/
 
 
 .clear {

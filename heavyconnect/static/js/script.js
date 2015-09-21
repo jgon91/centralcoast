@@ -54,7 +54,7 @@ function saveTask(token, url, urlScheduler){
 		success: function(data, status, xhr){
 			if(data.success){
 				alert("Task created");
-				document.location = urlScheduler;
+				document.location = urlScheduler + "?createNewTask=sucess";
 			}else if(data.code == 3){
 				var errorsMessage = "";
 				if(data.errors.category != null){

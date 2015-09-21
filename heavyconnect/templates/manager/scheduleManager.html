@@ -15,10 +15,8 @@
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerManager' %}");
-				//pegar css do driver
-				//$("#createTaskModalBody").load("{% url 'templateCreateTaskManager' %}");
 
-				$("#filter").change(function() {
+				$("#btnFilter").click(function() {
 					$('#cal').fullCalendar('refetchEvents');
 				});
 
@@ -31,22 +29,28 @@
 								data : {
 									start : start.format(),
 									end : end.format(),
-									search: $("#filter").val(),
-									condition: $("#filterCategory").val()
+									search : $("#filter").val(),
+									condition : $("#filterStatus").val()
 								},
 								success : function(doc) {
-									alert("ok");
 									callback(doc);
 								}
 							});
 						}
 					}],
 					select : function(start, end, allDay) {
+						//Set task day
+						$('#date').val(start.format('YYYY-MM-DD'));
+						//Set start time task
+						$('#time').val(start.format('HH:mm:ss'));
+						//Set duration
+						$('#hours_prediction').val(moment.duration(end.diff(start)).asHours());
+						$('#timeTab').addClass("tabSucess");
 						
 						$('#createTaskModal').modal();
-						if (title) {
+						if (0) {
 							$('#cal').fullCalendar('renderEvent', {
-								title : title,
+								title : $("#employee option:selected").text(),
 								start : start,
 								end : end,
 							}, true // make the event "stick"
@@ -82,10 +86,10 @@
 					eventClick : function(event, jsEvent, view) {
 						console.log(event);
 						$('#modalTitle').html(event.category);
-						$('#description').html(event.description);
-						$('#field').html(event.field);
-						$('#machine').html(event.machine);
-						$('#implement').html(event.implement);
+						$('#modalDescription').html(event.description);
+						$('#modalField').html(event.field);
+						$('#modalMachine').html(event.machine);
+						$('#modalImplement').html(event.implement);
 						//$('#taskDuration').html(event.taskDuration);
 						if (event.status == 2) {
 							$('#btnStartTaskScheduler').html(' <a id="eventUrl" href="{% url "startTask" %}?task_id=' + event.task_id + '" >' + '<button class="btn btn-primary" id="btnAprove">' + '{% trans "Start" %}' + '</button> </a>');
@@ -97,6 +101,8 @@
 						return false;
 					}
 				});
+
+				$("#createTaskModalBody").load("{% url 'templateCreateTaskManager' %}");
 			});
 		</script>
 	</head>
@@ -107,54 +113,55 @@
 				<div class="namePageCenter">
 					{% trans 'HC Scheduler' %}
 				</div>
+				<div id="scheduleFilters">
+					<select id="filter">
+						<option value="1">Task status</option>
+						<option value="2">Field</option>
+					</select>
 
-				<select id="filter">
-					<option value="1">Task status</option>
-					<option value="2">Field</option>
-				</select>
+					<select id="filterStatus">
+						<option value="0">All</option>
+						<option value="1">Pending</option>
+						<option value="2">Approved</option>
+						<option value="3">Denied</option>
+						<option value="4">Ongoing</option>
+						<option value="5">Paused</option>
+						<option value="6">Finished</option>
+					</select>
 
-				<select id="filterCategory">
-					<option value="0">All</option>
-					<option value="1">Pending</option>
-					<option value="2">Approved</option>
-					<option value="3">Denied</option>
-					<option value="4">Ongoing</option>
-					<option value="5">Paused</option>
-					<option value="6">Finished</option>
-				</select>
-
+					<input type="button" value="Search" id="btnFilter" />
+				</div>
 				<div id="cal"></div>
-				
-				
+
 				<div class="modal fade" id="createTaskModal" role="dialog">
-					<div class="modal-dialog"  style="width: 850px">
+					<div class="modal-dialog"  style="width: 1000px">
 						<div class="modal-content modalSchedule">
 							<button type="button" class="closeSchedule" data-dismiss="modal"></button>
 							<span class="modal-title" id="titleModalSchedule">{% trans 'New Task' %}</span>
-							<div id="createTaskModalBody" class="modal-body infoSchedule">
-								
+							<div id="createTaskModalBody" class="modal-body">
+
 							</div>
 
 							<div class="both"></div>
 						</div>
 					</div>
 				</div>
-				
+
 				<div class="modal fade" id="fullCalModal" role="dialog">
 					<div class="modal-dialog">
 						<div class="modal-content modalSchedule">
 							<button type="button" class="closeSchedule" data-dismiss="modal"></button>
 							<span class="modal-title" id="titleModalSchedule">{% trans 'TASK INFORMATION' %}</span>
-							<div class="modal-body">
+							<div class="modal-body infoSchedule">
 								{% trans 'TASK:' %} <span id="modalTitle" class="infoModalSchedule"></span>
 								<br>
-								{% trans 'DESCRIPTION:' %} <span id="description" class="infoModalSchedule"></span>
+								{% trans 'DESCRIPTION:' %} <span id="modalDescription" class="infoModalSchedule"></span>
 								<br>
-								{% trans 'FIELD:' %} <span id="field" class="infoModalSchedule"></span>
+								{% trans 'FIELD:' %} <span id="modalField" class="infoModalSchedule"></span>
 								<br>
-								{% trans 'MACHINE:' %} <span id="machine" class="infoModalSchedule"></span>
+								{% trans 'MACHINE:' %} <span id="modalMachine" class="infoModalSchedule"></span>
 								<br>
-								{% trans 'IMPLEMENT:' %} <span id="implement" class="infoModalSchedule"></span>
+								{% trans 'IMPLEMENT:' %} <span id="modalImplement" class="infoModalSchedule"></span>
 								<br>
 							</div>
 
