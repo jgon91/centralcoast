@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^pastTasks/$', main_views.pastTasks, name='pastTasks'),
     url(r'^createTask/$', main_views.createTask, name='createTask'),
     url(r'^createTaskManager/$', main_views.createTaskManager, name='createTaskManager'),
+    url(r'^templateCreateTaskManager/$', main_views.templateCreateTaskManager, name='templateCreateTaskManager'),
     url(r'^startTask/$', main_views.startTask, name='startTask'),
     url(r'^scanQRCode/$', main_views.scanQRCode, name='scanQRCode'),
     url(r'^indexManager/$', main_views.indexManager, name='indexManager'),

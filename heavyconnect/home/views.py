@@ -1848,10 +1848,12 @@ def timeKeeperReportAux(attendance, finished):
 
 
 def getEmployeeScheduleManager(request):
+	print "It is here 2"
 	result = []
 	color = ['#F7F003','#05C60E', '#FF0000', '#B3D1FF','#FF6600', '#A2A9AF']
 	if request.method == 'GET':
 		if request.is_ajax():
+			print "It is here 3"
 			aux = request.GET['start'] #get the date in the POST request
 			aux2 = request.GET['end']
 			date_start = datetime.datetime.strptime(aux, '%Y-%m-%d')
@@ -1893,6 +1895,7 @@ def getEmployeeScheduleManager(request):
 
 ### Function to retrieve tasks by field ###
 def getFieldTasksManager(request):
+	print "It is here 2.2"
 	result = []
 	if request.method == 'GET':
 		if request.is_ajax():
@@ -1904,7 +1907,7 @@ def getFieldTasksManager(request):
 			date_start = datetime.datetime.strptime(aux, '%Y-%m-%d')
 			date_end = datetime.datetime.strptime(aux2, '%Y-%m-%d') + datetime.timedelta(days = 1)	
 			date_end = datetime.datetime.combine(date_end, datetime.time.max)
-			condition = request.Get.get['condition']
+			condition = int(request.GET['condition'])
 			emplo = Employee.objects.filter(manager__user_id = request.user.id)
 			if(condition == 0): #It depends on the filter
 				for item in emplo: 
@@ -1977,7 +1980,8 @@ def getFieldTasksManager(request):
 funtions = {1 :  getEmployeeScheduleManager,2 : getFieldTasksManager}
 ### This function will choose which function to call
 def switchTaskManager(request):
-	search = request.GET['search']
+	print "It is here  " + request.GET['search'] + request.GET['condition']
+	search = int(request.GET['search'])
 	return funtions[search](request)
 
 
@@ -2161,6 +2165,10 @@ def createTask(request):
 @login_required
 def createTaskManager(request):
     return render(request, 'manager/createTaskManager.html')
+   
+@login_required
+def templateCreateTaskManager(request):
+    return render(request, 'manager/templateCreateTaskManager.html')
    
 @login_required
 def scheduleManager(request):
