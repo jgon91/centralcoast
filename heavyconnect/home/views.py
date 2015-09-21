@@ -2996,14 +2996,13 @@ def shopUpdateView(request):
 	if request.method == "POST":
 		shopform = shopUpdateForm(request.POST)
 		shop_id = request.POST['shop_id']
-		print "test1.1"
 		if shopform.is_valid():
 			try:
 				shop = Shop.objects.get(id = shop_id)
 				new_shop_name = shopform.cleaned_data['name']
 				new_shop_number = shopform.cleaned_data['number']
 				new_shop_address = shopform.cleaned_data['address']
-				shop = Shop(id = shop_id, name = new_shop_name, number = new_shop_number, address = new_shop_address)
+				shop = Shop(id = 1, name = new_shop_name, number = new_shop_number, address = new_shop_address)
 				shop.save()
 
 				return render(request, 'manager/formSuccess.html')
@@ -3016,7 +3015,7 @@ def shopUpdateView(request):
 			shop_id = request.GET.get("shop_id")
 			shopReturn = Shop.objects.get(id = shop_id)
 			if shopReturn != None:
-				shop = repairShopUpdateForm(initial = {'shop_id' : shop_id, 'name' : shopReturn.name, 'number' : shopReturn.number, 'address' : shopReturn.address})
+				shop = shopUpdateForm(initial = {'shop_id' : shop_id, 'name' : shopReturn.name, 'number' : shopReturn.number, 'address' : shopReturn.address})
 			else:
 				shop = shopForm()
 			return render(request,'manager/formShop.html', {'formShop' : shop})
