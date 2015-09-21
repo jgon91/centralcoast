@@ -2252,6 +2252,10 @@ def listRepairShop(request):
 	return render(request, 'manager/listRepairShop.html')
 
 @login_required
+def listImplement(request):
+	return render(request, 'manager/listImplement.html')
+
+@login_required
 def geofence(request):
 	return render(request, 'geoFence.html')
 

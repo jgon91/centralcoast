@@ -14,7 +14,30 @@
 				$("#head").load("{% url 'headerManager' %}");
 				$(".errorlist").hide();
 				$( "label:lt(4)" ).append("*");
+   				
+   				var parameter = getParametersUrl();
+   				$("#deleteForm").hide();
+				if(parameter['implement_id'] != null){
+					$("#deleteForm").show();
+				}
 				
+				$("#deleteForm").click( function (){
+					var url = "{% url 'implementManagerDelete' %}";
+					var parameter = getParametersUrl();
+					
+					if(confirm("Do you really want to delete this implement?")){
+						$.ajax({
+							method: "POST",
+							url: url,
+							data: {"csrfmiddlewaretoken": '{{csrf_token}}', "implement_id": parameter['implement_id'] },
+							datatype: "json",
+							success: function(data, status, xhr){		
+								alert("Implement deleted.");					
+								window.location="{% url 'listImplement' %}";
+							}
+						});	
+					}
+				});
 
 				$("form").submit(function(){
 
@@ -56,8 +79,6 @@
 				    return formOK;
 				});
 			});
-
-
 		</script>
 	</head>
 	<body>
@@ -68,6 +89,7 @@
 				{{ form.as_p }}
 				
 				<input type="submit" id="saveForm" value="{% trans 'SAVE' %}"/>
+				<input type="submit" id="deleteForm" value="{% trans 'DELETE' %}"/>
 			</form>
 		</div>
 		<footer id="foot"></footer>
