@@ -2101,7 +2101,28 @@ def equipmentLastLocalization(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-
+def updateTaskCalendar(request):
+	result = {'success' : False}
+	if request.method == "POST":
+		if request.is_ajax():
+			try:
+				task = Task.objects.get(id = request.POST['task_id'])
+				aux = request.POST['start'] #get the date in the POST request
+				aux2 = request.POST['end']
+				date_start = datetime.datetime.strptime(aux, '%Y-%m-%d %H:%M:%S')
+				date_end = datetime.datetime.strptime(aux2, '%Y-%m-%d %H:%M:%S')
+				task.hours_prediction = abs(date_start - date_end).total_seconds() / 3600.0
+				task.date_assigned = aux
+				task.save()
+				return render(request, 'manager/formSuccess.html')
+			except:
+				result['code'] = 3 #Task does not exist
+		else:
+			result['code'] = 2 #The request is not AJAX
+	else:
+		result['code'] = 1 #The request is not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+	
 
 def logout(request):
 	auth_logout(request)
