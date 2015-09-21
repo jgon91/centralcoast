@@ -2924,7 +2924,7 @@ def repairShopFormView(request):
 		return HttpResponse(json.dumps(result),content_type='application/json')
 	else:
 		repair_shop_form = repairShopForm(request.POST)
-	return render(request,'manager/formRepairShop.html', {'form': repair_shop_form})
+	return render(request,'manager/formRepairShop.html', {'formRepairShop': repair_shop_form})
 # End
 
 #Updating Repair Shop
@@ -2957,7 +2957,7 @@ def repairShopUpdateView(request):
 				repairshop = repairShopUpdateForm(initial = {'repair_shop_id' : repair_shop_id, 'name' : repairShopReturn.name, 'number' : repairShopReturn.number, 'address' : repairShopReturn.address})
 			else:
 				repairshop = repairShopForm()
-			return render(request,'manager/repairShopUpdate.html', {'form5' : repairshop})
+			return render(request,'manager/formRepairShop.html', {'formRepairShop' : repairshop})
 		except:
 			result['code'] = 2 #RepairShop does not exist
 			return HttpResponse(json.dumps(result),content_type='application/json')
@@ -2987,7 +2987,7 @@ def shopFormView(request):
 		return HttpResponse(json.dumps(result),content_type='application/json')
 	else:
 		shop_form = shopForm(request.POST)
-	return render(request,'manager/formShop.html', {'form': shop_form})
+	return render(request,'manager/formShop.html', {'formShop': shop_form})
 # End
 
 #Updating Shop
@@ -3019,7 +3019,7 @@ def shopUpdateView(request):
 				shop = repairShopUpdateForm(initial = {'shop_id' : shop_id, 'name' : shopReturn.name, 'number' : shopReturn.number, 'address' : shopReturn.address})
 			else:
 				shop = shopForm()
-			return render(request,'manager/shopUpdate.html', {'form4' : shop})
+			return render(request,'manager/formShop.html', {'formShop' : shop})
 		except:
 			result['code'] = 2 #Shop does not exist
 			return HttpResponse(json.dumps(result),content_type='application/json')
@@ -3174,6 +3174,7 @@ def machineFormView(request):
 			new_machine_operator_station = machineform.cleaned_data['operator_station']
 			new_machine_status = machineform.cleaned_data['status']
 			new_machine_hour_cost = machineform.cleaned_data['hour_cost']
+			new_machine_beacon = machineform.cleaned_data['beacon']
 			new_machine_photo = machineform.cleaned_data['photo']
 			new_machine_photo1 = machineform.cleaned_data['photo1']
 			new_machine_photo2 = machineform.cleaned_data['photo2']
@@ -3193,7 +3194,7 @@ def machineFormView(request):
 		return HttpResponse(json.dumps(result),content_type='application/json')
 	else:
 		machineform = machineForm(request.POST)
-	return render(request,'manager/formMachine.html', {'form': machineform})
+	return render(request,'manager/formMachine.html', {'formMachine': machineform})
 ##End
 
 def employeeFormView(request):
@@ -3256,7 +3257,7 @@ def machineUpdateView(request):
 				machi = machineUpdateForm(initial = {'machine_id' : machine_id,'beacon' : machineReturn.beacon,'shop' : machineReturn.shop,'repair_shop' : machineReturn.repair_shop ,'manufacturer_model' :  machineReturn.manufacturer_model,'nickname' : machineReturn.nickname , 'asset_number' : machineReturn.asset_number , 'serial_number' : machineReturn.serial_number , 'qr_code' : machineReturn.qr_code , 'horsepower' : machineReturn.horsepower , 'hitch_capacity' : machineReturn.hitch_capacity , 'hitch_category' : machineReturn.hitch_category , 'drawbar_category' : machineReturn.drawbar_category , 'speed_range_min' : machineReturn.speed_range_min , 'speed_range_max' : machineReturn.speed_range_max , 'year_purchased' : machineReturn.year_purchased , 'engine_hours' : machineReturn.engine_hours , 'service_interval' : machineReturn.service_interval , 'base_cost' : machineReturn.base_cost , 'm_type' : machineReturn.m_type , 'front_tires' : machineReturn.front_tires , 'rear_tires' : machineReturn.rear_tires , 'steering' : machineReturn.steering , 'operator_station' : machineReturn.operator_station , 'status' : machineReturn.status , 'hour_cost' : machineReturn.hour_cost , 'photo' : machineReturn.photo , 'photo1' : machineReturn.photo1 ,'note' : machineReturn.note , 'photo2' : machineReturn.photo2 })
 			else:
 				machi = machineForm()
-			return render(request,'manager/machineUpdate.html', {'form3' : machi})
+			return render(request,'manager/formMachine.html', {'formMachine' : machi})
 		except:
 			result['code'] = 2 #Machine does not exist
 			return HttpResponse(json.dumps(result),content_type='application/json')
@@ -3287,6 +3288,12 @@ def employeeManagerUpdateForm(request):
 				emplo.photo = employform.cleaned_data['photo']
 				emplo.notes = employform.cleaned_data['notes']
 				emplo.manager = employform.cleaned_data['manager']
+
+				if emplo.active == False:
+					 emplo.user.is_active = False
+				else:
+					emplo.user.is_active = True
+					
 				emplo.user.save()
 				emplo.save()
 				return render(request, 'manager/formSuccess.html')
@@ -3390,10 +3397,12 @@ def employeeUpdateFormView(request):
 		if userform.is_valid() and employform.is_valid():
 			emplo.user.first_name = userform.cleaned_data['first_name']
 			emplo.user.last_name = userform.cleaned_data['last_name']
+			emplo.manager = employform.cleaned_data['manager']
 			emplo.language = employform.cleaned_data['language']
 			emplo.contact_number = employform.cleaned_data['contact_number']
 			emplo.photo = employform.cleaned_data['photo']
 			emplo.notes = employform.cleaned_data['notes']
+			emplo.active = employform.cleaned_data['active']
 			emplo.user.save()
 			emplo.save()
 			result['success'] = True
@@ -3403,7 +3412,7 @@ def employeeUpdateFormView(request):
 			emplo = Employee.objects.get(user_id = request.user.id)
 			userform = UserFormUpdate(initial = {'first_name' : emplo.user.first_name, 'last_name' : emplo.user.last_name})
 			# employform = employeeForm(initial = {'notes' : emplo.notes, 'photo' : emplo.photo, 'permission_level' : emplo.permission_level ,'contact_number' : emplo.contact_number ,'hour_cost' : emplo.hour_cost, 'qr_code' : emplo.qr_code ,'language' : emplo.language , 'active' : emplo.active, 'last_task' : emplo.last_task ,'start_date' : emplo.start_date,'company_id' : emplo.company_id})
-			employform = employeeForm(initial = {'notes' : emplo.notes, 'photo' : emplo.photo, 'contact_number' : emplo.contact_number,'language' : emplo.language})
+			employform = employeeForm(initial = {'notes' : emplo.notes, 'photo' : emplo.photo, 'contact_number' : emplo.contact_number,'language' : emplo.language, 'manager' : emplo.manager, 'active' : emplo.active})
 			result['success'] = True
 		except:
 			result['code'] = 3 # this user does not exist
