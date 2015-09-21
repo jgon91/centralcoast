@@ -3287,6 +3287,12 @@ def employeeManagerUpdateForm(request):
 				emplo.photo = employform.cleaned_data['photo']
 				emplo.notes = employform.cleaned_data['notes']
 				emplo.manager = employform.cleaned_data['manager']
+
+				if emplo.active == False:
+					 emplo.user.is_active = False
+				else:
+					emplo.user.is_active = True
+					
 				emplo.user.save()
 				emplo.save()
 				return render(request, 'manager/formSuccess.html')
@@ -3390,10 +3396,12 @@ def employeeUpdateFormView(request):
 		if userform.is_valid() and employform.is_valid():
 			emplo.user.first_name = userform.cleaned_data['first_name']
 			emplo.user.last_name = userform.cleaned_data['last_name']
+			emplo.manager = employform.cleaned_data['manager']
 			emplo.language = employform.cleaned_data['language']
 			emplo.contact_number = employform.cleaned_data['contact_number']
 			emplo.photo = employform.cleaned_data['photo']
 			emplo.notes = employform.cleaned_data['notes']
+			emplo.active = employform.cleaned_data['active']
 			emplo.user.save()
 			emplo.save()
 			result['success'] = True
@@ -3403,7 +3411,7 @@ def employeeUpdateFormView(request):
 			emplo = Employee.objects.get(user_id = request.user.id)
 			userform = UserFormUpdate(initial = {'first_name' : emplo.user.first_name, 'last_name' : emplo.user.last_name})
 			# employform = employeeForm(initial = {'notes' : emplo.notes, 'photo' : emplo.photo, 'permission_level' : emplo.permission_level ,'contact_number' : emplo.contact_number ,'hour_cost' : emplo.hour_cost, 'qr_code' : emplo.qr_code ,'language' : emplo.language , 'active' : emplo.active, 'last_task' : emplo.last_task ,'start_date' : emplo.start_date,'company_id' : emplo.company_id})
-			employform = employeeForm(initial = {'notes' : emplo.notes, 'photo' : emplo.photo, 'contact_number' : emplo.contact_number,'language' : emplo.language})
+			employform = employeeForm(initial = {'notes' : emplo.notes, 'photo' : emplo.photo, 'contact_number' : emplo.contact_number,'language' : emplo.language, 'manager' : emplo.manager, 'active' : emplo.active})
 			result['success'] = True
 		except:
 			result['code'] = 3 # this user does not exist
