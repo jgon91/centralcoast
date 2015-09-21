@@ -39,45 +39,17 @@
 					}
 				});
 
+				var fields = ['select[name=manufacturer_model]', 
+							  'input[name=nickname]', 
+							  'input[name=asset_number]',  
+							  'input[name=serial_number]'
+							];
+
 				$("form").submit(function(){
-
-					var formOK = true;
-
-    				if($('select[name=manufacturer_model]').val() == ""){
-    					if(formOK == true)						
-    						$('select[name=manufacturer_model]').focus();
-						$('select[name=manufacturer_model]').css('box-shadow', '0px 0px 10px red');
-						formOK = false;
-					}else{
-						$('select[name=manufacturer_model]').css('box-shadow', '1px 1px 5px 0px');
-					}
-					if($('input[name=nickname]').val() == ""){		
-						if(formOK == true)	
-							$('input[name=nickname]').focus();				
-						$('input[name=nickname]').css('box-shadow', '0px 0px 10px red');
-						formOK = false;
-					}else{
-						$('input[name=nickname]').css('box-shadow', '1px 1px 5px 0px');
-					}
-					if($('input[name=asset_number]').val() == ""){	
-						if(formOK == true)	
-							$('input[name=asset_number]').focus();				
-						$('input[name=asset_number]').css('box-shadow', '0px 0px 10px red');
-						formOK = false;
-					}else{
-						$('input[name=asset_number]').css('box-shadow', '1px 1px 5px 0px');
-					}
-					if($('input[name=serial_number]').val() == ""){		
-						if(formOK == true)
-							$('input[name=serial_number]').focus();				
-						$('input[name=serial_number]').css('box-shadow', '0px 0px 10px red');
-						formOK = false;
-					}else{	
-						$('input[name=serial_number]').css('box-shadow', '1px 1px 5px 0px');
-					}
-
-				    return formOK;
+					var formOK = checkFields(fields)
+					return formOK
 				});
+				
 			});
 		</script>
 	</head>

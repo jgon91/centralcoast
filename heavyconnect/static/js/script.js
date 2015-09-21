@@ -391,3 +391,21 @@ function saveTask(token, url, urlScheduler){
 	}
 
 /* End Fleet page*/
+
+	function checkFields(fields){
+
+		var formOK = true;
+
+		for (var i = 0; i < fields.length; i++) {
+			if($(fields[i]).val() == ""){
+				if(formOK == true)						
+					$(fields[i]).focus()
+				$(fields[i]).css('box-shadow', '0px 0px 10px red');
+				formOK = false;
+			}else{
+				$(fields[i]).css('box-shadow', '1px 1px 5px 0px');
+			}
+		}
+
+		return formOK;
+	}

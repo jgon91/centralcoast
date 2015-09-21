@@ -15,37 +15,38 @@
 				$(".errorlist").hide();
 				$( "label:lt(3)" ).append("*");
 				
+				var parameter = getParametersUrl();
+   				$("#deleteForm").hide();
+				if(parameter['repair_shop_id'] != null){
+					$("#deleteForm").show();
+				}
+
+				$("#deleteForm").click(function (){
+					var url = "{% url 'repairShopManagerDelete' %}";
+					var parameter = getParametersUrl();
+
+					if(confirm("Do you really want to delete this repair shop?")){
+						$.ajax({
+							method: "POST",
+							url: url,
+							data: {"csrfmiddlewaretoken": '{{csrf_token}}', "repair_shop_id": parameter['repair_shop_id'] },
+							datatype: "json",
+							success: function(data, status, xhr){		
+								alert("Repair shop deleted.");					
+								window.location="{% url 'listRepairShop' %}";
+							}
+						});	
+					}
+				});
+			
+				var fields = ['input[name=name]', 
+							  'input[name=number]', 
+							  'input[name=address]'
+							];
 
 				$("form").submit(function(){
-
-					var formOK = true;
-
-    				if($('input[name=name]').val() == ""){
-    					if(formOK == true)						
-    						$('input[name=name]').focus();
-						$('input[name=name]').css('box-shadow', '0px 0px 10px red');
-						formOK = false;
-					}else{
-						$('input[name=name]').css('box-shadow', '1px 1px 5px 0px');
-					}
-					if($('input[name=number').val() == ""){		
-						if(formOK == true)	
-							$('input[name=number]').focus();				
-						$('input[name=number]').css('box-shadow', '0px 0px 10px red');
-						formOK = false;
-					}else{
-						$('input[name=number]').css('box-shadow', '1px 1px 5px 0px');
-					}
-					if($('input[name=address]').val() == ""){	
-						if(formOK == true)	
-							$('input[name=address]').focus();				
-						$('input[name=address]').css('box-shadow', '0px 0px 10px red');
-						formOK = false;
-					}else{
-						$('input[name=address]').css('box-shadow', '1px 1px 5px 0px');
-					}
-
-				    return formOK;
+					var formOK = checkFields(fields)
+					return formOK
 				});
 			});
 
@@ -57,9 +58,10 @@
 		<div id="contentForm">
 			<form method="POST" action="." id="formPage">
 				{% csrf_token %}
-				{{ form.as_p }}
+				{{ formRepairShop.as_p }}
 				
 				<input type="submit" id="saveForm" value="{% trans 'SAVE' %}"/>
+				<input type="button" id="deleteForm" value="{% trans 'DELETE' %}"/>
 			</form>
 		</div>
 		<footer id="foot"></footer>
