@@ -24,6 +24,14 @@
 
 					var formOK = true;
 
+					if($('select[name=manager]').val() == ""){
+    					if(formOK == true)						
+    						$('select[name=manager]').focus()
+						$('select[name=manager]').css('box-shadow', '0px 0px 10px red');
+						formOK = false;
+					}else{
+						$('select[name=manager]').css('box-shadow', '1px 1px 5px 0px');
+					}
     				if($('input[name=first_name]').val() == ""){
     					if(formOK == true)						
     						$('input[name=first_name]').focus()
@@ -67,7 +75,7 @@
 	<body>
 		<header id="head"></header>
 		<div id="contentForm">
-			<form method="POST" action="." id="formPage" onsubmit="checkFields()">
+			<form method="POST" action="." id="formPage">
 				{% csrf_token %}
 				Manager: * {{ form1.manager }}
 				<br>

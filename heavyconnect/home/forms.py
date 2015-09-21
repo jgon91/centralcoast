@@ -317,7 +317,7 @@ class employeeForm(forms.Form):
 	permission_level = forms.ChoiceField(choices = PERMISSION_LEVEL_CHOICES)
 	photo = forms.URLField(required = False)
 	notes = forms.CharField(max_length = 250, required = False)
-	manager = forms.ModelChoiceField(queryset = Employee.objects.filter(permission_level = '1'))
+	manager = forms.ModelChoiceField(queryset = Employee.objects.filter(permission_level = '2'))
 ### End ###
 
 
@@ -334,7 +334,6 @@ class employeeUpdateForm(forms.Form):
 	)
 	last_task = forms.ModelChoiceField(queryset = Task.objects.all(), required = False)
 	user = forms.IntegerField(required = False)
-	active = forms.BooleanField(required = False)
 	company_id = forms.CharField(required = False)
 	language = forms.ChoiceField(choices = LANGUAGE_CHOICES)
 	qr_code = forms.CharField(required = False)
@@ -344,6 +343,8 @@ class employeeUpdateForm(forms.Form):
 	permission_level = forms.ChoiceField(choices = PERMISSION_LEVEL_CHOICES)
 	photo = forms.URLField(required = False)
 	notes = forms.CharField(max_length = 250, required = False)
+	active = forms.BooleanField(required = False)
+	manager = forms.ModelChoiceField(queryset = Employee.objects.filter(permission_level = '2'))
 ### End ###
 
 ### Structure for employeeAttendanceForm ###
