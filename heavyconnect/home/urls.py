@@ -118,6 +118,7 @@ urlpatterns = [
     url(r'^manufacturerModelFormView/$', main_views.manufacturerFormView, name = 'registerManufacturerModel'),
     url(r'^implementManagerDelete/$', main_views.implementManagerDelete, name = 'implementManagerDelete'),
     url(r'^implementFormadd/$', main_views.implementFormView, name = 'registerImplement'),
+    url(r'^listImplement/$', main_views.listImplement, name = 'listImplement'),
     url(r'^implementUpdateView/$', main_views.implementUpdateView, name = 'implementUpdateView'),
     url(r'^repairShopFormadd/$', main_views.repairShopFormView, name = 'registerRepairShop'),
     url(r'^repairShopUpdateView/$', main_views.repairShopUpdateView, name = 'repairShopUpdateView'),

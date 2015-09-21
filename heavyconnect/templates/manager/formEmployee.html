@@ -18,7 +18,6 @@
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerManager' %}");
-				
 
 				$("form").submit(function(){
 
@@ -93,8 +92,7 @@
 				<br>
 				QrCode: {{ form1.qr_code }}
 				<br>
-				Start date: {{ form1.start_date }}
-				<br>
+				Start date: <div id="dateForm">{{ form1.start_date }}</div>
 				Hour cost: {{ form1.hour_cost }}
 				<br>
 				Permission Level: {{ form1.permission_level }}
