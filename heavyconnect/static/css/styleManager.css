@@ -505,10 +505,10 @@ input[type="button"] {
 	margin: auto;
 	margin-top: 10px;
 	margin-bottom: 10px;
-	border: 1px solid gray;
+	border: 1px solid #CCC;
 	box-shadow: 2px 2px 8px 0px gray;
 	border-radius: 10px;
-	background: #6C6259;
+	background: #EEE;
 	color: black;
 }
 #formPage {
@@ -530,7 +530,6 @@ input[type="button"] {
 	box-shadow: 1px 1px 5px 0px black;
 	margin-bottom: 5px;
 	padding: 3px;
-	background: #E0E0A7;
 }
 #formPage select {
 	width: 400px;
@@ -541,7 +540,6 @@ input[type="button"] {
 	box-shadow: 1px 1px 5px 0px black;
 	margin-bottom: 5px;
 	padding: 3px;
-	background: #E0E0A7;
 }
 #dateForm {
 	width: 400px;
