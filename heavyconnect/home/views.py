@@ -1884,7 +1884,7 @@ def getEmployeeScheduleManager(request):
 							aux['machine'] = []
 							aux['implement'] = []
 						result.append(aux)
-				
+						
 		else:
 	 		result.append({'code' : 2}) #Use ajax to perform requests
 	else:
@@ -1973,6 +1973,12 @@ def getFieldTasksManager(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 ### end ###
+
+funtions = {1 :  getEmployeeScheduleManager,2 : getFieldTasksManager}
+### This function will choose which function to call
+def switchTaskManager(request):
+	search = request.GET['search']
+	return funtions[search](request)
 
 
 #This function generates a report for the timekeeper for the current day
