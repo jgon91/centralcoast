@@ -103,7 +103,9 @@ urlpatterns = [
     url(r'^listMachine/$', main_views.listMachine, name='listMachine'),
     url(r'^listShop/$', main_views.listShop, name='listShop'),
     url(r'^listRepairShop/$', main_views.listRepairShop, name='listRepairShop'),
-    ### End ###
+    url(r'^switchTaskManager/$', main_views.switchTaskManager, name = 'switchTaskManager'),
+    url(r'^updateTaskCalendar/$', main_views.updateTaskCalendar, name = 'updateTaskCalendar'),
+   ### End ###
 
     ###Insert###
     url(r'^createManufacture/$', CRUD.createManufacture, name = 'createManufacture'),
@@ -138,7 +140,6 @@ urlpatterns = [
     url(r'^employeeQualificationsFormView/$', main_views.employeeQualificationsFormView, name = 'registerEmployeeQualification'),
     url(r'^machineQualificationFormView/$', main_views.machineQualificationFormView, name = 'registerMachineQualification'),
     url(r'^implementQualificationFormView/$', main_views.implementQualificationFormView, name = 'registerImplementQualification'),
-    url(r'^switchTaskManager/$', main_views.switchTaskManager, name = 'switchTaskManager'),
     url(r'^fieldFormView/$', main_views.fieldFormView, name = 'registerField'),
     url(r'^gpsFormView/$', main_views.gpsFormView, name = 'registerGps'),
     url(r'^employeeLocalizationFormView/$', main_views.employeeLocalizationFormView, name = 'registerEmployeeLocalization'),
