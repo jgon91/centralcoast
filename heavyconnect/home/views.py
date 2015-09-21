@@ -1696,7 +1696,7 @@ def getEmployeeSchedulePart(request):
 
 ### This function will retorn one string which will refer one color in hexadecimal
 def getColor(number):
-	colors = ['#6A5ACD',  '#7B68EE', '#800000', '#00FFFF', '#FF4500', '#2F4F4F', '#FFD700', '#BDB76B', '#C71585', '#483D8B', '#9370DB', '#FF1493', '#8B0000', '#00CED1',
+	colors = ['#85ACFF',  '#7AEFBD', '#F2F472', '#FF0000', '#8AF45C', '#7AD9EF', '#FA5AEF', '#F9B76B', '#FF7979', '#B93CF4', '#9370DB', '#FF1493', '#8B0000', '#00CED1',
 	 '#8B0000', '#FF8C00', '#00FA9A', '#F0E68C', '#DAA520', '#808080', '#8A2BE2', '#191970', '#FF69B4', '#40E0D0', '#B22222', '#00FF7F', '#B8860B', '#000080', '#4B0082', '#C71585',
 	  '#48D1CC', '#A52A2A', '#90EE90', '#8B4513', '#9400D3', '#0000CD', '#F08080', '#20B2AA', '#FA8072', '#8FBC8F', '#A0522D', '#4169E1', '#800080', '#008B8B', '#E9967A', '#006400', '#CD853F',
 	   '#228B22', '#00FF00', '#8B008B', '#1E90FF', '#F08080', '#87CEFA', '#DC143C', '#4682B4', '#FF6347', '#556B2F', '#F4A460' ]

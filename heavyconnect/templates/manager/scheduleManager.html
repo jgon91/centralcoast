@@ -15,6 +15,8 @@
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerManager' %}");
+				//pegar css do driver
+				//$("#createTaskModalBody").load("{% url 'templateCreateTaskManager' %}");
 
 				$("#filter").change(function() {
 					$('#cal').fullCalendar('refetchEvents');
@@ -33,14 +35,15 @@
 									condition: $("#filterCategory").val()
 								},
 								success : function(doc) {
+									alert("ok");
 									callback(doc);
 								}
 							});
 						}
 					}],
 					select : function(start, end, allDay) {
-						$('#fullCalModal').modal();
-
+						
+						$('#createTaskModal').modal();
 						if (title) {
 							$('#cal').fullCalendar('renderEvent', {
 								title : title,
@@ -121,13 +124,28 @@
 				</select>
 
 				<div id="cal"></div>
+				
+				
+				<div class="modal fade" id="createTaskModal" role="dialog">
+					<div class="modal-dialog"  style="width: 850px">
+						<div class="modal-content modalSchedule">
+							<button type="button" class="closeSchedule" data-dismiss="modal"></button>
+							<span class="modal-title" id="titleModalSchedule">{% trans 'New Task' %}</span>
+							<div id="createTaskModalBody" class="modal-body infoSchedule">
+								
+							</div>
 
+							<div class="both"></div>
+						</div>
+					</div>
+				</div>
+				
 				<div class="modal fade" id="fullCalModal" role="dialog">
 					<div class="modal-dialog">
 						<div class="modal-content modalSchedule">
 							<button type="button" class="closeSchedule" data-dismiss="modal"></button>
 							<span class="modal-title" id="titleModalSchedule">{% trans 'TASK INFORMATION' %}</span>
-							<div class="modal-body infoSchedule">
+							<div class="modal-body">
 								{% trans 'TASK:' %} <span id="modalTitle" class="infoModalSchedule"></span>
 								<br>
 								{% trans 'DESCRIPTION:' %} <span id="description" class="infoModalSchedule"></span>
