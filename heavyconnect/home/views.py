@@ -2852,6 +2852,37 @@ def repairShopManagerDelete(request):
 		result['code'] = 3 #Request is not POST
 		return HttpResponse(json.dumps(result),content_type='application/json')
 
+#Get employees by manager
+def getAllManagerEmployees(request):
+	each_result = {}
+	result = {'success' : False}
+	if request.method == "POST":
+		if request.is_ajax():
+			try:
+				manager = Employee.objects.get(user = request.user)
+				all_manager_employee = Employee.objects.filter(manager = manager.id)
+				employees = []
+				for each in all_manager_employee:
+					each_result['first_name'] = each.user.first_name
+					each_result['last_name'] = each.user.last_name
+					each_result['user_id'] = each.user.id					
+					employees.append(each_result)
+					each_result = {}
+				result['success'] = True
+				result['employees'] = employees
+			except DoesNotExist:
+				result['code'] = 1
+				return HttpResponse(json.dumps(result), content_type='application/json')
+		else:
+			result['code'] = 2
+			return HttpResponse(json.dumps(result), content_type='application/json')
+	else:
+		result['code'] = 3
+		return HttpResponse(json.dumps(result), content_type='application/json')
+
+	return HttpResponse(json.dumps(result), content_type='application/json')
+
+
 
 # @menezescode: Page only to show the form was correctly sended.
 def formOk(request):

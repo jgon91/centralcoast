@@ -106,6 +106,7 @@ urlpatterns = [
     url(r'^listRepairShop/$', main_views.listRepairShop, name='listRepairShop'),
     url(r'^switchTaskManager/$', main_views.switchTaskManager, name = 'switchTaskManager'),
     url(r'^updateTaskCalendar/$', main_views.updateTaskCalendar, name = 'updateTaskCalendar'),
+    url(r'^getAllManagerEmployees/$', main_views.getAllManagerEmployees, name = 'getAllManagerEmployees'),
    ### End ###
 
     ###Insert###
