@@ -9,7 +9,11 @@
 		<link href='{% static "fullcalendar/fullcalendar.css" %}' rel='stylesheet' />
 		<!-- Don't required <link href='../fullcalendar.min.css' rel='stylesheet' media='print' />-->
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui-1.8.4.custom.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/ui.dropdownchecklist.themeroller.css' %}">
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+		<script src="{% static 'js/jquery-ui-1.8.13.custom.min.js' %}"></script>
+   		<script src="{% static 'js/ui.dropdownchecklist-1.4-min.js' %}"></script>
 		<script>
 			//var source = 'cal.json'; We can use a variable in events, to fill the calendar
 			$(document).ready(function() {
@@ -19,6 +23,53 @@
 				$("#btnFilter").click(function() {
 					$('#cal').fullCalendar('refetchEvents');
 				});
+
+				var fields_id = []; // Stores id's of the fields
+				getAllFields("{{ csrf_token}}", "{% url 'getAllFields' %}");
+				getFieldsValues();
+
+				// Get All fields to put in the dropdown
+				function getAllFields(token, url) {
+					$.ajax({
+						method : "POST",
+						url : url,
+						async: false,
+						data : {
+							"csrfmiddlewaretoken" : token,
+						},
+						datatype : "json",
+						success : function(data, status, xhr) {
+
+							if (data.success){
+								for(var i = 0; i < data.fields.length; i++){
+									$("#field").append("<option value='" + data.fields[i].id +"'>" + data.fields[i].name + "</option>");
+								}
+							}
+							
+						}
+					});
+				}
+
+				// Get ids of the fields
+				function getFieldsValues(){
+				    $("#field").dropdownchecklist({ 
+				    	maxDropHeight: 60,
+				        forceMultiple: true, 
+				    	onComplete: function(selector) {
+				    		fields_id = [];
+				    		var values	= [];
+	        			  	for( i=0; i < selector.options.length; i++ ) {
+	        			  		//console.log(values[i]);
+	            		    	if (selector.options[i].selected && (selector.options[i].value != "")) {
+	                	          	if ( values[i] == undefined ) {
+	                		          	values[i]= selector.options[i].value;
+	             						fields_id[i] = values[i]; 
+	                		        }
+	            			  	}
+	       			    	}
+	       			    	console.log(fields_id);
+    			  	} });    
+				}
 
 				$('#cal').fullCalendar({
 					eventSources : [{
@@ -105,6 +156,11 @@
 				$("#createTaskModalBody").load("{% url 'templateCreateTaskManager' %}");
 			});
 		</script>
+		<style>
+		#scheduleFilters .ui-dropdownchecklist-item{
+			text-align: left;
+		}
+		</style>
 	</head>
 	<body>
 		<header id="head"></header>
@@ -127,6 +183,9 @@
 						<option value="4">Ongoing</option>
 						<option value="5">Paused</option>
 						<option value="6">Finished</option>
+					</select>
+
+					<select id="field" multiple="multiple" placeholder="Text">     
 					</select>
 
 					<input type="button" value="Search" id="btnFilter" />
