@@ -38,7 +38,7 @@
 				if (i < questions.length) { //showQuestions
 					showQuestion(questions[i]);
 				}else if (i == questions.length){ //get engine hours
-					$("#question").html("{% trans 'Engine hours'%}</br><input type='number' id='engine_hours' required />");
+					$("#question").html("{% trans 'Horas de Motor'%}</br><input type='number' id='engine_hours' required />");
 					$("#checkListBtns").html("<input type='button' class='checkYes' id='saveBtn' value='{% trans 'Save' %}' />");
 					$("#saveBtn").click(function(){
 						
