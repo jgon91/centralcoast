@@ -1,6 +1,6 @@
 branch-defaults:
   staging:
-    environment: heavyconnect-dev
+    environment: heavyconnect-ta
 global:
   application_name: heavyconnect
   default_ec2_keyname: hc-aws-eb
