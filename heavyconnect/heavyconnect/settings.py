@@ -26,7 +26,7 @@ SECRET_KEY = 'dgaaxm0o4)7max48$chs1im)av623&qw^t*e4evk8m*@48al3^'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'reiter-heavyconnect.elasticbeanstalk.com', 'ta-heavyconnect.elasticbeanstalk.com',  'tanda-heavyconnect.elasticbeanstalk.com'']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'reiter-heavyconnect.elasticbeanstalk.com', 'ta-heavyconnect.elasticbeanstalk.com',  'tanda-heavyconnect.elasticbeanstalk.com']
 
 
 # Application definition
