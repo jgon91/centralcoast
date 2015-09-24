@@ -26,14 +26,19 @@ urlpatterns = [
     url(r'^lightTaskFlow/$', main_views.lightTaskFlow, name='lightTaskFlow'),
     url(r'^serverDate/$', main_views.updatedDate, name='updated_date'),
     url(r'^time_keeper/$', main_views.time_keeper, name='time_keeper'),
+    url(r'^time_keeper_records/$', main_views.time_keeper_records, name='time_keeper_records'),
     url(r'^updateStatus/$', main_views.updateStatus, name='updateStatus'),
     url(r'^checklist/$', main_views.checklist, name='checklist'),
+    url(r'^checklistManager/$', main_views.checklistManager, name='checklistManager'),
     url(r'^fleet/$', main_views.fleet, name='fleet'),
+    url(r'^managerFleet/$', main_views.managerFleet, name='managerFleet'),
     url(r'^headerManager/$', main_views.headerManager, name='headerManager'),
     url(r'^pastTasks/$', main_views.pastTasks, name='pastTasks'),
     url(r'^createTask/$', main_views.createTask, name='createTask'),
+    url(r'^createTaskManager/$', main_views.createTaskManager, name='createTaskManager'),
     url(r'^startTask/$', main_views.startTask, name='startTask'),
     url(r'^scanQRCode/$', main_views.scanQRCode, name='scanQRCode'),
+    url(r'^scanQRCodeManager/$', main_views.scanQRCodeManager, name='scanQRCodeManager'),
     url(r'^indexManager/$', main_views.indexManager, name='indexManager'),
     url(r'^equipmentManager/$', main_views.equipmentManager, name='equipmentManager'),
     url(r'^profileManager/$', main_views.profileManager, name='profileManager'),
@@ -61,6 +66,8 @@ urlpatterns = [
     url(r'^equipmentStatus/$', main_views.getEquipmentStatus, name = 'equipmentStatus'),
     url(r'^getAllImplementInfo/$', main_views.getAllImplementInfo, name = 'getAllImplementInfo'),
     url(r'^getAllMachineInfo/$', main_views.getAllMachineInfo, name = 'getAllMachineInfo'),
+    url(r'^getAllEmployees/$', main_views.getAllEmployees, name = 'getAllEmployees'),
+    url(r'^scheduleManager/$', main_views.scheduleManager, name='scheduleManager'),
     url(r'^getEquipmentInfo/$', main_views.getEquipmentInfo, name = 'getEquipmentInfo'),
     url(r'^retrieveScannedMachine/$', main_views.retrieveScannedMachine, name = 'retrieveScannedMachine'),
 	url(r'^getFilteredMachine/$', main_views.getFilteredMachine, name = 'getFilteredMachine'),
@@ -85,6 +92,7 @@ urlpatterns = [
     url(r'^getAllFields/$', main_views.getAllFields, name = 'getAllFields'),
     url(r'^endTask/$', main_views.endTask, name = 'endTask'),
     url(r'^timeKeeperReport/$', main_views.timeKeeperReport, name = 'timeKeeperReport'),
+    url(r'^timeKeeperDailyReport/$', main_views.timeKeeperDailyReport, name = 'timeKeeperDailyReport'),
 	url(r'^getQRCodeStatusForEquipment/$', main_views.getQRCodeStatusForEquipment, name = 'getQRCodeStatusForEquipment'),
     url(r'^getChecklistEquipment/$', main_views.getChecklistEquipment, name = 'equipmentQuestionsChecklist'),
 	url(r'^getFilteredMachineWithGPS/$', main_views.getFilteredMachineWithGPS, name = 'getFilteredMachineWithGPS'),
@@ -95,6 +103,10 @@ urlpatterns = [
 	url(r'^getFieldLocalization/$', main_views.getFieldLocalization, name = 'getFieldLocalization'),
     url(r'^equipmentLastLocalization/$', main_views.equipmentLastLocalization, name = 'equipmentLastLocalization'),
     url(r'^storeChecklistAnswers/$', main_views.storeChecklistAnswers, name = 'storeChecklistAnswers'),
+    url(r'^switchTaskManager/$', main_views.switchTaskManager, name = 'switchTaskManager'),
+    url(r'^templateCreateTaskManager/$', main_views.templateCreateTaskManager, name='templateCreateTaskManager'),
+
+
     ### End ###
 
     ###Insert###

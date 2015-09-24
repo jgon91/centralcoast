@@ -16,7 +16,7 @@
 			var i = 1;
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
-				$("#head").load("{% url 'headerDriver' %}");
+				$("#head").load("{% url 'headerManager' %}");
 					
 				//progress bar events
 				questions = getCheckListQuestions("{{ csrf_token }}", "{% url 'equipmentQuestionsChecklist' %}", qr_code);
@@ -87,11 +87,11 @@
 					<div id="checkListBtns" class="row">
 								
 						<div class="col-xs-6 col-md-6">
-							<input type="button" class="checkYes" value="{% trans 'BUENO'%}" />
+							<input type="button" class="checkYes" value="{% trans 'OK'%}" />
 						</div>
 					
 						<div class="col-xs-6 col-md-6">
-							<input type="button" class="checkNo" value="{% trans 'MALO'%}" />
+							<input type="button" class="checkNo" value="{% trans 'NOT OK'%}" />
 						</div>
 					</div>
 				</div>

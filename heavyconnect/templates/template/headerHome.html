@@ -29,7 +29,7 @@
 			if($("#page").val() == 1)
 				$("a:odd").attr("href", "{% url 'profileManager' %}");
 			else
-				$("a:odd").attr("href", "#");
+				$("a:odd").attr("href", "{% url 'profile' %}");
 		}
 
 		function GetClock(){

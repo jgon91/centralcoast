@@ -18,13 +18,13 @@
 			$("#head").load("{% url 'headerDriver' %}");
 
 			$("#taskFlowSubmit").click(function() {
-			        var taskData = []
+			    var taskData = []
 
-                    $('.form-control').each(function () {
-                        taskData.push($(this).val());
-                    });
+                $('.form-control').each(function () {
+                    taskData.push($(this).val());
+                });
 
-					updateTaskFlow("{{ csrf_token }}", "{% url 'updateLightTaskFlow' %}", JSON.stringify(taskData));
+				updateTaskFlow("{{ csrf_token }}", "{% url 'updateLightTaskFlow' %}", JSON.stringify(taskData));
 			});
 
 			$(".taskHours").each(function () {

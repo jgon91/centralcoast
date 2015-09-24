@@ -2,113 +2,437 @@
 <html lang="en">
 	<head>
 		{% load staticfiles %}
-		<link rel="stylesheet" type="text/css" href="{% static 'css/equipStyle.css' %}">
-		<link rel="stylesheet" type="text/css" href="{% static 'css/styleManager.css' %}">
+		{% load i18n %}
+		<script src="http://maps.google.com/maps/api/js"></script>
 		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
-		<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
 		<script src="{% static 'js/script.js' %}"></script>
 		<script>
+			//MAPS FUNCTION BEGIN
+			var x = document.getElementById("demo");
+			function getLocation() {
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(showPosition, showError);
+				} else {
+					x.innerHTML = "Geolocalization is not supported in this browser.";
+				}
+			}
+
+			function showPosition(position) {
+				var lat = parseFloat(position.latitude.toFixed(6));
+				var lon = parseFloat(position.longitude.toFixed(6));
+				latlon = new google.maps.LatLng(lat, lon);				
+				mapholder = document.getElementById('mapholder')
+
+				var myOptions = {
+					center : latlon,
+					zoom : 14,
+					mapTypeId : google.maps.MapTypeId.ROADMAP,
+					mapTypeControl : false,
+					navigationControlOptions : {
+						style : google.maps.NavigationControlStyle.SMALL
+					}
+				};
+				var iconGood = {
+					url: '{% static "imgSmall/tractorGreen.png" %}', // url
+					scaledSize: new google.maps.Size(30, 30), // scaled size
+					origin: new google.maps.Point(0,0), // origin
+					anchor: new google.maps.Point(0, 0) // anchor
+   			  };
+	   			var iconBroken = {
+					url: '{% static "imgSmall/tractorRed.png" %}', // url
+					scaledSize: new google.maps.Size(30, 30), // scaled size
+					origin: new google.maps.Point(0,0), // origin
+					anchor: new google.maps.Point(0, 0) // anchor
+	   			  };
+	   			 var iconService = {
+					url: '{% static "imgSmall/tractorYellow.png" %}', // url
+					scaledSize: new google.maps.Size(30, 30), // scaled size
+					origin: new google.maps.Point(0, 0), // origin
+					anchor: new google.maps.Point(0, 0) // anchor
+	   			  };
+			  //Marks
+			  var icons = {
+				0: {
+					icon: iconGood
+				},
+				1: {
+					icon: iconService
+				},
+				2: {
+					icon: iconBroken
+				}
+			  };
+
+				var map = new google.maps.Map(document.getElementById("mapholder"), myOptions);
+				
+				var marker = new google.maps.Marker({
+					position : latlon,
+					map : map,
+					icon: icons[position.status-1].icon
+				});
+
+				var infowindow = new google.maps.InfoWindow();
+
+				// google.maps.event.addListener(marker, 'click', (function(marker) {
+			 //        return function() {
+			 //          infowindow.setContent(latlon);
+			 //          infowindow.open(map, marker);
+			 //        }
+			 //      })(marker));
+			}
+			function showError(error) {
+				switch(error.code) {
+				case error.PERMISSION_DENIED:
+					x.innerHTML = "User reject geolocazation service."
+					break;
+				case error.POSITION_UNAVAILABLE:
+					x.innerHTML = "Localization unavailable."
+					break;
+				case error.TIMEOUT:
+					x.innerHTML = "Request time expired."
+					break;
+				case error.UNKNOWN_ERROR:
+					x.innerHTML = "Unknown Error."
+					break;
+				}
+			}
+
+			//MAPS FUNCTION END
+
+			//variables
+			var photo1;
+			var photo2;
+			var photo3;
+			//Events
 			$(document).ready(function() {
+				var item = {};
+				// Stores url's parameters
+
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerManager' %}");
+
 				getLocation();
+				item = getParametersUrl();
+				$("#qr_code").html(item.qr_code);
+				$("#qr_codeM").html(item.qr_code);
+
+				loadEquipmentInfo("{{ csrf_token }}", "{% url 'getEquipmentInfo' %}", item.qr_code);
+				loadEquipmentStatus("{{ csrf_token }}", "{% url 'equipmentStatus' %}", item.qr_code);
+				getLastLocalization("{{ csrf_token }}", "{% url 'equipmentLastLocalization' %}", item.qr_code);
+				//Broken
+
+				$("#btnTractor").click(function() {
+					$('#showImgModal').modal();
+				});
+				$("#btnSpecs").click(function() {
+					$('#showSpecModal').modal();
+				});
+				$("#btnOk").click(function() {						
+						setEquipmentStatus("{{ csrf_token }}", "{% url 'updateEquipmentStatus' %}", item.qr_code, $("#btnGreen").val());
+						changeColorStatus("btnOk", "btnService", "btnBroken");
+						
+				});
+				$("#btnService").click(function() {
+						setEquipmentStatus("{{ csrf_token }}", "{% url 'updateEquipmentStatus' %}", item.qr_code, $("#btnYellow").val());
+						changeColorStatus("btnService", "btnBroken", "btnOk");						
+				});
+				$("#btnBroken").click(function() {
+						setEquipmentStatus("{{ csrf_token }}", "{% url 'updateEquipmentStatus' %}", item.qr_code, $("#btnRed").val());
+						changeColorStatus("btnBroken", "btnOk", "btnService");
+				});
+				$("#notesSubmit").click(function() {
+					updateEquipmentNotes("{{ csrf_token }}", "{% url 'updateEquipmentNotes' %}", item.qr_code, $("#notesEquip").val());
+				});
+
 			});
+			//Functions
+			function loadEquipmentInfo(token, url, id) {
+				$.ajax({
+					method : "POST",
+					url : url,
+					data : {
+						"csrfmiddlewaretoken" : token,
+						"qr_code" : id
+					}, // id could be qrCode or employeeId
+					datatype : "json",
+					success : function(data, status, xhr) {
+						if (data.success) {
+							//first specs
+							$("#nickname").html(data.nickname);
+							$("#asset_number").html(data.asset_number);
+							$("#manufacturer").html(data.manufacturer);
+							$("#model").html(data.model);
+							$("#hours_cost").html(data.hour_cost);
+							$("#hp").html(data.horse_power);
+							$("#notesEquip").html(data.note);
+							//all specs to modal
+							$("#nicknameM").html(data.nickname);
+							$("#asset_numberM").html(data.asset_number);
+							$("#manufacturerM").html(data.manufacturer);
+							$("#modelM").html(data.model);
+							$("#hours_costM").html(data.hour_cost);
+							$("#hpM").html(data.horse_power);
+							$("#statusM").html(data.status);
+							$("#serial_numberM").html(data.serial_number);
+							$("#hitch_szM").html(data.hitch_capacity);
+							$("#hitch_ctM").html(data.hitch_category);
+							$("#drawn_sizeM").html(data.drawbar_category);
+							$("#acquired_dateM").html(data.year_purchased);
+							$("#speedRangeMinM").html(data.speed_range_min);
+							$("#speedRangeMaxM").html(data.speed_range_max);
+							$("#engineHoursM").html(data.engine_hours);
+							$("#baseCostM").html(data.base_cost);
+							$("#mTypeM").html(data.machine_type);
+							$("#frontTiresM").html(data.front_tires);
+							$("#rearTiresM").html(data.rear_tires);
+							$("#steeringM").html(data.steering);
+							$("#operatorM").html(data.operator_station);
+							
+							//images to modal
+							photo1 = data.photo;
+							photo2 = data.photo1;
+							photo3 = data.photo2;
+							$("#btnTractor").attr("src", photo1);
+							$("#img1").attr("src", photo1);
+							$("#img2").attr("src", photo2);
+							$("#img3").attr("src", photo3);
+						} else if(data.code == 1){
+							<!--alert("Equipment not found.");-->
+							window.location.href = "{% url 'scanQRCode'%}";
+						}
+					}
+				});
+			}
+
+			function updateEquipmentNotes(token, url, id, notes) {
+				$.ajax({
+					method : "POST",
+					url : url,
+					data : {
+						"csrfmiddlewaretoken" : token,
+						"qr_code" : id,
+						"notes" : notes
+					},
+					datatype : "json",
+					success : function(data, status, xhr) {
+					}
+
+				});
+			}
+
+			function loadEquipmentStatus(token, url, id) {
+				$.ajax({
+					method : "POST",
+					url : url,
+					data : {
+						"csrfmiddlewaretoken" : token,
+						"qr_code" : id						
+					}, // id could be qrCode or employeeId
+					datatype : "json",
+					success : function(data, status, xhr) {
+						if (data.success) {
+							if (data["status"] == 1) {// status Ok
+								changeColorStatus("btnOk", "btnService", "btnBroken");
+							} else if (data["status"] == 2) {// Status Attention
+								changeColorStatus("btnService", "btnOk", "btnBroken");
+							} else {// status Broken
+								changeColorStatus("btnBroken", "btnService", "btnOk");
+							}
+						}
+					}
+				});
+			}
+
+			function getLastLocalization(token, url, id) {
+				$.ajax({
+					method : "POST",
+					url : url,
+					data : {
+						"csrfmiddlewaretoken" : token,
+						"qr_code" : id						
+					}, // id could be qrCode 
+					datatype : "json",
+					success : function(data, status, xhr) {
+						//console.log("Status: " + data.status + " Latitude: " + data.latitude + " Longitude: " + data.longitude);
+						showPosition(data);
+
+					}
+				});
+			}
+
+			function setEquipmentStatus(token, url, id, status) {
+				$.ajax({
+					method : "POST",
+					url : url,
+					data : {
+						"csrfmiddlewaretoken" : token,
+						"qr_code" : id,
+						"status" : status
+					}, // id could be qrCode 
+					datatype : "json",
+					success : function(data, status, xhr) {
+						//alert("Status has been update")
+					}
+
+				});				
+			}
+
+			function changeColorStatus(btn1, btn2, btn3) {
+
+				if (btn1 == "btnOk") {
+					$("#" + btn1).css('background', 'url("{% static 'imgSmall/buttons/ok.png' %}") no-repeat top left');
+					$("#" + btn1).css('background-size', '100% 100%');
+				}
+				else if (btn1 == "btnService") {
+					$("#" + btn1).css('background', 'url("{% static 'imgSmall/buttons/service.png' %}") no-repeat top left');
+					$("#" + btn1).css('background-size', '100% 100%');
+				}else if (btn1 == "btnBroken") {
+					$("#" + btn1).css('background', 'url("{% static 'imgSmall/buttons/broken.png' %}") no-repeat top left');
+					$("#" + btn1).css('background-size', '100% 100%');
+				}
+
+				$("#" + btn2).css('background', 'url("{% static 'imgSmall/buttons/startShiftHover.png' %}") no-repeat top left');
+				$("#" + btn3).css('background', 'url("{% static 'imgSmall/buttons/startShiftHover.png' %}") no-repeat top left');
+				
+			}
 		</script>
 	</head>
 	<body>
 		<header id="head"></header>
 		<div id="wrapper">
-			<div id="content">
-				<div id="namePage" style="opacity: 0.5">
-					QR CODE
-				</div>
-				<div id="namePage">
-					PROFILES
-				</div>
-				<div id="equipmentContent">
-					<div id="images">
-						<img src="{% static 'img/tractor-1.jpg' %}" class="imgs"/>
-						<img src="{% static 'img/tractor-2.jpg' %}" class="imgs"/>
-						<img src="{% static 'img/tractor-3.jpg' %}" class="imgs"/>
+			<div id="content" class="divEquip">
+				{% trans 'TRACTOR' %}: <span id="nickname"></span>
+				<div class="row rowUpEquip">
+					<div id="colBtnsEquip">
+						{% trans 'Status' %}:
+						<a href="#">
+						<input type="button" id="btnOk" id="btn3nStatus1" class="btnStatusEquip" value="{% trans 'OK - Ready to work' %}"/>
+						<input type="hidden" id="btnGreen" value="1"/>
+						</a>
+						<a href="#">
+						<input type="button" id="btnService" class="btnStatusEquip" value="{% trans 'SERVICE Needed' %}"/>
+						<input type="hidden" id="btnYellow" value="2"/>
+						</a>
+						<a href="#">
+						<input type="button" id="btnBroken" class="btnStatusEquip" value="{% trans 'BROKEN! Do not use' %}"/>
+						<input type="hidden" id="btnRed" value="3"/>
+						</a>
 					</div>
-					<div class="row rowEquip">
-						<div class="col-xs-3 col-md-3" id="boxBut">
-							<div>
-								<a href="#" style="text-decoration: none;">
-								<input type="button" id="btnUpdateProfile" value="Update Profile"/>
-								</a>
-							</div>
-							<div>
-								<a href="#" style="text-decoration: none;">
-								<input type="button" id="btnHistory" value="History"/>
-								</a>
-							</div>
-							<div>
-								<a href="#" style="text-decoration: none;">
-								<input type="button" id="btnCosts" value="Costs">
-								</a>
-							</div>
-							<div>
-								<a href="#" style="text-decoration: none;">
-								<input type="button" id="btnService" value="Service">
-								</a>
-							</div>
-						</div>
-						<div class="col-xs-2 col-md-2" id="boxUpInfo">
-							<div style="padding-top: 5px;">
-								<strong>Implement:</strong>
-								</br>20' disk
-							</div>
-							<div style="padding-top: 10px;">
-								<strong>Operator:</strong>
-								</br>Leonel Junior
-							</div>
-							<div style="padding-top: 10px;">
-								<strong>Task:</strong>
-								</br>Disking
-							</div>
-						</div>
-						<div class="col-xs-3 col-md-3 equipInfo">
-							QR Sticker: 00123
-							</br>Reiter Asset: RAC4556
-							</br>Manufacturer: John Deere
-							</br>Model: 9460RT
-							</br>SN: 1RW9460RTDAC900011
-							</br>Hours: 2.017
-						</div>
-						<div class="col-xs-3 col-md-3 equipInfo">
-							Horse Power: 460
-							</br>Lift Capacity: 15.300 Ibs
-							</br>Hitch Size: 4N/3
-							</br>Drawbar Size: CAT 4
-							</br>Date Acquired: 07/01/2007
-							</br>Service Provider: RD0 Equip.
-						</div>
+					<div id="colNoteEquip">
+						{% trans 'Notes' %}:
+						<br>
+						<textarea rows="2" cols="2" id="notesEquip"></textarea>
+
 					</div>
-					<div class="divDown">
-						<div class="col-xs-3 col-md-3 colLeft">
-							STATUS:
-							<div id="btnStatus1" class="pStatus">
-								OK! Ready to work
-							</div>
-							<div id="btnStatus2" class="pStatus">
-								SERVICE Needed
-							</div>
-							<div id="btnStatus3" class="pStatus">
-								BROKEN! Do not use
-							</div>
-						</div>
-						<div class="col-xs-3 col-md-3 colLeft">
-							NOTES:</br>
-							<textarea rows="6" cols="20" form="notesSubmit" id="notes"></textarea>
-						</div>
-						<div class="col-xs-6 col-md-6" style="padding: 0px;">
-							<div class="map" id="mapholder"></div>
-						</div>
+					<div id="colSpecEquip">
+						{% trans 'QR Sticker' %}: <span id="qr_code"></span>
+						<br>
+						{% trans 'Asset' %}: <span id="asset_number"></span>
+						<br>
+						{% trans 'Manufacturer' %}: <span id="manufacturer"></span>
+						<br>
+						{% trans 'Model' %}: <span id="model"></span>
+						<br>
+						{% trans 'Hours' %}: <span id="engineHoursM"></span>
+						<br>
+						{% trans 'Horse Power' %}: <span id="hp"></span>
+					</div>
+				</div>
+				<div class="row rowDownEquip">
+					<div class="col-xs-6 col-md-6" id="colMapHolder">
+						<!--<div class="map" id="mapholder"></div>-->
+					</div>
+					<div class="col-xs-2 col-md-2" id="colSpecImg1">
+						<a href="#">
+							<input type="button" id="btnSpecs" value="{% trans 'SPEC' %}"/>
+						</a>
+					</div>
+					<div class="col-xs-2 col-md-2" id="colSpecImg2">
+						<a href="#">
+							<a href="#"> <img src="" id="btnTractor"/> </a>
+						</a>
+					</div>
+					<div class="col-xs-2 col-md-2" id="colSpecImg3">
+						<a href="#">
+  							<input type="button" class="btnSubmitNotes" value="UPDATE" id="notesSubmit">
+						</a>
 					</div>
 				</div>
 			</div>
 			<div id="clearBoth"></div>
+			<!-- MODAL OF EQUIPMENT - ESPECIOFICATIONS -->
+			<div class="modal fade" id="showSpecModal" role="dialog">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content modalEquip">
+						<div class="modal-body" id="modalEquipSpecs">
+						<button type="button" class="closeEquip" data-dismiss="modal">
+						</button>
+							{% trans 'TRACTOR' %}: <span id="nicknameM" class="specModalEquip"></span><br>
+							{% trans 'QR Sticker' %}: <span id="qr_codeM" class="specModalEquip"></span><br>
+							{% trans 'Asset' %}: <span id="asset_numberM" class="specModalEquip"></span><br>
+							{% trans 'Manufacturer' %}: <span id="manufacturerM" class="specModalEquip"></span><br>
+							{% trans 'Model' %}: <span id="modelM" class="specModalEquip"></span><br>
+							{% trans 'Serial Number' %}: <span id="serial_numberM" class="specModalEquip"></span><br>
+							{% trans 'Hours' %}: <span id="hours_costM" class="specModalEquip"></span><br>
+							{% trans 'Horse Power' %}: <span id="hpM" class="specModalEquip"></span><br>
+							{% trans 'Status' %}: <span id="statusM" class="specModalEquip"></span><br>
+							{% trans 'Hitch Capacity' %}: <span id="hitch_szM" class="specModalEquip"></span><br>
+							{% trans 'Hitch Category' %}: <span id="hitch_ctM" class="specModalEquip"></span><br>
+							{% trans 'Drawn Category' %}: <span id="drawn_sizeM" class="specModalEquip"></span><br>
+							{% trans 'Acquired' %}: <span id="acquired_dateM" class="specModalEquip"></span><br>
+							{% trans 'Speed Range Min' %}: <span id="speedRangeMinM" class="specModalEquip"></span><br>
+							{% trans 'Speed Range Max' %}: <span id="speedRangeMaxM" class="specModalEquip"></span><br>
+							{% trans 'Engine Hours' %}: <span id="engineHoursM" class="specModalEquip"></span><br>
+							{% trans 'Base Cost' %}: <span id="baseCostM" class="specModalEquip"></span><br>
+							{% trans 'Machine Type' %}: <span id="mTypeM" class="specModalEquip"></span><br>
+							{% trans 'Front Tires' %}: <span id="frontTiresM" class="specModalEquip"></span><br>
+							{% trans 'Rear Tires' %}: <span id="rearTiresM" class="specModalEquip"></span><br>
+							{% trans 'Steering' %}: <span id="steeringM" class="specModalEquip"></span><br>
+							{% trans 'Operation Station' %}: <span id="operatorM" class="specModalEquip"></span><br>
+						<div class="both"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- MODAL OF EQUIPMENT - PHOTOS -->
+			<div class="modal fade" id="showImgModal" role="dialog">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content modalEquip">
+						<div class="modal-body" id="slideModalEquip">
+							<div class="modal-header" style="border-bottom: none; margin-bottom: 10px;  padding-right: 10px; padding-top: 5px; padding-bottom: 15px;">
+        						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      						</div>
+							<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
+
+								<!-- Indicators -->
+								<ol class="carousel-indicators">
+									<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+									<li data-target="#myCarousel" data-slide-to="1"></li>
+									<li data-target="#myCarousel" data-slide-to="2"></li>
+								</ol>
+								<div class="carousel-inner" role="listbox">
+									<div class="item active">
+										<img src="" id="img1" alt="img1" class="imgsEquip"/>
+									</div>
+
+									<div class="item">
+										<img src="" id="img2" alt="img2" class="imgsEquip"/>
+									</div>
+
+									<div class="item">
+										<img src="" id="img3" alt="img3" class="imgsEquip"/>
+									</div>
+								</div>
+								<a class="left carousel-control controlModalEquip" href="#myCarousel" role="button" data-slide="prev"> <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> <span class="sr-only">{% trans 'Previous' %}</span> </a>
+								<a class="right carousel-control controlModalEquip" href="#myCarousel" role="button" data-slide="next"> <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> <span class="sr-only">{% trans 'Next' %}</span> </a>
+							</div>
+						</div>
+						<div class="both"></div>
+					</div>
+				</div>
+			</div>
 		</div>
 		<footer id="foot"></footer>
 	</body>

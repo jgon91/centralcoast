@@ -14,36 +14,29 @@
 		<header id="headHome"></header>
 		<div class="row" id="driverMenu">
 			<div class="btnHomeDriver">
-				<a href="{% url 'scanQRCode'%}?url={% url 'equipment' %}">
-				<input type="button" class="btnMain" value="EQUIPMENT" id="btnEquipment" />
-				<br>
-				<br>
-				</a>
-			</div>
-			<!--<div class="btnHomeDriver">-->
-				<!--<a href="{% url 'indexManager'%}">-->
-				<!--<input type="button" class="btnMain" id="btnTaskflow" />-->
-				<!--<br>-->
-				<!--<br>-->
-				<!--</a>-->
-			<!--</div>-->
-			<!--<div class="btnHomeDriver">-->
-				<!--<a href="{% url 'indexManager'%}">-->
-				<!--<input type="button" class="btnMain" id="btnScheduler" />-->
-				<!--<br>-->
-				<!--<br>-->
-				<!--</a>-->
-			<!--</div>-->
-			<div class="btnHomeDriver">
-				<a href="{% url 'indexManager'%}">
+				<a href="{% url 'time_keeper_records'%}">
 				<input type="button" class="btnMain" value="TIMEKEEPER" id="btnTimerkeeper" />
-				<br>
-				<br>
 				</a>
 			</div>
 			<div class="btnHomeDriver">
-				<a href="{% url 'scanQRCode' %}?url={% url 'checklist' %}">
+				<a href="{% url 'scanQRCodeManager' %}?url={% url 'checklistManager' %}">
 				<input type="button" class="btnMain" value="CHECKLIST" id="btnChecklist" />
+				</a>
+			</div>
+			<div class="btnHomeDriver">
+				<a href="{% url 'createTaskManager'%}">
+				<input type="button" class="btnMain" value="TASKFLOW" id="btnTaskflow" />
+				</a>
+			</div>
+			<div class="btnHomeDriver">
+				<a href="{% url 'scheduleManager'%}">
+				<input type="button" class="btnMain" value="SCHEDULER" id="btnScheduler" />
+				</a>
+			</div>
+			<div class="btnHomeDriver">
+				<a href="{% url 'scanQRCodeManager'%}?url={% url 'equipmentManager' %}">
+				<!--<a href="{% url 'equipmentManager'%}">-->
+				<input type="button" class="btnMain" value="EQUIPMENT" id="btnEquipment" />
 				</a>
 			</div>
 		</div>

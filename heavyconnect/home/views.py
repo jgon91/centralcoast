@@ -450,6 +450,7 @@ def getDriverInformation(request):
 			try:
 				# Attention: This function is using the USER.ID instead of the Employee.ID
 				employee =  Employee.objects.get(user_id = request.user.id)
+				result['user_id'] = employee.id
 				result['first_name'] = employee.user.first_name
 				result['last_name'] = employee.user.last_name
 				result['company_id'] = employee.company_id
@@ -690,6 +691,36 @@ def getEquipmentInfo(request):
 	 	result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+
+@login_required
+def getAllEmployees(request):
+	each_result = {}
+	result = {'success' : False}
+	if request.method == 'POST':
+		if request.is_ajax():
+			try:
+				all_employee = Employee.objects.all()
+				employees = []
+				for each in all_employee:
+					each_result['first_name'] = each.user.first_name
+					each_result['last_name'] = each.user.last_name
+					each_result['user_id'] = each.user.id
+					employees.append(each_result)
+					each_result = {}
+				result['success'] = True
+				result['employees'] = employees
+				print employees
+			except DoesNotExist: #There is no employee registered
+				result['code'] = 1
+				return HttpResponse(json.dumps(result), content_type='application/json')
+		else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	 		return HttpResponse(json.dumps(result), content_type='application/json')
+	else:
+		result['code'] = 3  #Request was not POST
+		return HttpResponse(json.dumps(result), content_type='application/json')
+
+	return HttpResponse(json.dumps(result), content_type='application/json')
 
 
 # Driver 6.3.1.3
@@ -1923,6 +1954,47 @@ def timeKeeperReportAux(attendance, finished):
 		result += u'\t\tEnded shift: Ongoing or Not provided\n'
 	return result
 
+def timeKeeperDailyReport(request):
+	# result = []
+	# result.append({'success' : False})
+	result = {'success' : False}
+
+	each_result = {}
+	all_attendances = []
+
+	if request.method == 'POST':
+		if request.is_ajax():
+
+			#Creating the data range to filter the attendaces
+			now = datetime.datetime.now()
+			start_date = datetime.datetime.combine(now, datetime.time.min)
+
+			attendances = EmployeeAttendance.objects.filter(date__range = (start_date, now))
+			# result[0] = True
+			# result.append({'count' : str(attendances.count())})
+			# result.append({'start_time' : start_date.strftime("%m/%d/%Y %I:%M %p")})
+			# result.append({'end_time' : now.strftime("%m/%d/%Y %I:%M %p")})
+			result['success'] = True
+
+			for attendance in attendances.values():
+				each_result['attendance'] = attendance
+				breaks = Break.objects.filter(attendance = attendance['id']).order_by('start')
+				total_breaks = []
+				for each_break in breaks:
+					total_breaks.append(each_break)
+				each_result['breaks'] = total_breaks
+				all_attendances.append(each_result)
+				each_result = {}
+			print all_attendances[0]
+			# result['all_attendances'] = str(all_attendances.count())
+			# result.append({'all_attendances' : all_attendances.count()})
+		else:
+			result['code'] = 2 #Use ajax to perform requests
+	else:
+		result['code'] = 3 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
 #This function generates a report for the timekeeper for the current day
 #This function will also generate the body of the e-mail
 def timeKeeperReport(request):
@@ -2062,6 +2134,11 @@ def headerHome(request):
     return render(request, 'template/headerHome.html')
 
 @login_required
+def templateCreateTaskManager(request):
+    return render(request, 'manager/templateCreateTaskManager.html')
+
+
+@login_required
 def footer(request):
 	return render(request, 'template/footer.html')
 
@@ -2078,12 +2155,21 @@ def time_keeper(request):
 	return render(request, 'driver/timeKeeper.html')
 
 @login_required
+def time_keeper_records(request):
+	return render(request, 'manager/timeKeeper.html')
+
+@login_required
 def equipment(request):
     return render(request, 'driver/equipment.html')
 
 @login_required
 def schedule(request):
     return render(request, 'driver/schedule.html')
+
+@login_required
+def scheduleManager(request):
+    return render(request, 'manager/scheduleManager.html')
+
 
 @login_required
 def updateStatus(request):
@@ -2094,12 +2180,21 @@ def checklist(request):
     return render(request, 'driver/checklist.html')
 
 @login_required
+def checklistManager(request):
+    return render(request, 'manager/checklist.html')
+
+
+@login_required
 def headerManager(request):
     return render(request, 'template/headerManager.html')
 
 @login_required
 def createTask(request):
     return render(request, 'driver/createTask.html')
+
+@login_required
+def createTaskManager(request):
+    return render(request, 'manager/createTaskManager.html')
 
 @login_required
 def pastTasks(request):
@@ -2114,12 +2209,21 @@ def scanQRCode(request):
     return render(request, 'driver/scanQRCode.html')
 
 @login_required
+def scanQRCodeManager(request):
+    return render(request, 'manager/scanQRCode.html')
+
+@login_required
 def indexManager(request):
     return render(request, 'manager/home.html')
 
 @login_required
 def fleet(request):
-    return render(request, 'manager/fleet.html')
+    return render(request, 'driver/fleet.html')
+
+@login_required
+def managerFleet(request):
+    return render(request, 'manager/managerFleet.html')
+
 
 @login_required
 def equipmentManager(request):
@@ -2136,6 +2240,154 @@ def profileManager(request):
 @login_required
 def geofence(request):
 	return render(request, 'geoFence.html')
+
+
+def getEmployeeScheduleManager(request):
+	result = []
+	color = ['#F7F003','#05C60E', '#FF0000', '#B3D1FF','#FF6600', '#A2A9AF']
+	if request.method == 'GET':
+		if request.is_ajax():
+			print "It is here 3"
+			aux = request.GET['start'] #get the date in the POST request
+			aux2 = request.GET['end']
+			date_start = datetime.datetime.strptime(aux, '%Y-%m-%d')
+			date_end = datetime.datetime.strptime(aux2, '%Y-%m-%d') + datetime.timedelta(days = 1)
+			date_end = datetime.datetime.combine(date_end, datetime.time.max)
+			emplo = Employee.objects.filter(manager__user_id = request.user.id)
+			for item in emplo: #this for will get all the employees received
+				emploTask = EmployeeTask.objects.filter(employee__user__id = item.user.id, task__date_assigned__range = (date_start, date_end))
+				for taskEmplo in emploTask: #it will take care of every task in that time
+					if taskEmplo.task.status != 6:
+						aux = {}
+						auxHour = int(taskEmplo.task.hours_prediction)
+						auxMin = float(taskEmplo.task.hours_prediction - auxHour) * 60
+						data_prediction = taskEmplo.task.date_assigned + datetime.timedelta(hours = auxHour, minutes = auxMin)
+						equipment = getTaskImplementMachine(taskEmplo.task.id, taskEmplo.id)
+						aux['employee'] = taskEmplo.employee.user.first_name + " " + taskEmplo.employee.user.last_name
+						aux['title'] = aux['employee']
+						aux['start'] = str(taskEmplo.task.date_assigned)
+						aux['end'] = str(data_prediction)
+						aux['task_id'] = taskEmplo.task.id
+						aux['status'] = taskEmplo.task.status
+						aux['description'] = taskEmplo.task.description
+						aux['field'] = taskEmplo.task.field.name
+						aux['category'] =  taskEmplo.task.category.description
+						aux['color'] = color[taskEmplo.task.status - 1]
+						if len(equipment['implement']) > 0:
+							aux['machine'] = equipment['machine']
+							aux['implement'] = equipment['implement']
+						else:
+							aux['machine'] = []
+							aux['implement'] = []
+						result.append(aux)
+
+		else:
+	 		result.append({'code' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'code' : 3}) #Request was not GET
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+### Function to retrieve tasks by field ###
+def getFieldTasksManager(request):
+	result = []
+	if request.method == 'GET':
+		if request.is_ajax():
+			color = 0
+			control = {} #this dicionary will keep all fields and it colors
+			taskStatus = 0;
+			aux = request.GET['start'] #get the date in the POST request
+			aux2 = request.GET['end']
+			date_start = datetime.datetime.strptime(aux, '%Y-%m-%d')
+			date_end = datetime.datetime.strptime(aux2, '%Y-%m-%d') + datetime.timedelta(days = 1)
+			date_end = datetime.datetime.combine(date_end, datetime.time.max)
+			condition = int(request.GET['condition'])
+			emplo = Employee.objects.filter(manager__user_id = request.user.id)
+			if(condition == 0): #It depends on the filter
+				for item in emplo:
+					emploTask = EmployeeTask.objects.filter(employee__user__id = item.user.id, task__date_assigned__range = (date_start, date_end))
+					for taskEmplo in emploTask:
+						if taskEmplo.task.status != 6:
+							aux = {}
+							auxHour = int(taskEmplo.task.hours_prediction)
+							auxMin = float(taskEmplo.task.hours_prediction - auxHour) * 60
+							data_prediction = taskEmplo.task.date_assigned + datetime.timedelta(hours = auxHour, minutes = auxMin)
+							equipment = getTaskImplementMachine(taskEmplo.task.id, taskEmplo.id)
+							aux['employee'] = taskEmplo.employee.user.first_name + " " + taskEmplo.employee.user.last_name
+							aux['title'] = aux['employee']
+							aux['start'] = str(taskEmplo.task.date_assigned)
+							aux['end'] = str(data_prediction)
+							aux['task_id'] = taskEmplo.task.id
+							aux['status'] = taskEmplo.task.status
+							aux['description'] = taskEmplo.task.description
+							aux['field'] = taskEmplo.task.field.name
+							aux['category'] =  taskEmplo.task.category.description
+							if not taskEmplo.task.field.name in control:
+								control[taskEmplo.task.field.name] = color
+								color += 1
+							aux['color'] = getColor(control[taskEmplo.task.field.name])
+							if len(equipment['implement']) > 0:
+								aux['machine'] = equipment['machine']
+								aux['implement'] = equipment['implement']
+							else:
+								aux['machine'] = []
+								aux['implement'] = []
+							result.append(aux)
+			else:
+				for item in emplo:
+					emploTask = EmployeeTask.objects.filter(employee__user__id = item.user.id, task__date_assigned__range = (date_start, date_end))
+					for taskEmplo in emploTask:
+						if taskEmplo.task.status == condition:
+							aux = {}
+							auxHour = int(taskEmplo.task.hours_prediction)
+							auxMin = float(taskEmplo.task.hours_prediction - auxHour) * 60
+							data_prediction = taskEmplo.task.date_assigned + datetime.timedelta(hours = auxHour, minutes = auxMin)
+							equipment = getTaskImplementMachine(taskEmplo.task.id, taskEmplo.id)
+							aux['employee'] = taskEmplo.employee.user.first_name + " " + taskEmplo.employee.user.last_name
+							aux['title'] = aux['employee']
+							aux['start'] = str(taskEmplo.task.date_assigned)
+							aux['end'] = str(data_prediction)
+							aux['task_id'] = taskEmplo.task.id
+							aux['status'] = taskEmplo.task.status
+							aux['description'] = taskEmplo.task.description
+							aux['field'] = taskEmplo.task.field.name
+							aux['category'] =  taskEmplo.task.category.description
+							if not taskEmplo.task.field.name in control:
+								control[taskEmplo.task.field.name] = color
+								color += 1
+							aux['color'] = getColor(control[taskEmplo.task.field.name])
+							if len(equipment['implement']) > 0:
+								aux['machine'] = equipment['machine']
+								aux['implement'] = equipment['implement']
+							else:
+								aux['machine'] = []
+								aux['implement'] = []
+							result.append(aux)
+		else:
+	 		result.append({'code' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'code' : 3}) #Request was not GET
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+### end ###
+
+def getColor(number):
+	colors = ['#85ACFF',  '#7AEFBD', '#F2F472', '#FF0000', '#8AF45C', '#7AD9EF', '#FA5AEF', '#F9B76B', '#FF7979', '#B93CF4', '#9370DB', '#FF1493', '#8B0000', '#00CED1',
+	 '#8B0000', '#FF8C00', '#00FA9A', '#F0E68C', '#DAA520', '#808080', '#8A2BE2', '#191970', '#FF69B4', '#40E0D0', '#B22222', '#00FF7F', '#B8860B', '#000080', '#4B0082', '#C71585',
+	  '#48D1CC', '#A52A2A', '#90EE90', '#8B4513', '#9400D3', '#0000CD', '#F08080', '#20B2AA', '#FA8072', '#8FBC8F', '#A0522D', '#4169E1', '#800080', '#008B8B', '#E9967A', '#006400', '#CD853F',
+	   '#228B22', '#00FF00', '#8B008B', '#1E90FF', '#F08080', '#87CEFA', '#DC143C', '#4682B4', '#FF6347', '#556B2F', '#F4A460' ]
+
+	value = number % 58
+
+	return colors[value]
+
+
+
+functions = {1 :  getEmployeeScheduleManager,2 : getFieldTasksManager}
+### This function will choose which function to call
+def switchTaskManager(request):
+	search = int(request.GET['search'])
+	return functions[search](request)
 
 def retrieveScannedEmployee(request):
 	result = {'success' : False}
