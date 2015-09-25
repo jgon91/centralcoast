@@ -1977,8 +1977,84 @@ def getFieldTasksManager(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 ### end ###
 
-funtions = {1 :  getEmployeeScheduleManager,2 : getFieldTasksManager}
-### This function will choose which function to call
+
+def getFieldTaskNameManager(request):
+	result = []
+	if request.method == 'GET':
+		if request.is_ajax():
+			flag = 0
+			color = 0
+			control = {} #this dicionary will keep all fields and it colors
+			taskStatus = 0;
+			fields = request.GET.getlist('fields')
+			aux = request.GET['start'] #get the date in the POST request
+			aux1 = request.GET['end']	
+			date_start = datetime.datetime.strptime(aux, '%Y-%m-%d')
+			date_end = datetime.datetime.strptime(aux1, '%Y-%m-%d') + datetime.timedelta(days = 1)
+			date_end = datetime.datetime.combine(date_end, datetime.time.max)
+			condition = int(request.GET['condition'])
+			tasks = EmployeeTask.objects.filter(task__field__id__in = fields, task__date_assigned__range = (aux, aux1))
+			for item1 in tasks:
+				if(condition == 0): #It depends on the filter
+					aux = {}
+					auxHour = int(item1.task.hours_prediction)
+					auxMin = float(item1.task.hours_prediction - auxHour) * 60
+					data_prediction = item1.task.date_assigned + datetime.timedelta(hours = auxHour, minutes = auxMin)
+					equipment = getTaskImplementMachine(item1.task.id, item1.id)
+					aux['Employee'] = item1.employee.user.first_name + " " + item1.employee.user.last_name
+					aux['field'] = str(item1.task.field.name)
+					aux['category'] =  item1.task.category.description
+					aux['start'] = str(item1.task.date_assigned)
+					aux['description'] = item1.task.description
+					aux['task_id'] = item1.task.id
+					aux['status'] = item1.task.status
+					aux['end'] = str(data_prediction)
+					if not item1.task.field.name in control:
+						control[item1.task.field.name] = color
+						color += 1
+					aux['color'] = getColor(control[item1.task.field.name])
+					if len(equipment['implement']) > 0:
+						aux['machine'] = equipment['machine']
+						aux['implement'] = equipment['implement']
+					else:
+						aux['machine'] = []
+						aux['implement'] = []
+					result.append(aux)
+				else:
+					if item1.task.status == condition:
+						aux = {}
+						auxHour = int(item1.task.hours_prediction)
+						auxMin = float(item1.task.hours_prediction - auxHour) * 60
+						data_prediction = item1.task.date_assigned + datetime.timedelta(hours = auxHour, minutes = auxMin)
+						equipment = getTaskImplementMachine(item1.task.id, item1.id)
+						aux['employee'] = item1.employee.user.first_name + " " + item1.employee.user.last_name
+						aux['title'] = aux['employee']
+						aux['start'] = str(item1.task.date_assigned)
+						aux['end'] = str(data_prediction)
+						aux['task_id'] = item1.task.id
+						aux['status'] = item1.task.status
+						aux['description'] = item1.task.description
+						aux['field'] = item1.task.field.name
+						aux['category'] =  item1.task.category.description
+						if not item1.task.field.name in control:
+							control[item1.task.field.name] = color
+							color += 1
+						aux['color'] = getColor(control[item1.task.field.name])
+						if len(equipment['implement']) > 0:
+							aux['machine'] = equipment['machine']
+							aux['implement'] = equipment['implement']
+						else:
+							aux['machine'] = []
+							aux['implement'] = []
+						result.append(aux)
+		else:
+			result.append({'code' : 2}) #Use ajax to perform requests
+	else:
+		result.append({'code' : 3}) #Request was not GET
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+funtions = {1 :  getEmployeeScheduleManager,2 : getFieldTasksManager, 3 : getFieldTaskNameManager}
+	### This function will choose which function to call
 def switchTaskManager(request):
 	print "It is here  " + request.GET['search'] + request.GET['condition']
 	search = int(request.GET['search'])
