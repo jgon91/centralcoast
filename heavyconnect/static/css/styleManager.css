@@ -505,14 +505,13 @@ input[type="button"] {
 	margin: auto;
 	margin-top: 10px;
 	margin-bottom: 10px;
-	border: 1px solid #CCC;
-	box-shadow: 2px 2px 8px 0px gray;
-	border-radius: 10px;
-	background: #EEE;
+	border: 1px solid #E7E7E7;
+	box-shadow: 1px 1px 5px 0px gray;
+	border-radius: 5px;
+	background: #F5F5F5;
 	color: black;
 }
 #formPage {
-	/*color: #1F3801;*/
 	font-size: 25px;
 	font-weight: 700;
 	text-align: left;
@@ -525,9 +524,9 @@ input[type="button"] {
 	width: 400px;
 	height: 35px;
 	font-size: 20px;
-	border-radius: 5px;
+	border-radius: 3px;
 	border: none;
-	box-shadow: 1px 1px 5px 0px black;
+	box-shadow: 1px 1px 5px 0px gray;
 	margin-bottom: 5px;
 	padding: 3px;
 }
@@ -535,9 +534,9 @@ input[type="button"] {
 	width: 400px;
 	height: 35px;
 	font-size: 20px;
-	border-radius: 5px;
+	border-radius: 3px;
 	border: none;
-	box-shadow: 1px 1px 5px 0px black;
+	box-shadow: 1px 1px 5px 0px gray;
 	margin-bottom: 5px;
 	padding: 3px;
 }
@@ -564,8 +563,9 @@ input[type="button"] {
 	color: white;
 	font-size: 30px !important;
 	font-weight: 700;
+	margin-left: 100px;
 	margin-top: 10px !important;
-	margin-left: 47px;
+	width: 49.1% !important;
 }
 
 #deleteForm {
@@ -580,7 +580,7 @@ input[type="button"] {
 	font-size: 30px !important;
 	font-weight: 700;
 	margin-top: 10px !important;
-	margin-left: 47px;
+	width: 49.1% !important;
 }
 /*** Form Page End ***/
 
@@ -629,15 +629,52 @@ input[type="button"] {
 
 /*** Scheduler page Begin ***/
 
-#scheduleFilters{
-	padding: 5px;
+#scheduleFilters {
+	padding: 0px;
 	margin: auto;
-	margin-bottom: 10px;
+	margin-bottom: 20px;
 	text-align: center;
-	border: #DDD solid 1px;
-	width: 80%;
+	width: 30%;
+	float: right;
 }
-
+#scheduleFilters select {
+	width: 138px;
+	height: 25px;
+	margin-bottom: 5px;
+	border-radius: 2px;
+	background: #F5F5F5;
+}
+#scheduleFilters .ui-dropdownchecklist-selector {
+	height: 25px !important;
+	margin-bottom: 2px;
+	border-radius: 2px;
+	background: #F5F5F5;
+}
+#scheduleFilters .ui-dropdownchecklist-item {
+	text-align: left;
+	background: #F5F5F5;
+	
+}
+#scheduleFilters input {
+	border-radius: 5px;
+	border: 1px solid #E7E7E7;
+	padding: 5px;
+	box-sizing: border-box;
+	white-space: nowrap;
+	cursor: pointer;
+	background: #F5F5F5;
+	float: right;
+	margin-right: 15px;
+	margin-top: 7px;
+	width: 90px;
+	height: 40px;
+	font-size: 18px;
+}
+#scheduleFilters input:hover {
+	background: #DDD;
+	border: 1px solid #E7E7E7;
+	box-shadow: inset 0px 0px 2px 0px gray;
+}
 .fc-button {
 	width: 60px;
 	height: 10px;
@@ -659,7 +696,18 @@ input[type="button"] {
 .fc-event .fc-bg {
 	border: solid black 2px;
 }
-
+.fc-center {
+	margin-top: 7px;
+}
+.fc-left {
+	float: right !important;
+}
+.fc-right {
+	float: left !important;
+	margin-left: 15px;
+	margin-top: 7px;
+	width: 30%;
+}
 
 
 /*** Modal Scheduler Begin ***/

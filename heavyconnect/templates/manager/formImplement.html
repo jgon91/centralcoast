@@ -19,6 +19,7 @@
    				$("#deleteForm").hide();
 				if(parameter['implement_id'] != null){
 					$("#deleteForm").show();
+					$("#saveForm").css("margin-left", "0px");
 				}
 				
 				$("#deleteForm").click( function (){
@@ -60,8 +61,8 @@
 				{% csrf_token %}
 				{{ form.as_p }}
 				
-				<input type="submit" id="saveForm" value="{% trans 'SAVE' %}"/>
 				<input type="submit" id="deleteForm" value="{% trans 'DELETE' %}"/>
+				<input type="submit" id="saveForm" value="{% trans 'SAVE' %}"/>
 			</form>
 		</div>
 		<footer id="foot"></footer>

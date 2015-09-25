@@ -23,7 +23,7 @@
 				$("#btnFilter").click(function() {
 					$('#cal').fullCalendar('refetchEvents');
 				});
-
+				
 				var fields_id = []; // Stores id's of the fields
 				getAllFields("{{ csrf_token}}", "{% url 'getAllFields' %}");
 				getFieldsValues();
@@ -159,11 +159,6 @@
 				$("#createTaskModalBody").load("{% url 'templateCreateTaskManager' %}");
 			});
 		</script>
-		<style>
-		#scheduleFilters .ui-dropdownchecklist-item{
-			text-align: left;
-		}
-		</style>
 	</head>
 	<body>
 		<header id="head"></header>
@@ -174,7 +169,7 @@
 				</div>
 				<div id="scheduleFilters">
 					<select id="filter">
-						<option value="1">Task status</option>
+						<option value="1">Task Status</option>
 						<option value="3">Field</option>
 					</select>
 
@@ -187,11 +182,11 @@
 						<option value="5">Paused</option>
 						<option value="6">Finished</option>
 					</select>
-
+					
+					<input type="button" value="Search" id="btnFilter"/>
+					
 					<select id="field" multiple="multiple" placeholder="Text">     
 					</select>
-
-					<input type="button" value="Search" id="btnFilter" />
 				</div>
 				<div id="cal"></div>
 
