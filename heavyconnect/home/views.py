@@ -1978,7 +1978,7 @@ def getFieldTasksManager(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 ### end ###
 
-
+@login_required
 def getFieldTaskNameManager(request):
 	result = []
 	if request.method == 'GET':
@@ -1994,50 +1994,25 @@ def getFieldTaskNameManager(request):
 			date_end = datetime.datetime.strptime(aux1, '%Y-%m-%d') + datetime.timedelta(days = 1)
 			date_end = datetime.datetime.combine(date_end, datetime.time.max)
 			condition = int(request.GET['condition'])
-			tasks = EmployeeTask.objects.filter(task__field__id__in = fields, task__date_assigned__range = (aux, aux1))
-			for item1 in tasks:
-				if(condition == 0): #It depends on the filter
-					aux = {}
-					auxHour = int(item1.task.hours_prediction)
-					auxMin = float(item1.task.hours_prediction - auxHour) * 60
-					data_prediction = item1.task.date_assigned + datetime.timedelta(hours = auxHour, minutes = auxMin)
-					equipment = getTaskImplementMachine(item1.task.id, item1.id)
-					aux['Employee'] = item1.employee.user.first_name + " " + item1.employee.user.last_name
-					aux['field'] = str(item1.task.field.name)
-					aux['title'] = aux['field']
-					aux['category'] =  item1.task.category.description
-					aux['start'] = str(item1.task.date_assigned)
-					aux['description'] = item1.task.description
-					aux['task_id'] = item1.task.id
-					aux['status'] = item1.task.status
-					aux['end'] = str(data_prediction)
-					if not item1.task.field.name in control:
-						control[item1.task.field.name] = color
-						color += 1
-					aux['color'] = getColor(control[item1.task.field.name])
-					if len(equipment['implement']) > 0:
-						aux['machine'] = equipment['machine']
-						aux['implement'] = equipment['implement']
-					else:
-						aux['machine'] = []
-						aux['implement'] = []
-					result.append(aux)
-				else:
-					if item1.task.status == condition:
+			emplo = Employee.objects.filter(manager__user_id = request.user.id)
+			if(condition == 0): #It depends on the filter
+				for item in emplo:
+					tasks = EmployeeTask.objects.filter(employee__id = item.id, task__field__id__in = fields, task__date_assigned__range = (aux, aux1))
+					for item1 in tasks:
 						aux = {}
 						auxHour = int(item1.task.hours_prediction)
 						auxMin = float(item1.task.hours_prediction - auxHour) * 60
 						data_prediction = item1.task.date_assigned + datetime.timedelta(hours = auxHour, minutes = auxMin)
 						equipment = getTaskImplementMachine(item1.task.id, item1.id)
 						aux['employee'] = item1.employee.user.first_name + " " + item1.employee.user.last_name
+						aux['field'] = str(item1.task.field.name)
 						aux['title'] = aux['field']
+						aux['category'] =  item1.task.category.description
 						aux['start'] = str(item1.task.date_assigned)
-						aux['end'] = str(data_prediction)
+						aux['description'] = item1.task.description
 						aux['task_id'] = item1.task.id
 						aux['status'] = item1.task.status
-						aux['description'] = item1.task.description
-						aux['field'] = item1.task.field.name
-						aux['category'] =  item1.task.category.description
+						aux['end'] = str(data_prediction)
 						if not item1.task.field.name in control:
 							control[item1.task.field.name] = color
 							color += 1
@@ -2049,6 +2024,36 @@ def getFieldTaskNameManager(request):
 							aux['machine'] = []
 							aux['implement'] = []
 						result.append(aux)
+			else:
+				for item in emplo:
+					tasks = EmployeeTask.objects.filter(employee__id = item.id, task__field__id__in = fields, task__date_assigned__range = (aux, aux1))
+					for item1 in tasks:
+						if item1.task.status == condition:
+							aux = {}
+							auxHour = int(item1.task.hours_prediction)
+							auxMin = float(item1.task.hours_prediction - auxHour) * 60
+							data_prediction = item1.task.date_assigned + datetime.timedelta(hours = auxHour, minutes = auxMin)
+							equipment = getTaskImplementMachine(item1.task.id, item1.id)
+							aux['employee'] = item1.employee.user.first_name + " " + item1.employee.user.last_name
+							aux['field'] = str(item1.task.field.name)
+							aux['title'] = aux['field']
+							aux['category'] =  item1.task.category.description
+							aux['start'] = str(item1.task.date_assigned)
+							aux['description'] = item1.task.description
+							aux['task_id'] = item1.task.id
+							aux['status'] = item1.task.status
+							aux['end'] = str(data_prediction)
+							if not item1.task.field.name in control:
+								control[item1.task.field.name] = color
+								color += 1
+							aux['color'] = getColor(control[item1.task.field.name])
+							if len(equipment['implement']) > 0:
+								aux['machine'] = equipment['machine']
+								aux['implement'] = equipment['implement']
+							else:
+								aux['machine'] = []
+								aux['implement'] = []
+							result.append(aux)
 		else:
 			result.append({'code' : 2}) #Use ajax to perform requests
 	else:
