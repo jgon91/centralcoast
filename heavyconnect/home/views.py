@@ -1920,13 +1920,13 @@ def getFieldTasksManager(request):
 							data_prediction = taskEmplo.task.date_assigned + datetime.timedelta(hours = auxHour, minutes = auxMin)
 							equipment = getTaskImplementMachine(taskEmplo.task.id, taskEmplo.id)
 							aux['employee'] = taskEmplo.employee.user.first_name + " " + taskEmplo.employee.user.last_name
-							aux['title'] = aux['employee']
 							aux['start'] = str(taskEmplo.task.date_assigned)
 							aux['end'] = str(data_prediction)
 							aux['task_id'] = taskEmplo.task.id
 							aux['status'] = taskEmplo.task.status
 							aux['description'] = taskEmplo.task.description
 							aux['field'] = taskEmplo.task.field.name
+							aux['title'] = aux['field']
 							aux['category'] =  taskEmplo.task.category.description
 							if not taskEmplo.task.field.name in control:
 								control[taskEmplo.task.field.name] = color
@@ -1957,6 +1957,7 @@ def getFieldTasksManager(request):
 							aux['status'] = taskEmplo.task.status
 							aux['description'] = taskEmplo.task.description
 							aux['field'] = taskEmplo.task.field.name
+							aux['title'] = aux['field']
 							aux['category'] =  taskEmplo.task.category.description
 							if not taskEmplo.task.field.name in control:
 								control[taskEmplo.task.field.name] = color
@@ -1986,7 +1987,7 @@ def getFieldTaskNameManager(request):
 			color = 0
 			control = {} #this dicionary will keep all fields and it colors
 			taskStatus = 0;
-			fields = request.GET.getlist('fields')
+			fields = request.GET.getlist('fields[]')
 			aux = request.GET['start'] #get the date in the POST request
 			aux1 = request.GET['end']	
 			date_start = datetime.datetime.strptime(aux, '%Y-%m-%d')
@@ -2003,6 +2004,7 @@ def getFieldTaskNameManager(request):
 					equipment = getTaskImplementMachine(item1.task.id, item1.id)
 					aux['Employee'] = item1.employee.user.first_name + " " + item1.employee.user.last_name
 					aux['field'] = str(item1.task.field.name)
+					aux['title'] = aux['field']
 					aux['category'] =  item1.task.category.description
 					aux['start'] = str(item1.task.date_assigned)
 					aux['description'] = item1.task.description
@@ -2028,7 +2030,7 @@ def getFieldTaskNameManager(request):
 						data_prediction = item1.task.date_assigned + datetime.timedelta(hours = auxHour, minutes = auxMin)
 						equipment = getTaskImplementMachine(item1.task.id, item1.id)
 						aux['employee'] = item1.employee.user.first_name + " " + item1.employee.user.last_name
-						aux['title'] = aux['employee']
+						aux['title'] = aux['field']
 						aux['start'] = str(item1.task.date_assigned)
 						aux['end'] = str(data_prediction)
 						aux['task_id'] = item1.task.id

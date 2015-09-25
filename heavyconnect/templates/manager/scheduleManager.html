@@ -58,12 +58,14 @@
 				    	onComplete: function(selector) {
 				    		fields_id = [];
 				    		var values	= [];
+				    		var count = 0;
 	        			  	for( i=0; i < selector.options.length; i++ ) {
 	        			  		//console.log(values[i]);
 	            		    	if (selector.options[i].selected && (selector.options[i].value != "")) {
 	                	          	if ( values[i] == undefined ) {
 	                		          	values[i]= selector.options[i].value;
-	             						fields_id[i] = values[i]; 
+	             						fields_id[count] = values[i];
+	             						count++; 
 	                		        }
 	            			  	}
 	       			    	}
@@ -81,7 +83,8 @@
 									start : start.format(),
 									end : end.format(),
 									search : $("#filter").val(),
-									condition : $("#filterStatus").val()
+									condition : $("#filterStatus").val(),
+									fields : fields_id 
 								},
 								success : function(doc) {
 									callback(doc);
@@ -172,7 +175,7 @@
 				<div id="scheduleFilters">
 					<select id="filter">
 						<option value="1">Task status</option>
-						<option value="2">Field</option>
+						<option value="3">Field</option>
 					</select>
 
 					<select id="filterStatus">
