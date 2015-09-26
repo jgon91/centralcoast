@@ -53,7 +53,7 @@
 				// Get ids of the fields
 				function getFieldsValues(){
 				    $("#field").dropdownchecklist({ 
-				    	maxDropHeight: 60,
+				    	maxDropHeight: 100,
 				        forceMultiple: true, 
 				    	onComplete: function(selector) {
 				    		fields_id = [];
@@ -183,7 +183,7 @@
 						<option value="6">Finished</option>
 					</select>
 					
-					<input type="button" value="Search" id="btnFilter"/>
+					<input type="button" value="Search" id="btnFilter" class="search"/>
 					
 					<select id="field" multiple="multiple" placeholder="Text">     
 					</select>
@@ -196,7 +196,7 @@
 							<button type="button" class="closeSchedule" data-dismiss="modal"></button>
 							<span class="modal-title" id="titleModalSchedule">{% trans 'New Task' %}</span>
 							<div id="createTaskModalBody" class="modal-body">
-
+							
 							</div>
 
 							<div class="both"></div>

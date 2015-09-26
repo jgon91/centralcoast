@@ -506,7 +506,7 @@ input[type="button"] {
 	margin-top: 10px;
 	margin-bottom: 10px;
 	border: 1px solid #E7E7E7;
-	box-shadow: 1px 1px 5px 0px gray;
+	box-shadow: 0px 0px 5px 0px gray;
 	border-radius: 5px;
 	background: #F5F5F5;
 	color: black;
@@ -644,6 +644,9 @@ input[type="button"] {
 	border-radius: 2px;
 	background: #F5F5F5;
 }
+#scheduleFilters .ui-dropdownchecklist-dropcontainer-wrapper {
+	z-index: 100 !important;
+}
 #scheduleFilters .ui-dropdownchecklist-selector {
 	height: 25px !important;
 	margin-bottom: 2px;
@@ -653,9 +656,15 @@ input[type="button"] {
 #scheduleFilters .ui-dropdownchecklist-item {
 	text-align: left;
 	background: #F5F5F5;
-	
 }
-#scheduleFilters input {
+#scheduleFilters input[type="checkbox"] {
+	margin: auto !important;
+	margin-left: 2px !important;
+	margin-right: 2px !important;
+	height: 15px;
+	width: 15px;
+}
+#scheduleFilters input[type="button"] {
 	border-radius: 5px;
 	border: 1px solid #E7E7E7;
 	padding: 5px;
@@ -666,6 +675,7 @@ input[type="button"] {
 	float: right;
 	margin-right: 15px;
 	margin-top: 7px;
+	margin-bottom: 7px;
 	width: 90px;
 	height: 40px;
 	font-size: 18px;
@@ -708,14 +718,12 @@ input[type="button"] {
 	margin-top: 7px;
 	width: 30%;
 }
-
-
 /*** Modal Scheduler Begin ***/
 .modalSchedule {
-	border-radius: 20px;
+	border-radius: 10px !important;
 	width: 90%;
 	margin: auto;
-	margin-top: 70px;
+	margin-top: 100px;
 	color: #466C00;
 }
 #titleModalSchedule {
@@ -737,10 +745,6 @@ input[type="button"] {
 	color: white;
 	font-size: 20px;
 }
-/*#btnAprove:hover {
-	background: url('../imgSmall/buttons/startNowHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
 .closeSchedule {
 	background: url('../imgSmall/buttons/esc.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -753,10 +757,6 @@ input[type="button"] {
 	margin: 0px;
 	padding: 0px;
 }
-/*.closeSchedule:hover {
-	background: url('../imgSmall/buttons/escHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
 .infoSchedule {
 	text-align: left;
 	padding-left: 20px;
@@ -820,6 +820,12 @@ input[type="button"] {
 	font-weight: bold;
 	line-height: 35px;
 }
+#findMachineModal {
+	height: 700px !important;
+}
+#findImplementModal {
+	height: 700px !important;
+}
 #AddImplement {
 	background: url('../imgSmall/buttons/addImplement.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -833,11 +839,6 @@ input[type="button"] {
 	border: none;
 	color: white;
 }
-/*#AddImplement:hover {
-	background: url('../imgSmall/buttons/addImplementHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
-
 #delImplement {
 	background: url('../imgSmall/buttons/startNow.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -870,10 +871,6 @@ input[type="button"] {
 	font-size: 18px;
 	font-weight: bold;
 }
-/*.findEquipment:hover {
-	background: url('../imgSmall/buttons/searchHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
 .scanEquipment {
 	background: url('../imgSmall/buttons/scan.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -889,13 +886,9 @@ input[type="button"] {
 	font-size: 18px;
 	font-weight: bold;
 }
-/*.scanEquipment:hover {
-	background: url('../imgSmall/buttons/scanHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
 .nextTab {
 	background: url('../imgSmall/buttons/next.png') no-repeat top left !important;
-	background-size: 100% 100%;
+	background-size: 100% 100% !important;
 	border-radius: 7px;
 	border: none;
 	box-shadow: 2px 2px 5px gray;
@@ -907,15 +900,10 @@ input[type="button"] {
 	font-size: 20px;
 	font-weight: bold;
 	text-align: left;
-	padding-left: 35px;
 }
-/*.nextTab:hover {
-	background: url('../imgSmall/buttons/nextHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
 .prevTab {
 	background: url('../imgSmall/buttons/prev.png') no-repeat top left !important;
-	background-size: 100% 100%;
+	background-size: 100% 100% !important;
 	border-radius: 7px;
 	border: none;
 	box-shadow: 2px 2px 5px gray;
@@ -926,12 +914,7 @@ input[type="button"] {
 	font-size: 20px;
 	font-weight: bold;
 	text-align: right;
-	padding-right: 25px;
 }
-/*.prevTab:hover {
-	background: url('../imgSmall/buttons/backHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
 	/* Nav tabs */
 .nav>li {
 	width: 100px;
@@ -978,8 +961,7 @@ input[type="button"] {
 }
 .showImplementDiv {
 	width: 79%;
-	float:right;
-	min-height: 400px;
+	float: right;
 }
 .tractorFiltered {
 	width: 31%;
@@ -995,9 +977,7 @@ input[type="button"] {
 	width: 200px;
 	height: 200px;
 }
-
 /*** Create Task Modal Page End ***/
-
 
 .clear {
 	clear: both;
