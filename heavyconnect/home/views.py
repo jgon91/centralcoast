@@ -1893,6 +1893,77 @@ def getEmployeeScheduleManager(request):
 	 	result.append({'code' : 3}) #Request was not GET
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+### Function to retrieve tasks by employee id
+def getEmployeeTaskManager(request):
+	result = []
+	color = ['#F7F003','#05C60E', '#FF0000', '#B3D1FF','#FF6600', '#A2A9AF']
+	if request.method == 'GET':
+		if request.is_ajax():
+			aux = request.GET['start'] #get the date in the POST request
+			aux2 = request.GET['end']
+			emplo = request.GET.getlist('employees[]')
+			condition = request.GET['condition']
+			date_start = datetime.datetime.strptime(aux, '%Y-%m-%d')
+			date_end = datetime.datetime.strptime(aux2, '%Y-%m-%d') + datetime.timedelta(days = 1)
+			date_end = datetime.datetime.combine(date_end, datetime.time.max)
+			if(condition == 0):
+				tasks = EmployeeTask.objects.filter(employee__id__in = emplo, task__date_assigned__range = (date_start, date_end))
+				for item1 in tasks:
+					if item1.task.status != 6:
+						aux = {}
+						auxHour = int(item1.task.hours_prediction)
+						auxMin = float(item1.task.hours_prediction - auxHour) * 60
+						data_prediction = item1.task.date_assigned + datetime.timedelta(hours = auxHour, minutes = auxMin)
+						equipment = getTaskImplementMachine(item1.task.id, item1.id)
+						aux['employee'] = item1.employee.user.first_name + " " + item1.employee.user.last_name
+						aux['title'] = aux['employee']
+						aux['start'] = str(item1.task.date_assigned)
+						aux['end'] = str(data_prediction)
+						aux['task_id'] = item1.task.id
+						aux['status'] = item1.task.status
+						aux['description'] = item1.task.description
+						aux['field'] = item1.task.field.name
+						aux['category'] =  item1.task.category.description
+						aux['color'] = color[item1.task.status - 1]
+						if len(equipment['implement']) > 0:
+							aux['machine'] = equipment['machine']
+							aux['implement'] = equipment['implement']
+						else:
+							aux['machine'] = []
+							aux['implement'] = []
+						result.append(aux)
+			else:
+				tasks = EmployeeTask.objects.filter(employee__id__in = emplo, task__date_assigned__range = (date_start, date_end), task__status = condition)
+				for item1 in tasks:
+					aux = {}
+					auxHour = int(item1.task.hours_prediction)
+					auxMin = float(item1.task.hours_prediction - auxHour) * 60
+					data_prediction = item1.task.date_assigned + datetime.timedelta(hours = auxHour, minutes = auxMin)
+					equipment = getTaskImplementMachine(item1.task.id, item1.id)
+					aux['employee'] = item1.employee.user.first_name + " " + item1.employee.user.last_name
+					aux['title'] = aux['employee']
+					aux['start'] = str(item1.task.date_assigned)
+					aux['end'] = str(data_prediction)
+					aux['task_id'] = item1.task.id
+					aux['status'] = item1.task.status
+					aux['description'] = item1.task.description
+					aux['field'] = item1.task.field.name
+					aux['category'] =  item1.task.category.description
+					aux['color'] = color[item1.task.status - 1]
+					if len(equipment['implement']) > 0:
+						aux['machine'] = equipment['machine']
+						aux['implement'] = equipment['implement']
+					else:
+						aux['machine'] = []
+						aux['implement'] = []
+					result.append(aux)
+		else:
+	 		result.append({'code' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'code' : 3}) #Request was not GET
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
 ### Function to retrieve tasks by field ###
 def getFieldTasksManager(request):
 	print "It is here 2.2"
@@ -1997,7 +2068,7 @@ def getFieldTaskNameManager(request):
 			emplo = Employee.objects.filter(manager__user_id = request.user.id)
 			if(condition == 0): #It depends on the filter
 				for item in emplo:
-					tasks = EmployeeTask.objects.filter(employee__id = item.id, task__field__id__in = fields, task__date_assigned__range = (aux, aux1))
+					tasks = EmployeeTask.objects.filter(employee__id = item.id, task__field__id__in = fields, task__date_assigned__range = (date_start, date_end))
 					for item1 in tasks:
 						aux = {}
 						auxHour = int(item1.task.hours_prediction)
@@ -2026,7 +2097,7 @@ def getFieldTaskNameManager(request):
 						result.append(aux)
 			else:
 				for item in emplo:
-					tasks = EmployeeTask.objects.filter(employee__id = item.id, task__field__id__in = fields, task__date_assigned__range = (aux, aux1))
+					tasks = EmployeeTask.objects.filter(employee__id = item.id, task__field__id__in = fields, task__date_assigned__range = (date_start, date_end))
 					for item1 in tasks:
 						if item1.task.status == condition:
 							aux = {}
@@ -2060,7 +2131,7 @@ def getFieldTaskNameManager(request):
 		result.append({'code' : 3}) #Request was not GET
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-funtions = {1 :  getEmployeeScheduleManager,2 : getFieldTasksManager, 3 : getFieldTaskNameManager}
+funtions = {1 :  getEmployeeScheduleManager,2 : getFieldTasksManager, 3 : getFieldTaskNameManager, 4 : getEmployeeTaskManager}
 	### This function will choose which function to call
 def switchTaskManager(request):
 	print "It is here  " + request.GET['search'] + request.GET['condition']
