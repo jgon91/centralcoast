@@ -1901,13 +1901,13 @@ def getEmployeeTaskManager(request):
 		if request.is_ajax():
 			aux = request.GET['start'] #get the date in the POST request
 			aux2 = request.GET['end']
-			emplo = request.GET.getlist('employees[]')
-			condition = request.GET['condition']
+			emplo = request.GET.getlist('optionsSearch[]')
+			condition = int(request.GET['condition'])
 			date_start = datetime.datetime.strptime(aux, '%Y-%m-%d')
 			date_end = datetime.datetime.strptime(aux2, '%Y-%m-%d') + datetime.timedelta(days = 1)
 			date_end = datetime.datetime.combine(date_end, datetime.time.max)
 			if(condition == 0):
-				tasks = EmployeeTask.objects.filter(employee__id__in = emplo, task__date_assigned__range = (date_start, date_end))
+				tasks = EmployeeTask.objects.filter(employee__user__id__in = emplo, task__date_assigned__range = (date_start, date_end))
 				for item1 in tasks:
 					if item1.task.status != 6:
 						aux = {}
@@ -1933,7 +1933,7 @@ def getEmployeeTaskManager(request):
 							aux['implement'] = []
 						result.append(aux)
 			else:
-				tasks = EmployeeTask.objects.filter(employee__id__in = emplo, task__date_assigned__range = (date_start, date_end), task__status = condition)
+				tasks = EmployeeTask.objects.filter(employee__user__id__in = emplo, task__date_assigned__range = (date_start, date_end), task__status = condition)
 				for item1 in tasks:
 					aux = {}
 					auxHour = int(item1.task.hours_prediction)
@@ -1957,9 +1957,13 @@ def getEmployeeTaskManager(request):
 						aux['machine'] = []
 						aux['implement'] = []
 					result.append(aux)
+					print "Result: "
+					print result
 		else:
+			print "test 4"
 	 		result.append({'code' : 2}) #Use ajax to perform requests
 	else:
+		print "test 5"
 	 	result.append({'code' : 3}) #Request was not GET
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
@@ -2058,7 +2062,8 @@ def getFieldTaskNameManager(request):
 			color = 0
 			control = {} #this dicionary will keep all fields and it colors
 			taskStatus = 0;
-			fields = request.GET.getlist('fields[]')
+			fields = request.GET.getlist('optionsSearch[]')
+			print fields
 			aux = request.GET['start'] #get the date in the POST request
 			aux1 = request.GET['end']	
 			date_start = datetime.datetime.strptime(aux, '%Y-%m-%d')
