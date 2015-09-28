@@ -25,19 +25,24 @@
 				$("#btnFilter").click(function() {
 					$('#cal').fullCalendar('refetchEvents');
 				});
-				getAllManagerEmployees("{{ csrf_token}}", "{% url 'getAllManagerEmployees' %}");
+
 				getAllFields("{{ csrf_token}}", "{% url 'getAllFields' %}");
-				getOptionsSearchValues();
+				getAllManagerEmployees("{{ csrf_token}}", "{% url 'getAllManagerEmployees' %}");
 				
-				$("#optionsSearch").hide();
+				$("#optionsSearchEmployee").hide();
+				$("#optionsSearchField").hide();
 				
 				$("#filter").change(function() {
 					if ($("#filter").val() == 1) {
+						$("#optionsSearchEmployee").dropdownchecklist("destroy");
+						$("#optionsSearchField").dropdownchecklist("destroy");
 						//$("#optionsSearch").hide();
 					} else if ($("#filter").val() == 3) {
-						getAllFields("{{ csrf_token}}", "{% url 'getAllFields' %}");
-					} else if ($("#filter").val() == 4) {
-						getAllManagerEmployees("{{ csrf_token}}", "{% url 'getAllManagerEmployees' %}");
+						getOptionsSearchValues("#optionsSearchField");
+						$("#optionsSearchEmployee").dropdownchecklist("destroy");
+					} else if ($("#filter").val() == 4) {						
+						getOptionsSearchValues("#optionsSearchEmployee");
+						$("#optionsSearchField").dropdownchecklist("destroy");
 					}
 				});
 				
@@ -130,7 +135,6 @@
 
 			// Get All fields to put in the dropdown
 			function getAllFields(token, url) {
-				alert("Call fields");
 				$.ajax({
 					method : "POST",
 					url : url,
@@ -140,10 +144,10 @@
 					},
 					datatype : "json",
 					success : function(data, status, xhr) {
-						$("#optionsSearch").html(" ");
+						$("#optionsSearchField").html(" ");
 						if (data.success) {
 							for (var i = 0; i < data.fields.length; i++) {
-								$("#optionsSearch").append("<option value='" + data.fields[i].id + "'>" + data.fields[i].name + "</option>");
+								$("#optionsSearchField").append("<option value='" + data.fields[i].id + "'>" + data.fields[i].name + "</option>");
 							}
 						}
 
@@ -152,7 +156,6 @@
 			}
 			// Get All employees to put in the dropdown
 			function getAllManagerEmployees(token, url) {
-				alert("Call employee");
 				$.ajax({
 					method : "POST",
 					url : url,
@@ -162,10 +165,10 @@
 					},
 					datatype : "json",
 					success : function(data, status, xhr) {
-						$("#optionsSearch").html(" ");
+						$("#optionsSearchEmployee").html(" ");
 						if (data.success) {
 							for (var i = 0; i < data.employees.length; i++) {
-								$("#optionsSearch").append("<option value='" + data.employees[i].user_id + "'>" + data.employees[i].first_name + " " + data.employees[i].last_name + "</option>");
+								$("#optionsSearchEmployee").append("<option value='" + data.employees[i].user_id + "'>" + data.employees[i].first_name + " " + data.employees[i].last_name + "</option>");
 							}
 						}
 
@@ -174,8 +177,8 @@
 			}
 
 			// Get ids of the fields
-			function getOptionsSearchValues() {
-				$("#optionsSearch").dropdownchecklist({
+			function getOptionsSearchValues(id) {
+				$(id).dropdownchecklist({
 					maxDropHeight : 150,
 					forceMultiple : true,
 					onComplete : function(selector) {
@@ -224,7 +227,8 @@
 
 					<input type="button" value="Search" id="btnFilter" class="search"/>
 
-					<select id="optionsSearch" multiple="multiple" placeholder="Text"></select>
+					<select id="optionsSearchEmployee" multiple="multiple" placeholder="Text"></select>
+					<select id="optionsSearchField" multiple="multiple" placeholder="Text"></select>
 				</div>
 				<div id="cal"></div>
 
