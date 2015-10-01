@@ -1850,6 +1850,7 @@ def timeKeeperReportAux(attendance, finished):
 def getEmployeeScheduleManager(request):
 	print "It is here 2"
 	result = []
+	color = ['#F7F003','#05C60E', '#FF0000', '#B3D1FF','#FF6600', '#A2A9AF']
 	if request.method == 'GET':
 		if request.is_ajax():
 			print "It is here 3"
@@ -1859,68 +1860,33 @@ def getEmployeeScheduleManager(request):
 			date_end = datetime.datetime.strptime(aux2, '%Y-%m-%d') + datetime.timedelta(days = 1)
 			date_end = datetime.datetime.combine(date_end, datetime.time.max)
 			emplo = Employee.objects.filter(manager__user_id = request.user.id)
-			condition = int(request.GET['condition'])
-			if(condition == 0):
-				color = ['#F7F003','#05C60E', '#FF0000', '#B3D1FF','#FF6600', '#A2A9AF']
-				for item in emplo: #this for will get all the employees received
-					emploTask = EmployeeTask.objects.filter(employee__user__id = item.user.id, task__date_assigned__range = (date_start, date_end))
-					for taskEmplo in emploTask: #it will take care of every task in that time
-						if taskEmplo.task.status != 6:
-							aux = {}
-							auxHour = int(taskEmplo.task.hours_prediction)
-							auxMin = float(taskEmplo.task.hours_prediction - auxHour) * 60
-							data_prediction = taskEmplo.task.date_assigned + datetime.timedelta(hours = auxHour, minutes = auxMin)
-							equipment = getTaskImplementMachine(taskEmplo.task.id, taskEmplo.id)
-							aux['employee'] = taskEmplo.employee.user.first_name + " " + taskEmplo.employee.user.last_name
-							aux['title'] = aux['employee']
-							aux['start'] = str(taskEmplo.task.date_assigned)
-							aux['end'] = str(data_prediction)
-							aux['task_id'] = taskEmplo.task.id
-							aux['status'] = taskEmplo.task.status
-							aux['description'] = taskEmplo.task.description
-							aux['field'] = taskEmplo.task.field.name
-							aux['category'] =  taskEmplo.task.category.description
-							aux['color'] = color[taskEmplo.task.status - 1]
-							if len(equipment['implement']) > 0:
-								aux['machine'] = equipment['machine']
-								aux['implement'] = equipment['implement']
-							else:
-								aux['machine'] = []
-								aux['implement'] = []
-							result.append(aux)
-			else:
-				control = {}
-				color = 0
-				for item in emplo: 
-					emploTask = EmployeeTask.objects.filter(employee__user__id = item.user.id, task__date_assigned__range = (date_start, date_end))
-					for taskEmplo in emploTask:
-						if taskEmplo.task.status == condition:
-							aux = {}
-							auxHour = int(taskEmplo.task.hours_prediction)
-							auxMin = float(taskEmplo.task.hours_prediction - auxHour) * 60
-							data_prediction = taskEmplo.task.date_assigned + datetime.timedelta(hours = auxHour, minutes = auxMin)
-							equipment = getTaskImplementMachine(taskEmplo.task.id, taskEmplo.id)
-							aux['employee'] = taskEmplo.employee.user.first_name + " " + taskEmplo.employee.user.last_name
-							aux['title'] = aux['employee']
-							aux['start'] = str(taskEmplo.task.date_assigned)
-							aux['end'] = str(data_prediction)
-							aux['task_id'] = taskEmplo.task.id
-							aux['status'] = taskEmplo.task.status
-							aux['description'] = taskEmplo.task.description
-							aux['field'] = taskEmplo.task.field.name
-							aux['title'] = aux['field']
-							aux['category'] =  taskEmplo.task.category.description
-							if not taskEmplo.employee.id in control:
-								control[taskEmplo.employee.id] = color
-								color += 1
-							aux['color'] = getColor(control[taskEmplo.employee.id])
-							if len(equipment['implement']) > 0:
-								aux['machine'] = equipment['machine']
-								aux['implement'] = equipment['implement']
-							else:
-								aux['machine'] = []
-								aux['implement'] = []
-							result.append(aux)
+			for item in emplo: #this for will get all the employees received
+				emploTask = EmployeeTask.objects.filter(employee__user__id = item.user.id, task__date_assigned__range = (date_start, date_end))
+				for taskEmplo in emploTask: #it will take care of every task in that time
+					if taskEmplo.task.status != 6:
+						aux = {}
+						auxHour = int(taskEmplo.task.hours_prediction)
+						auxMin = float(taskEmplo.task.hours_prediction - auxHour) * 60
+						data_prediction = taskEmplo.task.date_assigned + datetime.timedelta(hours = auxHour, minutes = auxMin)
+						equipment = getTaskImplementMachine(taskEmplo.task.id, taskEmplo.id)
+						aux['employee'] = taskEmplo.employee.user.first_name + " " + taskEmplo.employee.user.last_name
+						aux['title'] = aux['employee']
+						aux['start'] = str(taskEmplo.task.date_assigned)
+						aux['end'] = str(data_prediction)
+						aux['task_id'] = taskEmplo.task.id
+						aux['status'] = taskEmplo.task.status
+						aux['description'] = taskEmplo.task.description
+						aux['field'] = taskEmplo.task.field.name
+						aux['category'] =  taskEmplo.task.category.description
+						aux['color'] = color[taskEmplo.task.status - 1]
+						if len(equipment['implement']) > 0:
+							aux['machine'] = equipment['machine']
+							aux['implement'] = equipment['implement']
+						else:
+							aux['machine'] = []
+							aux['implement'] = []
+						result.append(aux)
+						
 		else:
 	 		result.append({'code' : 2}) #Use ajax to perform requests
 	else:
