@@ -5,6 +5,20 @@
 		{% load i18n %}
 		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
 		<script src="{% static 'js/script.js' %}"></script>
+		<!-- Include Required Prerequisites -->
+		<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+		<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+		<!--<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css" />-->
+		<!--<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap/css/bootstrap-table.css' %}">-->
+        <!--<script src="{% static 'css/bootstrap/js/bootstrap-table.js' %}"></script>-->
+        <!--<script src="{% static 'css/bootstrap/js/bootstrap.min.js' %}"></script>-->
+		<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/bootstrap-table.min.js"></script>
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/bootstrap-table.min.css">
+
+
+		<!-- Include Date Range Picker -->
+		<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+		<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
 		<script>
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
@@ -12,7 +26,76 @@
 
 				getReport("{{ csrf_token }}", "{% url 'timeKeeperDailyReport' %}");
 
+				<!--$('#demo').daterangepicker({-->
+    <!--"showDropdowns": true,-->
+    <!--"autoApply": true,-->
+    <!--"ranges": {-->
+        <!--"Today": [-->
+            <!--"2015-09-26T05:43:16.260Z",-->
+            <!--"2015-09-26T05:43:16.260Z"-->
+        <!--],-->
+        <!--"Yesterday": [-->
+            <!--"2015-09-25T05:43:16.260Z",-->
+            <!--"2015-09-25T05:43:16.260Z"-->
+        <!--],-->
+        <!--"Last 7 Days": [-->
+            <!--"2015-09-20T05:43:16.260Z",-->
+            <!--"2015-09-26T05:43:16.260Z"-->
+        <!--],-->
+        <!--"Last 30 Days": [-->
+            <!--"2015-08-28T05:43:16.260Z",-->
+            <!--"2015-09-26T05:43:16.260Z"-->
+        <!--],-->
+        <!--"This Month": [-->
+            <!--"2015-09-01T07:00:00.000Z",-->
+            <!--"2015-10-01T06:59:59.999Z"-->
+        <!--],-->
+        <!--"Last Month": [-->
+            <!--"2015-08-01T07:00:00.000Z",-->
+            <!--"2015-09-01T06:59:59.999Z"-->
+        <!--]-->
+    <!--},-->
+    <!--"startDate": "09/19/2015",-->
+    <!--"endDate": "09/25/2015"-->
+<!--}, function(start, end, label) {-->
+  <!--console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");-->
+<!--});-->
+
+			$("#btnExport").click(function (e){
+				getCsv("{{ csrf_token }}", "{% url 'getCsv' %}");
+
 			});
+			});
+			<!--$("#btnExport").click(function (e) {-->
+				<!--var stripped = stripTags($('#report_table').html())-->
+				<!--window.open('data:application/vnd.ms-excel,' + stripped);-->
+				<!--e.preventDefault();-->
+			<!--});-->
+
+			function getCsv(token, url){
+				$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					var downloadLink = document.createElement("a");
+					var blob = new Blob(["\ufeff", data]);
+					var url = URL.createObjectURL(blob);
+					downloadLink.href = url;
+					downloadLink.download = "data.csv";
+
+					document.body.appendChild(downloadLink);
+					downloadLink.click();
+					document.body.removeChild(downloadLink);
+					<!--$(function (e) {-->
+						<!--window.open("data:text/csv;charset=utf-8," + data);-->
+						<!--e.preventDefault();-->
+					<!--});-->
+
+				}
+				});
+			}
 
 			function getReport(token, url) {
 			$.ajax({
@@ -21,11 +104,56 @@
 				data : {"csrfmiddlewaretoken" : token},
 				datatype : "json",
 				success : function(data, status, xhr) {
-					if (data.success) {
-						<!--$("#report").html(data);-->
-						<!--console.log(data[1]);-->
-						<!--console.log(data[2]);-->
-						<!--console.log(data[3]);-->
+					if (data) {
+						parsed_result = $.parseJSON(data.all_attendances);
+						parsed_tasks = $.parseJSON(data.tasks);
+						<!--$(function () {-->
+							<!--$.each(parsed_tasks, function (i, item) {-->
+								<!--$('<tr>').append(-->
+								<!--$('<td>').text(item.fields.employee),-->
+								<!--$('<td>').text(data.all_names[i]),-->
+								<!--$('<td>').text(item.fields.date),-->
+								<!--$('<td>').text(start_hour),-->
+								<!--$('<td>').text(end_hour),-->
+								<!--$('<td>').text(data.total_times[i])).appendTo('#report_table');-->
+								<!--$('<tr>').append(-->
+								<!--$('<td colspan="6" class="hiddenRow">').append(-->
+								<!--$('<div id='+demo+' class="accordian-body collapse">').text('breaks'))-->
+								<!--).appendTo('#task_report_table');-->
+							<!--});-->
+						<!--});-->
+						$(function () {
+							var i = 1;
+							$.each(parsed_result, function (i, item) {
+								var start_hour = item.fields.hour_started;
+								var end_hour = item.fields.hour_ended;
+								if(! start_hour){
+									start_hour = 'N/A';
+								}
+
+								if(! end_hour){
+									end_hour = 'N/A';
+								}
+
+								var demo = "demo" + i;
+
+								$('<tr data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle">').append(
+								$('<td>').text(item.fields.employee),
+								$('<td>').text(data.all_names[i]),
+								$('<td>').text(item.fields.date),
+								$('<td>').text(start_hour),
+								$('<td>').text(end_hour),
+								$('<td>').text(data.total_times[i])).appendTo('#report_table');
+								$('<tr>').append(
+								$('<td colspan="6" class="hiddenRow">').append(
+								$('<div id='+demo+' class="accordian-body collapse">').text('breaks'))
+								).appendTo('#report_table');
+								i = i+1;
+
+							});
+						});
+
+
 					}
 				}
 			});
@@ -38,17 +166,74 @@
 			<div id="wrapper">
 				<div id="content">
 					<div class="namePage">
-						<img src="{% static 'imgSmall/iconTimekeeper.png' %}"/>
-						{% trans 'HC TIMEKEEPER REPORT' %}
-					</div>
-					<div id="report">
 
 					</div>
+					<div id="report" style="margin: 10px;">
+					<!--<div class="col-lg-6">-->
+					<div class="panel panel-default">
+					<div class="panel-heading"><h3><img src="{% static 'imgSmall/iconTimekeeper.png' %}"/>
+						{% trans 'HC TIMEKEEPER REPORT' %}</h3></div>
+					<div class="panel-body">
+
+			<table class="table table-condensed" id="report_table" style="border-collapse:collapse;">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Name</th>
+						<th>Date</th>
+						<th>Hour Started</th>
+						<th>Hour Ended</th>
+						<th>Total Hours</th>
+					</tr>
+				</thead>
+				<tbody>
+
+				</tbody>
+			</table>
+            </div>
+
+          </div>
+
+      <!--</div>-->
+						</div>
 
 				</div>
+				<!--<button style="float: right;margin-right: 15px;" type="button" class="btn btn-default" id="btnExport" value="Export Table data into Excel"><span class="glyphicon glyphicon-download"></span>Download .csv</button>-->
+				<!--<div id="task_report" style="margin: 10px;">-->
+					<!--&lt;!&ndash;<div class="col-lg-6">&ndash;&gt;-->
+					<!--<div class="panel panel-default">-->
+					<!--<div class="panel-heading"><h3><img src="{% static 'imgSmall/iconTimekeeper.png' %}"/>-->
+						<!--{% trans 'HC TASKFLOW REPORT' %}</h3></div>-->
+					<!--<div class="panel-body">-->
+
+			<!--&lt;!&ndash;<table class="table table-condensed" id="task_report_table" style="border-collapse:collapse;">&ndash;&gt;-->
+				<!--&lt;!&ndash;<thead>&ndash;&gt;-->
+					<!--&lt;!&ndash;<tr>&ndash;&gt;-->
+						<!--&lt;!&ndash;<th>ID</th>&ndash;&gt;-->
+						<!--&lt;!&ndash;<th>Name</th>&ndash;&gt;-->
+						<!--&lt;!&ndash;<th>Date</th>&ndash;&gt;-->
+						<!--&lt;!&ndash;<th>Hour Started</th>&ndash;&gt;-->
+						<!--&lt;!&ndash;<th>Hour Ended</th>&ndash;&gt;-->
+						<!--&lt;!&ndash;<th>Total Hours</th>&ndash;&gt;-->
+					<!--&lt;!&ndash;</tr>&ndash;&gt;-->
+				<!--&lt;!&ndash;</thead>&ndash;&gt;-->
+				<!--&lt;!&ndash;<tbody>&ndash;&gt;-->
+
+				<!--&lt;!&ndash;</tbody>&ndash;&gt;-->
+			<!--&lt;!&ndash;</table>&ndash;&gt;-->
+            <!--</div>-->
+
+          <!--</div>-->
+
+      <!--&lt;!&ndash;</div>&ndash;&gt;-->
+						<!--</div>-->
+
 
 			</div>
 
-		<footer id="foot"></footer>
+
+		<!--<img src="data:image/jsignature;base30,6MZ472000Y3i1V1Fjc81Z21Di571Y4flc97_4EZaec7gd75Yt1Dolkc6Z2f6a8553000" />-->
+
+		<footer style="margin-top:60px" id="foot"></footer>
 	</body>
 </html>

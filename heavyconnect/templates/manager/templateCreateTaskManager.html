@@ -155,7 +155,6 @@
 					},
 					datatype : "json",
 					success : function(data, status, xhr) {
-						//alert("Hey: " + data[1].nickname);
 						var len = data.length;
 						$(".showImplementDiv").html("");
 						for (var i = 1; i < len; i++) {
@@ -177,8 +176,6 @@
 			//creatTask page
 			//This can be moved to another file later(script.js)
 			function getFilteredMachine(token, url) {
-				//alert("Teste" + $("#manufacturer").val() + "<br>" + $("#hitch_capacity").val()+ "<br>" + $("#horse_power").val() + "<br>");
-
 				$.ajax({
 					method : "POST",
 					url : url,

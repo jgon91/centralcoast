@@ -5,6 +5,9 @@ from django.shortcuts import render, redirect, render_to_response
 from django.utils.dateformat import DateFormat
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
+from django.core import serializers
+import djqscsv
+
 
 import json
 from datetime import datetime
@@ -709,7 +712,6 @@ def getAllEmployees(request):
 					each_result = {}
 				result['success'] = True
 				result['employees'] = employees
-				print employees
 			except DoesNotExist: #There is no employee registered
 				result['code'] = 1
 				return HttpResponse(json.dumps(result), content_type='application/json')
@@ -1597,6 +1599,17 @@ def getEmployeeSelfCurrentTask(request):
 	 	result['code'] = 3  #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+@login_required
+def getCsv(request):
+	result = {}
+	result['success'] = True
+	qs = EmployeeAttendance.objects.all()
+	csv = djqscsv.render_to_csv_response(qs)
+	filename = djqscsv.generate_filename(qs)
+	result['csv'] = csv
+	# return HttpResponse(json.dumps(result),content_type='application/json')
+	return djqscsv.render_to_csv_response(qs)
+
 # change back:
 # parametro request, voltar para employee_id, date_entry
 # retirar os GET
@@ -1610,12 +1623,13 @@ def getHoursToday(employee_id, date_entry):
 	midnight = datetime.timedelta(hours = 23, minutes = 59, seconds = 59) # it is used when the hours changed from one day to another
 	keeper = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #this variable will keep the last break. It is useful when the shift is not done
 	keeper2 =  datetime.timedelta(hours = 0, minutes = 0, seconds = 0) # when the break is on another day
-	count2 = 0          #this variable will keep track of which interration I am. It will help with the bug of break without shift end
 	for item in employeeAttendance:
 		breaks = Break.objects.filter(attendance__id = item.id)
 		aux = datetime.timedelta(hours = 0, minutes = 0, seconds = 0)
 		lenght = len(breaks)
 		count2 = 0
+		itemStart = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second)
+
 		addition = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #addition works to add the time of the last break on the count. It is because the lastbreak should not be counted on if the attendance has the end value none
 		for doc in breaks:
 			docStart = datetime.timedelta(hours = doc.start.hour, minutes = doc.start.minute, seconds = doc.start.second)
@@ -1631,18 +1645,17 @@ def getHoursToday(employee_id, date_entry):
 				aux += datetime.timedelta(hours = doc.end.hour, minutes = doc.end.minute, seconds = doc.end.second) + (midnight -  docStart)
 				if count2 == lenght-1:
 					addition = datetime.timedelta(hours = doc.end.hour, minutes = doc.end.minute, seconds = doc.end.second) - docStart
-		itemStart = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second)
 		if item.hour_ended != None: #this if will treat if the attendance does not have the end field proprely filled
 			if item.hour_ended >= item.hour_started:
 				count += (datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second) - itemStart) - aux
 			else:  #if the end time is in another day
 				count += (datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second) + (midnight - itemStart)) - aux
+
 		elif keeper2 > datetime.timedelta(hours = 0, minutes = 0, seconds = 0): # if the keeper2 is changed means that the shift crossed midnight
 			count += keeper2 - datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) - aux + addition
 		else:
 			count += keeper - datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) - aux + addition
 			count2 += 1
-
 	return str(count)
 
 
@@ -1668,7 +1681,6 @@ def getHoursWeek(employeeid, desired_date):
 	return str(hours_worked_week)
 
 def createLightTask(task, task_init, employee):
-
 	if '' not in task:
 		created = Task.objects.create(field = str(task[1]), code = str(task[0]), hours_spent = float(task[2]), task_init = task_init)
 		empTask = EmployeeTask(employee = employee, task = created, start_time = task_init, hours_spent = float(task[2]))
@@ -1955,43 +1967,65 @@ def timeKeeperReportAux(attendance, finished):
 	return result
 
 def timeKeeperDailyReport(request):
-	# result = []
-	# result.append({'success' : False})
 	result = {'success' : False}
 
+	# result = {'success' : False}
+
 	each_result = {}
-	all_attendances = []
 
 	if request.method == 'POST':
 		if request.is_ajax():
 
 			#Creating the data range to filter the attendaces
-			now = datetime.datetime.now()
-			start_date = datetime.datetime.combine(now, datetime.time.min)
+			# now = datetime.datetime.now()
+			# start_date = datetime.datetime.combine(now, datetime.time.min)
 
-			attendances = EmployeeAttendance.objects.filter(date__range = (start_date, now))
-			# result[0] = True
-			# result.append({'count' : str(attendances.count())})
-			# result.append({'start_time' : start_date.strftime("%m/%d/%Y %I:%M %p")})
-			# result.append({'end_time' : now.strftime("%m/%d/%Y %I:%M %p")})
+			attendances = EmployeeAttendance.objects.all()#filter(date__range = (start_date, now))
+			tasks = EmployeeTask.objects.all()
+			# all_attendances = {}
+			all_attendances = []
+			total_times = []
+			all_names = []
+			# all_task_names = []
+			# for task in tasks:
+			#
+
+			i = 0
+			for attendance in attendances:
+				temp = {}
+				temp["first_name"] = attendance.employee.user.first_name
+				temp['last_name'] = attendance.employee.user.last_name
+				temp['employee_id'] = attendance.employee.id
+				temp['date'] = attendance.date
+				temp['hour_started']=attendance.hour_started
+				temp['hour_ended']=attendance.hour_ended
+				hours_today = getHoursToday(attendance.employee.id, str(attendance.date) +' 00:00:00')
+				all_names.append(attendance.employee.user.last_name + ", " + attendance.employee.user.first_name)
+				total_times.append(hours_today)
+				temp["total_hours"] = hours_today
+				all_attendances.append(temp)
+				# all_attendances[i] = temp
+				i = i+1
+			all_attendances_ser = serializers.serialize("json", attendances)
+			tasks_ser = serializers.serialize("json", tasks)
+
+			# breaks = Break.objects.all()
+			# all_breaks = serializers.serialize("json", breaks)
+			# result['all_breaks'] = all_breaks
+			# result['all_attendances'] = all_attendances
+
 			result['success'] = True
+			result['all_attendances']=all_attendances_ser
+			result['total_times'] = total_times
+			result['all_names'] = all_names
+			result['tasks'] = tasks_ser
+			# result['all_attendances']=all_attendances_ser
 
-			for attendance in attendances.values():
-				each_result['attendance'] = attendance
-				breaks = Break.objects.filter(attendance = attendance['id']).order_by('start')
-				total_breaks = []
-				for each_break in breaks:
-					total_breaks.append(each_break)
-				each_result['breaks'] = total_breaks
-				all_attendances.append(each_result)
-				each_result = {}
-			print all_attendances[0]
-			# result['all_attendances'] = str(all_attendances.count())
-			# result.append({'all_attendances' : all_attendances.count()})
+			# result[0] = {'success' : True}
 		else:
-			result['code'] = 2 #Use ajax to perform requests
+			result['code'] = 2  #Use ajax to perform requests
 	else:
-		result['code'] = 3 #Request was not POST
+		result['code'] = 3  #Request was not POST
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
@@ -2247,7 +2281,6 @@ def getEmployeeScheduleManager(request):
 	color = ['#F7F003','#05C60E', '#FF0000', '#B3D1FF','#FF6600', '#A2A9AF']
 	if request.method == 'GET':
 		if request.is_ajax():
-			print "It is here 3"
 			aux = request.GET['start'] #get the date in the POST request
 			aux2 = request.GET['end']
 			date_start = datetime.datetime.strptime(aux, '%Y-%m-%d')

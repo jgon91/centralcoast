@@ -25,6 +25,7 @@ footer {
 	bottom: 0px;
 	padding: 2px;
 	text-align: center;
+	margin-top: 60px;
 }
 .namePage {
 	float: left;
@@ -348,6 +349,8 @@ input[type=button]{
     display: inline;
     color: white;
 }
+
+
 
 
 .btnGreenTime {
