@@ -901,6 +901,21 @@ input[type="button"] {
 	font-weight: bold;
 	text-align: left;
 }
+.addTab {
+	background: url('../imgSmall/buttons/btnGreen.png') no-repeat top left !important;
+	background-size: 100% 100% !important;
+	border-radius: 7px;
+	border: none;
+	box-shadow: 2px 2px 5px gray;
+	height: 35px;
+	width: 170px;
+	color: white;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: left;
+}
 .prevTab {
 	background: url('../imgSmall/buttons/prev.png') no-repeat top left !important;
 	background-size: 100% 100% !important;

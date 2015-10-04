@@ -14,8 +14,10 @@ function startScan(decoder, si, sl, sQ, sv, sp, spAll, url, machine, implement, 
 					 alert(text);// Shows the QRCode scanned
 
 					 if(url.val() != undefined){
-						document.location = url.val() + text;
+					 	checkEquipment("{{ csrf_token }}", "/home/getEquipmentInfo/", text);
+						//document.location = url.val() + text;
 					}if($("#machineBtn").val() == 1){
+						loadEquipmentInfo("{{ csrf_token }}", "/home/getEquipmentInfo/", text);
 						machine.val(text);//Create Task
 						//$("#machineSelectedStart").val(text)
 						$('#machineScannedQRCode').val(text);// Start Task
@@ -24,6 +26,7 @@ function startScan(decoder, si, sl, sQ, sv, sp, spAll, url, machine, implement, 
 						//check machine in start task page
 						checkMachine = checkQRCode("machineTab", $("#machineSelectedStart").val(), $("#machineScannedQRCode").val());
 					}if($("#implementBtn").val() == 1){
+						loadEquipmentInfo("{{ csrf_token }}", "/home/getEquipmentInfo/", text);
 						implement.val(text);// Create Task
 						//$("#implementSelectedStart").val(text)
 						$('#implementScannedQRCode').val(text);// Start Task
@@ -32,6 +35,7 @@ function startScan(decoder, si, sl, sQ, sv, sp, spAll, url, machine, implement, 
 						//check implment in start task page
 						checkImplement = checkQRCode("implementTab", $("#implementSelectedStart").val(), $("#implementScannedQRCode").val());
 					}if($("#implementBtn2").val() == 1){
+						loadEquipmentInfo("{{ csrf_token }}", "/home/getEquipmentInfo/", text);
 						implement2.val(text);// Create Task
 						//$("#implement2SelectedStart").val(text)
 						$('#implement2ScannedQRCode').val(text);// Start Task

@@ -540,99 +540,96 @@ def updateEquipmentStatus(request):
 @login_required
 def getEquipmentInfo(request):
 	result = {'success' : False}
-	if request.method == 'POST':
-	 	if request.is_ajax():
-			date = datetime.datetime.now()
-			start_date = datetime.datetime.combine(date, datetime.time.min)
-			end_date = datetime.datetime.combine(date, datetime.time.max)
-			qr_code = request.POST['qr_code']
+ 	if request.is_ajax():
+		date = datetime.datetime.now()
+		start_date = datetime.datetime.combine(date, datetime.time.min)
+		end_date = datetime.datetime.combine(date, datetime.time.max)
+		qr_code = request.GET['qr_code']
+		try:
+			machine = Machine.objects.get(qr_code = qr_code)
+			result['nickname'] = machine.nickname
+			result['hitch_category'] = machine.hitch_category
+			result['speed_range_min'] = machine.speed_range_min
+			result['speed_range_max'] = machine.speed_range_max
+			result['engine_hours'] = machine.engine_hours
+			result['base_cost'] = machine.base_cost
+			result['machine_type'] = str(machine.m_type)
+			result['front_tires'] = machine.front_tires
+			result['rear_tires'] = machine.rear_tires
+			result['steering'] = machine.steering
+			result['operator_station'] = machine.operator_station
+			result['manufacturer'] = machine.manufacturer_model.manufacturer.name
+			result['model'] = machine.manufacturer_model.model
+			result['asset_number'] = machine.asset_number
+			result['serial_number'] = machine.serial_number
+			result['horse_power'] = machine.horsepower
+			result['hitch_capacity'] = machine.hitch_capacity
+			result['drawbar_category'] = machine.drawbar_category
+			result['year_purchased'] = machine.year_purchased
+			result['status'] = machine.status
+			result['hour_cost'] = machine.hour_cost
+			result['photo'] = machine.photo
+			result['photo1'] = machine.photo1
+			result['photo2'] = machine.photo2
+			emploTask = EmployeeTask.objects.filter(task__status = 4, start_time__range = (start_date,end_date)).order_by('-start_time') #just task active and with the today date
+			control = 0
+			for item in emploTask:
+				implement = ImplementTask.objects.filter(task__id = item.task.id, machine_task__machine__id = machine.id).order_by('-machine_task__employee_task__start_time')
+				if len(implement) != 0:
+					temp = []
+					for doc in implement:
+						temp.append((doc.implement.equipment_type.name))
+						if control < doc.machine_task.id:
+							control = doc.machine_task.id
+							result['employee'] = doc.machine_task.employee_task.employee.user.first_name + " " + doc.machine_task.employee_task.employee.user.last_name
+							result['task'] = doc.task.category.description
+					result['implement'] = temp
+					break
+			result['success'] = True
+		except Machine.DoesNotExist:
 			try:
-				machine = Machine.objects.get(qr_code = qr_code)
-				result['nickname'] = machine.nickname
-				result['hitch_category'] = machine.hitch_category
-				result['speed_range_min'] = machine.speed_range_min
-				result['speed_range_max'] = machine.speed_range_max
-				result['engine_hours'] = machine.engine_hours
-				result['base_cost'] = machine.base_cost
-				result['machine_type'] = str(machine.m_type)
-				result['front_tires'] = machine.front_tires
-				result['rear_tires'] = machine.rear_tires
-				result['steering'] = machine.steering
-				result['operator_station'] = machine.operator_station
-				result['manufacturer'] = machine.manufacturer_model.manufacturer.name
-				result['model'] = machine.manufacturer_model.model
-				result['asset_number'] = machine.asset_number
-				result['serial_number'] = machine.serial_number
-				result['horse_power'] = machine.horsepower
-				result['hitch_capacity'] = machine.hitch_capacity
-				result['drawbar_category'] = machine.drawbar_category
-				result['year_purchased'] = machine.year_purchased
-				result['status'] = machine.status
-				result['hour_cost'] = machine.hour_cost
-				result['photo'] = machine.photo
-				result['photo1'] = machine.photo1
-				result['photo2'] = machine.photo2
+				implement = Implement.objects.get(qr_code = qr_code)
+				result['nickname'] = implement.nickname
+				result['hitch_category'] = implement.hitch_category
+				result['speed_range_min'] = implement.speed_range_min
+				result['speed_range_max'] = implement.speed_range_max
+				result['base_cost'] = implement.base_cost
+				result['equipment_type'] = str(implement.equipment_type)
+				result['manufacturer'] = implement.manufacturer_model.manufacturer.name
+				result['model'] = implement.manufacturer_model.model
+				result['asset_number'] = implement.asset_number
+				result['serial_number'] = implement.serial_number
+				result['horse_power_req'] = implement.horse_power_req
+				result['hitch_capacity'] = implement.hitch_capacity_req
+				result['drawbar_category'] = implement.drawbar_category
+				result['year_purchased'] = implement.year_purchased
+				result['status'] = implement.status
+				result['hour_cost'] = implement.hour_cost
+				result['photo'] = implement.photo
+				result['photo1'] = implement.photo1
+				result['photo2'] = implement.photo2
 				emploTask = EmployeeTask.objects.filter(task__status = 4, start_time__range = (start_date,end_date)).order_by('-start_time') #just task active and with the today date
 				control = 0
 				for item in emploTask:
-					implement = ImplementTask.objects.filter(task__id = item.task.id, machine_task__machine__id = machine.id).order_by('-machine_task__employee_task__start_time')
-					if len(implement) != 0:
-						temp = []
-						for doc in implement:
-							temp.append((doc.implement.equipment_type.name))
-							if control < doc.machine_task.id:
-								control = doc.machine_task.id
-								result['employee'] = doc.machine_task.employee_task.employee.user.first_name + " " + doc.machine_task.employee_task.employee.user.last_name
-								result['task'] = doc.task.category.description
-						result['implement'] = temp
-						break
+					impementTask = ImplementTask.objects.filter(task__id = item.task.id, implement__id = implement.id).order_by('-machine_task__employee_task__start_time')[:1]
+					for item2 in impementTask:
+						impleTask = ImplementTask.objects.filter(machine_task__id = item2.machine_task.id)
+						if len(impleTask) != 0:
+							temp = []
+							for doc in impleTask:
+								if implement.id != doc.implement.id:
+									temp.append((doc.implement.equipment_type.name))
+								if control < doc.machine_task.id:
+									control = doc.machine_task.id
+									result['machine'] = doc.machine_task.machine.qr_code
+									result['employee'] = doc.machine_task.employee_task.employee.user.first_name + " " + doc.machine_task.employee_task.employee.user.last_name
+									result['task'] = doc.task.category.description
+							result['implement'] = temp
 				result['success'] = True
-			except Machine.DoesNotExist:
-				try:
-					implement = Implement.objects.get(qr_code = qr_code)
-					result['nickname'] = implement.nickname
-					result['hitch_category'] = implement.hitch_category
-					result['speed_range_min'] = implement.speed_range_min
-					result['speed_range_max'] = implement.speed_range_max
-					result['base_cost'] = implement.base_cost
-					result['equipment_type'] = str(implement.equipment_type)
-					result['manufacturer'] = implement.manufacturer_model.manufacturer.name
-					result['model'] = implement.manufacturer_model.model
-					result['asset_number'] = implement.asset_number
-					result['serial_number'] = implement.serial_number
-					result['horse_power_req'] = implement.horse_power_req
-					result['hitch_capacity'] = implement.hitch_capacity_req
-					result['drawbar_category'] = implement.drawbar_category
-					result['year_purchased'] = implement.year_purchased
-					result['status'] = implement.status
-					result['hour_cost'] = implement.hour_cost
-					result['photo'] = implement.photo
-					result['photo1'] = implement.photo1
-					result['photo2'] = implement.photo2
-					emploTask = EmployeeTask.objects.filter(task__status = 4, start_time__range = (start_date,end_date)).order_by('-start_time') #just task active and with the today date
-					control = 0
-					for item in emploTask:
-						impementTask = ImplementTask.objects.filter(task__id = item.task.id, implement__id = implement.id).order_by('-machine_task__employee_task__start_time')[:1]
-						for item2 in impementTask:
-							impleTask = ImplementTask.objects.filter(machine_task__id = item2.machine_task.id)
-							if len(impleTask) != 0:
-								temp = []
-								for doc in impleTask:
-									if implement.id != doc.implement.id:
-										temp.append((doc.implement.equipment_type.name))
-									if control < doc.machine_task.id:
-										control = doc.machine_task.id
-										result['machine'] = doc.machine_task.machine.qr_code
-										result['employee'] = doc.machine_task.employee_task.employee.user.first_name + " " + doc.machine_task.employee_task.employee.user.last_name
-										result['task'] = doc.task.category.description
-								result['implement'] = temp
-					result['success'] = True
-				except Implement.DoesNotExist:
-					result['code'] = 1 #There is no equipment associated with this
-	 	else:
-	 		result['code'] = 2 #Use ajax to perform requests
-	else:
-	 	result['code'] = 3 #Request was not POST
+			except Implement.DoesNotExist:
+				result['code'] = 1 #There is no equipment associated with this
+ 	else:
+ 		result['code'] = 2 #Use ajax to perform requests
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
@@ -2349,6 +2346,10 @@ def createTaskManager(request):
 @login_required
 def templateCreateTaskManager(request):
     return render(request, 'manager/templateCreateTaskManager.html')
+
+@login_required
+def templateAddEquipmentManager(request):
+    return render(request, 'manager/templateAddEquipment.html')
    
 @login_required
 def scheduleManager(request):
@@ -2750,8 +2751,7 @@ def getAllEmployees(request):
 					employees.append(each_result)
 					each_result = {}
 				result['success'] = True
-				result['employees'] = employees
-				print employees
+				result['employees'] = employees				
 			except DoesNotExist: #There is no employee registered
 				result['code'] = 1
 				return HttpResponse(json.dumps(result), content_type='application/json')
@@ -3384,6 +3384,38 @@ def machineFormView(request):
 	else:
 		machineform = machineForm(request.POST)
 	return render(request,'manager/formMachine.html', {'formMachine': machineform})
+##End
+
+#Form to quick add machine
+@login_required
+def machineQuickFormAdd(request):
+	result = {'success' : False}
+	if request.method == "POST":		
+		machineform = machineForm(request.POST)
+		if machineform.is_valid():
+			new_machine_manufacturer_model = machineform.cleaned_data['manufacturer_model']
+			#new_machine_equipment_type = machineform.cleaned_data['equipment_type']
+			new_machine_nickname = machineform.cleaned_data['nickname']
+			new_machine_qr_code = machineform.cleaned_data['qr_code']
+			new_machine_asset_number = machineform.cleaned_data['asset_number']
+			new_machine_serial_number = machineform.cleaned_data['serial_number']
+			
+			machine = Machine(manufacturer_model = new_machine_manufacturer_model, nickname = new_machine_nickname, qr_code = new_machine_qr_code, asset_number = new_machine_asset_number, serial_number = new_machine_serial_number)
+			machine.save()
+			result['success'] = True
+		
+			if result['success'] == True :			
+				#return HttpResponse(json.dumps(result),content_type='application/json') 
+				return render(request, 'manager/formSuccess.html')
+			else:				
+				return render(request, 'manager/formError.html')
+		else:			
+			result['code'] = 3 #this form is not valid
+			return render(request, 'manager/formError.html')
+		return HttpResponse(json.dumps(result),content_type='application/json')
+	else:		
+		machineform = machineForm(request.POST)
+	return render(request,'manager/templateAddEquipment.html', {'formMachine': machineform})
 ##End
 
 def employeeFormView(request):

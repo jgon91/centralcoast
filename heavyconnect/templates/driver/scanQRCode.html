@@ -12,15 +12,53 @@
                 $("#foot").load("{% url 'footer' %}");
                 $("#head").load("{% url 'headerDriver' %}");
                 var item = {};
+                var id;
 
                 item = getParametersUrl();
-                $("#url").val(item.url + "?qr_code=");
+                $("#url").val(item.url + "?qr_code=");      
 
-                $("#linkEquipmemtChecklist").click(function () {
-                    $("#linkEquipmemtChecklist").attr("href", item.url + "?qr_code=" + $("#qr_code").val());
-                    //alert($("#qr_code").val());
-                });
+
+                
             });
+
+            function checkEquipment(token, url, id) {                   
+                $.ajax({
+                    method : "GET",
+                    url : url,
+                    //async: false,
+                    data : {
+                        "csrfmiddlewaretoken" : token,
+                        "qr_code" : id
+                    }, // id could be qrCode or employeeId
+                    datatype : "json",
+                    success : function(data, status, xhr) {                                    
+                        if (data.success) {
+                            if ($("#url").val() == "/en-us/home/equipment/?qr_code=")
+                                window.location.href = "{% url 'equipment' %}?qr_code=" + id;
+                            else
+                                window.location.href = "{% url 'checklist' %}?qr_code=" + id;
+                        } else{
+                            //alert("Equipment not found.");
+                            $("#qr_code").val(id);
+                            $('#quickAdd').modal();                                       
+                        }
+                    }
+                });
+            }
+
+
+            function quickAddEquipment(btn){                
+                if (btn.value == "Yes"){ 
+                    $('#quickAdd').modal("hide");
+                    $("#addEquipModalBody").load("{% url 'machineQuickFormAdd' %}");
+                    $('#addEquipModal').modal();  
+                    $("input[name=qr_code]").val($("#qr_code").val());                  
+                }else
+                    $('#quickAdd').modal("hide");
+                
+            }
+
+
         </script>
         <style>
             
@@ -80,17 +118,49 @@
                     </div>    
                     <div style="margin auto 40px; text-align: center;">     
                                 <input type="text" id="qr_code" style="color:black;" placeholder="{% trans 'Type QR-Code' %}"/> 
-                                <a id="linkEquipmemtChecklist" href="">
-                                    <button id="submit" title="Play" type="button" class="btn btn-success btn-sm">
+                                
+                                    <button id="submit" title="Play" type="button" class="btn btn-success btn-sm" onclick="checkEquipment('{{ csrf_token }}', '/home/getEquipmentInfo/', $('#qr_code').val());">
                                         <span class="glyphicon glyphicon-play"></span>
                                     </button>
-                                </a>
+                                
                         </div>         
                 </div>
             </div>
         </div>
     </div>
     <footer id="foot"></footer>
+
+    <!-- Modal Confirm to quick add -->
+        <div class="modal fade" id="quickAdd" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content modalTask" style="text-align: center;">
+                    <button type="button" class="closeTask" data-dismiss="modal"></button>  
+                    <span class="modal-title" id="titleModalSchedule">{% trans 'Equipment not Found' %}</span>                      
+                    <div class="modal-body equipmentAlertModalBody">
+                                                        
+                    </div>
+                    <input type="button" value="{% trans 'Yes' %}" id="btnYesAddEquip" onclick="quickAddEquipment(this);"/>
+                    <input type="button" value="{% trans 'No' %}" id="btnNoAddEquip" onclick="quickAddEquipment(this);"/>                       
+                    <div class="both"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal to quick add equipment -->
+        <div class="modal fade" id="addEquipModal" role="dialog">
+            <div class="modal-dialog"  style="width: 1000px">
+                <div class="modal-content modalSchedule">
+                    <button type="button" class="closeSchedule" data-dismiss="modal"></button>
+                    <span class="modal-title" id="titleModalSchedule" style="padding: 10px;">{% trans 'Add New Equipment' %}</span>
+                    <div id="addEquipModalBody" class="modal-body">
+        
+                    </div>
+
+                    <div class="both"></div>
+                </div>
+            </div>
+        </div>
     </body>
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>

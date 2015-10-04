@@ -145,7 +145,7 @@
 			//Functions
 			function loadEquipmentInfo(token, url, id) {
 				$.ajax({
-					method : "POST",
+					method : "GET",
 					url : url,
 					data : {
 						"csrfmiddlewaretoken" : token,
@@ -192,10 +192,7 @@
 							$("#img1").attr("src", photo1);
 							$("#img2").attr("src", photo2);
 							$("#img3").attr("src", photo3);
-						} else if(data.code == 1){
-							alert("Equipment not found.");
-							window.location.href = "{% url 'scanQRCode'%}";
-						}
+						} 
 					}
 				});
 			}

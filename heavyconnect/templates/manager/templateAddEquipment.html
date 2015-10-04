@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{% load staticfiles %}
+		{% load i18n %}
+		<script src="{% static 'js/script.js' %}"></script>
+		<script>
+			$(document).ready(function() {
+				$(".errorlist").hide();
+				$( "label:lt(4)" ).append("*");
+				
+				var parameter = getParametersUrl();
+   				$("#deleteForm").hide();
+				if(parameter['machine_id'] != null){
+					$("#deleteForm").show();
+				}
+
+				$("#deleteForm").click( function (){
+					var url = "{% url 'machineManagerDelete' %}";
+					var parameter = getParametersUrl();
+
+					if(confirm("Do you really want to delete this machine?")){
+							$.ajax({
+								method: "POST",
+								url: url,
+								data: {"csrfmiddlewaretoken": '{{csrf_token}}', "machine_id": parameter['machine_id'] },
+								datatype: "json",
+								success: function(data, status, xhr){		
+									alert("Machine deleted.");					
+									window.location="{% url 'listMachine' %}";
+								}
+							});	
+						}
+				});
+
+				var fields = ['select[name=manufacturer_model]', 
+							  'input[name=nickname]', 
+							  'input[name=asset_number]',  
+							  'input[name=serial_number]'
+							];
+
+				// Form submit modal quick add machine
+				$("form").submit(function(){					
+					var formOK = checkFields(fields)
+					$.ajax({
+						method: "POST",
+						url: "{% url 'machineQuickFormAdd' %}",
+						data: $('#formPage').serialize(),								
+						success: function(data, status, xhr){
+							if (data.success) 	
+								if($("#url").val() == "/en-us/home/equipment/?qr_code=")									
+									window.location="{% url 'scanQRCode' %}?url={% url 'equipment' %}";
+								else
+									window.location="{% url 'scanQRCode' %}?url={% url 'checklist' %}";
+							else
+								formOK = false;
+						}
+					});	
+					return formOK;
+				});
+
+				//Add atribute to input qr_code from the scan qr_code
+				var qr_code = $("#qr_code").val()
+				$("input[name=qr_code]").attr("value", qr_code);
+
+			});
+		</script>
+		<style>
+		tr.spaceUnder > td
+		{
+		  padding-bottom: 1em;
+		}
+		</style>
+	</head>
+	<body>
+		<header id="head"></header>
+		<div id="contentForm">
+			<form method="POST" action="." id="formPage">
+				{% csrf_token %}
+				<table style="margin: auto; text-align: left;">
+					<tr class="spaceUnder">
+						<td>Manufacturer Model: *</td>
+						<td>{{ formMachine.manufacturer_model }}</td>
+					</tr>
+					<tr class="spaceUnder">
+						<td>Nickname: *</td>
+						<td>{{ formMachine.nickname }}</td>
+					</tr>
+					<tr class="spaceUnder">
+						<td>Serial Number: *</td>
+						<td>{{ formMachine.serial_number }}</td>
+					</tr>
+					<tr class="spaceUnder">
+						<td>Asset Number: *</td>
+						<td>{{ formMachine.asset_number }}</td>
+					</tr>										
+					<tr class="spaceUnder">
+						<td>QR-Code: *</td>
+						<td>{{ formMachine.qr_code }}</td>
+					</tr>	
+					<tr class="spaceUnder"> 
+						<td colspan="2"><input type="submit" id="saveForm" value="{% trans 'SAVE' %}"/></td>
+					</tr>
+					<tr class="spaceUnder">
+						<td colspan="2"><input type="button" id="deleteForm" value="{% trans 'DELETE' %}"/></td>
+					</tr>
+					
+			</form>
+		</div>
+		<footer id="foot"></footer>
+	</body>
+</html>
