@@ -36,8 +36,7 @@
                                 window.location.href = "{% url 'equipment' %}?qr_code=" + id;
                             else
                                 window.location.href = "{% url 'checklist' %}?qr_code=" + id;
-                        } else{
-                            //alert("Equipment not found.");
+                        } else{                            
                             $("#qr_code").val(id);
                             $('#quickAdd').modal();                                       
                         }

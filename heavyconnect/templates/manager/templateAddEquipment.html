@@ -23,16 +23,13 @@
 						url: "{% url 'machineQuickFormAdd' %}",
 						data: $('#formPage').serialize(),								
 						success: function(data, status, xhr){
-							if (data.success) 	
-								if($("#url").val() == "/en-us/home/equipment/?qr_code=")									
-									window.location="{% url 'scanQRCode' %}?url={% url 'equipment' %}";
-								else
-									window.location="{% url 'scanQRCode' %}?url={% url 'checklist' %}";
-							else
-								formOK = false;
+							if (formOK == true){ 																	
+								$('#addEquipModal').modal("hide");
+								alert("Equipment add Success");
+							} 							
 						}
 					});	
-					return formOK;
+					return false;
 				});
 
 				
