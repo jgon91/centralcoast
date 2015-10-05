@@ -8,31 +8,7 @@
 			$(document).ready(function() {
 				$(".errorlist").hide();
 				$( "label:lt(4)" ).append("*");
-				
-				var parameter = getParametersUrl();
-   				$("#deleteForm").hide();
-				if(parameter['machine_id'] != null){
-					$("#deleteForm").show();
-				}
-
-				$("#deleteForm").click( function (){
-					var url = "{% url 'machineManagerDelete' %}";
-					var parameter = getParametersUrl();
-
-					if(confirm("Do you really want to delete this machine?")){
-							$.ajax({
-								method: "POST",
-								url: url,
-								data: {"csrfmiddlewaretoken": '{{csrf_token}}', "machine_id": parameter['machine_id'] },
-								datatype: "json",
-								success: function(data, status, xhr){		
-									alert("Machine deleted.");					
-									window.location="{% url 'listMachine' %}";
-								}
-							});	
-						}
-				});
-
+						
 				var fields = ['select[name=manufacturer_model]', 
 							  'input[name=nickname]', 
 							  'input[name=asset_number]',  
@@ -59,8 +35,14 @@
 					return formOK;
 				});
 
-				//Add atribute to input qr_code from the scan qr_code
-				var qr_code = $("#qr_code").val()
+				
+				var qr_code;
+
+				if($("#url").val()=="/en-us/home/equipment/?qr_code=" || $("#url").val() == "/en-us/home/checklist/?qr_code=" )
+				   	qr_code = $("#qr_code").val(); //Add atribute to input qr_code from the scan qr_code
+				else 
+					qr_code = $("#machineSelected").val(); //Add atribute to input qr_code from the create task
+				
 				$("input[name=qr_code]").attr("value", qr_code);
 
 			});
@@ -100,10 +82,7 @@
 					</tr>	
 					<tr class="spaceUnder"> 
 						<td colspan="2"><input type="submit" id="saveForm" value="{% trans 'SAVE' %}"/></td>
-					</tr>
-					<tr class="spaceUnder">
-						<td colspan="2"><input type="button" id="deleteForm" value="{% trans 'DELETE' %}"/></td>
-					</tr>
+					</tr>					
 					
 			</form>
 		</div>

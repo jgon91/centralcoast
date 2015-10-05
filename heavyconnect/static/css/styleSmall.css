@@ -858,6 +858,8 @@ input[type=button]{
 	text-align: right;
 	padding-right: 25px;
 }
+
+/* Modal quick add equipment */
 #btnYesAddEquip {
 	background: url('../imgSmall/buttons/startNow.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -886,6 +888,22 @@ input[type=button]{
 	width: 140px !important;
 	height: 40px;
 	float: left;
+}
+.modal-body #saveForm {
+	background: url('../imgSmall/buttons/startNow.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 140px;
+	height: 40px;
+	border: none;
+	border-radius: 10px;
+	box-shadow: 2px 2px 5px gray;
+	margin-right: 0px;
+	margin-left: 0px;
+	margin-bottom: 0px;
+	text-decoration: none;
+	color: white;
+	font-size: 20px;
+	float: right;
 }
 /*.prevTab:hover {
 	background: url('../imgSmall/buttons/backHover.png') no-repeat top left;

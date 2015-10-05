@@ -342,7 +342,6 @@
 					$('#addEquipModal').modal()
 				}else
 					$('#quickAdd').modal("hide");
-				
 			}
 		</script>
 
@@ -443,7 +442,7 @@
 								<div class="col-xs-4 col-md-4">									
 								</div>
 								<div class="col-xs-4 col-md-4">
-									<a class="btn nextTab alignCenterPage" href="#" onclick="loadEquipmentInfo();">{% trans 'NEXT' %}</a>
+									<a class="btn nextTab alignCenterPage" href="#" onclick="loadEquipmentInfo('{{crsf_token}}', {% url 'getEquipmentInfo' %}, $('#machineSelected').val());">{% trans 'NEXT' %}</a>
 								</div>
 							</div>
 					    </div>
@@ -699,10 +698,10 @@
 
 			<!-- Modal to quick add equipment -->
 			<div class="modal fade" id="addEquipModal" role="dialog">
-				<div class="modal-dialog"  style="width: 1000px">
+				<div class="modal-dialog"  style="width: 1000px; text-align: left;">
 					<div class="modal-content modalSchedule">
 						<button type="button" class="closeSchedule" data-dismiss="modal"></button>
-						<span class="modal-title" id="titleModalSchedule">{% trans 'Add New Equipment' %}</span>
+						<span class="modal-title" id="titleModalSchedule" style="padding: 10px;">{% trans 'Add New Equipment' %}</span>
 						<div id="addEquipModalBody" class="modal-body">
 							
 						</div>
@@ -713,21 +712,21 @@
 			</div>
 
 			<!-- Modal Confirm to quick add -->
-			<div class="modal fade" id="quickAdd" role="dialog">
+	 		<div class="modal fade" id="quickAdd" role="dialog">
 	            <div class="modal-dialog">
 	                <!-- Modal content-->
 	                <div class="modal-content modalTask" style="text-align: center;">
 	                    <button type="button" class="closeTask" data-dismiss="modal"></button>  
-	                    <span class="modal-title" id="titleModalSchedule" style="padding: 10px; text-align: left;">{% trans 'Equipment not Found' %}</span>                      
+	                    <span class="modal-title" id="titleModalSchedule" style="margin-left: 50px;">{% trans 'Equipment not Found' %}</span>                      
 	                    <div class="modal-body equipmentAlertModalBody">
-	                        <span>Would you like to add a new equipment?</span>                      
+	                        <p>Would you like to add a new equipment?</p>                        
 	                    </div>
 	                    <input type="button" value="{% trans 'Yes' %}" id="btnYesAddEquip" onclick="quickAddEquipment(this);"/>
 	                    <input type="button" value="{% trans 'No' %}" id="btnNoAddEquip" onclick="quickAddEquipment(this);"/>                       
 	                    <div class="both"></div>
 	                </div>
 	            </div>
-       		 </div>
+	        </div>	
 			<!--END FIND IMPLEMENT MODAL-->
 			<!--SCANQRCODE MACHINE/IMPLEMENT -->
 			<div class="modal fade" id="scanQRCode" role="dialog" style="overflow: none;">

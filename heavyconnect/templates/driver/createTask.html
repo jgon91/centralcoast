@@ -127,11 +127,15 @@
                     	$('#scanQRCodeMachine').modal("hide");
                     }
                 });
+
+                $("#machineSelected").change(function(){
+                	loadEquipmentInfo('{{ csrf_token }}', "{% url 'getEquipmentInfo' %}", this.value);
+                });
 				
 			});
 			
 			//creatTask page
-			//This can be moved to another file later(script.js)
+			//This can be moved to another file later(script.js)			
 			function getFilteredImplement(token, url, implement){
 				$.ajax({
 					method: "POST",
@@ -266,6 +270,48 @@
 					}
 				});
 			}
+
+			//Get equipment info and verify if machine with this qr_code exists
+			function loadEquipmentInfo(token, url, id) {				
+				$.ajax({
+					method : "GET",
+					url : url,
+					//async: false,
+					data : {
+						"csrfmiddlewaretoken" : token,
+						"qr_code" : id
+					}, // id could be qrCode or employeeId
+					datatype : "json",
+					success : function(data, status, xhr) {										
+						if (data.success) {
+							//first specs
+							$("#nickname").html(data.nickname);							
+							$("#hitch_szM").html(data.hitch_capacity);											
+							$("#hp").html(data.horse_power);
+							//all specs to modal						
+							//images to modal
+							photo1 = data.photo;
+							$("#machineSelectedImg").attr("src", photo1);
+							$("#machineTab").addClass("tabSucess");
+						} else{
+							//alert("Equipment not found.");
+							$('#quickAdd').modal()
+							$("#machineSelectedImg").attr("src", "{% static 'img/tractor-4.png' %}");
+							$("#machineTab").removeClass("tabSucess");
+						}
+					}
+				});
+			}
+
+			function quickAddEquipment(btn){
+				console.log(btn.value);
+				if (btn.value == "Yes"){ 
+					$('#quickAdd').modal("hide");
+					$("#addEquipModalBody").load("{% url 'machineQuickFormAdd' %}");
+					$('#addEquipModal').modal()
+				}else
+					$('#quickAdd').modal("hide");
+			}
 		</script>
 
 	</head>
@@ -339,7 +385,7 @@
 									
 								</div>
 								<div class="col-xs-4 col-md-4">
-									<a class="btn nextTab alignCenterPage" href="#">{% trans 'NEXT' %}</a>
+									<a class="btn nextTab alignCenterPage" id="machineNextTab" href="#">{% trans 'NEXT' %}</a>
 								</div>
 							</div>
 					    </div>
@@ -593,6 +639,37 @@
 					</div>
 			</div>
 			<!--END FIND IMPLEMENT MODAL-->
+			<!-- Modal to quick add equipment -->
+			<div class="modal fade" id="addEquipModal" role="dialog">
+				<div class="modal-dialog"  style="width: 1000px; text-align: left;">
+					<div class="modal-content modalSchedule">
+						<button type="button" class="closeSchedule" data-dismiss="modal"></button>
+						<span class="modal-title" id="titleModalSchedule" style="padding: 10px;">{% trans 'Add New Equipment' %}</span>
+						<div id="addEquipModalBody" class="modal-body">
+							
+						</div>
+
+						<div class="both"></div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Modal Confirm to quick add -->
+	 		<div class="modal fade" id="quickAdd" role="dialog">
+	            <div class="modal-dialog">
+	                <!-- Modal content-->
+	                <div class="modal-content modalTask" style="text-align: center;">
+	                    <button type="button" class="closeTask" data-dismiss="modal"></button>  
+	                    <span class="modal-title" id="titleModalSchedule" style="margin-left: 50px;">{% trans 'Equipment not Found' %}</span>                      
+	                    <div class="modal-body equipmentAlertModalBody">
+	                        <p>Would you like to add a new equipment?</p>                        
+	                    </div>
+	                    <input type="button" value="{% trans 'Yes' %}" id="btnYesAddEquip" onclick="quickAddEquipment(this);"/>
+	                    <input type="button" value="{% trans 'No' %}" id="btnNoAddEquip" onclick="quickAddEquipment(this);"/>                       
+	                    <div class="both"></div>
+	                </div>
+	            </div>
+	        </div>	
 			<!--SCANQRCODE MACHINE/IMPLEMENT -->
 			<div class="modal fade" id="scanQRCode" role="dialog">
 					    <div class="modal-dialog findTractor">

@@ -11,8 +11,7 @@
             $(document).ready(function() {
                 $("#foot").load("{% url 'footer' %}");
                 $("#head").load("{% url 'headerDriver' %}");
-                var item = {};
-                var id;
+                var item = {};                
 
                 item = getParametersUrl();
                 $("#url").val(item.url + "?qr_code=");      
@@ -136,9 +135,9 @@
                 <!-- Modal content-->
                 <div class="modal-content modalTask" style="text-align: center;">
                     <button type="button" class="closeTask" data-dismiss="modal"></button>  
-                    <span class="modal-title" id="titleModalSchedule">{% trans 'Equipment not Found' %}</span>                      
+                    <span class="modal-title" id="titleModalSchedule" style="margin-left: 50px;">{% trans 'Equipment not Found' %}</span>                      
                     <div class="modal-body equipmentAlertModalBody">
-                                                        
+                        <p>Would you like to add a new equipment?</p>                        
                     </div>
                     <input type="button" value="{% trans 'Yes' %}" id="btnYesAddEquip" onclick="quickAddEquipment(this);"/>
                     <input type="button" value="{% trans 'No' %}" id="btnNoAddEquip" onclick="quickAddEquipment(this);"/>                       
