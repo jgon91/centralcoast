@@ -20,8 +20,8 @@ body {
 }
 footer {
 	/*color: white;*	/
-	width: 100%;
-	/*background: #434343;*/
+	 width: 100%;
+	 /*background: #434343;*/
 	position: relative;
 	bottom: 0px;
 	padding: 2px;
@@ -47,7 +47,7 @@ footer {
 .both {
 	clear: both;
 }
-input[type=button]{
+input[type=button] {
 	border: none;
 }
 /*** General End ***/
@@ -207,7 +207,7 @@ input[type=button]{
 	font-size: 14.5px;
 	font-weight: 600;
 }
-#driverMenu{
+#driverMenu {
 	min-width: 640px;
 	margin: auto;
 	width: 80%;
@@ -304,14 +304,14 @@ input[type=button]{
 .btnColTime {
 	padding: 0px;
 }
-	/* MODAL SGNATURE BEGIN */
+/* MODAL SGNATURE BEGIN */
 #titleSign {
 	text-align: center;
 	font-size: 25px;
 	color: #5D7D1B;
 	font-weight: 600;
 }
-.signModalDialog{
+.signModalDialog {
 	width: 90%;
 	margin: auto;
 	margin-top: 20px;
@@ -332,8 +332,8 @@ input[type=button]{
 	margin: 0px;
 	padding: 0px;
 }
-	/* MODAL SGNATURE BEGIN */
-	/* MODAL TIMEKEEPER BEGIN */
+/* MODAL SGNATURE BEGIN */
+/* MODAL TIMEKEEPER BEGIN */
 .modalTimekeeper {
 	font-size: 30px;
 	font-weight: 600;
@@ -355,8 +355,8 @@ input[type=button]{
 	margin: 0px;
 	padding: 0px;
 }
-	/* MODAL TIMEKEEPER BEGIN /*
-/*** Timekeeper Page End ***/
+/* MODAL TIMEKEEPER BEGIN /*
+ /*** Timekeeper Page End ***/
 
 /*** Taskflow Page Begin ***/
 .pendingTasks {
@@ -386,9 +386,9 @@ input[type=button]{
 	margin-left: 1%;
 }
 /*#next1:hover {
-	background: url('../imgSmall/buttons/next1Hover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
+ background: url('../imgSmall/buttons/next1Hover.png') no-repeat top left;
+ background-size: 100% 100%;
+ }*/
 #next2 {
 	background: url('../imgSmall/buttons/next2.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -397,20 +397,20 @@ input[type=button]{
 	margin-right: 2.5%;
 }
 /*#next2:hover {
-	background: url('../imgSmall/buttons/next1Hover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
+ background: url('../imgSmall/buttons/next1Hover.png') no-repeat top left;
+ background-size: 100% 100%;
+ }*/
 #next3 {
 	background: url('../imgSmall/buttons/next2.png') no-repeat top left;
-	background-size: 100% 100%;	
+	background-size: 100% 100%;
 	color: #434343;
 	float: right;
 	margin-right: 1%;
 }
 /*#next3:hover {
-	background: url('../imgSmall/buttons/next1Hover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
+ background: url('../imgSmall/buttons/next1Hover.png') no-repeat top left;
+ background-size: 100% 100%;
+ }*/
 .moreInfo {
 	text-decoration: none;
 	color: #4F7316;
@@ -430,7 +430,7 @@ input[type=button]{
 	margin: auto;
 }
 .colTasks {
-	width: 31%%;
+	width: 31% %;
 	padding: 0px;
 	margin-top: 7px;
 	margin-bottom: 10px;
@@ -455,9 +455,9 @@ input[type=button]{
 	font-size: 18px;
 }
 /*#btnPastTasks:hover {
-	background: url('../imgSmall/buttons/btnPastTasksHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
+ background: url('../imgSmall/buttons/btnPastTasksHover.png') no-repeat top left;
+ background-size: 100% 100%;
+ }*/
 #btnCreateTask {
 	background: url('../imgSmall/buttons/btnCreateTask.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -471,14 +471,14 @@ input[type=button]{
 	font-size: 18px;
 }
 /*#btnCreateTask:hover {
-	background: url('../imgSmall/buttons/btnCreateTaskHover.png') no-repeat top left;
-	background-size: 100% 100%;
-	color: white;
-}*/
+ background: url('../imgSmall/buttons/btnCreateTaskHover.png') no-repeat top left;
+ background-size: 100% 100%;
+ color: white;
+ }*/
 .pendingTasks a {
 	font-style: normal;
 }
-	/*** Modal Start Task Begin ***/
+/*** Modal Start Task Begin ***/
 .modalTask {
 	border-radius: 20px;
 	width: 90%;
@@ -522,9 +522,9 @@ input[type=button]{
 	padding: 0px;
 }
 /*.closeTask:hover {
-	background: url('../imgSmall/buttons/escHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
+ background: url('../imgSmall/buttons/escHover.png') no-repeat top left;
+ background-size: 100% 100%;
+ }*/
 .infoTask {
 	text-align: left;
 	padding-left: 50px;
@@ -534,7 +534,7 @@ input[type=button]{
 .infoModalTask {
 	color: #434343;
 }
-	/*** Modal Start Task End ***/
+/*** Modal Start Task End ***/
 /*** Taskflow Page End ***/
 
 /*** Checklist Page Begin ***/
@@ -562,22 +562,46 @@ input[type=button]{
 	border-radius: 15px;
 	box-shadow: 2px 2px 5px gray;
 }
-#engine_hours{
+
+.btnGreenCheckList {
+	background: url('../imgSmall/buttons/btnGreen.png') no-repeat top left;
+	background-size: 100% 100%;
+	border-radius: 7px;
+	border: none;
+	box-shadow: 2px 2px 5px gray;
+	height: 50px;
+	color: white;
+	font-size: 25px;
+	font-weight: 700;
+	margin-top: 10px;
+}
+
+#engine_hours {
 	border: solid 2px #333;
 	border-radius: 15px;
 	box-shadow: 2px 2px 5px gray;
 }
 
-#checkList{
+#checkList {
 	font-size: 35px;
 }
-#progressCheckList{
+#progressCheckList {
 	margin: 10px;
 	margin-bottom: 4px;
 	height: 22px;
 }
-/*** Checklist Page End ***/
 
+/*** Begin Modal Take Picture ***/
+
+#videoElement {
+	width: 500px;
+	height: 375px;
+	background-color: #666;
+}
+
+/*** End Modal Take Picture ***/
+/*** Checklist Page End ***/
+/**************************************************************/
 /*** Past Tasks Page Begin ***/
 .divPast {
 	text-align: center;
@@ -673,29 +697,29 @@ input[type=button]{
 	color: white;
 }
 .panel-primary {
-    height: 320px;
+	height: 320px;
 }
 #QR-Code {
-    padding-top: 15px;                
+	padding-top: 15px;
 }
 #submit {
-    width: 60px;
-    height: 35px;
-    margin-bottom: 0px;
+	width: 60px;
+	height: 35px;
+	margin-bottom: 0px;
 }
-.glyphicon{
-    font-size: 20px;
+.glyphicon {
+	font-size: 20px;
 }
-#qr_code_typed{
-   height: 35px;
-    margin: auto;
-    padding: 7px;
-    -webkit-box-shadow: inset 2px 2px 2px 0px #dddddd;
-    -moz-box-shadow: inset 2px 2px 2px 0px #dddddd;
-    box-shadow: inset 2px 2px 2px 0px #dddddd;
+#qr_code_typed {
+	height: 35px;
+	margin: auto;
+	padding: 7px;
+	-webkit-box-shadow: inset 2px 2px 2px 0px #dddddd;
+	-moz-box-shadow: inset 2px 2px 2px 0px #dddddd;
+	box-shadow: inset 2px 2px 2px 0px #dddddd;
 }
 .btn-success {
-    border-color: none;
+	border-color: none;
 }
 /*** Scan QR-Code Page End ***/
 
@@ -726,7 +750,7 @@ input[type=button]{
 .imgCreateTask {
 	width: 110px;
 	height: 110px;
-	margin-left: -10px;	
+	margin-left: -10px;
 	margin-top: 10px;
 	border-radius: 10px 10px 10px 10px;
 }
@@ -764,9 +788,9 @@ input[type=button]{
 	color: white;
 }
 /*#AddImplement:hover {
-	background: url('../imgSmall/buttons/addImplementHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
+ background: url('../imgSmall/buttons/addImplementHover.png') no-repeat top left;
+ background-size: 100% 100%;
+ }*/
 
 #delImplement {
 	background: url('../imgSmall/buttons/startNow.png') no-repeat top left;
@@ -801,9 +825,9 @@ input[type=button]{
 	font-weight: bold;
 }
 /*.findEquipment:hover {
-	background: url('../imgSmall/buttons/searchHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
+ background: url('../imgSmall/buttons/searchHover.png') no-repeat top left;
+ background-size: 100% 100%;
+ }*/
 .scanEquipment {
 	background: url('../imgSmall/buttons/scan.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -820,9 +844,9 @@ input[type=button]{
 	font-weight: bold;
 }
 /*.scanEquipment:hover {
-	background: url('../imgSmall/buttons/scanHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
+ background: url('../imgSmall/buttons/scanHover.png') no-repeat top left;
+ background-size: 100% 100%;
+ }*/
 .nextTab {
 	background: url('../imgSmall/buttons/next.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -840,9 +864,9 @@ input[type=button]{
 	padding-left: 35px;
 }
 /*.nextTab:hover {
-	background: url('../imgSmall/buttons/nextHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
+ background: url('../imgSmall/buttons/nextHover.png') no-repeat top left;
+ background-size: 100% 100%;
+ }*/
 .prevTab {
 	background: url('../imgSmall/buttons/prev.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -906,33 +930,33 @@ input[type=button]{
 	float: right;
 }
 /*.prevTab:hover {
-	background: url('../imgSmall/buttons/backHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
-	/* Nav tabs */
-.nav>li {
+ background: url('../imgSmall/buttons/backHover.png') no-repeat top left;
+ background-size: 100% 100%;
+ }*/
+/* Nav tabs */
+.nav > li {
 	width: 100px;
 	font-weight: bold;
 }
-	/* Tabs status begin */
-.nav>li>a {
+/* Tabs status begin */
+.nav > li > a {
 	color: white;
 	background-color: #989898;
 	border-radius: 10px 10px 0px 0px;
 }
-.nav>li>a.tabError {
+.nav > li > a.tabError {
 	background-color: red;
 	color: white;
 }
-.nav>li>a.tabSucess {
+.nav > li > a.tabSucess {
 	background-color: #4F7219;
 	color: white;
 }
-	/*	Tabs status end */
+/*	Tabs status end */
 .findTractor {
 	width: 90%;
 	min-width: 300px;
-	overflow-y: scroll; 
+	overflow-y: scroll;
 	max-height: 85%;
 }
 #filterDiv {
@@ -942,7 +966,7 @@ input[type=button]{
 	min-height: 300px;
 }
 #filterDiv h3 {
-	margin-top: 0px;	
+	margin-top: 0px;
 }
 .selectFilters {
 	font-size: 20px;
@@ -950,12 +974,12 @@ input[type=button]{
 }
 .showEquipmentDiv {
 	width: 79%;
-	float:right;
+	float: right;
 	min-height: 400px;
 }
 .showImplementDiv {
 	width: 79%;
-	float:right;
+	float: right;
 	min-height: 400px;
 }
 .tractorFiltered {
@@ -996,11 +1020,11 @@ input[type=button]{
 .fc-event .fc-bg {
 	border: solid black 2px;
 }
-	/* 400px in the PC */
+/* 400px in the PC */
 .fc-scroller {
 	height: 250px !important;
 }
-	/*** Modal Scheduler Begin ***/
+/*** Modal Scheduler Begin ***/
 .modalSchedule {
 	border-radius: 20px;
 	width: 90%;
@@ -1028,9 +1052,9 @@ input[type=button]{
 	font-size: 20px;
 }
 /*#btnAprove:hover {
-	background: url('../imgSmall/buttons/startNowHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
+ background: url('../imgSmall/buttons/startNowHover.png') no-repeat top left;
+ background-size: 100% 100%;
+ }*/
 .closeSchedule {
 	background: url('../imgSmall/buttons/esc.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -1044,9 +1068,9 @@ input[type=button]{
 	padding: 0px;
 }
 /*.closeSchedule:hover {
-	background: url('../imgSmall/buttons/escHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
+ background: url('../imgSmall/buttons/escHover.png') no-repeat top left;
+ background-size: 100% 100%;
+ }*/
 .infoSchedule {
 	text-align: left;
 	padding-left: 20px;
@@ -1056,7 +1080,7 @@ input[type=button]{
 .infoModalSchedule {
 	color: #434343;
 }
-	/*** Modal Scheduler End ***/
+/*** Modal Scheduler End ***/
 /*** Scheduler Page End ***/
 
 /*** Start Task Page Begin ***/
@@ -1072,7 +1096,7 @@ input[type=button]{
 .startTaskInfo {
 	font-size: 22px;
 	text-align: left;
-	color: #809A21;	
+	color: #809A21;
 	padding: 20px;
 	font-weight: bold;
 	margin-top: -10px;
@@ -1214,7 +1238,7 @@ input[type=button]{
 	border-radius: 5px;
 	border: 2px solid #819927;
 }
-	/*** Modal Equipment Begin ***/
+/*** Modal Equipment Begin ***/
 #modalEquipSpecs {
 	font-size: 20px;
 	margin-left: 30px;
@@ -1242,11 +1266,11 @@ input[type=button]{
 	padding: 0px;
 }
 /*.closeEquip:hover {
-	background: url('../imgSmall/buttons/escHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}*/
+ background: url('../imgSmall/buttons/escHover.png') no-repeat top left;
+ background-size: 100% 100%;
+ }*/
 #slideModalEquip {
-	
+
 }
 .controlModalEquip {
 	border-radius: 10px;
@@ -1259,5 +1283,5 @@ input[type=button]{
 	border-radius: 10px;
 	border: 5px solid #819927;
 }
-	/*** Modal Equipment End ***/
+/*** Modal Equipment End ***/
 /*** Equipment Page End ***/

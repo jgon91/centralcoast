@@ -11,52 +11,128 @@
 			var questions;
 			var quantQuestions = 0;
 			var answers = [];
+			var image = '';
 			item = getParametersUrl();
 			var qr_code = item.qr_code;
 			var i = 1;
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerDriver' %}");
-					
+
 				//progress bar events
 				questions = getCheckListQuestions("{{ csrf_token }}", "{% url 'equipmentQuestionsChecklist' %}", qr_code);
-				$('.checkYes').click(function(){
+				$('.checkYes').click(function() {
 					saveQuestion(true);
-				});		
-				$('.checkNo').click(function(){
+				});
+				$('.checkNo').click(function() {
+					$("#btnTakePicture").show();
+					$("#btnAnotherPicture").hide();
+					$("#btnSavePicture").hide();
+					showCamara();
+				});
+
+				$('#btnAnotherPicture').click(function() {
+					$("#draw").hide();
+					$("#videoElement").show();
+					$("#btnTakePicture").show();
+					$("#btnAnotherPicture").hide();
+					$("#btnSavePicture").hide();
+				});
+
+				$('#btnSavePicture').click(function() {
+					$("#takePictureModal").modal("hide");
 					saveQuestion(false);
-				});		
+				});
+
+				$("#btnTakePicture").click(function() {
+					image = take();
+					//alert(image);
+					$("#videoElement").hide();
+					$("#draw").show();
+					$("#btnTakePicture").hide();
+					$("#btnAnotherPicture").show();
+					$("#btnSavePicture").show();
+				});
 
 			});
 
-			//This function saves the question in the array. In addition, go to the next question
-			function saveQuestion(answer){
+			function take() {
+				var video = $("#videoElement").get(0);
+				var canvas = $("#draw").get(0);
 
-				answers.push({"id": questions[i-1].id, "answer": answer});
+				var ctx = canvas.getContext("2d");
+				ctx.drawImage(video, 0, 0, 500, 375);
+
+				var dataURL = canvas.toDataURL("image/png");
+				//alert(dataURL.replace(/^data:image\/(png|jpg);base64,/, ""));
+				return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+			}
+
+			//This function saves the question in the array. In addition, go to the next question
+			function saveQuestion(answer) {
+
+				if (image != '') {
+					answers.push({
+						"id" : questions[i - 1].id,
+						"answer" : answer,
+						"photo" : image
+					});
+				} else {
+					answers.push({
+						"id" : questions[i - 1].id,
+						"answer" : answer
+					});
+				}
 
 				quantQuestions += 100 / (questions.length + 1);
-				if (i < questions.length) { //showQuestions
+				if (i < questions.length) {//showQuestions
 					showQuestion(questions[i]);
-				}else if (i == questions.length){ //get engine hours
+				} else if (i == questions.length) {//get engine hours
 					$("#question").html("{% trans 'Engine hours'%}</br><input type='number' id='engine_hours' required />");
 					$("#checkListBtns").html("<input type='button' class='checkYes' id='saveBtn' value='{% trans 'Save' %}' />");
-					$("#saveBtn").click(function(){
-						
-						if($("#engine_hours").val() != "" ){
-							$('.progress-bar').css('width', 100 +'%').attr('aria-valuenow', 100); 
+					$("#saveBtn").click(function() {
+
+						if ($("#engine_hours").val() != "") {
+							$('.progress-bar').css('width', 100 + '%').attr('aria-valuenow', 100);
 							$('.progress-bar').html(100 + '%');
 							var saveSucess = saveCheckList("{{ csrf_token }}", "{% url 'storeChecklistAnswers' %}", item.qr_code, answers);
 							if (true) {
 								$("#checkList").html("{% trans 'Checklist Saved' %}");
 							}
-						}else{
+						} else {
 							alert("{% trans 'Engine hours required'%}");
 						}
 					});
 				}
 				i++;
-				$('.progress-bar').css('width', quantQuestions +'%').attr('aria-valuenow', quantQuestions); 
-				$('.progress-bar').html(quantQuestions.toFixed(0) + '%'); 	
+				$('.progress-bar').css('width', quantQuestions + '%').attr('aria-valuenow', quantQuestions);
+				$('.progress-bar').html(quantQuestions.toFixed(0) + '%');
+				image = '';
+			}
+
+			function showCamara() {
+				$("#draw").hide();
+				$("#videoElement").show();
+
+				video = document.querySelector("#videoElement");
+				navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
+
+				if (navigator.getUserMedia) {
+					navigator.getUserMedia({
+						video : true
+					}, handleVideo, videoError);
+				}
+
+				function handleVideo(stream) {
+					video.src = window.URL.createObjectURL(stream);
+				}
+
+				function videoError(e) {
+					// do something
+				}
+
+
+				$("#takePictureModal").modal();
 			}
 
 		</script>
@@ -70,33 +146,56 @@
 				</div>
 				<br />
 
-					<div class="row">
-						<div id="progressCheckList" class="progress progress-striped active">
-					        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"> 
-					        	0%
-					        </div>
-					    </div>
+				<div class="row">
+					<div id="progressCheckList" class="progress progress-striped active">
+						<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+							0%
+						</div>
 					</div>
+				</div>
 				<div id="checkListContent">
 					<div class="row">
 						<div id="checkList" class="col-xs-12 col-md-12">
-						<p id="question">
-							
-						</p>
-					</div>
-					<div id="checkListBtns" class="row">
-								
-						<div class="col-xs-6 col-md-6">
-							<input type="button" class="checkYes" value="{% trans 'YES'%}" />
+							<p id="question">
+
+							</p>
 						</div>
-					
-						<div class="col-xs-6 col-md-6">
-							<input type="button" class="checkNo" value="{% trans 'NO'%}" />
+						<div id="checkListBtns" class="row">
+
+							<div class="col-xs-6 col-md-6">
+								<input type="button" class="checkYes" value="{% trans 'YES'%}" />
+							</div>
+
+							<div class="col-xs-6 col-md-6">
+								<input type="button" class="checkNo" value="{% trans 'NO'%}" />
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<footer id="foot"></footer>
+			<footer id="foot"></footer>
+
+			<!-- Modal to take picture of the machine problems -->
+			<div class="modal fade" id="takePictureModal" role="dialog">
+				<div class="modal-dialog"  style="width: 1000px">
+					<div class="modal-content modalSchedule">
+						<span class="modal-title" id="titleModalSchedule" style="padding: 10px;">{% trans 'Take Picture' %}</span>
+						<div id="addEquipModalBody" class="modal-body">
+							<video autoplay="true" id="videoElement">
+
+							</video>
+
+							<canvas id="draw" width="500" height="375"></canvas>
+							<br />
+							<input id="btnTakePicture" type="button" class="btnGreenCheckList" value="Take Picture">
+							<input id="btnAnotherPicture" type="button" class="btnGreenCheckList" value="Take Another Picture">
+							<input id="btnSavePicture" type="button" class="btnGreenCheckList" value="Save">
+							</input>
+						</div>
+
+						<div class="both"></div>
+					</div>
+				</div>
+			</div>
 	</body>
 </html>
