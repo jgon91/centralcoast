@@ -108,6 +108,7 @@ urlpatterns = [
     url(r'^switchTaskManager/$', main_views.switchTaskManager, name = 'switchTaskManager'),
     url(r'^updateTaskCalendar/$', main_views.updateTaskCalendar, name = 'updateTaskCalendar'),
     url(r'^getAllManagerEmployees/$', main_views.getAllManagerEmployees, name = 'getAllManagerEmployees'),
+    url(r'^testbase64/$', main_views.testbase64, name = 'testbase64'),
    ### End ###
 
     ###Insert###
