@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+import base64
 
 class Manufacturer(models.Model):
 	name = models.CharField(max_length = 20)
@@ -476,10 +476,16 @@ class MachineChecklist(models.Model):
 	answer = models.BooleanField()
 	note = models.CharField(max_length = 200,blank = True)
 	date = models.DateTimeField()
-	photo = models.URLField(max_length = 200, blank = True)
+	photo = models.TextField(blank = True)
+
+	def set_data(self, data):
+		self.photo = base64.encodestring(data)
+
+	def get_data(self):
+ 		return base64.decodestring(self.photo)
 
 	def __unicode__(self):
-		return "Machine: " + str(self.qr_code.manufacturer_model) + ", Answer: " + str(self.answer) + ", Note: " + str(self.note)
+		return "ID: " + str(self.id) + " Machine: " + str(self.qr_code.manufacturer_model) + ", Answer: " + str(self.answer) + ", Note: " + str(self.note) +', Date: '+ str(self.date)
 
 
 class ImplementChecklist(models.Model):
@@ -489,7 +495,13 @@ class ImplementChecklist(models.Model):
 	answer = models.BooleanField()
 	note = models.CharField(max_length = 200, blank = True)
 	date = models.DateTimeField()
-	photo = models.URLField(max_length = 200, blank = True)
+	photo = models.TextField(blank = True)
+
+	def set_data(self, data):
+		self.photo = base64.encodestring(data)
+
+	def get_data(self):
+		return base64.decodestring(self.photo)
 
 	def __unicode__(self):
 		return "Answer: " + str(self.answer) + ", Note: " + str(self.note)

@@ -594,7 +594,7 @@ def getEquipmentInfo(request):
 				result['speed_range_min'] = implement.speed_range_min
 				result['speed_range_max'] = implement.speed_range_max
 				result['base_cost'] = implement.base_cost
-				result['equipment_type'] = str(implement.equipment_type)
+				# result['equipment_type'] = str(implement.equipment_type)
 				result['manufacturer'] = implement.manufacturer_model.manufacturer.name
 				result['model'] = implement.manufacturer_model.model
 				result['asset_number'] = implement.asset_number
@@ -2475,17 +2475,17 @@ def storeChecklistAnswers(request):
 				engine_hours = form.cleaned_data['engine_hours']
 				equipment = form.cleaned_data['qr_code']
 
+				if isinstance(equipment, Machine): #If we have a machine we need to account the 
+					equipment.engine_hours = engine_hours 
+				elif isinstance(equipment, Implement):
+					equipment.engine_hours = engine_hours 
 				for r in responses:
 					r.employee = employee
 					if r.answer is False: #If one of the answers was no the machine will have they status changed to broken
 						equipment.status = Machine.STBR
 					r.save()
 
-				if isinstance(equipment, Machine): #If we have a machine we need to account the 
-					equipment.engine_hours = engine_hours 
-				
-				equipment.save()
-
+				equipment.save()	
 				result['success'] = True
 			else:
 				result['code'] = 1
@@ -3640,6 +3640,15 @@ def employeeUpdateFormView(request):
 			return HttpResponse(json.dumps(result),content_type='application/json')
 		return render(request,'driver/employeeUpdate', {'form': userform, 'form1': employform})
 ### end ###
+
+def testbase64(request):
+	result = {'success' : False}
+	test = MachineChecklist.objects.get(id = 48)
+	test.set_data("aaa")
+	test.save()
+	result["depois"] = test.photo
+	result["normal"] = test.get_data()
+	return HttpResponse(json.dumps(result),content_type='application/json')
 
 def employeeAttendanceFormView(request):
 	form = employeeAttendanceForm(request.POST)

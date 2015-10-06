@@ -625,6 +625,11 @@ class storeAnswersForm(forms.Form):
 				for iten in  ans:
 					awr = iten['answer']
 					note = ''
+					photo = ''
+					try:
+						photo = iten['photo']
+					except KeyError:
+						pass
 
 					try:
 						note = iten['note']
@@ -637,7 +642,8 @@ class storeAnswersForm(forms.Form):
 							qr_code = equipment,
 							answer = awr,
 							note = note,
-							date = now
+							date = now,
+							photo = photo
 						)
 					)
 				return ret
@@ -645,7 +651,12 @@ class storeAnswersForm(forms.Form):
 				for iten in ans:
 					awr = iten['answer']
 					note = ''
+					photo = ''
 
+					try:
+						photo = iten['photo']
+					except KeyError:
+						pass
 					try:
 						note = iten['note']
 					except KeyError:
@@ -657,7 +668,8 @@ class storeAnswersForm(forms.Form):
 							qr_code = equipment,
 							answer = awr,
 							note = note,
-							date = now
+							date = now,
+							photo = photo
 						)
 					)
 				return ret
