@@ -1,170 +1,168 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        {% load staticfiles %}
-        {% load i18n %}
-        <title>Scan QRCode</title>
-        <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
-        <script src="{% static 'js/script.js' %}"></script>
-        <script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
-        <script>
-            $(document).ready(function() {
-                $("#foot").load("{% url 'footer' %}");
-                $("#head").load("{% url 'headerDriver' %}");
-                var item = {};                
+	<head>
+		{% load staticfiles %}
+		{% load i18n %}
+		<title>Scan QRCode</title>
+		<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+		<script src="{% static 'js/script.js' %}"></script>
+		<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
+		<script>
+			$(document).ready(function() {
+				$("#foot").load("{% url 'footer' %}");
+				$("#head").load("{% url 'headerDriver' %}");
+				var item = {};
 
-                item = getParametersUrl();
-                $("#url").val(item.url + "?qr_code=");      
+				item = getParametersUrl();
+				$("#url").val(item.url + "?qr_code=");
 
+			});
 
-                
-            });
+			function checkEquipment(token, url, id) {
+				$.ajax({
+					method : "GET",
+					url : url,
+					//async: false,
+					data : {
+						"csrfmiddlewaretoken" : token,
+						"qr_code" : id
+					}, // id could be qrCode or employeeId
+					datatype : "json",
+					success : function(data, status, xhr) {
+						if (data.success) {
+							if ($("#url").val() == "/en-us/home/equipment/?qr_code=")
+								window.location.href = "{% url 'equipment' %}?qr_code=" + id;
+							else
+								window.location.href = "{% url 'checklist' %}?qr_code=" + id;
+						} else {
+							$("#qr_code").val(id);
+							$('#quickAdd').modal();
+						}
+					}
+				});
+			}
 
-            function checkEquipment(token, url, id) {                   
-                $.ajax({
-                    method : "GET",
-                    url : url,
-                    //async: false,
-                    data : {
-                        "csrfmiddlewaretoken" : token,
-                        "qr_code" : id
-                    }, // id could be qrCode or employeeId
-                    datatype : "json",
-                    success : function(data, status, xhr) {                                    
-                        if (data.success) {
-                            if ($("#url").val() == "/en-us/home/equipment/?qr_code=")
-                                window.location.href = "{% url 'equipment' %}?qr_code=" + id;
-                            else
-                                window.location.href = "{% url 'checklist' %}?qr_code=" + id;
-                        } else{                            
-                            $("#qr_code").val(id);
-                            $('#quickAdd').modal();                                       
-                        }
-                    }
-                });
-            }
+			function quickAddEquipment(btn) {
+				if (btn.value == "Yes") {
+					$('#quickAdd').modal("hide");
+					$("#addEquipModalBody").load("{% url 'machineQuickFormAdd' %}");
+					$('#addEquipModal').modal();
+					$("input[name=qr_code]").val($("#qr_code").val());
+				} else
+					$('#quickAdd').modal("hide");
 
+			}
 
-            function quickAddEquipment(btn){                
-                if (btn.value == "Yes"){ 
-                    $('#quickAdd').modal("hide");
-                    $("#addEquipModalBody").load("{% url 'machineQuickFormAdd' %}");
-                    $('#addEquipModal').modal();  
-                    $("input[name=qr_code]").val($("#qr_code").val());                  
-                }else
-                    $('#quickAdd').modal("hide");
-                
-            }
+		</script>
+		<style>
+			.panel-primary {
+				height: 320px;
+			}
+			#QR-Code {
+				padding-top: 15px;
+			}
+			#submit {
+				width: 60px;
+				height: 35px;
+				margin-bottom: 0px;
+			}
+			#qr_code {
+				height: 45px;
+				margin: auto;
+			}
+			.glyphicon {
+				font-size: 20px;
+			}
+			#qr_code {
+				height: 35px;
+				padding: 7px;
+				-webkit-box-shadow: inset 2px 2px 2px 0px #dddddd;
+				-moz-box-shadow: inset 2px 2px 2px 0px #dddddd;
+				box-shadow: inset 2px 2px 2px 0px #dddddd;
+			}
+			.btn-success {
+				border-color: none;
+			}
+		</style>
+	</head>
+	<body>
+		<header id="head"></header>
+		<input type="hidden" value="" id="url">
+		</input>
+		<div id="wrapper">
+			<div id="content">
+				<div id="QR-Code" class="container">
+					<div class="panel panel-primary col-xs-12" style="border: none;">
+						<div style="margin auto 40px; text-align: center; padding-top: 10px;">
+							<select id="cameraId" class="form-control" style="display: inline-block;width: auto; display: none;"></select>
+							<a href="#">
+							<input id="play" value="{% trans 'Scan QR-Code' %}" title="Play" type="button" class="btn btn-success btn-sm">
+							</input> </a>
+						</div>
+						<div class="panel-body" id="contentQRCode" style="padding-top: 10px; padding-bottom: 0px;">
+							<div class="col-md-12 col-xs-12" style="text-align: center;">
+								<div class="well" id="well" style="padding: 0px; position: relative;display: inline-block; border: green solid 2px;">
+									<canvas id="qr-canvas" width="200px" height="200px"></canvas>
+									<div class="scanner-laser laser-rightBottom" style="opacity: 0.5;"></div>
+									<div class="scanner-laser laser-rightTop" style="opacity: 0.5;"></div>
+									<div class="scanner-laser laser-leftBottom" style="opacity: 0.5;"></div>
+									<div class="scanner-laser laser-leftTop" style="opacity: 0.5;"></div>
+								</div>
+							</div>
+						</div>
+						<div style="margin auto 40px; text-align: center;">
+							<input type="text" id="qr_code" style="color:black;" placeholder="{% trans 'Type QR-Code' %}"/>
 
+							<button id="submit" title="Play" type="button" class="btn btn-success btn-sm" onclick="checkEquipment('{{ csrf_token }}', '/home/getEquipmentInfo/', $('#qr_code').val());">
+								<span class="glyphicon glyphicon-play"></span>
+							</button>
 
-        </script>
-        <style>
-            
-            .panel-primary{
-                height: 320px;
-            }
-            #QR-Code{
-                padding-top: 15px;                
-            }
-            #submit{
-                width: 60px;
-                height: 35px;
-                margin-bottom: 0px;
-            }
-            #qr_code{
-                height: 45px;
-                margin: auto;
-            }
-            .glyphicon{
-                font-size: 20px;
-            }
-            #qr_code{
-                height: 35px;
-                padding: 7px;
-                -webkit-box-shadow: inset 2px 2px 2px 0px #dddddd;
-                -moz-box-shadow: inset 2px 2px 2px 0px #dddddd;
-                box-shadow: inset 2px 2px 2px 0px #dddddd;
-            }
-            .btn-success{
-                border-color: none;
-            }
-        </style>
-    </head>
-    <body>
-      <header id="head"></header>
-      <input type="hidden" value="" id="url"></input>
-      <div id="wrapper">
-        <div id="content">
-            <div id="QR-Code" class="container">
-                <div class="panel panel-primary col-xs-12" style="border: none;">
-                        <div style="margin auto 40px; text-align: center; padding-top: 10px;">                          
-                            <select id="cameraId" class="form-control" style="display: inline-block;width: auto; display: none;"></select>
-                            <a href="#">
-                                <input id="play" value="{% trans 'Scan QR-Code' %}" title="Play" type="button" class="btn btn-success btn-sm"></input>   
-                            </a>
-                        </div>  
-                    <div class="panel-body" id="contentQRCode" style="padding-top: 10px; padding-bottom: 0px;">
-                        <div class="col-md-12 col-xs-12" style="text-align: center;">
-                            <div class="well" id="well" style="padding: 0px; position: relative;display: inline-block; border: green solid 2px;">
-                                <canvas id="qr-canvas" width="200px" height="200px"></canvas>
-                                <div class="scanner-laser laser-rightBottom" style="opacity: 0.5;"></div>
-                                <div class="scanner-laser laser-rightTop" style="opacity: 0.5;"></div>
-                                <div class="scanner-laser laser-leftBottom" style="opacity: 0.5;"></div>
-                                <div class="scanner-laser laser-leftTop" style="opacity: 0.5;"></div>
-                            </div>
-                        </div>
-                    </div>    
-                    <div style="margin auto 40px; text-align: center;">     
-                                <input type="text" id="qr_code" style="color:black;" placeholder="{% trans 'Type QR-Code' %}"/> 
-                                
-                                    <button id="submit" title="Play" type="button" class="btn btn-success btn-sm" onclick="checkEquipment('{{ csrf_token }}', '/home/getEquipmentInfo/', $('#qr_code').val());">
-                                        <span class="glyphicon glyphicon-play"></span>
-                                    </button>
-                                
-                        </div>         
-                </div>
-            </div>
-        </div>
-    </div>
-    <footer id="foot"></footer>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer id="foot"></footer>
 
-    <!-- Modal Confirm to quick add -->
-        <div class="modal fade" id="quickAdd" role="dialog">
-            <div class="modal-dialog">
-                <!-- Modal content-->
-                <div class="modal-content modalTask" style="text-align: center;">
-                    <button type="button" class="closeTask" data-dismiss="modal"></button>  
-                    <span class="modal-title" id="titleModalSchedule" style="margin-left: 50px;">{% trans 'Equipment not Found' %}</span>                      
-                    <div class="modal-body equipmentAlertModalBody">
-                        <p>Would you like to add a new equipment?</p>                        
-                    </div>
-                    <input type="button" value="{% trans 'Yes' %}" id="btnYesAddEquip" onclick="quickAddEquipment(this);"/>
-                    <input type="button" value="{% trans 'No' %}" id="btnNoAddEquip" onclick="quickAddEquipment(this);"/>                       
-                    <div class="both"></div>
-                </div>
-            </div>
-        </div>
+		<!-- Modal Confirm to quick add -->
+		<div class="modal fade" id="quickAdd" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal-content modalTask" style="text-align: center;">
+					<button type="button" class="closeTask" data-dismiss="modal"></button>
+					<span class="modal-title" id="titleModalSchedule" style="margin-left: 50px;">{% trans 'Equipment not Found' %}</span>
+					<div class="modal-body equipmentAlertModalBody">
+						<p>
+							Would you like to add a new equipment?
+						</p>
+					</div>
+					<input type="button" value="{% trans 'Yes' %}" id="btnYesAddEquip" onclick="quickAddEquipment(this);"/>
+					<input type="button" value="{% trans 'No' %}" id="btnNoAddEquip" onclick="quickAddEquipment(this);"/>
+					<div class="both"></div>
+				</div>
+			</div>
+		</div>
 
-        <!-- Modal to quick add equipment -->
-        <div class="modal fade" id="addEquipModal" role="dialog">
-            <div class="modal-dialog"  style="width: 1000px">
-                <div class="modal-content modalSchedule">
-                    <button type="button" class="closeSchedule" data-dismiss="modal"></button>
-                    <span class="modal-title" id="titleModalSchedule" style="padding: 10px;">{% trans 'Add New Equipment' %}</span>
-                    <div id="addEquipModalBody" class="modal-body">
-        
-                    </div>
+		<!-- Modal to quick add equipment -->
+		<div class="modal fade" id="addEquipModal" role="dialog">
+			<div class="modal-dialog"  style="width: 1000px">
+				<div class="modal-content modalSchedule">
+					<button type="button" class="closeSchedule" data-dismiss="modal"></button>
+					<span class="modal-title" id="titleModalSchedule" style="padding: 10px;">{% trans 'Add New Equipment' %}</span>
+					<div id="addEquipModalBody" class="modal-body">
 
-                    <div class="both"></div>
-                </div>
-            </div>
-        </div>
-    </body>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="{% static 'WebCodeCam/js/main.js' %}"></script>
-    <script type="text/javascript" src="{% static 'WebCodeCam/js/startScanQRCode.js' %}"></script>
-    <script type="text/javascript" src="{% static 'WebCodeCam/js/qrcodelib.js' %}"></script>
-    <script type="text/javascript" src="{% static 'WebCodeCam/js/WebCodeCam.js' %}"></script>
-    
+					</div>
+
+					<div class="both"></div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="{% static 'WebCodeCam/js/main.js' %}"></script>
+	<script type="text/javascript" src="{% static 'WebCodeCam/js/startScanQRCode.js' %}"></script>
+	<script type="text/javascript" src="{% static 'WebCodeCam/js/qrcodelib.js' %}"></script>
+	<script type="text/javascript" src="{% static 'WebCodeCam/js/WebCodeCam.js' %}"></script>
+
 </html>
