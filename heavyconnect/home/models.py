@@ -476,7 +476,7 @@ class MachineChecklist(models.Model):
 	answer = models.BooleanField()
 	note = models.CharField(max_length = 200,blank = True)
 	date = models.DateTimeField()
-	photo = models.TextField(blank = True)
+	photo = models.TextField(max_length = 550000,blank = True)
 
 	def set_data(self, data):
 		self.photo = base64.encodestring(data)
