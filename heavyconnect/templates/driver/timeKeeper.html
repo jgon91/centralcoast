@@ -8,6 +8,11 @@
 		<script>
 		var item_count = 0;
 		var hour_start = 0;
+		var shiftStarted = 0;
+		var breakStarted = 0;
+		var lunchStarted = 0;
+		var breakOrLunch = 0;	//	1 = break ... 2 = lunch
+		
 		var urlTest = "{% url 'stopBreak' %}";
 		$(document).ready(function() {
 			$("#foot").load("{%url 'footer'%}");
@@ -18,9 +23,87 @@
 				$sigdiv.jSignature("reset");
 			});
 			getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
-			$("#startShift").click(function() {
-				startShift("{{ csrf_token }}", "{% url 'startShift' %}");
+			
+			$("#shift").click(function() {
+				$('#showTimekeeperModal').modal();
+				if (shiftStarted == 0) {
+					$("#messageTimekeeper").html("Clock-in?");
+				} else {
+					$("#messageTimekeeper").html("Clock-out?");
+				}
+				$("#confirmShift").empty();
+				$("#confirmBreak").empty();
+				$("#confirmLunch").empty();
+				$("#confirmShift").append('<input type="button" value="{% trans 'CONFIRM' %}" class="btnsTimekeeper"/>');
 			});
+			$("#confirmShift").click(function() {
+				if (shiftStarted == 0) {
+					$("#messageTimekeeper").html("Starting shift...");
+					$('#confirmShift').hide();
+					startShift("{{ csrf_token }}", "{% url 'startShift' %}");
+				} else {
+					$("#messageTimekeeper").html("Stopping shift...");
+					$('#confirmShift').hide();
+					alert("stop shift");
+					//stopShift("{{ csrf_token }}", "{% url 'stopShift' %}");
+				}
+			});
+			$("#break").click(function() {
+				$('#showTimekeeperModal').modal();
+				if (breakStarted == 0) {
+					$("#messageTimekeeper").html("Start break?");
+				} else {
+					$("#messageTimekeeper").html("End break?");
+				}
+				$("#confirmShift").empty();
+				$("#confirmBreak").empty();
+				$("#confirmLunch").empty();
+				$("#confirmBreak").append('<input type="button" value="{% trans 'CONFIRM' %}" class="btnsTimekeeper"/>');
+			});
+			$("#confirmBreak").click(function() {
+				breakOrLunch = 1;
+				if (breakStarted == 0) {
+					$("#messageTimekeeper").html("Starting break...");
+					$('#confirmBreak').hide();
+					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);
+				} else {
+					$("#messageTimekeeper").html("Ending break...");
+					$('#confirmBreak').hide();
+					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count);
+				}
+				breakOrLunch = 0;
+			});
+			$("#lunch").click(function() {
+				$('#showTimekeeperModal').modal();
+				if (lunchStarted == 0) {
+					$("#messageTimekeeper").html("Start lunch?");
+				} else {
+					$("#messageTimekeeper").html("End lunch?");
+				}
+				$("#confirmShift").empty();
+				$("#confirmBreak").empty();
+				$("#confirmLunch").empty();
+				$("#confirmLunch").append('<input type="button" value="{% trans 'CONFIRM' %}" class="btnsTimekeeper"/>');
+			});
+			$("#confirmLunch").click(function() {
+				if (lunchStarted == 0) {
+					$("#messageTimekeeper").html("Starting lunch...");
+					$('#confirmLunch').hide();
+					breakOrLunch = 2;
+					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);
+					breakOrLunch = 0;
+				} else {
+					$("#messageTimekeeper").html("Ending lunch...");
+					$('#confirmLunch').hide();
+					breakOrLunch = 2;
+					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count);
+					breakOrLunch = 0;
+				}
+			});
+			
+			
+			
+			
 			$(".btnBreaksGreen").click(function(){
 				startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);
 			});
@@ -47,7 +130,8 @@
 				success : function(data, status, xhr) {
 					if (data.success) {
 						if (data.hour_started != 'None') {
-							changeBtn("#startShift", data.hour_started.substring(0,8));
+							changeBtn("#shift", data.hour_started.substring(0,8));
+							shiftStarted = 1;
 						}
 						for(var i = 0; i < data.breaks.length; i++) {
 							if (data.breaks[i][0] != "None") {
@@ -85,18 +169,18 @@
 				datatype : "json",
 				success : function(data, status, xhr) {
 					if (data.success) {
-						changeBtn("#startShift", data.hour_started.substring(11,19));
+						$("#messageTimekeeper").html("Clock-in successful");
+						shiftStarted = 1;
+						setTimeout(function(){
+    						$('#showTimekeeperModal').modal('hide')
+						}, 3000);
 					} else if (data.code == 1) {
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("You need to finish the shift you started already before create a new one.");
 					} else if (data.code == 2) {
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("There is no users associated whit this id.");
 					} else if (data.code == 3) {
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("Error. Contact Suport.");
 					} else if (data.code == 4) {
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("Error. Contact Suport.");
 					}
 				}
@@ -110,21 +194,35 @@
 				datatype : "json",
 				success : function(data, status, xhr) {
 					if (data.success) {
-						changeBtn("#startBreak" + breaks, data.time.substring(11,19));
+						alert("success start break");
+						alert("breakOrLunch in = " + breakOrLunch);
+						if (breakOrLunch == 1) {
+							$("#messageTimekeeper").html("Break started");
+							breakStarted = 1;
+						}
+						if (breakOrLunch == 2) {
+							$("#messageTimekeeper").html("Lunch started");
+							lunchStarted = 1;
+						}
+						breakStarted = 1;
+						lunchStarted = 1;
+						setTimeout(function(){
+    						$('#showTimekeeperModal').modal('hide')
+						}, 3000);
 					} else if (data.code == 1) {
-						$('#showTimekeeperModal').modal();
+						alert("1");
 						$("#messageTimekeeper").html("You cannot start 2 breaks at the same time.");
 					} else if (data.code == 2) {
-						$('#showTimekeeperModal').modal();
+						alert("2");
 						$("#messageTimekeeper").html("The shift for today was already finished.");
 					} else if (data.code == 3) {
-						$('#showTimekeeperModal').modal();
+						alert("3");
 						$("#messageTimekeeper").html("You need to start a shift first.");
 					} else if (data.code == 4) {
-						$('#showTimekeeperModal').modal();
+						alert("4");
 						$("#messageTimekeeper").html("Error. Contact Suport.");
 					} else if (data.code == 5) {
-						$('#showTimekeeperModal').modal();
+						alert("5");
 						$("#messageTimekeeper").html("Error. Contact Suport.");
 					}
 				}
@@ -138,23 +236,28 @@
 				datatype: "json",
 				success: function(data, status, xhr){
 					if(data.success){
-						changeBtn("#stopBreak" + breaks, data.time.substring(11,19));
-						item_count++;
-						createBtnBreak(item_count);
+						if (breakOrLunch == 1) {
+							$("#messageTimekeeper").html("Break ended");
+							breakStarted = 0;
+						}
+						if (breakOrLunch == 2) {
+							$("#messageTimekeeper").html("Lunch ended");
+							lunchStarted = 0;
+						}
+						breakStarted = 0;
+						lunchStarted = 0;
+						setTimeout(function(){
+    						$('#showTimekeeperModal').modal('hide')
+						}, 3000);
 					} else if(data.code == 1){
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("You need to start a break first.");
 					} else if(data.code == 2){
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("The shift for today was already finished.");
 					} else if(data.code == 3){
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("You need to start a shift first.");
 					} else if(data.code == 4){
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("Error. Contact Suport.");
 					} else if(data.code == 5){
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("Error. Contact Suport.");
 					}
 				}
@@ -169,26 +272,21 @@
 				success: function(data, status, xhr){
 					if(data.success){
 						//$('#signModal').modal("hide");
-						changeBtn("#stopShift", data.hour_ended.substring(11,19));
+						//changeBtn("#stopShift", data.hour_ended.substring(11,19));
 						$("#startBreak" + item_count).hide();
 						$("#stopBreak" + item_count).hide();
+						shiftStarted = 0;
 					} else if(data.code == 1){
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("You need to take at least 3 breaks.");
 					} else if(data.code == 2){
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("The shift for today was already finished.");
 					} else if(data.code == 3){
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("You have not started your shift yet.");
 					} else if(data.code == 4){
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("This user is not authorized to use the system.");
 					} else if(data.code == 5){
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("Error. Contact Suport.");
 					} else if(data.code == 6){
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("Error. Contact Suport.");
 					}
 				}
@@ -247,15 +345,33 @@
 					<img src="{% static 'imgSmall/iconTimekeeper.png' %}"/>
 					{% trans 'HC TIMEKEEPER' %}
 				</div>
+				
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" id="startShift" value="{% trans 'START SHIFT' %}" class=""/>
+						<input type="button" id="shift" value="{% trans 'SHIFT' %}" class="btnsTimekeeper"/>
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-xs-2 col-md-2 btnColTime"></div>
-					<div class="col-xs-1 col-md-1 btnColTime"></div>
-					<div class="col-xs-2 col-md-2 btnColTime">
+					<div class="col-xs-12 col-md-12">
+						<input type="button" id="break" value="{% trans 'BREAK' %}" class="btnsTimekeeper"/>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-md-12">
+						<input type="button" id="lunch" value="{% trans 'LUNCH' %}" class="btnsTimekeeper"/>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-md-12">
+						<input type="button" id="timelog" value="{% trans 'TIMELOG' %}" class="btnsTimekeeper"/>
+					</div>
+				</div>
+				
+				
+				
+				
+				<div class="row">
+					<div class="col-xs-12 col-md-12">
 						<input type="button" id="startBreak0" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen"/>
 					</div>
 					<div class="col-xs-2 col-md-2 btnColTime"></div>
@@ -270,6 +386,7 @@
 						<input type="button" id="stopShift" value="{% trans 'END SHIFT' %}"/>
 					</div>
 				</div>
+				
 			</div>
 		</div>
 		<footer>
@@ -284,6 +401,9 @@
 					<div class="modal-body">
 						<button type="button" class="closeEquip" data-dismiss="modal"></button>
 						<span id="messageTimekeeper"></span>
+						<div id="confirmShift"></div>
+						<div id="confirmBreak"></div>
+						<div id="confirmLunch"></div>
 						<br>
 						<div class="both"></div>
 					</div>

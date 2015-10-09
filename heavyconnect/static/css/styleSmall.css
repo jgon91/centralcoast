@@ -248,16 +248,16 @@ input[type=button] {
 /*** Home Page End ***/
 
 /*** Timekeeper Page Begin ***/
-#startShift {
+.btnsTimekeeper {
 	background: url('../imgSmall/buttons/btnGreen.png') no-repeat top left;
 	background-size: 100% 100%;
 	border-radius: 7px;
 	border: none;
 	box-shadow: 2px 2px 5px gray;
-	height: 40px;
+	height: 50px;
 	width: 200px;
 	color: white;
-	margin-top: -10px;
+	margin-bottom: 10px;
 	font-size: 25px;
 	font-weight: 700;
 }
