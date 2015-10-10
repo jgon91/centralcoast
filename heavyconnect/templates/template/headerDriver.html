@@ -15,15 +15,17 @@
 		<link rel="manifest" href="{% static manifest.json %}">
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
 		<script type="text/javascript">
+		<script type="text/javascript">
 			var appInsights=window.appInsights||function(config){
 				function s(config){t[config]=function(){var i=arguments;t.queue.push(function(){t[config].apply(t,i)})}}var t={config:config},r=document,f=window,e="script",o=r.createElement(e),i,u;for(o.src=config.url||"//az416426.vo.msecnd.net/scripts/a/ai.0.js",r.getElementsByTagName(e)[0].parentNode.appendChild(o),t.cookie=r.cookie,t.queue=[],i=["Event","Exception","Metric","PageView","Trace"];i.length;)s("track"+i.pop());return config.disableExceptionTracking||(i="onerror",s("_"+i),u=f[i],f[i]=function(config,r,f,e,o){var s=u&&u(config,r,f,e,o);return s!==!0&&t["_"+i](config,r,f,e,o),s}),t
 			}({
-				instrumentationKey:"8983a860-8067-4da2-88bc-844f82ca6b13",
+				instrumentationKey:"7c7fa045-4d2f-4023-880a-8515a5500a75",
 			endpointUrl:"//dc-int.services.visualstudio.com/v2/track"
 			});
 
 			window.appInsights=appInsights;
 			appInsights.trackPageView();
+		</script>
 		</script>
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 		<link rel="stylesheet" type="text/css" href="{% static 'css/styleSmall.css' %}">
