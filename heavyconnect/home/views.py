@@ -277,7 +277,7 @@ def startBreak(request):
 	if request.method == "POST":
 		if request.is_ajax():
 			try:
-				lunch = request.POST['lunch']
+				lunch = int(request.POST['lunch'])
 				employee = Employee.objects.get(user = request.user)
 
 				attendance = EmployeeAttendance.objects.filter(employee = employee).order_by('-date').first()
@@ -307,25 +307,31 @@ def startBreak(request):
 @login_required
 def stopBreak(request):
 	result = {'success' : False}
-
+	print "Called function stopBreak"
 	if request.method == "POST":
 		if request.is_ajax():
 			try:
-				lunch = request.POST['lunch']
+				print "1"
+				lunch = int(request.POST['lunch'])
 				employee = Employee.objects.get(user_id = request.user.id)
-				
+				print "2"
 				attendance = EmployeeAttendance.objects.filter(employee = employee).order_by('-date').first()
-
+				print "3"
 				if attendance.hour_ended is None:
 					t_break = Break.objects.filter(attendance_id = attendance).order_by('-start')
 					count = t_break.count()
-
+					print "4"
 					if (count != 0) and t_break[0].end is None:
+						print "4.5"
+						print lunch
+						print t_break[0].lunch
 						if t_break[0].lunch == lunch:
+							print "5"
 							t_break = t_break[0]
 							t_break.end = datetime.datetime.now()
 							t_break.save()
 							result['success'] = True
+							print "6"
 							result['time'] = str(t_break.end)
 						else:
 							result['code'] = 6 #The break is not compatible with the variable request.lunch
