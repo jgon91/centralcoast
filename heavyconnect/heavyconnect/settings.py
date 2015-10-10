@@ -28,6 +28,9 @@ SECRET_KEY = 'dgaaxm0o4)7max48$chs1im)av623&qw^t*e4evk8m*@48al3^'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+GOOGLE_ANALYTICS_PROPERTY_ID = 'UA-68680504-1'
+GOOGLE_ANALYTICS_DOMAIN = 't-and-a.herokuapp.com'
+
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'reiter-heavyconnect.elasticbeanstalk.com', 'heavyconnect-ta.elasticbeanstalk.com',  't-and-a.herokuapp.com']
 
 
@@ -71,6 +74,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.i18n',
+                'context_processors.google_analytics',
             ],
         },
     },
