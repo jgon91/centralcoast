@@ -1560,6 +1560,58 @@ def getHoursToday(employee_id, date_entry):
 
 	return str(count)
 
+#this function will retrieve hours worked in the last atendance of the employee, with breaks times and hours worked until the break
+def managerRetrieveHoursToday(request):
+	result = []
+	breakStart = [] #time break started
+	breakDuration = [] # breank duratio
+	workBreak = [] # how much hours worked until break
+	date = datetime.datetime.now() #today date
+	start_date = datetime.datetime.combine(date, datetime.time.min) #today date at 0:00 AM
+	end_date = datetime.datetime.combine(date, datetime.time.max) # date at 11:59 PM
+	employeeAttendance = EmployeeAttendance.objects.filter(employee__user__id = 31, date__range = (start_date,end_date)).order_by('-hour_started')[:1]
+	count = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #counter to keep all the worked hours
+	keeper = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #this variable will keep the last break. It is useful when the shift is not done
+	keeper2 =  datetime.timedelta(hours = 23, minutes = 59, seconds = 59) # when the break is on another day
+	count2 = 0          #this variable will keep track of which interration I am. It will help with the bug of break without shift end
+	for item in employeeAttendance:
+		breaks = Break.objects.filter(attendance__id = item.id)
+		breakTime = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) #help to calculate work time between breaks
+		for doc in breaks:
+			aux = {} #puts breakStart, breakDuration and workBreak together
+			docStart = datetime.timedelta(hours = doc.start.hour, minutes = doc.start.minute, seconds = doc.start.second)
+			aux['breakStart'] = str(docStart)
+			if breakTime <= docStart:
+				aux['workBreak'] = str(docStart - breakTime)
+				count += docStart - breakTime
+			else: #Midnight is between these times
+				aux['workBreak'] = str((keeper2 - breakTime) + docStart)
+				count += (keeper2 - breakTime) + docStart
+			if (doc.end != None):
+				docEnd = datetime.timedelta(hours = doc.end.hour, minutes = doc.end.minute, seconds = doc.end.second)
+				breakTime = docEnd
+				if docEnd >= docStart:
+					aux['breakDuration'] = str(docEnd - docStart)
+				else: #in case of start and end are in different days, passing by midnight
+					aux['breakDuration'] = str((keeper2 - docStart) + docEnd)
+			else:
+				aux['breakDuration'] = 'Happening'
+			aux['lunch'] = doc.lunch
+			result.append(aux)
+		if item.hour_ended != None:
+			endTurn = datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second)
+			if endTurn >= breakTime:
+				count += endTurn - breakTime
+			else:
+				count += (keeper2 - breakTime) + endTurn
+		if len(breaks) == 0:		
+			endTurn = datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second)
+			if endTurn >= breakTime:
+				count = endTurn - breakTime
+			else:
+				count = (keeper2 - breakTime) + endTurn
+	result.append({'Total' : str(count)})
+	return HttpResponse(json.dumps(result),content_type='application/json')
 
 # This function call getHoursToday() for each day in the week of the desired day passed as argument
 # It requries a employee_id and any day of the week, and the function will check all days of that week.
