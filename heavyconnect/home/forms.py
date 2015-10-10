@@ -560,6 +560,7 @@ class implementChecklistForm(forms.Form):
 ### Structure for breakForm ###
 class breakForm(forms.Form):
 	attendance = forms.ModelChoiceField(queryset = EmployeeAttendance.objects.all())
+	lunch = forms.BooleanField()
 	start = forms.TimeField()
 	end = forms.TimeField(required = False)
 ### End ###

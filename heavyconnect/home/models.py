@@ -269,6 +269,7 @@ class EmployeeAttendance(models.Model):
 
 class Break(models.Model):
 	attendance = models.ForeignKey(EmployeeAttendance)
+	lunch = models.BooleanField()
 	start = models.TimeField()
 	end = models.TimeField(null = True, blank = True)
 
