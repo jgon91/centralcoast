@@ -1570,11 +1570,13 @@ def managerRetrieveHoursToday(request):
 			keeper = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #this variable will keep the last break. It is useful when the shift is not done
 			keeper2 =  datetime.timedelta(hours = 23, minutes = 59, seconds = 59) # when the break is on another day
 			for item in employeeAttendance:
+				print 1
 				breaks = Break.objects.filter(attendance__id = item.id)
 				breakTime = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) #help to calculate work time between breaks
 				time_aux = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute) #variable used to remove second of the date
 				atten_start = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute)
 				for doc in breaks:
+					print 2
 					aux = {} #puts breakStart, breakDuration and workBreak together
 					docStart = datetime.timedelta(hours = doc.start.hour, minutes = doc.start.minute, seconds = doc.start.second)
 					hours, remainder = divmod(docStart.seconds, 3600)
@@ -1631,12 +1633,15 @@ def managerRetrieveHoursToday(request):
 						count = endTurn - breakTime
 					else:
 						count = (keeper2 - breakTime) + endTurn
+			print "4"
 			hours, remainder = divmod(count.seconds, 3600)
 			minutes, seconds = divmod(remainder, 60)
 			result['Total'] = str(hours) + ':' + str(minutes)
+			print "5"
 			hours, remainder = divmod(atten_start.seconds, 3600)
 			minutes, seconds = divmod(remainder, 60)
 			result['Attendance_start'] = str(hours) + ':' + str(minutes)
+			print "Here"
 			if(Attendance_end != 'Happening'):
 				hours, remainder = divmod(Attendance_end.seconds, 3600)
 				minutes, seconds = divmod(remainder, 60)
