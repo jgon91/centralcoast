@@ -1609,6 +1609,7 @@ def managerRetrieveHoursToday(request):
 							minutes, seconds = divmod(remainder, 60)
 							aux['breakDuration'] = str(hours) + ':' + str(minutes)
 					else:
+						print 3
 						aux['breakStop'] = 'Happening'
 						aux['breakDuration'] = 'Happening'
 					aux['lunch'] = doc.lunch
