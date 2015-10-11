@@ -1570,18 +1570,17 @@ def managerRetrieveHoursToday(request):
 			keeper = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #this variable will keep the last break. It is useful when the shift is not done
 			keeper2 =  datetime.timedelta(hours = 23, minutes = 59, seconds = 59) # when the break is on another day
 			for item in employeeAttendance:
-				print 1
 				breaks = Break.objects.filter(attendance__id = item.id)
+				breakDuration = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #variable used to decrease time from the total when one break still going on
 				breakTime = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) #help to calculate work time between breaks
 				time_aux = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute) #variable used to remove second of the date
 				atten_start = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute)
 				for doc in breaks:
-					print 2
 					aux = {} #puts breakStart, breakDuration and workBreak together
 					docStart = datetime.timedelta(hours = doc.start.hour, minutes = doc.start.minute, seconds = doc.start.second)
 					hours, remainder = divmod(docStart.seconds, 3600)
 					minutes, seconds = divmod(remainder, 60) 
-					aux['breakStart'] = str(hours) + ':' + str(minutes)
+					aux['breakStart'] = str(hours) + ':' + str(minutes) #time that the break started
 					if breakTime <= docStart:
 						time_aux = docStart - breakTime
 						hours, remainder = divmod(time_aux.seconds, 3600)
@@ -1589,7 +1588,7 @@ def managerRetrieveHoursToday(request):
 						aux['workBreak'] = str(hours) + ':' + str(minutes)
 						count += docStart - breakTime
 					else: #Midnight is between these times
-						time_aux = str((keeper2 - breakTime) + docStart)
+						time_aux = (keeper2 - breakTime) + docStart
 						hours, remainder = divmod(time_aux.seconds, 3600)
 						minutes, seconds = divmod(remainder, 60) 
 						aux['workBreak'] = str(hours) + ':' + str(minutes)
@@ -1611,9 +1610,16 @@ def managerRetrieveHoursToday(request):
 							minutes, seconds = divmod(remainder, 60)
 							aux['breakDuration'] = str(hours) + ':' + str(minutes)
 					else:
-						print 3
 						aux['breakStop'] = 'Happening'
-						aux['breakDuration'] = 'Happening'
+						time_now = datetime.datetime.now() #variable used to get the current time
+						time_aux = datetime.timedelta(hours = time_now.hour, minutes = time_now.minute)
+						breakTime = docStart
+						if time_aux >= docStart:
+							breakDuration = time_aux - docStart
+							aux['breakDuration'] = str(breakDuration)
+						else:
+							breakDuration = (keeper2 - docStart) + time_aux
+							aux['breakDuration'] = str(breakDuration)
 					aux['lunch'] = doc.lunch
 					array_breaks.append(aux)
 				if item.hour_ended != None:
@@ -1625,30 +1631,24 @@ def managerRetrieveHoursToday(request):
 						count += (keeper2 - breakTime) + endTurn
 				else:
 					Attendance_end = 'Happening'
-				if len(breaks) == 0 and item.hour_ended != None:
-					atten_start = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute)
-					endTurn = datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second)
-					Attendance_end =  datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute)
-					if endTurn >= breakTime:
-						count = endTurn - breakTime
+					time_now = datetime.datetime.now()
+					time_aux = datetime.timedelta(hours = time_now.hour, minutes = time_now.minute)
+					if time_aux >= breakTime:
+						count += (time_aux - breakTime) - breakDuration
 					else:
-						count = (keeper2 - breakTime) + endTurn
-			print "4"
+						count += ((keeper2 - breakTime) + time_aux) - breakDuration		
 			hours, remainder = divmod(count.seconds, 3600)
 			minutes, seconds = divmod(remainder, 60)
 			result['Total'] = str(hours) + ':' + str(minutes)
-			print "5"
 			hours, remainder = divmod(atten_start.seconds, 3600)
 			minutes, seconds = divmod(remainder, 60)
 			result['Attendance_start'] = str(hours) + ':' + str(minutes)
-			print "Here"
 			if(Attendance_end != 'Happening'):
 				hours, remainder = divmod(Attendance_end.seconds, 3600)
 				minutes, seconds = divmod(remainder, 60)
 				result['Attendance_end'] = str(hours) + ':' + str(minutes)
 			else:
 				result['Attendance_end'] = Attendance_end
-			print "end"
 			result['breaks'] = array_breaks
 		else:
 			result['Code'] = {'Code' : 1} #request is not ajax
@@ -1676,7 +1676,6 @@ def getHoursWeek(employeeid, desired_date):
 			hours_worked_today = datetime.timedelta(hours=int(times[0]), minutes=int(times[1]), seconds=int(times[2]))
 			hours_worked_week = hours_worked_week + hours_worked_today
 	return str(hours_worked_week)
-
 
 
 #Return the information about the driver and his or her schedule
