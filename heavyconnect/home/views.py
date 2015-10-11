@@ -1585,6 +1585,7 @@ def managerRetrieveHoursToday(request):
 						count += (keeper2 - breakTime) + docStart
 					if (doc.end != None):
 						docEnd = datetime.timedelta(hours = doc.end.hour, minutes = doc.end.minute, seconds = doc.end.second)
+						aux['breakStart'] = str(docEnd)
 						breakTime = docEnd
 						if docEnd >= docStart:
 							aux['breakDuration'] = str(docEnd - docStart)
