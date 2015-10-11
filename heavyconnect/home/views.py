@@ -1565,7 +1565,7 @@ def managerRetrieveHoursToday(request):
 			date = datetime.datetime.now() #today date
 			start_date = datetime.datetime.combine(date, datetime.time.min) #today date at 0:00 AM
 			end_date = datetime.datetime.combine(date, datetime.time.max) # date at 11:59 PM
-			employeeAttendance = EmployeeAttendance.objects.filter(employee__user__id = 31, date__range = (start_date,end_date)).order_by('-hour_started')[:1]
+			employeeAttendance = EmployeeAttendance.objects.filter(employee__user__id = request.user.id, date__range = (start_date,end_date)).order_by('-hour_started')[:1]
 			count = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #counter to keep all the worked hours
 			keeper = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #this variable will keep the last break. It is useful when the shift is not done
 			keeper2 =  datetime.timedelta(hours = 23, minutes = 59, seconds = 59) # when the break is on another day
@@ -1636,10 +1636,13 @@ def managerRetrieveHoursToday(request):
 			hours, remainder = divmod(atten_start.seconds, 3600)
 			minutes, seconds = divmod(remainder, 60)
 			result['Attendance_start'] = str(hours) + ':' + str(minutes)
-			hours, remainder = divmod(Attendance_end.seconds, 3600)
-			minutes, seconds = divmod(remainder, 60)
-			result['Attendance_end'] = str(hours) + ':' + str(minutes)
-
+			if(Attendance_end != 'Happening'):
+				hours, remainder = divmod(Attendance_end.seconds, 3600)
+				minutes, seconds = divmod(remainder, 60)
+				result['Attendance_end'] = str(hours) + ':' + str(minutes)
+			else:
+				result['Attendance_end'] = Attendance_end
+			print "end"
 			result['breaks'] = array_breaks
 		else:
 			result['Code'] = {'Code' : 1} #request is not ajax
