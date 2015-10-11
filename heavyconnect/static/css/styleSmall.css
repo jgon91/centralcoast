@@ -342,6 +342,7 @@ input[type=button] {
 	margin: auto;
 	margin-top: 70px;
 	color: #BB330C;
+	text-align: center;
 }
 .closeTimekeeper {
 	background: url('../imgSmall/buttons/esc.png') no-repeat top left;
@@ -356,8 +357,18 @@ input[type=button] {
 	padding: 0px;
 }
 #divTimelog {
-	color: black !important;
-	font-size: 15px !important;
+	color: black;
+	font-size: 17px;
+	text-align: center;
+}
+#tableTimelog {
+	margin: auto;
+}
+#tableTimelog tr td {
+	padding: 5px;
+}
+#colBorderTimelog {
+	background: #DDD;
 }
 /* MODAL TIMEKEEPER BEGIN /*
  /*** Timekeeper Page End ***/

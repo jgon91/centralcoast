@@ -298,14 +298,21 @@
 				datatype : "json",
 				success : function(data, status, xhr) {
 					var i = 0;
+					var breaks = 1;
+					var lunchs = 1;
 					console.log(data);
+					$("#divTimelog").append("<table id='tableTimelog' ><tr><td colspan='2'>Start Shift: " + data.Attendance_start + "</td></tr>");
 					for (i = 0; i < data.breaks.length; i++) {
-						$("#divTimelog").append(data.breaks[i].workBreak + " = " + (i + 1) + "º Break " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "<br>");
-						
+						if (data.breaks[i].lunch == 0){
+							$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].workBreak.substring(0,4) + "</td><td>" + breaks + "º Break " + data.breaks[i].breakStart.substring(0,5) + " - " + data.breaks[i].breakStop.substring(0,5) + "</td></tr>");
+							breaks++;
+						} else {
+							$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].workBreak.substring(0,4) + "</td><td>" + lunchs + "º Lunch " + data.breaks[i].breakStart.substring(0,5) + " - " + data.breaks[i].breakStop.substring(0,5) + "</td></tr>");
+							lunchs++;
+						}
 					}
-					//alert("shift start = " + data.Attendance_start);
-					//alert("total = " + data.Total);
-					//alert("shift end = " + data.Attendance_end);
+					$("#tableTimelog").append("<tr><td colspan='2'>End Shift: " + data.Attendance_end + "</td></tr>");
+					$("#tableTimelog").append("<tr><td colspan='2'>Total: " + data.Total + " hours</td></tr>");
 				}
 			});
 		}
