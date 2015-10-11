@@ -1585,12 +1585,14 @@ def managerRetrieveHoursToday(request):
 						count += (keeper2 - breakTime) + docStart
 					if (doc.end != None):
 						docEnd = datetime.timedelta(hours = doc.end.hour, minutes = doc.end.minute, seconds = doc.end.second)
+						aux['breakStop'] = str(docEnd)
 						breakTime = docEnd
 						if docEnd >= docStart:
 							aux['breakDuration'] = str(docEnd - docStart)
 						else: #in case of start and end are in different days, passing by midnight
 							aux['breakDuration'] = str((keeper2 - docStart) + docEnd)
 					else:
+						aux['breakStop'] = 'Happening'
 						aux['breakDuration'] = 'Happening'
 					aux['lunch'] = doc.lunch
 					array_breaks.append(aux)
