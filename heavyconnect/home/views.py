@@ -1558,9 +1558,10 @@ def getHoursToday(employee_id, date_entry):
 
 #this function will retrieve hours worked in the last atendance of the employee, with breaks times and hours worked until the break
 def managerRetrieveHoursToday(request):
-	result = []
+	result = {}
 	if request.method == 'POST':
 		if request.is_ajax():
+			array_breaks = [] 
 			date = datetime.datetime.now() #today date
 			start_date = datetime.datetime.combine(date, datetime.time.min) #today date at 0:00 AM
 			end_date = datetime.datetime.combine(date, datetime.time.max) # date at 11:59 PM
@@ -1592,25 +1593,32 @@ def managerRetrieveHoursToday(request):
 					else:
 						aux['breakDuration'] = 'Happening'
 					aux['lunch'] = doc.lunch
-					result.append(aux)
+					array_breaks.append(aux)
 				if item.hour_ended != None:
 					endTurn = datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second)
 					if endTurn >= breakTime:
 						count += endTurn - breakTime
 					else:
 						count += (keeper2 - breakTime) + endTurn
-				if len(breaks) == 0:	
+				else:
+					endTurn = 'Happening'
+				if len(breaks) == 0 and item.hour_ended != None:
 					atten_start = str(breakTime)
 					endTurn = datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second)
 					if endTurn >= breakTime:
 						count = endTurn - breakTime
 					else:
 						count = (keeper2 - breakTime) + endTurn
-			result.append({'Total' : str(count),'Attendance' : atten_start})
+				else:
+					endTurn = 'Happening'
+			result['Total'] = str(count)
+			result['Attendance_start'] = atten_start
+			result['Attendance_end'] = endTurn
+			result['breaks'] = array_breaks
 		else:
-			result.append({'Code' : 1}) #request is not ajax
+			result['Code'] = {'Code' : 1} #request is not ajax
 	else:
-		result.append({'Code' : 2}) #request is not post
+		result['Code'] = {'Code' : 2} #request is not post
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 # This function call getHoursToday() for each day in the week of the desired day passed as argument
