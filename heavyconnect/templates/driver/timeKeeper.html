@@ -34,6 +34,7 @@
 				$("#confirmShift").empty();
 				$("#confirmBreak").empty();
 				$("#confirmLunch").empty();
+				$("#divTimelog").empty();
 				$("#confirmShift").append('<input type="button" value="{% trans 'CONFIRM' %}" class="btnsTimekeeper"/>');
 				$('#confirmShift').show();
 			});
@@ -58,6 +59,7 @@
 				$("#confirmShift").empty();
 				$("#confirmBreak").empty();
 				$("#confirmLunch").empty();
+				$("#divTimelog").empty();
 				$("#confirmBreak").append('<input type="button" value="{% trans 'CONFIRM' %}" class="btnsTimekeeper"/>');
 				$('#confirmBreak').show();
 			});
@@ -86,6 +88,7 @@
 				$("#confirmShift").empty();
 				$("#confirmBreak").empty();
 				$("#confirmLunch").empty();
+				$("#divTimelog").empty();
 				$("#confirmLunch").append('<input type="button" value="{% trans 'CONFIRM' %}" class="btnsTimekeeper"/>');
 				$('#confirmLunch').show();
 			});
@@ -105,9 +108,15 @@
 				}
 			});
 			$("#timelog").click(function() {
+				$("#confirmShift").empty();
+				$("#confirmBreak").empty();
+				$("#confirmLunch").empty();
+				$("#divTimelog").empty();
+				
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").html("TIMELOG");
-				$("#messageTimelog").html("Start shift = " + shiftStarted + "<br> Break = " + breakStarted + "<br>Lunch = " + lunchStarted);
+				//$("#divTimelog").html("Start shift = " + shiftStarted + "<br> Break = " + breakStarted + "<br>Lunch = " + lunchStarted);
+				timelog("{{ csrf_token }}", "{% url 'managerRetrieveHoursToday' %}");
 			});
 		});
 		function getEmployeeShifts(token, url) {
@@ -281,6 +290,24 @@
 				}
 			});
 		}
+		function timelog(token, url) {
+			$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					var i = 0;
+					var breakEnd = 0;
+					console.log(data);
+					for (i = 0; i < data.length - 1; i++) {
+						$("#divTimelog").append(data[i].workBreak + " = " + (i + 1) + "º Break " + data[i].breakStart + " - " + breakEnd + "<br>");
+						
+					}
+					alert(data[i].Total);
+				}
+			});
+		}
 		function hideModal() {
 			setTimeout(function(){
     			$('#showTimekeeperModal').modal('hide')
@@ -334,7 +361,7 @@
 						<div id="confirmShift"></div>
 						<div id="confirmBreak"></div>
 						<div id="confirmLunch"></div>
-						<span id="messageTimelog"></span>
+						<div id="divTimelog"></div>
 						<br>
 						<div class="both"></div>
 					</div>
