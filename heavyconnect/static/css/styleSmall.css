@@ -355,6 +355,10 @@ input[type=button] {
 	margin: 0px;
 	padding: 0px;
 }
+#divTimelog {
+	color: black !important;
+	font-size: 15px !important;
+}
 /* MODAL TIMEKEEPER BEGIN /*
  /*** Timekeeper Page End ***/
 

@@ -298,13 +298,14 @@
 				datatype : "json",
 				success : function(data, status, xhr) {
 					var i = 0;
-					var breakEnd = 0;
 					console.log(data);
-					for (i = 0; i < data.length - 1; i++) {
-						$("#divTimelog").append(data[i].workBreak + " = " + (i + 1) + "º Break " + data[i].breakStart + " - " + breakEnd + "<br>");
+					for (i = 0; i < data.breaks.length; i++) {
+						$("#divTimelog").append(data.breaks[i].workBreak + " = " + (i + 1) + "º Break " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "<br>");
 						
 					}
-					alert(data[i].Total);
+					//alert("shift start = " + data.Attendance_start);
+					//alert("total = " + data.Total);
+					//alert("shift end = " + data.Attendance_end);
 				}
 			});
 		}
