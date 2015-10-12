@@ -26,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'dgaaxm0o4)7max48$chs1im)av623&qw^t*e4evk8m*@48al3^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 GOOGLE_ANALYTICS_PROPERTY_ID = 'UA-68680504-1'
 GOOGLE_ANALYTICS_DOMAIN = 't-and-a.herokuapp.com'
@@ -108,7 +108,6 @@ else:
     #     }
     # }
     DATABASES = {
-        # 'default': dj_database_url.config(default='postgres://localhost')
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
             'NAME': 'dev',                      # Or path to database file if using sqlite3.
