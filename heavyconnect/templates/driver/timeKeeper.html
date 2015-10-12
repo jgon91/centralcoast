@@ -305,10 +305,10 @@
 					$("#divTimelog").append("<table id='tableTimelog' ><tr><td colspan='2'>Start Shift: " + data.Attendance_start + "</td></tr>");
 					for (i = 0; i < data.breaks.length; i++) {
 						if (data.breaks[i].lunch == 0){
-							$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].workBreak.substring(0,4) + "</td><td>" + breaks + "º Break " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
+							$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" + breaks + "º Break " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
 							breaks++;
 						} else {
-							$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].workBreak.substring(0,4) + "</td><td>" + lunchs + "º Lunch " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
+							$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" + lunchs + "º Lunch " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
 							lunchs++;
 						}
 					}
