@@ -31,7 +31,7 @@ DEBUG = True
 GOOGLE_ANALYTICS_PROPERTY_ID = 'UA-68680504-1'
 GOOGLE_ANALYTICS_DOMAIN = 't-and-a.herokuapp.com'
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'reiter-heavyconnect.elasticbeanstalk.com', 'heavyconnect-ta.elasticbeanstalk.com',  't-and-a.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'reiter-heavyconnect.elasticbeanstalk.com', 'heavyconnect-ta.elasticbeanstalk.com',  't-and-a.herokuapp.com', 'reiter.heavyconnect.com']
 
 
 # Application definition
