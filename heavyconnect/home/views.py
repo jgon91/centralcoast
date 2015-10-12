@@ -1714,7 +1714,7 @@ def getEmployeeShifts(request):
 
 						temp = []
 						for item in breaks:
-							temp.append((str(item['start']),str(item['end'])))
+							temp.append((str(item['start']),str(item['end']),(item['lunch'])))
 
 						result['breaks'] = temp
 				else:

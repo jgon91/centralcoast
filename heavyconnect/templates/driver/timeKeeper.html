@@ -131,11 +131,12 @@
 							shiftStarted = 1;
 						}
 						for(var i = 0; i < data.breaks.length; i++) {
-							if (data.breaks[i][0] != "None") {
-								breakStarted = 1
-							}
-							if (data.breaks[i][1] != "None") {
-								breakStarted = 0;
+							if (data.breaks[i][1] == "None") {
+								if (data.breaks[i][2] == 1) {
+									lunchStarted = 1;
+								} else {
+									breakStarted = 1
+								}
 							}
 						}
 						if (data.hour_ended != "None") {
