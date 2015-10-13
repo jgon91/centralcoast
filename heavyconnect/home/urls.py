@@ -33,6 +33,7 @@ urlpatterns = [
     url(r'^fleet/$', main_views.fleet, name='fleet'),
     url(r'^managerFleet/$', main_views.managerFleet, name='managerFleet'),
     url(r'^headerManager/$', main_views.headerManager, name='headerManager'),
+    url(r'^managerRetrieveHoursToday/$', main_views.managerRetrieveHoursToday, name = 'managerRetrieveHoursToday'),
     url(r'^pastTasks/$', main_views.pastTasks, name='pastTasks'),
     url(r'^createTask/$', main_views.createTask, name='createTask'),
     url(r'^createTaskManager/$', main_views.createTaskManager, name='createTaskManager'),

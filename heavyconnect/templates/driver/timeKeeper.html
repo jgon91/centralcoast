@@ -8,290 +8,117 @@
 		<script>
 		var item_count = 0;
 		var hour_start = 0;
+		var shiftStarted = 0;
+		var breakStarted = 0;
+		var lunchStarted = 0;
+		var lunch = 0;	//	0 = break ... 1 = lunch
+		
+		var urlTest = "{% url 'stopBreak' %}";
 		$(document).ready(function() {
 			$("#foot").load("{%url 'footer'%}");
 			$("#head").load("{%url 'headerDriver'%}");
-			$("#signature").jSignature({width:525,height:110})
-
+			$("#signature").jSignature()
 			$("#clearSignature").click(function() {
-				var $sigdiv = $("#signature");
+			var $sigdiv = $("#signature");
 				$sigdiv.jSignature("reset");
 			});
-
-			$("#taskFlowSubmit").click(function() {
-				if(checkBoxCheckedAppropriately()){
-					$('#signModal').modal();
-				}else{
-					$('#showTimekeeperModal').modal();
-					$("#messageTimekeeper").html("Check appropriate checkboxes.");
+			getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
+			
+			$("#shift").click(function() {
+				$('#showTimekeeperModal').modal();
+				if (shiftStarted == 0) {
+					$("#messageTimekeeper").html("Clock-in?");
+				} else {
+					$("#messageTimekeeper").html("Clock-out?");
+				}
+				$("#confirmShift").empty();
+				$("#confirmBreak").empty();
+				$("#confirmLunch").empty();
+				$("#divTimelog").empty();
+				$("#confirmShift").append('<input type="button" value="{% trans 'CONFIRM' %}" class="btnsTimekeeper"/>');
+				$('#confirmShift').show();
+			});
+			$("#confirmShift").click(function() {
+				if (shiftStarted == 0) {
+					$("#messageTimekeeper").html("Starting shift...");
+					$('#confirmShift').hide();
+					startShift("{{ csrf_token }}", "{% url 'startShift' %}");
+				} else {
+					$("#messageTimekeeper").html("Stopping shift...");
+					$('#confirmShift').hide();
+					stopShift("{{ csrf_token }}", "{% url 'stopShift' %}");
 				}
 			});
-
-			$("#start-shift").blur(function() {
-			    var enteredDatetime = getAdjustedDatetime("start-shift");
-				var enteredTime = getAdjustedTime("start-shift");
-    			startShift("{{ csrf_token }}", "{% url 'startShift' %}", enteredDatetime, "start-shift", enteredTime);
+			$("#break").click(function() {
+				$('#showTimekeeperModal').modal();
+				if (breakStarted == 0) {
+					$("#messageTimekeeper").html("Start break?");
+				} else {
+					$("#messageTimekeeper").html("End break?");
+				}
+				$("#confirmShift").empty();
+				$("#confirmBreak").empty();
+				$("#confirmLunch").empty();
+				$("#divTimelog").empty();
+				$("#confirmBreak").append('<input type="button" value="{% trans 'CONFIRM' %}" class="btnsTimekeeper"/>');
+				$('#confirmBreak').show();
 			});
-
-			$("#stop-shift").blur(function() {
-				var enteredDatetime = getAdjustedDatetime("stop-shift");
-				var enteredTime = getAdjustedTime("stop-shift");
-    			stopShift("{{ csrf_token }}", "{% url 'stopShift' %}", enteredDatetime, "stop-shift", enteredTime);
+			$("#confirmBreak").click(function() {
+				$('#confirmBreak').hide();
+				if (lunchStarted == 1) {
+					$("#messageTimekeeper").html("You cannot start 2 breaks at the same time.");
+					hideModal();
+				} else if (breakStarted == 0) {
+					$("#messageTimekeeper").html("Starting break...");
+					lunch = 0;
+					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count, lunch);
+				} else {
+					$("#messageTimekeeper").html("Ending break...");
+					lunch = 0;
+					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count, lunch);
+				}
 			});
-
-
-			$("#start-break0").blur(function() {
-					var enteredDatetime = getAdjustedDatetime("start-break0");
-					var enteredTime = getAdjustedTime("start-break0");
-					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 0, enteredDatetime, "start-break0", enteredTime);
+			$("#lunch").click(function() {
+				$('#showTimekeeperModal').modal();
+				if (lunchStarted == 0) {
+					$("#messageTimekeeper").html("Start lunch?");
+				} else {
+					$("#messageTimekeeper").html("End lunch?");
+				}
+				$("#confirmShift").empty();
+				$("#confirmBreak").empty();
+				$("#confirmLunch").empty();
+				$("#divTimelog").empty();
+				$("#confirmLunch").append('<input type="button" value="{% trans 'CONFIRM' %}" class="btnsTimekeeper"/>');
+				$('#confirmLunch').show();
 			});
-
-			$("#start-break1").blur(function() {
-					var enteredDatetime = getAdjustedDatetime("start-break1");
-					var enteredTime = getAdjustedTime("start-break1");
-					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 1, enteredDatetime, "start-break1", enteredTime);
+			$("#confirmLunch").click(function() {
+				$('#confirmLunch').hide();
+				if (breakStarted == 1) {
+					$("#messageTimekeeper").html("You cannot start 2 breaks at the same time.");
+					hideModal();
+				} else if (lunchStarted == 0) {
+					$("#messageTimekeeper").html("Starting lunch...");
+					lunch = 1;
+					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count, lunch);
+				} else {
+					$("#messageTimekeeper").html("Ending lunch...");
+					lunch = 1;
+					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count, lunch);
+				}
 			});
-
-			$("#start-break2").blur(function() {
-					var enteredDatetime = getAdjustedDatetime("start-break2");
-					var enteredTime = getAdjustedTime("start-break2");
-					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 2, enteredDatetime, "start-break2", enteredTime);
-			});
-
-			$("#start-break3").blur(function() {
-					var enteredDatetime = getAdjustedDatetime("start-break3");
-					var enteredTime = getAdjustedTime("start-break3");
-					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 3, enteredDatetime, "start-break3", enteredTime);
-			});
-
-			$("#start-break4").blur(function() {
-					var enteredDatetime = getAdjustedDatetime("start-break4");
-					var enteredTime = getAdjustedTime("start-break4");
-					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 4, enteredDatetime, "start-break4", enteredTime);
-			});
-
-			$("#start-break5").blur(function() {
-					var enteredDatetime = getAdjustedDatetime("start-break5");
-					var enteredTime = getAdjustedTime("start-break5");
-					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 5, enteredDatetime, "start-break5", enteredTime);
-			});
-
-			function getAdjustedDatetime(id){
-
-				datetime = getDate() +" "+document.getElementById(id).value;
-				return datetime;
-			}
-
-			function getAdjustedTime(id){
-				return document.getElementById(id).value;
-			}
-
-			$("#stop-break0").blur(function() {
-					var enteredDatetime = getAdjustedDatetime("stop-break0");
-					var enteredTime = getAdjustedTime("stop-break0");
-					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 0, enteredDatetime, "stop-break0", enteredTime);
-			});
-
-			$("#stop-break1").blur(function() {
-					var enteredDatetime = getAdjustedDatetime("stop-break1");
-					var enteredTime = getAdjustedTime("stop-break1");
-					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 1, enteredDatetime, "stop-break1", enteredTime);
-			});
-
-			$("#stop-break2").blur(function() {
-					var enteredDatetime = getAdjustedDatetime("stop-break2");
-					var enteredTime = getAdjustedTime("stop-break2");
-					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 2, enteredDatetime,"stop-break2", enteredTime);
-			});
-
-			$("#stop-break3").blur(function() {
-					var enteredDatetime = getAdjustedDatetime("stop-break3");
-					var enteredTime = getAdjustedTime("stop-break3");
-					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 3, enteredDatetime, "stop-break3", enteredTime);
-			});
-
-			$("#stop-break4").blur(function() {
-					var enteredDatetime = getAdjustedDatetime("stop-break4");
-					var enteredTime = getAdjustedTime("stop-break4");
-					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 4, enteredDatetime, "stop-break4", enteredTime);
-			});
-
-			$("#stop-break5").blur(function() {
-					var enteredDatetime = getAdjustedDatetime("stop-break5");
-					var enteredTime = getAdjustedTime("stop-break5");
-					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 5, enteredDatetime, "stop-break5", enteredTime);
-			});
-
-
-			$("#stopBreak0").click(function(){
-					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 0, getTimeNow(), "stop-break0", getTime());
-			});
-
-			$("#stopBreak1").click(function(){
-					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 1, getTimeNow(), "stop-break1", getTime());
-			});
-
-			$("#stopBreak2").click(function(){
-					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 2, getTimeNow(), "stop-break2", getTime());
-			});
-
-			$("#stopBreak3").click(function(){
-					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 3, getTimeNow(), "stop-break3", getTime());
-			});
-			$("#stopBreak4").click(function(){
-					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 4, getTimeNow(), "stop-break4", getTime());
-			});
-			$("#stopBreak5").click(function(){
-					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", 5, getTimeNow(), "stop-break5", getTime());
-			});
-
-			$("#startBreak0").click(function(){
-					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 0, getTimeNow(), "start-break0", getTime());
-			});
-
-			$("#startBreak1").click(function(){
-					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 1, getTimeNow(), "start-break1", getTime());
-			});
-
-			$("#startBreak2").click(function(){
-					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 2, getTimeNow(), "start-break2", getTime());
-			});
-
-			$("#startBreak3").click(function(){
-					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 3, getTimeNow(), "start-break3", getTime());
-			});
-			$("#startBreak4").click(function(){
-					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 4, getTimeNow(), "start-break4", getTime());
-			});
-			$("#startBreak5").click(function(){
-					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", 5, getTimeNow(), "start-break5", getTime());
-			});
-
-			getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
-
-			$("#startShift").click(function() {
-				startShift("{{ csrf_token }}", "{% url 'startShift' %}", getTimeNow(), "start-shift", getTime());
-
-			});
-
-			$("#stopShift").click(function(){
-				stopShift("{{ csrf_token }}", "{% url 'stopShift' %}", getTimeNow(), "stop-shift", getTime());
-
-			});
-
-			$("#stopShiftConfirm").click(function(){
-				var $sigdiv = $("#signature");
-				var datapair = $sigdiv.jSignature("getData", "base30");
-				updateSignature("{{ csrf_token }}", "{% url 'updateSignature' %}", datapair[1]);
-
+			$("#timelog").click(function() {
+				$("#confirmShift").empty();
+				$("#confirmBreak").empty();
+				$("#confirmLunch").empty();
+				$("#divTimelog").empty();
+				
+				$('#showTimekeeperModal').modal();
+				$("#messageTimekeeper").html("TIMELOG");
+				//$("#divTimelog").html("Start shift = " + shiftStarted + "<br> Break = " + breakStarted + "<br>Lunch = " + lunchStarted);
+				timelog("{{ csrf_token }}", "{% url 'managerRetrieveHoursToday' %}");
 			});
 		});
-
-		function timeNow(i, time) {
-  			document.getElementById(i).value = time;
-		}
-
-		function getTime() {
-			var d = new Date(),
-      		h = (d.getHours()<10?'0':'') + d.getHours(),
-      		m = (d.getMinutes()<10?'0':'') + d.getMinutes();
-      		return h + ":" + m
-		}
-
-		function getDate() {
-			var d = new Date(),
-      		h = (d.getHours()<10?'0':'') + d.getHours(),
-      		m = (d.getMinutes()<10?'0':'') + d.getMinutes(),
-      		s = (d.getSeconds()<10?'0':'') + d.getSeconds(),
-      		y = d.getFullYear(),
-      		M = (d.getMonth()+1<10?'0':'') + (d.getMonth()+1),
-      		D = (d.getDate()<10?'0':'') + d.getDate();
-      		return y + "-" + M + "-" + D
-		}
-
-		function getTimeNow() {
-
-			var d = new Date(),
-      		h = (d.getHours()<10?'0':'') + d.getHours(),
-      		m = (d.getMinutes()<10?'0':'') + d.getMinutes(),
-      		s = (d.getSeconds()<10?'0':'') + d.getSeconds(),
-      		y = d.getFullYear(),
-      		M = (d.getMonth()+1<10?'0':'') + (d.getMonth()+1),
-      		D = (d.getDate()<10?'0':'') + d.getDate();
-      		return y + "-" + M + "-" + D + " " + h + ":" + m
-		}
-
-		function getTotalMinutes(startTimeId, endTimeId){
-			var totalMin = 0;
-			start = document.getElementById(startTimeId).value
-			end = document.getElementById(endTimeId).value
-
-			var startHour = start.substring(0, 2);
-			var endHour = end.substring(0, 2);
-			var startMin = start.substring(3, 5);
-			var endMin = end.substring(3, 5);
-            var totalMin = (endHour*60 +  endMin*1) - (startHour*60 + startMin*1);
-
-            return totalMin;
-		}
-
-		function checkBoxCheckedAppropriately(){
-			var minutesWorked = getTotalMinutes("start-shift", "stop-shift");
-			return hasCorrectLunchMinutes(minutesWorked);
-		}
-
-		function hasCorrectLunchMinutes(minutesWorked){
-			if(minutesWorked >= 600) {
-				var lunch1Minutes = getTotalMinutes("start-break1","stop-break1");
-				var lunch2Minutes = getTotalMinutes("start-break3", "stop-break3");
-				var totalLunchMin = lunch1Minutes + lunch2Minutes;
-				if(totalLunchMin > 0){
-					return true;
-				} else {
-					if(document.getElementById('firstLunch').checked && document.getElementById('secondLunch').checked) {
-						return true;
-					} else {
-						return false;
-					}
-				}
-			} else {
-				if(minutesWorked >= 360) {
-					if(totalLunchMin > 0) {
-						return true;
-					} else {
-						if(document.getElementById('firstLunch').checked){
-							return true;
-						} else {
-							return false;
-						}
-					}
-				} else {
-					return true;
-				}
-			}
-		}
-
-
-		function updateSignature(token, url, signature) {
-			$.ajax({
-				method : "POST",
-				url : url,
-				data : {"csrfmiddlewaretoken" : token, "signature": signature},
-				datatype : "json",
-				success : function(data, status, xhr) {
-					if (data.success) {
-
-					} else if (data.code == 2) {
-						$('#showTimekeeperModal').modal();
-						$("#messageTimekeeper").html("There is already a signature for this shift");
-					} else if (data.code == 3) {
-						$('#showTimekeeperModal').modal();
-						$("#messageTimekeeper").html("You have not started a shift yet");
-					}
-				}
-			});
-		}
-
 		function getEmployeeShifts(token, url) {
 			$.ajax({
 				method : "POST",
@@ -301,162 +128,200 @@
 				success : function(data, status, xhr) {
 					if (data.success) {
 						if (data.hour_started != 'None') {
-							document.getElementById("start-shift").value = data.hour_started.substring(0,5);
-
+							shiftStarted = 1;
 						}
-
 						for(var i = 0; i < data.breaks.length; i++) {
-							if (data.breaks[i][0] != "None") {
-								document.getElementById("start-break"+i).value = data.breaks[i][0].substring(0, 5);
+							if (data.breaks[i][1] == "None") {
+								if (data.breaks[i][2] == 1) {
+									lunchStarted = 1;
+								} else {
+									breakStarted = 1
+								}
 							}
-							if (data.breaks[i][1] != "None") {
-								document.getElementById("stop-break"+i).value = data.breaks[i][1].substring(0, 5);
-							}
-
-							if(data.breaks[i][1] != "None" && data.breaks[i][0] != "None") {
-								var breakMin = getTotalMinutes("start-break"+i, "stop-break"+i);
-								document.getElementById("min"+i).innerHTML = breakMin + " min";
-							}
-
 						}
-
 						if (data.hour_ended != "None") {
-							document.getElementById("stop-shift").value = data.hour_ended.substring(0,5);
-
+							shiftStarted = 0;
 						}
 					} else if (data.code == 1) {
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("There is no shift records for this employee.");
+						hideModal();
 					} else if (data.code == 2) {
-							$('#showTimekeeperModal').modal();
-							$("#messageTimekeeper").html("Error. Contact Suport.");
+						$('#showTimekeeperModal').modal();
+						$("#messageTimekeeper").html("Error. Contact Suport.");
+						hideModal();
 					} else if (data.code == 3) {
-							$('#showTimekeeperModal').modal();
-							$("#messageTimekeeper").html("Error. Contact Suport.");
+						$('#showTimekeeperModal').modal();
+						$("#messageTimekeeper").html("Error. Contact Suport.");
+						hideModal();
 					}
 				}
 			});
 		}
-		function startShift(token, url, currentDate, startShiftId, time) {
+		function startShift(token, url) {
 			$.ajax({
 				method : "POST",
 				url : url,
-				data : {
-					"csrfmiddlewaretoken" : token,
-					"currentTime" : currentDate
-				},
+				data : {"csrfmiddlewaretoken" : token},
 				datatype : "json",
 				success : function(data, status, xhr) {
 					if (data.success) {
-						timeNow(startShiftId, time);
+						$("#messageTimekeeper").html("Clock-in successful");
+						shiftStarted = 1;
+						hideModal();
 					} else if (data.code == 1) {
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("You need to finish the shift you started already before create a new one.");
-						document.getElementById("start-shift").value = "";
+						hideModal();
 					} else if (data.code == 2) {
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("There is no users associated whit this id.");
+						hideModal();
 					} else if (data.code == 3) {
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("Error. Contact Suport.");
+						hideModal();
 					} else if (data.code == 4) {
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("Error. Contact Suport.");
+						hideModal();
 					}
 				}
 			});
 		}
-		function startBreak(token, url, breaks, currentDate, breakId, time) {
+		function startBreak(token, url, breaks, lunch) {
 			$.ajax({
 				method : "POST",
 				url : url,
-				data : {"csrfmiddlewaretoken" : token,
-						"currentTime" : currentDate,
-						"breakNumber" : breaks,
-				},
+				acync: false,
+				data : {"csrfmiddlewaretoken" : token, "lunch": lunch},
 				datatype : "json",
 				success : function(data, status, xhr) {
 					if (data.success) {
-						timeNow(breakId, time);
-						if(document.getElementById("stop-break"+breaks).value != ""){
-							var breakMin = getTotalMinutes("start-break"+breaks, "stop-break"+breaks);
-							document.getElementById("min"+breaks).innerHTML = breakMin + " min";
+						if (lunch == 0) {
+							$("#messageTimekeeper").html("Break started");
+							breakStarted = 1;
 						}
+						if (lunch == 1) {
+							$("#messageTimekeeper").html("Lunch started");
+							lunchStarted = 1;
+						}
+						hideModal();
+					} else if (data.code == 1) {
+						$("#messageTimekeeper").html("You cannot start 2 breaks at the same time.");
+						hideModal();
+					} else if (data.code == 2) {
+						$("#messageTimekeeper").html("The shift for today was already finished.");
+						hideModal();
 					} else if (data.code == 3) {
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("You need to start a shift first.");
-						document.getElementById(breakId).value = "";
-
+						hideModal();
 					} else if (data.code == 4) {
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("Error. Contact Suport.");
+						hideModal();
 					} else if (data.code == 5) {
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("Error. Contact Suport.");
+						hideModal();
 					}
 				}
 			});
 		}
-		function stopBreak(token, url, breaks, currentDate, breakId, time) {
+		function stopBreak(token, url, breaks, lunch) {
 			$.ajax({
 				method: "POST",
 				url: url,
-				data: {"csrfmiddlewaretoken": token,
-						"currentTime": currentDate,
-						"breakNumber" : breaks,
-				},
+				data: {"csrfmiddlewaretoken": token, "lunch": lunch},
 				datatype: "json",
 				success: function(data, status, xhr){
 					if(data.success){
-						timeNow(breakId, time);
-						if(document.getElementById("start-break"+breaks).value != ""){
-							var breakMin = getTotalMinutes("start-break"+breaks, "stop-break"+breaks);
-							document.getElementById("min"+breaks).innerHTML = breakMin + " min";
+						if (lunch == 0) {
+							$("#messageTimekeeper").html("Break ended");
+							breakStarted = 0;
 						}
+						if (lunch == 1) {
+							$("#messageTimekeeper").html("Lunch ended");
+							lunchStarted = 0;
+						}
+						hideModal();
+					} else if(data.code == 1){
+						$("#messageTimekeeper").html("You need to start a break first.");
+						hideModal();
+					} else if(data.code == 2){
+						$("#messageTimekeeper").html("The shift for today was already finished.");
+						hideModal();
 					} else if(data.code == 3){
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("You need to start a shift first.");
-						document.getElementById(breakId).value = "";
+						hideModal();
 					} else if(data.code == 4){
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("Error. Contact Suport.");
+						hideModal();
 					} else if(data.code == 5){
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("Error. Contact Suport.");
+						hideModal();
 					}
 				}
 			});
 		}
-		function stopShift(token, url, currentDate, stopShiftId, time) {
+		function stopShift(token, url) {
 			$.ajax({
 				method: "POST",
 				url: url,
-				data: {"csrfmiddlewaretoken": token,
-						"currentTime": currentDate
-				},
+				data: {"csrfmiddlewaretoken": token},
 				datatype: "json",
 				success: function(data, status, xhr){
 					if(data.success){
-						timeNow(stopShiftId, time);
+						$("#messageTimekeeper").html("Shift ended");
+						shiftStarted = 0;
+						hideModal();
+					} else if(data.code == 1){
+						$("#messageTimekeeper").html("You need to take at least 3 breaks.");
+						hideModal();
+					} else if(data.code == 2){
+						$("#messageTimekeeper").html("The shift for today was already finished.");
+						hideModal();
 					} else if(data.code == 3){
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("You have not started your shift yet.");
-						document.getElementById("stop-shift").value = "";
+						hideModal();
 					} else if(data.code == 4){
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("This user is not authorized to use the system.");
+						hideModal();
 					} else if(data.code == 5){
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("Error. Contact Suport.");
+						hideModal();
 					} else if(data.code == 6){
-						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("Error. Contact Suport.");
+						hideModal();
 					}
 				}
 			});
 		}
-
-
+		function timelog(token, url) {
+			$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					var i = 0;
+					var breaks = 1;
+					var lunchs = 1;
+					console.log(data);
+					$("#divTimelog").append("<table id='tableTimelog' ><tr><td colspan='2'>Start Shift: " + data.Attendance_start + "</td></tr>");
+					for (i = 0; i < data.breaks.length; i++) {
+						if (data.breaks[i].lunch == 0){
+							$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" + breaks + "º Break " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
+							breaks++;
+						} else {
+							$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" + lunchs + "º Lunch " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
+							lunchs++;
+						}
+					}
+					$("#tableTimelog").append("<tr><td colspan='2'>End Shift: " + data.Attendance_end + "</td></tr>");
+					$("#tableTimelog").append("<tr><td colspan='2'>Total: " + data.Total + " hours</td></tr>");
+				}
+			});
+		}
+		function hideModal() {
+			setTimeout(function(){
+    			$('#showTimekeeperModal').modal('hide')
+			}, 3000);
+		}
 		</script>
 	</head>
 	<body>
@@ -467,99 +332,25 @@
 					<img src="{% static 'imgSmall/iconTimekeeper.png' %}"/>
 					{% trans 'HC TIMEKEEPER' %}
 				</div>
+				
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" id="startShift" value="{% trans 'START SHIFT' %}" />
-						<input type="time" id="start-shift" id="startShiftInput"/>
-
+						<input type="button" id="shift" value="{% trans 'SHIFT' %}" class="btnsTimekeeper"/>
 					</div>
 				</div>
-				<div class="form-inline row">
-					<div class="form-group">
-						<label for="startBreak0">1st Break:</label>
-						<input type="button" id="startBreak0" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen" />
-						<input type="time" id="start-break0" />
-						<input type="button" id="stopBreak0" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed"/>
-						<input type="time" id="stop-break0" />
-						<label class="total-min" id="min0">-- min</label>
+				<div class="row">
+					<div class="col-xs-12 col-md-12">
+						<input type="button" id="break" value="{% trans 'BREAK' %}" class="btnsTimekeeper"/>
 					</div>
 				</div>
-				<div class="form-inline row">
-					<div class="form-group">
-						<label for="startBreak1">1st Lunch:</label>
-						<input type="button" id="startBreak1" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen" />
-						<input type="time" id="start-break1" />
-						<input type="button" id="stopBreak1" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed"/>
-						<input type="time" id="stop-break1" />
-						<label class="total-min" id="min1">-- min</label>
-
+				<div class="row">
+					<div class="col-xs-12 col-md-12">
+						<input type="button" id="lunch" value="{% trans 'LUNCH' %}" class="btnsTimekeeper"/>
 					</div>
 				</div>
-				<div class="form-inline row">
-					<div class="form-group">
-						<label for="startBreak2">2nd Break:</label>
-						<input type="button" id="startBreak2" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen"/>
-						<input type="time" id="start-break2" />
-						<input type="button" id="stopBreak2" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed"/>
-						<input type="time" id="stop-break2" />
-						<label class="total-min" id="min2">-- min</label>
-					</div>
-				</div>
-				<div class="form-inline row">
-					<div class="form-group">
-						<label for="startBreak4">3rd Break:</label>
-						<input type="button" id="startBreak4" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen"/>
-						<input type="time" id="start-break4" />
-						<input type="button" id="stopBreak4" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed"/>
-						<input type="time" id="stop-break4" />
-						<label class="total-min" id="min4">-- min</label>
-					</div>
-				</div>
-				<div class="form-inline row">
-					<div class="form-group">
-						<label for="startBreak3">2nd Lunch:</label>
-						<input type="button" id="startBreak3" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen"/>
-						<input type="time" id="start-break3" />
-						<input type="button" id="stopBreak3" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed"/>
-						<input type="time" id="stop-break3" />
-						<label class="total-min" id="min3">-- min</label>
-					</div>
-				</div>
-				<div class="form-inline row">
-					<div class="form-group">
-						<label for="startBreak5">4th Break:</label>
-						<input type="button" id="startBreak5" value="{% trans 'START' %}" class="btnGreenTime btnBreaksGreen" />
-						<input type="time" id="start-break5" />
-						<input type="button" id="stopBreak5" value="{% trans 'STOP' %}"  class="btnRedTime btnBreaksRed"/>
-						<input type="time" id="stop-break5" />
-						<label class="total-min" id="min5">-- min</label>
-
-					</div>
-				</div>
-
-				<div id="divBreaks"></div>
-				<div class="form-inline row">
-					<div class="form-group">
-						<input type="button" id="stopShift" value="{% trans 'END SHIFT' %}" />
-						<input type="time" id="stop-shift" />
-					</div>
-				</div>
-				<div class="form-inline row">
-					<div class="checkbox checkboxImp" style="margin-left: 74px; text-align: left;">
-						<label><input type="checkbox" value="" id="firstLunch">Elijo a renunciar a mi PRIMER periodo de comida de treinta (30) minutos</label>
-						<div class="help-tip" id="legalFirst" data-toggle="modal" data-target="#myModal">
-						</div>
-					</div>
-				</div>
-				<div class="form-inline row">
-					<div class="checkbox checkboxImp" style="margin-left: 74px; text-align: left;">
-						<label><input type="checkbox" value="" id="secondLunch">Elijo a renunciar a mi SEGUNDO periodo de comida de treinta (30) minutos</label>
-						<div class="help-tip" id="legalSecond" data-toggle="modal" data-target="#myModal">
-						</div>
-					</div>
-				</div>
-					<div class="form-inline row">
-					<a href="#"><input type="button" class="btnSubmitTF" value="SUBMIT" id="taskFlowSubmit"></a>
+				<div class="row">
+					<div class="col-xs-12 col-md-12">
+						<input type="button" id="timelog" value="{% trans 'TIMELOG' %}" class="btnsTimekeeper"/>
 					</div>
 				</div>
 			</div>
@@ -576,6 +367,10 @@
 					<div class="modal-body">
 						<button type="button" class="closeEquip" data-dismiss="modal"></button>
 						<span id="messageTimekeeper"></span>
+						<div id="confirmShift"></div>
+						<div id="confirmBreak"></div>
+						<div id="confirmLunch"></div>
+						<div id="divTimelog"></div>
 						<br>
 						<div class="both"></div>
 					</div>
@@ -588,44 +383,22 @@
 			<div class="modal-dialog">
 				<!-- Modal content-->
 				<div class="modal-content signModalDialog">
-					<div class="modal-title" id="titleSign">{% trans 'Firme Aquí' %}</div>
+					<button type="button" class="closeSignature" data-dismiss="modal"></button>
+					<div class="modal-title" id="titleSign">{% trans 'Sign Here' %}</div>
 					<div class="modal-body" id="signatureContent">
-					<div id="signField" >
+
+					<div id="signField" style="margin-top: 100px;">
 						<div id="signature"></div>
-					</div>
-					</div>
-					<div id="modalBtns">
 						<button type="button" id="clearSignature" class="btn btn-default">{% trans 'Limpiar' %}</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>
 						<a href="">
 							<button type="button" id="stopShiftConfirm" class="btn btn-success">
 								{% trans 'Confirmar' %}
 							</button>
 						</a>
-						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-		<div id="myModal" class="modal fade">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4 class="modal-title">POLÍTICA DEL PERIODO DE DESCANSO</h4>
-					</div>
-					<div class="modal-body">
-						<p>RENUNCIA AL SEGUNDO PERIODO DE COMIDA DE 30 MINUTOS O DEL PRIMER PERIODO DE COMIDA DE 30 MINUTOS EN MENOS DE (6) HORAS DE UN DIA DE TRABAJO<p>
-						<p>La Compañía autoriza y permite a los empleados a tomar periodos de comida de treinta (30) minutos tal como lo especifica la Política de la Compañía y la Ley Laboral, Orden 14-2001 del IWC. Los periodos de la comida de treinta (30) minutos deben de ser tomados antes de cada cinco (5) horas trabajadas, excepto cuando un día de trabajo no será más de seis (6) horas y terminara el trabajo del día. En este caso el periodo de comida de treinta (30) minutos puede ser renunciado con el consentimiento mutuo de la Compañía y la del Empleado. Esta renuncia puede ser aplicada en los periodos de trabajo de la mañana o de la tarde según sea aplicable.</p>
-						<p>RENUNCIA DEL EMPLEADO(A) DEL PERIODO DE COMIDA DE TREINTA (30) MINUTOS Entiendo que me autorizan y estoy permitido a tomar periodos de comida de treinta (30) minutos según lo especificado por la Política de la Compañía y la orden laboral 14-2001 del IWC. También entiendo que puedo renunciar al derecho al periodo de comida de treinta (30) minutos de acuerdo con la Política mencionada en al aparte de arriba. Entiendo que puedo revocar este acuerdo en cualquier momento.</p>
-						<p>Elijo a renunciar a mi PRIMER periodo de comida de treinta (30) minutos según las provisiones mencionadas en la parte de arriba-Recuerde solo puede renunciar a su primer periodo de comida si va a trabajar seis (6) horas:</p>
-						<p>Elijo a renunciar a mi SEGUNDO periodo de comida de treinta (30) minutos según las provisiones mencionadas en la parte de arriba-Recuerde solo puede renunciar a su segundo periodo de comida si va a trabajar entre diez (10) a doce (12) horas:</p>
-						<p>Al firmar abajo, reconozco y entiendo que: 1) estoy autorizado y permitido tomar 10 minutos de descanso por cada cuatro horas que trabajo, o fracción mayor, y 2) tomar mi descansos en medio de cada período de trabajo en la medida en como sea posible.</p>
-					</div>
-
-				</div>
-					<!-- /.modal-content -->
-			</div>
-				<!-- /.modal-dialog -->
-		</div>
-			<!-- /.modal -->
 	</body>
 </html>

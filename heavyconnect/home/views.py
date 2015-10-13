@@ -272,7 +272,7 @@ def retrieveMachine(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
-def createShift(employee, result, timeSubmitted):
+def createShift(employee, result):
 	now = datetime.datetime.now()
 	eAttendance = EmployeeAttendance(employee = employee, date = now, hour_started = now)
 	eAttendance.save()
@@ -290,25 +290,24 @@ def startShift(request):
 
 			try:
 				employee = Employee.objects.get(user_id = request.user.id)
-
 				attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
 
-				timeSubmitted = request.POST['currentTime']
-				timeStartShift = datetime.datetime.strptime(timeSubmitted, "%Y-%m-%d %H:%M")
-
 				if attendance is not None:
+
 					#If more than 16 hours was passed since the last shift was started we can consider that now we are creating a new shift
 					time_delta = (datetime.datetime.now() - datetime.datetime.combine(attendance.date,attendance.hour_started))
-					
+
 					if ((time_delta.seconds / 3600.0) >= 16.17) or (time_delta.days >= 1):
-						result = createShift(employee, result, timeStartShift)
+						result = createShift(employee, result)
 					else:
-						attendance.hour_started = timeStartShift
-						attendance.save()
-						result['success'] = True
+						#In case 16 hours haven't passed yet we need to check if the shift we get was finished or not
+						if attendance.hour_ended is not None: #The last shift was finished already, so we can start a new one
+							result = createShift(employee, result)
+						else: #The last shift wasn't finished yet.
+							result['code'] = 1 #You need to finish the shift you started already before create a new one
 
 				else: #First time the employee will create a shift
-					result = createShift(employee, result, timeStartShift)
+					result = createShift(employee, result)
 
 			except (Employee.DoesNotExist, EmployeeAttendance.DoesNotExist) as e:
 				result['code'] =  2 #There is no users associated with this id
