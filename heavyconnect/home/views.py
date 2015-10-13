@@ -200,10 +200,10 @@ def managerRetrieveHoursToday(request):
 
 
 def startNewTask(request):
- 	result = {'success' : False}
- 	if request.method == 'POST':
+	result = {'success' : False}
+	if request.method == 'POST':
 		task_id = request.POST['task_id']
- 		if request.is_ajax():
+		if request.is_ajax():
 			try:
 				task = Task.objects.get(id = task_id)
 				try:
@@ -2169,7 +2169,7 @@ def timeKeeperDailyReport(request):
 			# now = datetime.datetime.now()
 			# start_date = datetime.datetime.combine(now, datetime.time.min)
 
-			attendances = EmployeeAttendance.objects.all()#filter(date__range = (start_date, now))
+			attendances = EmployeeAttendance.objects.all().order_by('-date')#filter(date__range = (start_date, now))
 			tasks = EmployeeTask.objects.all()
 			all_attendances = []
 			total_times = []
