@@ -152,7 +152,7 @@ def managerRetrieveHoursToday(request):
 							minutes, seconds = divmod(remainder, 60)
 							aux['breakDuration'] = str(hours) + ':' + str(minutes)
 					else:
-						aux['breakStop'] = 'Happening'
+						aux['breakStop'] = 'In Progress'
 						time_now = datetime.datetime.now() #variable used to get the current time
 						time_aux = datetime.timedelta(hours = time_now.hour, minutes = time_now.minute)
 						breakTime = docStart
@@ -172,7 +172,7 @@ def managerRetrieveHoursToday(request):
 					else:
 						count += (keeper2 - breakTime) + endTurn
 				else:
-					Attendance_end = 'Happening'
+					Attendance_end = '--'
 					time_now = datetime.datetime.now()
 					time_aux = datetime.timedelta(hours = time_now.hour, minutes = time_now.minute)
 					if time_aux >= breakTime:
@@ -185,7 +185,7 @@ def managerRetrieveHoursToday(request):
 			hours, remainder = divmod(atten_start.seconds, 3600)
 			minutes, seconds = divmod(remainder, 60)
 			result['Attendance_start'] = str(hours) + ':' + str(minutes)
-			if(Attendance_end != 'Happening'):
+			if(Attendance_end != '--'):
 				hours, remainder = divmod(Attendance_end.seconds, 3600)
 				minutes, seconds = divmod(remainder, 60)
 				result['Attendance_end'] = str(hours) + ':' + str(minutes)

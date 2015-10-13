@@ -304,11 +304,11 @@
 					console.log(data);
 					$("#divTimelog").append("<table id='tableTimelog' ><tr><td colspan='3'>Start Shift: " + data.Attendance_start + "</td></tr>");
 					for (i = 0; i < data.breaks.length; i++) {
+
 						if (data.breaks[i].lunch == 0){
 							$("#tableTimelog").append("<tr><td>Sum:</td><td id='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" +"#"+ breaks + " Break " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
 							breaks++;
 						} else {
-							alert(data.breaks[i].workBreak[1]);
 							$("#tableTimelog").append("<tr><td>Sum:</td><td id='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" +"#"+ lunchs + " Lunch " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
 							lunchs++;
 						}
