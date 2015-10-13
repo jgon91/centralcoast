@@ -286,7 +286,7 @@ class Break(models.Model):
 		(6, '5'),
 	)
 	attendance = models.ForeignKey(EmployeeAttendance)
-	lunch = models.BooleanField()
+	lunch = models.BooleanField(default=False)
 	start = models.TimeField()
 	end = models.TimeField(null = True, blank = True)
 	break_num = models.IntegerField(choices = BREAK_NUM, default=1)
