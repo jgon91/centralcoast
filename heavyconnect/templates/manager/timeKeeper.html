@@ -127,12 +127,17 @@
 							$.each(parsed_result, function (i, item) {
 								var start_hour = item.fields.hour_started;
 								var end_hour = item.fields.hour_ended;
+								var total_time = data.total_times[i];
 								if(! start_hour){
 									start_hour = 'N/A';
 								}
 
 								if(! end_hour){
 									end_hour = 'N/A';
+								}
+
+								if(end_hour < start_hour) {
+									total_time = 'N/A';
 								}
 
 								var demo = "demo" + i;
@@ -143,11 +148,11 @@
 								$('<td>').text(item.fields.date),
 								$('<td>').text(start_hour),
 								$('<td>').text(end_hour),
-								$('<td>').text(data.total_times[i])).appendTo('#report_table');
-								$('<tr>').append(
-								$('<td colspan="6" class="hiddenRow">').append(
-								$('<div id='+demo+' class="accordian-body collapse">').text('breaks'))
-								).appendTo('#report_table');
+								$('<td>').text(total_time)).appendTo('#report_table');
+								<!--$('<tr>').append(-->
+								<!--$('<td colspan="6" class="hiddenRow">').append(-->
+								<!--$('<div id='+demo+' class="accordian-body collapse">').text('breaks'))-->
+								<!--).appendTo('#report_table');-->
 								i = i+1;
 
 							});
@@ -198,7 +203,7 @@
 						</div>
 
 				</div>
-				<!--<button style="float: right;margin-right: 15px;" type="button" class="btn btn-default" id="btnExport" value="Export Table data into Excel"><span class="glyphicon glyphicon-download"></span>Download .csv</button>-->
+				<button style="float: right;margin-right: 15px;" type="button" class="btn btn-default" id="btnExport" ><span class="glyphicon glyphicon-download"></span>Download .csv</button>
 				<!--<div id="task_report" style="margin: 10px;">-->
 					<!--&lt;!&ndash;<div class="col-lg-6">&ndash;&gt;-->
 					<!--<div class="panel panel-default">-->
