@@ -140,6 +140,10 @@
 									total_time = 'N/A';
 								}
 
+								if(end_hour == 'N/A' || start_hour == 'N/A'){
+									total_time = 'N/A';
+								}
+
 								var demo = "demo" + i;
 
 								$('<tr data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle">').append(
