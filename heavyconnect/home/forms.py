@@ -9,6 +9,8 @@
 
 from django import forms
 from django.contrib.auth.models import User
+from django.forms.extras.widgets import SelectDateWidget
+
 
 import datetime
 import json
@@ -18,6 +20,54 @@ from home.models import *
 class loginForm(forms.Form):
 	username = forms.CharField()
 	password = forms.CharField(widget = forms.PasswordInput)
+
+class UserForm(forms.Form):
+	username = forms.CharField()
+	password = forms.CharField(widget = forms.PasswordInput)
+	first_name = forms.CharField()
+	last_name = forms.CharField()
+
+### Structor for user password update ###
+class UserFormUpdate(forms.Form):
+	first_name = forms.CharField()
+	last_name = forms.CharField()
+### End ###
+
+### Structor for employee ###
+class employeePasswordForm(forms.Form):
+	# password = forms.CharField(widget = forms.PasswordInput)
+	password1 = forms.CharField(widget = forms.PasswordInput)
+	password2 = forms.CharField(widget = forms.PasswordInput)
+### End ###
+
+
+### Structor for employee Update###
+class employeeUpdateForm(forms.Form):
+	PERMISSION_LEVEL_CHOICES = (
+		(1, 'Driver'),
+		(2, 'Manager'),
+	)
+	LANGUAGE_CHOICES = (
+		(3, 'en'),
+		(2, 'es'),
+		(1, 'pt-br'),
+	)
+	last_task = forms.ModelChoiceField(queryset = Task.objects.all(), required = False)
+	user = forms.IntegerField(required = False)
+	company_id = forms.CharField(required = False)
+	language = forms.ChoiceField(choices = LANGUAGE_CHOICES)
+	qr_code = forms.CharField(required = False)
+	start_date = forms.DateField(widget=SelectDateWidget(empty_label=("Choose Year", "Choose Month", "Choose Day")), required = False)
+	hour_cost = forms.FloatField(required = False)
+	contact_number = forms.CharField(required = False)
+	permission_level = forms.ChoiceField(choices = PERMISSION_LEVEL_CHOICES)
+	photo = forms.URLField(required = False)
+	notes = forms.CharField(max_length = 250, required = False)
+	active = forms.BooleanField(required = False)
+	manager = forms.ModelChoiceField(queryset = Employee.objects.filter(permission_level = '2'))
+### End ###
+
+
 
 ### Structure for manufacturerForm ###
 class manufacturerForm(forms.Form):
@@ -145,28 +195,30 @@ class implementForm(forms.Form):
 	photo = forms.URLField()
 ### End ###
 
-### Structure for employeeForm ###
+### Structor for employee###
 class employeeForm(forms.Form):
 	PERMISSION_LEVEL_CHOICES = (
 		(1, 'Driver'),
 		(2, 'Manager'),
 	)
 	LANGUAGE_CHOICES = (
-		(1, 'pt-br'),
-		(2, 'es'),
 		(3, 'en'),
+		(2, 'es'),
+		(1, 'pt-br'),
 	)
-	last_task = forms.ModelChoiceField(queryset = Task.objects.all())
-	active = forms.BooleanField()
-	company_id = forms.CharField()
+	last_task = forms.ModelChoiceField(queryset = Task.objects.all(), required = False)
+	user = forms.ModelChoiceField(queryset = User.objects.all(), required = False)
+	active = forms.BooleanField(required = False)
+	company_id = forms.CharField(required = False)
 	language = forms.ChoiceField(choices = LANGUAGE_CHOICES)
-	qr_code = forms.CharField()
-	start_date = forms.DateField()
-	hour_cost = forms.FloatField()
-	contact_number = forms.CharField()
+	qr_code = forms.CharField(required = False)
+	start_date = forms.DateField(widget=SelectDateWidget(empty_label=("Choose Year", "Choose Month", "Choose Day")), required = False)
+	hour_cost = forms.FloatField(required = False)
+	contact_number = forms.CharField(required = False)
 	permission_level = forms.ChoiceField(choices = PERMISSION_LEVEL_CHOICES)
-	photo = forms.URLField()
-	notes = forms.CharField(max_length = 250)
+	photo = forms.URLField(required = False)
+	notes = forms.CharField(max_length = 250, required = False)
+	manager = forms.ModelChoiceField(queryset = Employee.objects.filter(permission_level = '2'))
 ### End ###
 
 ### Structure for employeeAttendanceForm ###

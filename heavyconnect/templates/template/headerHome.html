@@ -60,6 +60,12 @@
 		$(document).ready(function() {
 			GetClock();
 			setInterval(GetClock,1000);
+
+
+				if($("#page").val() == 1) {
+					document.getElementById('userImg').setAttribute('id', 'needToChange')
+					}
+
 		});
 	</script>
 	<body>
@@ -68,7 +74,7 @@
 				<img src="{% static 'img/logoNegative.png' %}" id="logoHome"/>
 				<div id="clock"></div>
 				<a href="{% url 'logout' %}"><input type="button" value="{% trans 'EXIT' %}" id="logOff"/>
-				<a><input onclick="detectPage()" type="button" id="userImg"/>
+				<a><input onclick="detectPage()" type="button" id="userImg" class="needToChange"/>
 			</div>
 		</div>
 	</body>

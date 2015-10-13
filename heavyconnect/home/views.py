@@ -1752,7 +1752,7 @@ def getCsv(request):
 	response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
 
 	writer = csv.writer(response)
-	writer.writerow(['ID', 'Name', 'Date', 'Hour Started', 'Hour Ended', 'Total Hours'])
+	writer.writerow(['ID', 'Name', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked'])
 	attendances = EmployeeAttendance.objects.all().order_by('-date')#filter(date__range = (start_date, now))
 
 	if attendances.count > 0:
@@ -2332,6 +2332,32 @@ def equipmentLastLocalization(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
+@login_required
+def employeeManagerDelete(request):
+	result = {'success' : False}
+	if request.method == "POST":
+		if request.is_ajax():
+			try:
+				user_id = request.POST['user']
+				emplo = Employee.objects.get(user_id = user_id)
+				emplo.user.delete()
+				emplo.delete()
+				result['success'] = True;
+
+				if result['success'] == True :
+					#return HttpResponse(json.dumps(result),content_type='application/json')
+					return render(request, 'manager/formSuccess.html')
+				else:
+					return render(request, 'manager/formError.html')
+			except:
+					result['code'] = 1 #Employee does not exist
+					return HttpResponse(json.dumps(result),content_type='application/json')
+		else:
+			result['code'] = 2 #Request is not Ajax
+			return HttpResponse(json.dumps(result),content_type='application/json')
+	else:
+		result['code'] = 3 #Request is not POST
+		return HttpResponse(json.dumps(result),content_type='application/json')
 
 def logout(request):
 	auth_logout(request)
@@ -2340,6 +2366,11 @@ def logout(request):
 @login_required
 def driver(request):
     return render(request, 'driver/home.html')
+
+@login_required
+def employeeManagerUpdateForm(request):
+	return render(request, 'manager/listEmployee.html')
+
 
 @login_required
 def profile(request):
@@ -2354,8 +2385,21 @@ def headerHome(request):
     return render(request, 'template/headerHome.html')
 
 @login_required
+def formSuccess(request):
+    return render(request, 'manager/formSuccess.html')
+
+@login_required
 def templateCreateTaskManager(request):
     return render(request, 'manager/templateCreateTaskManager.html')
+
+@login_required
+def manageForms(request):
+	return render(request, 'manager/manageForms.html')
+
+@login_required
+def listEmployee(request):
+	return render(request, 'manager/listEmployee.html')
+
 
 
 @login_required
@@ -2972,6 +3016,143 @@ def manufacturerFormView(request):
 			return HttpResponse(json.dumps(result),content_type='application/json')
 		else:
 			return render(request, 'formTest.html', {'form': form})
+
+
+
+### End ###
+@login_required
+def employeeManagerUpdateForm(request):
+	result = {'success' : False}
+	if request.method == "POST":
+		userform = UserFormUpdate(request.POST)
+		employform = employeeUpdateForm(request.POST)
+		user_id = request.POST['user']
+		if userform.is_valid() and employform.is_valid():
+			try:
+				emplo = Employee.objects.get(user_id = user_id)
+				emplo.user.first_name = userform.cleaned_data['first_name']
+				emplo.user.last_name = userform.cleaned_data['last_name']
+				emplo.company_id = employform.cleaned_data['company_id']
+				emplo.start_date = employform.cleaned_data['start_date']
+				emplo.active = employform.cleaned_data['active']
+				emplo.language = employform.cleaned_data['language']
+				emplo.qr_code = employform.cleaned_data['qr_code']
+				emplo.hour_cost = employform.cleaned_data['hour_cost']
+				emplo.contact_number = employform.cleaned_data['contact_number']
+				emplo.permission_level = employform.cleaned_data['permission_level']
+				emplo.photo = employform.cleaned_data['photo']
+				emplo.notes = employform.cleaned_data['notes']
+				emplo.manager = employform.cleaned_data['manager']
+
+				if emplo.active == False:
+					 emplo.user.is_active = False
+				else:
+					emplo.user.is_active = True
+
+				emplo.user.save()
+				emplo.save()
+				return render(request, 'manager/formSuccess.html')
+			except:
+				result['code'] = 2 #Employee does not exist
+				return HttpResponse(json.dumps(result),content_type='application/json')
+		else:
+			result['code'] = 3 #Form not valid
+			return render(request, 'manager/formError.html')
+
+	else:
+		try:
+			user_id = request.GET.get('user_id')
+			emplo = Employee.objects.get(user__id = user_id)
+			userform = UserFormUpdate(initial = {'first_name' : emplo.user.first_name, 'last_name' : emplo.user.last_name})
+			employform = employeeUpdateForm(initial = {'user' : user_id,'notes' : emplo.notes, 'photo' : emplo.photo, 'permission_level' : emplo.permission_level ,'contact_number' : emplo.contact_number ,'hour_cost' : emplo.hour_cost, 'qr_code' : emplo.qr_code ,'language' : emplo.language , 'active' : emplo.active, 'last_task' : emplo.last_task ,'start_date' : emplo.start_date,'company_id' : emplo.company_id, 'manager' : emplo.manager, 'active' : emplo.active})
+			return render(request,'manager/employeeUpdate.html', {'form': userform, 'form1': employform})
+		except:
+			result['code'] = 2 #Employee does not exist
+			return HttpResponse(json.dumps(result),content_type='application/json')
+	return HttpResponse(json.dumps(result),content_type='application/json')
+### End ###
+
+
+### Form to update employee ###
+@login_required
+def employeeUpdateFormView(request):
+	result = {'success' : False}
+	if request.method == "POST":
+		userform = UserFormUpdate(request.POST)
+		employform = employeeForm(request.POST)
+		emplo = Employee.objects.get(user_id = request.user.id)
+		if userform.is_valid() and employform.is_valid():
+			emplo.user.first_name = userform.cleaned_data['first_name']
+			emplo.user.last_name = userform.cleaned_data['last_name']
+			emplo.manager = employform.cleaned_data['manager']
+			emplo.language = employform.cleaned_data['language']
+			emplo.contact_number = employform.cleaned_data['contact_number']
+			emplo.photo = employform.cleaned_data['photo']
+			emplo.notes = employform.cleaned_data['notes']
+			emplo.active = employform.cleaned_data['active']
+			emplo.user.save()
+			emplo.save()
+			result['success'] = True
+			return render(request, 'manager/formSuccess.html')
+	else:
+		try:
+			emplo = Employee.objects.get(user_id = request.user.id)
+			userform = UserFormUpdate(initial = {'first_name' : emplo.user.first_name, 'last_name' : emplo.user.last_name})
+			# employform = employeeForm(initial = {'notes' : emplo.notes, 'photo' : emplo.photo, 'permission_level' : emplo.permission_level ,'contact_number' : emplo.contact_number ,'hour_cost' : emplo.hour_cost, 'qr_code' : emplo.qr_code ,'language' : emplo.language , 'active' : emplo.active, 'last_task' : emplo.last_task ,'start_date' : emplo.start_date,'company_id' : emplo.company_id})
+			employform = employeeForm(initial = {'notes' : emplo.notes, 'photo' : emplo.photo, 'contact_number' : emplo.contact_number,'language' : emplo.language, 'manager' : emplo.manager, 'active' : emplo.active})
+			result['success'] = True
+		except:
+			result['code'] = 3 # this user does not exist
+			return HttpResponse(json.dumps(result),content_type='application/json')
+		return render(request,'driver/employeeUpdate', {'form': userform, 'form1': employform})
+### end ###
+
+### Form to add employee ###
+def employeeFormadd(request):
+	result = {'success' : False}
+	if request.method == "POST":
+		userform = UserForm(request.POST)
+		employform = employeeForm(request.POST)
+		if userform.is_valid() and employform.is_valid():
+			new_user_username = userform.cleaned_data['username']
+			new_user_password = userform.cleaned_data['password']
+			new_user_first_name = userform.cleaned_data['first_name']
+			new_user_last_name = userform.cleaned_data['last_name']
+			new_user, created = User.objects.get_or_create(username = new_user_username, defaults = {'first_name' : new_user_first_name, 'last_name' : new_user_last_name})
+			if created:
+				new_user.set_password(new_user_password)
+				new_user.save()
+				emplo_company = employform.cleaned_data['company_id']
+				emplo_language = employform.cleaned_data['language']
+				emplo_qr_code = employform.cleaned_data['qr_code']
+				emplo_start = employform.cleaned_data['start_date']
+				emplo_cost = employform.cleaned_data['hour_cost']
+				emplo_contact = employform.cleaned_data['contact_number']
+				emplo_permission = employform.cleaned_data['permission_level']
+				emplo_photo = employform.cleaned_data['photo']
+				emplo_notes = employform.cleaned_data['notes']
+				emplo_manager = employform.cleaned_data['manager']
+				try:
+					employee = Employee(user = new_user, language = emplo_language, permission_level = emplo_permission, active = '1', company_id = emplo_company, qr_code = emplo_qr_code, start_date = emplo_start, hour_cost = emplo_cost,contact_number = emplo_contact, notes = emplo_notes, photo = emplo_photo, manager = emplo_manager)
+					employee.save()
+					result['success'] = True
+				except:
+					User.objects.get(username = new_user_username).delete()
+				if result['success'] == True :
+					#return HttpResponse(json.dumps(result),content_type='application/json')
+					return render(request, 'manager/formSuccess.html')
+				else:
+					return render(request, 'manager/formError.html')
+			else:
+				result['code'] = 3 #this user is already registered as a employee
+				return render(request, 'manager/formError.html')
+			return HttpResponse(json.dumps(result),content_type='application/json')
+	else:
+		userform = UserForm(request.POST)
+		employform = employeeForm(request.POST)
+	employform = employeeForm(initial = {'start_date' : datetime.datetime.now()})
+	return render(request,'manager/formEmployee.html', {'form': userform, 'form1': employform})
+### End ###
 
 def manufacturerModelFormView(request):
 	form = manufacturerModelForm(request.POST)

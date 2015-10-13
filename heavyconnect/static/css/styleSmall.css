@@ -146,6 +146,29 @@ input[type=button]{
 	border: none;
 	border-radius: 7px;
 }
+
+#btnManage {
+	background: url('../imgSmall/buttons/btnChecklistTop.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+
+#btnManageHome {
+	background: url('../imgSmall/buttons/checklist.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+
+#needToChange {
+	background: url('../imgSmall/buttons/needtodelete.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 55px;
+	height: 55px;
+	margin-right: 2.5px;
+	margin-top: 2.5px;
+	float: right;
+	border: none;
+	border-radius: 7px;
+}
+
 #logOff {
 	background: url('../imgSmall/buttons/exit.png') no-repeat top left;
 	background-size: 100% 100%;

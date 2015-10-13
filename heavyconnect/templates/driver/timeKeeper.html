@@ -302,18 +302,19 @@
 					var breaks = 1;
 					var lunchs = 1;
 					console.log(data);
-					$("#divTimelog").append("<table id='tableTimelog' ><tr><td colspan='2'>Start Shift: " + data.Attendance_start + "</td></tr>");
+					$("#divTimelog").append("<table id='tableTimelog' ><tr><td colspan='3'>Start Shift: " + data.Attendance_start + "</td></tr>");
 					for (i = 0; i < data.breaks.length; i++) {
 						if (data.breaks[i].lunch == 0){
-							$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" + breaks + "º Break " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
+							$("#tableTimelog").append("<tr><td>Sum:</td><td id='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" +"#"+ breaks + " Break " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
 							breaks++;
 						} else {
-							$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" + lunchs + "º Lunch " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
+							alert(data.breaks[i].workBreak[1]);
+							$("#tableTimelog").append("<tr><td>Sum:</td><td id='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" +"#"+ lunchs + " Lunch " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
 							lunchs++;
 						}
 					}
-					$("#tableTimelog").append("<tr><td colspan='2'>End Shift: " + data.Attendance_end + "</td></tr>");
-					$("#tableTimelog").append("<tr><td colspan='2'>Total: " + data.Total + " hours</td></tr>");
+					$("#tableTimelog").append("<tr><td colspan='3'>End Shift: " + data.Attendance_end + "</td></tr>");
+					$("#tableTimelog").append("<tr><td colspan='3'>Total: " + data.Total + " hours</td></tr>");
 				}
 			});
 		}
@@ -365,7 +366,16 @@
 				<!-- Modal content-->
 				<div class="modal-content modalTimekeeper">
 					<div class="modal-body">
-						<button type="button" class="closeEquip" data-dismiss="modal"></button>
+						<button type="button" class="closeEquip" data-dismiss="modal" id="closeButton" style="background: url('/static/imgSmall/buttons/esc.png') no-repeat top left;
+						background-size: 100% 100%;
+						width: 50px;
+						height: 50px;
+						float: right;
+						border: none;
+						border-radius: 7px;
+						box-shadow: -1px 1px 7px gray;
+						margin: 0px;
+						padding: 0px;"></button>
 						<span id="messageTimekeeper"></span>
 						<div id="confirmShift"></div>
 						<div id="confirmBreak"></div>

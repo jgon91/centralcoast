@@ -47,6 +47,15 @@ urlpatterns = [
 	url(r'^geofence/$', main_views.geofence, name = 'geofence'),
     url(r'^map/$', main_views.map, name = 'map'),
     url(r'^formTEST/$', main_views.manufacturerForm, name='registerManufacturer'),
+    url(r'^manageForms/$', main_views.manageForms, name = 'manageForms'),
+    url(r'^listEmployee/$', main_views.listEmployee, name='listEmployee'),
+    url(r'^employeeManagerUpdateForm/$', main_views.employeeManagerUpdateForm, name = 'employeeManagerUpdateForm'),
+    url(r'^employeeUpdateFormView/$', main_views.employeeUpdateFormView, name = 'updateEmployee'),
+    url(r'^employeeManagerUpdateForm/$', main_views.employeeManagerUpdateForm, name = 'employeeManagerUpdateForm'),
+    url(r'^employeeManagerDelete/$', main_views.employeeManagerDelete, name = 'employeeManagerDelete'),
+
+
+
 
     ### Functions ###
     url(r'^employeeLocation/$', main_views.getEmployeeLocation, name = 'employeeLocation'),
@@ -124,6 +133,8 @@ urlpatterns = [
     url(r'^machineFormView/$', main_views.machineFormView, name = 'registerMachine'),
     url(r'^implementFormView/$', main_views.implementFormView, name = 'registerImplement'),
     url(r'^employeeFormView/$', main_views.employeeFormView, name = 'registerEmployee'),
+    url(r'^employeeFormadd/$', main_views.employeeFormadd, name = 'registerEmployee'),
+    url(r'^formSuccess/$', main_views.formSuccess, name='formSuccess'),
     url(r'^employeeAttendanceFormView/$', main_views.employeeAttendanceFormView, name = 'registerEmployeeAttendance'),
     url(r'^qualificationFormView/$', main_views.qualificationFormView, name = 'registerQualification'),
     url(r'^certificationFormView/$', main_views.certificationFormView, name = 'registerCertification'),
