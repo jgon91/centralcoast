@@ -1755,41 +1755,42 @@ def getCsv(request):
 	writer.writerow(['ID', 'Name', 'Date', 'Hour Started', 'Hour Ended', 'Total Hours'])
 	attendances = EmployeeAttendance.objects.all().order_by('-date')#filter(date__range = (start_date, now))
 
-	for attendance in attendances:
-		employee_id = attendance.employee.id
-		date = attendance.date
-		hour_started = attendance.hour_started
-		hour_ended = attendance.hour_ended
-		if hour_ended == None:
-			hour_ended = 'N/A'
-		if hour_started == None:
-			hour_started = 'N/A'
-		if hour_ended != 'N/A' and hour_started != 'N/A':
-			if hour_ended > hour_started:
-				hours_today = getHoursToday(attendance.employee.id, str(attendance.date) +' 00:00:00')
+	if attendances.count > 0:
+		for attendance in attendances:
+			employee_id = attendance.employee.id
+			date = attendance.date
+			hour_started = attendance.hour_started
+			hour_ended = attendance.hour_ended
+			if hour_ended == None:
+				hour_ended = 'N/A'
+			if hour_started == None:
+				hour_started = 'N/A'
+			if hour_ended != 'N/A' and hour_started != 'N/A':
+				if hour_ended > hour_started:
+					hours_today = getHoursToday(attendance.employee.id, str(attendance.date) +' 00:00:00')
+				else:
+					hours_today = 'N/A'
 			else:
 				hours_today = 'N/A'
-		else:
-			hours_today = 'N/A'
-		employee_name = attendance.employee.user.last_name + ", " + attendance.employee.user.first_name
-		writer.writerow([employee_id, employee_name, date, hour_started, hour_ended, hours_today])
-		breaks = Break.objects.filter(attendance__id = attendance.id)#.order_by('start')
-		i = 1
-		if breaks.count() > 0:
-			writer.writerow(['', '', 'Break', 'Hour Started', 'Hour Ended', 'Total Time'])
-			for item in breaks:
-				num_break = i
-				if item.start != None and item.end != None:
-					if item.end >= item.start:
-						start = datetime.timedelta(hours = item.start.hour, minutes = item.start.minute, seconds = item.start.second)
-						end = datetime.timedelta(hours = item.end.hour, minutes = item.end.minute, seconds = item.end.second)
-						total = end - start
+			employee_name = attendance.employee.user.last_name + ", " + attendance.employee.user.first_name
+			writer.writerow([employee_id, employee_name, date, hour_started, hour_ended, hours_today])
+			breaks = Break.objects.filter(attendance__id = attendance.id)#.order_by('start')
+			i = 1
+			if breaks.count() > 0:
+				writer.writerow(['', '', 'Break', 'Hour Started', 'Hour Ended', 'Total Time'])
+				for item in breaks:
+					num_break = i
+					if item.start != None and item.end != None:
+						if item.end >= item.start:
+							start = datetime.timedelta(hours = item.start.hour, minutes = item.start.minute, seconds = item.start.second)
+							end = datetime.timedelta(hours = item.end.hour, minutes = item.end.minute, seconds = item.end.second)
+							total = end - start
+						else:
+							total = 'N/A'
 					else:
 						total = 'N/A'
-				else:
-					total = 'N/A'
-				writer.writerow(['', '', num_break, item.start, item.end, total])
-				i = i+1
+					writer.writerow(['', '', num_break, item.start, item.end, total])
+					i = i+1
 	return response
 
 
