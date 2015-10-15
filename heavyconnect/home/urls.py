@@ -109,6 +109,8 @@ urlpatterns = [
     url(r'^updateTaskCalendar/$', main_views.updateTaskCalendar, name = 'updateTaskCalendar'),
     url(r'^getAllManagerEmployees/$', main_views.getAllManagerEmployees, name = 'getAllManagerEmployees'),
     url(r'^managerRetrieveHoursToday/$', main_views.managerRetrieveHoursToday, name = 'managerRetrieveHoursToday'),
+    url(r'^receiveIdShift/$', main_views.receiveIdShift, name = 'receiveIdShift'),
+    url(r'^receiveIdStopShift/$', main_views.receiveIdStopShift, name = 'receiveIdStopShift'),
    ### End ###
 
     ###Insert###
