@@ -230,7 +230,7 @@ def receiveIdShift(request):
 
 
 
-def stopShift(idUser, signature):
+def stopShift(idUser):
 	result = {}
 	try:
 		employee = Employee.objects.get(user_id = idUser)
@@ -255,7 +255,7 @@ def stopShift(idUser, signature):
 							item.save()
 						break
 					attendance.hour_ended = datetime.datetime.now()
-					attendance.signature = signature
+					# attendance.signature = signature
 					attendance.save()
 					result['success'] = True
 					result['hour_ended'] = str(attendance.hour_ended)
@@ -276,11 +276,10 @@ def receiveIdStopShift(request):
 	result = {}
 	if request.method == "POST":
 		if request.is_ajax():
-			signature = request.POST.get('signature','NOT PROVIDED')
 			ids = request.POST.getlist('ids[]')
 			aux = []
 			for item in ids:
-				aux.append(stopShift(item, signature))
+				aux.append(stopShift(item))
 			result['shifts'] = aux
 		else:
 			result['code'] = 5 #Use ajax to perform requests
@@ -289,73 +288,96 @@ def receiveIdStopShift(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
-@login_required
-def startBreak(request):
+
+def startBreak(idUser, paramenterlunch):
 	result = {'success' : False}
+	try:
+		lunch = paramenterlunch
+		employee = Employee.objects.get(user = idUser)
+
+		attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
+		if attendance is not None:
+			if attendance.hour_ended is None:
+				t_break = Break.objects.filter(attendance_id = attendance).order_by('-start')
+				count = t_break.count()
+
+				if count == 0 or t_break[0].end is not None:
+					t2_break = Break(attendance = attendance, lunch = lunch, start = datetime.datetime.now())
+					t2_break.save()
+					result['success'] = True
+					# result['time'] = str(t2_break.start)
+					result['user'] = idUser
+				else:
+					result['code'] = 1 #You cannot start two breaks at the same time
+			else:
+				result['code'] = 2 #The shift for today was already finished
+		else:
+			result['code'] = 3 #You need to start a shift first
+	except EmployeeAttendance.DoesNotExist:
+		result['code'] = 3 #You need to start a shift first
+
+	return result
+
+@login_required
+def receiveIdBreak(request):
+	result = {}
 	if request.method == "POST":
 		if request.is_ajax():
-			try:
-				lunch = int(request.POST['lunch'])
-				employee = Employee.objects.get(user = request.user)
-
-				attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
-				if attendance is not None:
-					if attendance.hour_ended is None:
-						t_break = Break.objects.filter(attendance_id = attendance).order_by('-start')
-						count = t_break.count()
-	
-						if count == 0 or t_break[0].end is not None:
-							t2_break = Break(attendance = attendance, lunch = lunch, start = datetime.datetime.now())
-							t2_break.save()
-							result['success'] = True
-							result['time'] = str(t2_break.start)
-						else:
-							result['code'] = 1 #You cannot start two breaks at the same time
-					else:
-						result['code'] = 2 #The shift for today was already finished
-				else:
-					result['code'] = 3 #You need to start a shift first
-			except EmployeeAttendance.DoesNotExist:
-				result['code'] = 3 #You need to start a shift first
+			ids = request.POST.getlist('ids[]')
+			aux = []
+			lunch = int(request.POST['lunch'])
+			for item in ids:
+				aux.append(startBreak(item, lunch))
+			result['shifts'] = aux
 		else:
-			result['code'] = 4 #Use ajax to perform requests
+			result['code'] = 5 #Use ajax to perform requests
 	else:
-		result['code'] = 5 #Request was not POST
-
+		result['code'] = 6 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-@login_required
-def stopBreak(request):
+
+def stopBreak(idUser, paramenterlunch):
 	result = {'success' : False}
+	try:
+		lunch = paramenterlunch
+		employee = Employee.objects.get(user_id = idUser)
+		attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
+		if attendance.hour_ended is None:
+			t_break = Break.objects.filter(attendance_id = attendance).order_by('-start')
+			count = t_break.count()
+			if (count != 0) and t_break[0].end is None:
+				if t_break[0].lunch == lunch:
+					t_break = t_break[0]
+					t_break.end = datetime.datetime.now()
+					t_break.save()
+					result['success'] = True
+					result['user'] = idUser
+					# result['time'] = str(t_break.end)
+				else:
+					result['code'] = 6 #The break is not compatible with the variable request.lunch
+			else:
+				result['code'] = 1 #You need to start a break first
+		else:
+			result['code'] = 2 #The shift for today was already finished
+	except EmployeeAttendance.DoesNotExist:
+		result['code'] = 3 #You need to start a shift first
+	return result
+
+@login_required
+def receiveIdStopBreak(request):
+	result = {}
 	if request.method == "POST":
 		if request.is_ajax():
-			try:
-				lunch = int(request.POST['lunch'])
-				employee = Employee.objects.get(user_id = request.user.id)
-				attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
-				if attendance.hour_ended is None:
-					t_break = Break.objects.filter(attendance_id = attendance).order_by('-start')
-					count = t_break.count()
-					if (count != 0) and t_break[0].end is None:
-						if t_break[0].lunch == lunch:
-							t_break = t_break[0]
-							t_break.end = datetime.datetime.now()
-							t_break.save()
-							result['success'] = True
-							result['time'] = str(t_break.end)
-						else:
-							result['code'] = 6 #The break is not compatible with the variable request.lunch
-					else:
-						result['code'] = 1 #You need to start a break first
-				else:
-					result['code'] = 2 #The shift for today was already finished
-			except EmployeeAttendance.DoesNotExist:
-				result['code'] = 3 #You need to start a shift first
+			ids = request.POST.getlist('ids[]')
+			aux = []
+			lunch = int(request.POST['lunch'])
+			for item in ids:
+				aux.append(stopBreak(item,lunch))
+			result['breaks'] = aux
 		else:
-			result['code'] = 4 #Use ajax to perform requests
+			result['code'] = 5 #Use ajax to perform requests
 	else:
-		result['code'] = 5 #Request was not POST
-
+		result['code'] = 6 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 @login_required

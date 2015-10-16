@@ -111,6 +111,8 @@ urlpatterns = [
     url(r'^managerRetrieveHoursToday/$', main_views.managerRetrieveHoursToday, name = 'managerRetrieveHoursToday'),
     url(r'^receiveIdShift/$', main_views.receiveIdShift, name = 'receiveIdShift'),
     url(r'^receiveIdStopShift/$', main_views.receiveIdStopShift, name = 'receiveIdStopShift'),
+    url(r'^receiveIdBreak/$', main_views.receiveIdBreak, name = 'receiveIdBreak'),
+    url(r'^receiveIdStopBreak/$', main_views.receiveIdStopBreak, name = 'receiveIdStopBreak'),
    ### End ###
 
     ###Insert###
