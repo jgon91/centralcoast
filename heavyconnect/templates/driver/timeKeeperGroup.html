@@ -11,7 +11,9 @@
 		var shiftStarted = 0;
 		var breakStarted = 0;
 		var lunchStarted = 0;
-		var lunch = 0;	//	0 = break ... 1 = lunch
+		var lunch = 0;	//	0 = break ... 1 = lunch	
+		var user_id;	
+		var id_checked = [];		
 		
 		var urlTest = "{% url 'stopBreak' %}";
 		$(document).ready(function() {
@@ -20,9 +22,25 @@
 			$("#signature").jSignature()
 			$("#clearSignature").click(function() {
 			var $sigdiv = $("#signature");
-				$sigdiv.jSignature("reset");
-			});
+				$sigdiv.jSignature("reset");		
+		
+		});
 			getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
+			getAllManagerEmployees("{{ csrf_token}}", "{% url 'getAllManagerEmployees' %}");
+
+			$("input[name='employeeSelected']").change(function(){
+				//console.log("function called");	
+			   if($("input[id='"+this.id+"']").is(":checked")){			
+			   		user_id = this.value;				   				   		
+					id_checked.push(user_id);									
+				}else{												
+				    user_id = this.value;					
+					index = id_checked.indexOf(user_id);					
+					id_checked.splice(index, 1);				
+					
+				}											
+															
+			});
 			
 			$("#shift").click(function() {
 				$('#showTimekeeperModal').modal();
@@ -317,12 +335,52 @@
 				}
 			});
 		}
+
+		function getAllManagerEmployees(token, url) {
+			$.ajax({
+				method : "POST",
+				url : url,
+				async : false,
+				data : {
+					"csrfmiddlewaretoken" : token,
+				},
+				datatype : "json",
+				success : function(data, status, xhr) {					
+					if (data.success) {
+						$("#employeeList").append("<tr><td colspan='2'>Select the employees for this action:</td></tr>");
+						for (var i = 0; i < data.employees.length; i++) {
+							$("#employeeList").append("<tr>" +
+														   "<td><label><input type='checkbox' value='" + data.employees[i].user_id + "' id='checkbox" + (i+1) + "' name='employeeSelected'/></label>" +
+														   "</td>" + 
+														   "<td>" 														  
+														      + data.employees[i].first_name + " " 
+														      + data.employees[i].last_name +
+														   "</td>" +
+													   "</tr>");
+						}
+					}
+
+				}
+			});
+		}
+
 		function hideModal() {
 			setTimeout(function(){
     			$('#showTimekeeperModal').modal('hide')
 			}, 3000);
 		}
 		</script>
+		<style>
+			label {
+				 padding:10px;
+				 margin:0 0 10px;
+				 display:block; 
+			}
+			#employeeList{
+				text-align: left;
+				font-size: 20px;
+			}
+		</style>
 	</head>
 	<body>
 		<header id="head"></header>
@@ -367,6 +425,8 @@
 					<div class="modal-body">
 						<button type="button" class="closeEquip" data-dismiss="modal"></button>
 						<span id="messageTimekeeper"></span>
+						<div id="employeeList">							
+						</div>
 						<div id="confirmShift"></div>
 						<div id="confirmBreak"></div>
 						<div id="confirmLunch"></div>

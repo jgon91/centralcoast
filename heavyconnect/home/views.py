@@ -2456,6 +2456,10 @@ def time_keeper(request):
 	return render(request, 'driver/timeKeeper.html')
 
 @login_required
+def timeKeeperGroup(request):
+	return render(request, 'driver/timeKeeperGroup.html')
+
+@login_required
 def equipament(request):
     return render(request, 'driver/equipment.html')
 
@@ -3169,6 +3173,7 @@ def getAllManagerEmployees(request):
 					each_result = {}
 				result['success'] = True
 				result['employees'] = employees
+				print employees
 			except DoesNotExist:
 				result['code'] = 1
 				return HttpResponse(json.dumps(result), content_type='application/json')
