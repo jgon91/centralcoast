@@ -212,7 +212,7 @@ def startShift(idUser):
 	return result
 
 @login_required
-def receiveIdShift(request):
+def startShiftGroup(request):
 	result = {}
 	if request.method == "POST":
 		if request.is_ajax():
@@ -272,7 +272,7 @@ def stopShift(idUser):
 	return result
 
 @login_required
-def receiveIdStopShift(request):
+def stopShiftGroup(request):
 	result = {}
 	if request.method == "POST":
 		if request.is_ajax():
@@ -319,7 +319,7 @@ def startBreak(idUser, paramenterlunch):
 	return result
 
 @login_required
-def receiveIdBreak(request):
+def startBreakGroup(request):
 	result = {}
 	if request.method == "POST":
 		if request.is_ajax():
@@ -364,7 +364,7 @@ def stopBreak(idUser, paramenterlunch):
 	return result
 
 @login_required
-def receiveIdStopBreak(request):
+def stopBreakGroup(request):
 	result = {}
 	if request.method == "POST":
 		if request.is_ajax():
