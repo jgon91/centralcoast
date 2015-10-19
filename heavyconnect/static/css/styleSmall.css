@@ -335,13 +335,14 @@ input[type=button] {
 /* MODAL SGNATURE BEGIN */
 /* MODAL TIMEKEEPER BEGIN */
 .modalTimekeeper {
-	font-size: 30px;
+	font-size: 25px;
 	font-weight: 600;
 	border-radius: 10px;
 	width: 90%;
 	margin: auto;
 	margin-top: 70px;
-	color: #BB330C;
+	color: #1F3801;
+	/* message red = #BB330C /// message green #1F3801*/
 	text-align: center;
 }
 .closeTimekeeper {

@@ -115,7 +115,7 @@
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").html("TIMELOG");
 				//$("#divTimelog").html("Start shift = " + shiftStarted + "<br> Break = " + breakStarted + "<br>Lunch = " + lunchStarted);
-				timelog("{{ csrf_token }}", "{% url 'managerRetrieveHoursToday' %}");
+				timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
 			});
 		});
 		function getEmployeeShifts(token, url) {
