@@ -338,11 +338,18 @@ def startBreakGroup(request):
 	if request.method == "POST":
 		if request.is_ajax():
 			ids = request.POST.getlist('ids[]')
-			aux = []
+			auxSuccess = []
+			auxError = []
 			lunch = int(request.POST['lunch'])
 			for item in ids:
-				aux.append(startBreak(item, lunch))
-			result['shifts'] = aux
+				aux = startBreak(item, lunch)
+				aux['id'] = item
+				if aux['success'] == True:
+					auxSuccess.append(aux)
+				else:
+					auxError.append(aux)
+			result['success'] = auxSuccess
+			result['error'] = auxError
 		else:
 			result['code'] = 5 #Use ajax to perform requests
 	else:
@@ -383,11 +390,18 @@ def stopBreakGroup(request):
 	if request.method == "POST":
 		if request.is_ajax():
 			ids = request.POST.getlist('ids[]')
-			aux = []
+			auxSuccess = []
+			auxError = []
 			lunch = int(request.POST['lunch'])
 			for item in ids:
-				aux.append(stopBreak(item,lunch))
-			result['breaks'] = aux
+				aux = startBreak(item, lunch)
+				aux['id'] = item
+				if aux['success'] == True:
+					auxSuccess.append(aux)
+				else:
+					auxError.append(aux)
+			result['success'] = auxSuccess
+			result['error'] = auxError
 		else:
 			result['code'] = 5 #Use ajax to perform requests
 	else:
@@ -3179,15 +3193,21 @@ def getAllManagerEmployees(request):
 	if request.method == "POST":
 		if request.is_ajax():
 			try:
-				manager = Employee.objects.get(user = request.user)
-				all_manager_employee = Employee.objects.filter(manager = manager.id)
+				manager = Employee.objects.get(user = request.user)								
+				all_manager_employee = Employee.objects.filter(manager = manager.id)	
 				employees = []
+				if manager != manager.manager:					
+					each_result["first_name"] = manager.user.first_name
+					each_result["last_name"] = manager.user.last_name
+					each_result["user_id"] = manager.user.id
+					employees.append(each_result)
+					each_result = {}	
 				for each in all_manager_employee:
 					each_result['first_name'] = each.user.first_name
 					each_result['last_name'] = each.user.last_name
 					each_result['user_id'] = each.user.id					
 					employees.append(each_result)
-					each_result = {}
+					each_result = {}				
 				result['success'] = True
 				result['employees'] = employees
 				print employees
