@@ -1599,15 +1599,18 @@ def getHoursToday(employee_id, date_entry):
 	return str(count)
 
 #this function will retrieve hours worked in the last atendance of the employee, with breaks times and hours worked until the break
-def managerRetrieveHoursToday(request):
+def timeLogById(request):
 	result = {}
 	if request.method == 'POST':
 		if request.is_ajax():
-			array_breaks = [] 
+			userId = request.POST['id']
+			if userId is None:
+			    userId = request.user.id
+			array_breaks = []
 			date = datetime.datetime.now() #today date
 			start_date = datetime.datetime.combine(date, datetime.time.min) #today date at 0:00 AM
 			end_date = datetime.datetime.combine(date, datetime.time.max) # date at 11:59 PM
-			employeeAttendance = EmployeeAttendance.objects.filter(employee__user__id = request.user.id, date__range = (start_date,end_date)).order_by('-hour_started')[:1]
+			employeeAttendance = EmployeeAttendance.objects.filter(employee__user__id = userId, date__range = (start_date,end_date)).order_by('-hour_started')[:1]
 			count = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #counter to keep all the worked hours
 			keeper = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #this variable will keep the last break. It is useful when the shift is not done
 			keeper2 =  datetime.timedelta(hours = 23, minutes = 59, seconds = 59) # when the break is on another day
