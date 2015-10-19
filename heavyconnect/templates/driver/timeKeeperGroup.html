@@ -6,7 +6,9 @@
 		<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
 		<script src="{% static 'jSignature/jSignature.min.js'%}"></script>
 		<script>
-		var lunch = 0;	//	0 = break ... 1 = lunch
+		var lunch = 0;		//	0 = break ... 1 = lunch
+		var employeesTimelog = [];
+		var idTimelog;
 		var user_id;
 		var id_checked = [];
 		$(document).ready(function() {
@@ -42,9 +44,7 @@
 					$("#messageTimekeeper").html("Select at least 1 employee to this action!");
 				} else {
 					$("#messageTimekeeper").html("Starting shift...");
-					$("#employeeList").hide();
-					$("#clock-out").empty();
-					$("#clock-in").empty();
+					emptyDivs();
 					startShiftGroup("{{ csrf_token }}", "{% url 'startShiftGroup' %}");
 				}
 			});
@@ -53,9 +53,7 @@
 					$("#messageTimekeeper").html("Select at least 1 employee to this action!");
 				} else {
 					$("#messageTimekeeper").html("Ending shift...");
-					$("#employeeList").hide();
-					$("#clock-out").empty();
-					$("#clock-in").empty();
+					emptyDivs();
 					stopShiftGroup("{{ csrf_token }}", "{% url 'stopShiftGroup' %}");
 				}
 			});
@@ -72,9 +70,7 @@
 					$("#messageTimekeeper").html("Select at least 1 employee to this action");
 				} else {
 					$("#messageTimekeeper").html("Starting break...");
-					$("#employeeList").hide();
-					$("#stopBreak").empty();
-					$("#startBreak").empty();
+					emptyDivs();
 					lunch = 0;
 					startBreakGroup("{{ csrf_token }}", "{% url 'startBreakGroup' %}");
 				}
@@ -84,9 +80,7 @@
 					$("#messageTimekeeper").html("Select at least 1 employee to this action");
 				} else {
 					$("#messageTimekeeper").html("Ending break...");
-					$("#employeeList").hide();
-					$("#stopBreak").empty();
-					$("#startBreak").empty();
+					emptyDivs();
 					lunch = 0;
 					stopBreakGroup("{{ csrf_token }}", "{% url 'stopBreakGroup' %}");
 				}
@@ -104,9 +98,7 @@
 					$("#messageTimekeeper").html("Select at least 1 employee to this action");
 				} else {
 					$("#messageTimekeeper").html("Starting lunch...");
-					$("#employeeList").hide();
-					$("#stopLunch").empty();
-					$("#startlunch").empty();
+					emptyDivs();
 					lunch = 1;
 					startBreakGroup("{{ csrf_token }}", "{% url 'startBreakGroup' %}");
 				}
@@ -116,9 +108,7 @@
 					$("#messageTimekeeper").html("Select at least 1 employee to this action");
 				} else {
 					$("#messageTimekeeper").html("Ending break...");
-					$("#employeeList").hide();
-					$("#stopLunch").empty();
-					$("#startLunch").empty();
+					emptyDivs();
 					lunch = 1;
 					stopBreakGroup("{{ csrf_token }}", "{% url 'stopBreakGroup' %}");
 				}
@@ -126,8 +116,8 @@
 			$("#timelog").click(function() {
 				emptyDivs();
 				$('#showTimekeeperModal').modal();
-				$("#messageTimekeeper").html("TIMELOG");
-				timelog("{{ csrf_token }}", "{% url 'managerRetrieveHoursToday' %}");
+				$("#messageTimekeeper").html("Select the employee to TIMELOG");
+				timelogBtns();
 			});
 		});
 		function getEmployeeShifts(token, url) {
@@ -178,6 +168,7 @@
 				success : function(data, status, xhr) {
 					$("#messageTimekeeper").html("Clock-in successful");
 					hideModal();
+					console.log(data);
 				}
 			});
 		}
@@ -228,11 +219,23 @@
 				}
 			});
 		}
+		function timelogBtns() {
+			for (var i = 0; i < employeesTimelog.length; i++) {
+				$("#divTimelog").append("<br><input type='button' id='" + employeesTimelog[i].user_id + "' onclick='timelogId(this.id)' value='" + employeesTimelog[i].first_name + " " + employeesTimelog[i].last_name + "'/><br>");
+			}
+		}
+		function timelogId(idShow) {
+			emptyDivs();
+			$("#messageTimekeeper").html("TIMELOG");
+			console.log(idShow);
+			idTimelog = idShow;
+			timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+		}
 		function timelog(token, url) {
 			$.ajax({
 				method : "POST",
 				url : url,
-				data : {"csrfmiddlewaretoken" : token},
+				data : {"csrfmiddlewaretoken" : token, "id": idTimelog},
 				datatype : "json",
 				success : function(data, status, xhr) {
 					var i = 0;
@@ -263,11 +266,11 @@
 					"csrfmiddlewaretoken" : token,
 				},
 				datatype : "json",
-				success : function(data, status, xhr) {					
+				success : function(data, status, xhr) {	
 					if (data.success) {
+						employeesTimelog = data.employees;
 						for (var i = 0; i < data.employees.length; i++) {
-							$("#employeeList").append("<tr>" +
-														"<td><label><input type='checkbox' value='" + data.employees[i].user_id
+							$("#employeeList").append("<tr>" + "<td><label><input type='checkbox' value='" + data.employees[i].user_id
 														+ "' id='checkbox" + (i+1) + "' name='employeeSelected'/></label>"
 														+ "</td>" + "<td>" + data.employees[i].first_name + " " 
 														+ data.employees[i].last_name + "</td>" + "</tr>");
@@ -282,6 +285,7 @@
 			}, 3000);
 		}
 		function emptyDivs() {
+			$("#employeeList").hide();
 			$("#clock-out").empty();
 			$("#clock-in").empty();
 			$("#stopBreak").empty();
