@@ -223,7 +223,7 @@ def startShiftGroup(request):
 				aux = startShift(item)
 				aux['id'] = item
 				if aux['success'] == True:
-					auxSucess.append(aux)
+					auxSuccess.append(aux)
 				else:
 					auxError.append(aux)
 			result['success'] = auxSuccess
