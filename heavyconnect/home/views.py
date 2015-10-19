@@ -338,11 +338,18 @@ def startBreakGroup(request):
 	if request.method == "POST":
 		if request.is_ajax():
 			ids = request.POST.getlist('ids[]')
-			aux = []
+			auxSuccess = []
+			auxError = []
 			lunch = int(request.POST['lunch'])
 			for item in ids:
-				aux.append(startBreak(item, lunch))
-			result['shifts'] = aux
+				aux = startBreak(item, lunch)
+				aux['id'] = item
+				if aux['success'] == True:
+					auxSuccess.append(aux)
+				else:
+					auxError.append(aux)
+			result['success'] = auxSuccess
+			result['error'] = auxError
 		else:
 			result['code'] = 5 #Use ajax to perform requests
 	else:
@@ -383,11 +390,18 @@ def stopBreakGroup(request):
 	if request.method == "POST":
 		if request.is_ajax():
 			ids = request.POST.getlist('ids[]')
-			aux = []
+			auxSuccess = []
+			auxError = []
 			lunch = int(request.POST['lunch'])
 			for item in ids:
-				aux.append(stopBreak(item,lunch))
-			result['breaks'] = aux
+				aux = startBreak(item, lunch)
+				aux['id'] = item
+				if aux['success'] == True:
+					auxSuccess.append(aux)
+				else:
+					auxError.append(aux)
+			result['success'] = auxSuccess
+			result['error'] = auxError
 		else:
 			result['code'] = 5 #Use ajax to perform requests
 	else:
