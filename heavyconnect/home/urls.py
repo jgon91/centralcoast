@@ -109,11 +109,11 @@ urlpatterns = [
     url(r'^switchTaskManager/$', main_views.switchTaskManager, name = 'switchTaskManager'),
     url(r'^updateTaskCalendar/$', main_views.updateTaskCalendar, name = 'updateTaskCalendar'),
     url(r'^getAllManagerEmployees/$', main_views.getAllManagerEmployees, name = 'getAllManagerEmployees'),
-    url(r'^managerRetrieveHoursToday/$', main_views.managerRetrieveHoursToday, name = 'managerRetrieveHoursToday'),
-    url(r'^receiveIdShift/$', main_views.receiveIdShift, name = 'receiveIdShift'),
-    url(r'^receiveIdStopShift/$', main_views.receiveIdStopShift, name = 'receiveIdStopShift'),
-    url(r'^receiveIdBreak/$', main_views.receiveIdBreak, name = 'receiveIdBreak'),
-    url(r'^receiveIdStopBreak/$', main_views.receiveIdStopBreak, name = 'receiveIdStopBreak'),
+    url(r'^timeLogById/$', main_views.timeLogById, name = 'timeLogById'),
+    url(r'^startShiftGroup/$', main_views.startShiftGroup, name = 'startShiftGroup'),
+    url(r'^stopShiftGroup/$', main_views.stopShiftGroup, name = 'stopShiftGroup'),
+    url(r'^startBreakGroup/$', main_views.startBreakGroup, name = 'startBreakGroup'),
+    url(r'^stopBreakGroup/$', main_views.stopBreakGroup, name = 'stopBreakGroup'),
    ### End ###
 
     ###Insert###

@@ -12,7 +12,6 @@
 		var breakStarted = 0;
 		var lunchStarted = 0;
 		var lunch = 0;	//	0 = break ... 1 = lunch
-		
 		var urlTest = "{% url 'stopBreak' %}";
 		$(document).ready(function() {
 			$("#foot").load("{%url 'footer'%}");
@@ -332,7 +331,6 @@
 					<img src="{% static 'imgSmall/iconTimekeeper.png' %}"/>
 					{% trans 'HC TIMEKEEPER' %}
 				</div>
-				
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
 						<input type="button" id="shift" value="{% trans 'SHIFT' %}" class="btnsTimekeeper"/>
@@ -351,6 +349,13 @@
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
 						<input type="button" id="timelog" value="{% trans 'TIMELOG' %}" class="btnsTimekeeper"/>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-md-12">
+						<a href="{% url 'timeKeeperGroup'%}">
+							<input type="button" value="{% trans 'GROUP' %}" class="btnsTimekeeper" />
+						</a>
 					</div>
 				</div>
 			</div>
