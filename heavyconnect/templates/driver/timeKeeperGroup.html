@@ -33,16 +33,19 @@
 			}); 
 			$("#shift").click(function() {
 				$('#showTimekeeperModal').modal();
+				$("#messageTimekeeper").css("color", "#1F3801");	//green
 				$("#messageTimekeeper").html("Select the employees for this action:");
 				emptyDivs();
-				$("#clock-out").append('<input type="button" value="{% trans 'CLOCK-OUT' %}" class="btnsTimekeeper"/>');
 				$("#clock-in").append('<input type="button" value="{% trans 'CLOCK-IN' %}" class="btnsTimekeeper"/>');
+				$("#clock-out").append('<input type="button" value="{% trans 'CLOCK-OUT' %}" class="btnsTimekeeper"/>');
 				$("#employeeList").show();
 			});
 			$("#clock-in").click(function() {
 				if (id_checked.length == 0) {
+					$("#messageTimekeeper").css("color", "#BB330C");	//red
 					$("#messageTimekeeper").html("Select at least 1 employee to this action!");
 				} else {
+					$("#messageTimekeeper").css("color", "#1F3801");	//green
 					$("#messageTimekeeper").html("Starting shift...");
 					emptyDivs();
 					startShiftGroup("{{ csrf_token }}", "{% url 'startShiftGroup' %}");
@@ -50,8 +53,10 @@
 			});
 			$("#clock-out").click(function() {
 				if (id_checked.length == 0) {
+					$("#messageTimekeeper").css("color", "#BB330C");	//red
 					$("#messageTimekeeper").html("Select at least 1 employee to this action!");
 				} else {
+					$("#messageTimekeeper").css("color", "#1F3801");	//green
 					$("#messageTimekeeper").html("Ending shift...");
 					emptyDivs();
 					stopShiftGroup("{{ csrf_token }}", "{% url 'stopShiftGroup' %}");
@@ -59,16 +64,19 @@
 			});
 			$("#break").click(function() {
 				$('#showTimekeeperModal').modal();
+				$("#messageTimekeeper").css("color", "#1F3801");	//green
 				$("#messageTimekeeper").html("Select the employees for this action");
 				emptyDivs();
-				$("#stopBreak").append('<input type="button" value="{% trans 'STOP BREAK' %}" class="btnsTimekeeper"/>');
 				$("#startBreak").append('<input type="button" value="{% trans 'START BREAK' %}" class="btnsTimekeeper"/>');
+				$("#stopBreak").append('<input type="button" value="{% trans 'STOP BREAK' %}" class="btnsTimekeeper"/>');
 				$("#employeeList").show();
 			});
 			$("#startBreak").click(function() {
 				if (id_checked.length == 0) {
+					$("#messageTimekeeper").css("color", "#BB330C");	//red
 					$("#messageTimekeeper").html("Select at least 1 employee to this action");
 				} else {
+					$("#messageTimekeeper").css("color", "#1F3801");	//green
 					$("#messageTimekeeper").html("Starting break...");
 					emptyDivs();
 					lunch = 0;
@@ -77,8 +85,10 @@
 			});
 			$("#stopBreak").click(function() {
 				if (id_checked.length == 0) {
+					$("#messageTimekeeper").css("color", "#BB330C");	//red
 					$("#messageTimekeeper").html("Select at least 1 employee to this action");
 				} else {
+					$("#messageTimekeeper").css("color", "#1F3801");	//green
 					$("#messageTimekeeper").html("Ending break...");
 					emptyDivs();
 					lunch = 0;
@@ -87,16 +97,19 @@
 			});
 			$("#lunch").click(function() {
 				$('#showTimekeeperModal').modal();
+				$("#messageTimekeeper").css("color", "#1F3801");	//green
 				$("#messageTimekeeper").html("Select the employees for this action");
 				emptyDivs();
-				$("#stopLunch").append('<input type="button" value="{% trans 'STOP LUNCH' %}" class="btnsTimekeeper"/>');
 				$("#startLunch").append('<input type="button" value="{% trans 'START LUNCH' %}" class="btnsTimekeeper"/>');
+				$("#stopLunch").append('<input type="button" value="{% trans 'STOP LUNCH' %}" class="btnsTimekeeper"/>');
 				$("#employeeList").show();
 			});
 			$("#startLunch").click(function() {
 				if (id_checked.length == 0) {
+					$("#messageTimekeeper").css("color", "#BB330C");	//red
 					$("#messageTimekeeper").html("Select at least 1 employee to this action");
 				} else {
+					$("#messageTimekeeper").css("color", "#1F3801");	//green
 					$("#messageTimekeeper").html("Starting lunch...");
 					emptyDivs();
 					lunch = 1;
@@ -105,8 +118,10 @@
 			});
 			$("#stopLunch").click(function() {
 				if (id_checked.length == 0) {
+					$("#messageTimekeeper").css("color", "#BB330C");	//red
 					$("#messageTimekeeper").html("Select at least 1 employee to this action");
 				} else {
+					$("#messageTimekeeper").css("color", "#1F3801");	//green
 					$("#messageTimekeeper").html("Ending break...");
 					emptyDivs();
 					lunch = 1;
@@ -116,8 +131,12 @@
 			$("#timelog").click(function() {
 				emptyDivs();
 				$('#showTimekeeperModal').modal();
+				$("#messageTimekeeper").css("color", "#1F3801");	//green
 				$("#messageTimekeeper").html("Select the employee to TIMELOG");
 				timelogBtns();
+			});
+			$("#btnSignature").click(function(){
+				$('#signModal').modal();
 			});
 		});
 		function getEmployeeShifts(token, url) {
@@ -145,14 +164,17 @@
 						}
 					} else if (data.code == 1) {
 						$('#showTimekeeperModal').modal();
+						$("#messageTimekeeper").css("color", "#BB330C");	//red
 						$("#messageTimekeeper").html("There is no shift records for this employee.");
 						hideModal();
 					} else if (data.code == 2) {
 						$('#showTimekeeperModal').modal();
+						$("#messageTimekeeper").css("color", "#BB330C");	//red
 						$("#messageTimekeeper").html("Error. Contact Suport.");
 						hideModal();
 					} else if (data.code == 3) {
 						$('#showTimekeeperModal').modal();
+						$("#messageTimekeeper").css("color", "#BB330C");	//red
 						$("#messageTimekeeper").html("Error. Contact Suport.");
 						hideModal();
 					}
@@ -166,21 +188,10 @@
 				data : {"csrfmiddlewaretoken" : token, "ids": id_checked},
 				datatype : "json",
 				success : function(data, status, xhr) {
-					$("#messageTimekeeper").html("Clock-in successful");
+					$("#messageTimekeeper").css("color", "#1F3801");	//green
+					$("#messageTimekeeper").html("Clock-in");
 					hideModal();
-					$("#success").append("<div><div>");
-					for (var i = 0; i < employeesTimelog.length; i++){
-						for (var j = 0; j < data.success.length; j++) {
-							if (data.success[j].id == employeesTimelog[i].user_id) {
-								console.log("suc");
-							}
-						}
-						for (var k = 0; k < data.error.length; k++) {
-							if (data.error[k].id == employeesTimelog[i].user_id) {
-								console.log("error");
-							}
-						}
-					}
+					printResult(data);
 				}
 			});
 		}
@@ -192,13 +203,15 @@
 				data : {"csrfmiddlewaretoken" : token, "ids": id_checked, "lunch": lunch},
 				datatype : "json",
 				success : function(data, status, xhr) {
+					$("#messageTimekeeper").css("color", "#1F3801");	//green
 					if (lunch == 0) {
-						$("#messageTimekeeper").html("Break started");
+						$("#messageTimekeeper").html("Break");
 					}
 					if (lunch == 1) {
-						$("#messageTimekeeper").html("Lunch started");
+						$("#messageTimekeeper").html("Lunch");
 					}
 					hideModal();
+					printResult(data);
 				}
 			});
 		}
@@ -209,13 +222,15 @@
 				data: {"csrfmiddlewaretoken": token, "ids": id_checked, "lunch": lunch},
 				datatype: "json",
 				success: function(data, status, xhr){
+					$("#messageTimekeeper").css("color", "#1F3801");	//green
 					if (lunch == 0) {
-						$("#messageTimekeeper").html("Break ended");
+						$("#messageTimekeeper").html("Break");
 					}
 					if (lunch == 1) {
-						$("#messageTimekeeper").html("Lunch ended");
+						$("#messageTimekeeper").html("Lunch");
 					}
 					hideModal();
+					printResult(data);
 				}
 			});
 		}
@@ -226,8 +241,10 @@
 				data: {"csrfmiddlewaretoken": token, "ids": id_checked},
 				datatype: "json",
 				success: function(data, status, xhr){
+					$("#messageTimekeeper").css("color", "#1F3801");	//green
 					$("#messageTimekeeper").html("Clock-out successful");
 					hideModal();
+					printResult(data);
 				}
 			});
 		}
@@ -238,8 +255,8 @@
 		}
 		function timelogId(idShow) {
 			emptyDivs();
+			$("#messageTimekeeper").css("color", "#1F3801");	//green
 			$("#messageTimekeeper").html("TIMELOG");
-			console.log(idShow);
 			idTimelog = idShow;
 			timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
 		}
@@ -266,6 +283,9 @@
 					}
 					$("#tableTimelog").append("<tr><td colspan='2'>End Shift: " + data.Attendance_end + "</td></tr>");
 					$("#tableTimelog").append("<tr><td colspan='2'>Total: " + data.Total + " hours</td></tr>");
+					if (data.Attendance_end != 'Happening') { 
+						$("#btnSignature").append("<input type='button' value='SIGN NOW'/>");
+					}
 				}
 			});
 		}
@@ -291,6 +311,28 @@
 				}
 			});
 		}
+		function printResult(data) {
+			if (data.success.length) {
+						$("#success").css("color", "#1F3801");	//green
+						$("#success").append("<div>SUCCESS<div>");
+					}
+					if (data.error.length) {
+						$("#error").css("color", "#BB330C");	//red
+						$("#error").append("<div>ERROR<div>");
+					}
+					for (var i = 0; i < employeesTimelog.length; i++){
+						for (var j = 0; j < data.success.length; j++) {
+							if (data.success[j].id == employeesTimelog[i].user_id) {
+								$("#success").append("<div>" + employeesTimelog[i].first_name + employeesTimelog[i].last_name + "<div>");
+							}
+						}
+						for (var k = 0; k < data.error.length; k++) {
+							if (data.error[k].id == employeesTimelog[i].user_id) {
+								$("#error").append("<div>" + employeesTimelog[i].first_name + employeesTimelog[i].last_name + "<div>");
+							}
+						}
+					}
+		}
 		function hideModal() {
 			setTimeout(function(){
     			$('#showTimekeeperModal').modal('hide')
@@ -300,8 +342,8 @@
 			$("#employeeList").hide();
 			$("#success").empty();
 			$("#error").empty();
-			$("#clock-out").empty();
 			$("#clock-in").empty();
+			$("#clock-out").empty();
 			$("#stopBreak").empty();
 			$("#startBreak").empty();
 			$("#stopLunch").empty();
@@ -315,9 +357,33 @@
 				 margin:0 0 10px;
 				 display:block; 
 			}
-			#employeeList{
+			#employeeList {
 				text-align: left;
 				font-size: 20px;
+			}
+			#employeeList input[type=checkbox] {
+				width: 15px;
+				height: 15px;
+			}
+			#divTimelog input[type=button] {
+				border: 1px solid #DDD;
+				padding: 5px;
+				box-sizing: border-box;
+				white-space: nowrap;
+				cursor: pointer;
+				background: #E5E5E5;
+				width: 100%;
+			}
+			#btnSignature input[type=button] {
+				border: 1px solid #DDD;
+				padding: 5px;
+				box-sizing: border-box;
+				white-space: nowrap;
+				cursor: pointer;
+				background: #E5E5E5;
+				width: 50%;
+				color: black;
+				font-size: 17px;
 			}
 		</style>
 	</head>
@@ -367,13 +433,14 @@
 						<div id="employeeList"></div>
 						<div id="success"></div>
 						<div id="error"></div>
-						<div id="clock-out"></div>
 						<div id="clock-in"></div>
-						<div id="stopBreak"></div>
+						<div id="clock-out"></div>
 						<div id="startBreak"></div>
-						<div id="stopLunch"></div>
+						<div id="stopBreak"></div>
 						<div id="startLunch"></div>
+						<div id="stopLunch"></div>
 						<div id="divTimelog"></div>
+						<div id="btnSignature"></div>
 						<br>
 						<div class="both"></div>
 					</div>
