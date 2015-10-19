@@ -217,10 +217,17 @@ def startShiftGroup(request):
 	if request.method == "POST":
 		if request.is_ajax():
 			ids = request.POST.getlist('ids[]')
-			aux = []
+			auxSuccess = []
+			auxError = []
 			for item in ids:
-				aux.append(startShift(item))
-			result['shifts'] = aux
+				aux = startShift(item)
+				aux['id'] = item
+				if aux['success'] == True:
+					auxSucess.append(aux)
+				else:
+					auxError.append(aux)
+			result['success'] = auxSuccess
+			result['error'] = auxError
 		else:
 			result['code'] = 5 #Use ajax to perform requests
 	else:
