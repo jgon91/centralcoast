@@ -284,10 +284,17 @@ def stopShiftGroup(request):
 	if request.method == "POST":
 		if request.is_ajax():
 			ids = request.POST.getlist('ids[]')
-			aux = []
+			auxSuccess = []
+			auxError = []
 			for item in ids:
-				aux.append(stopShift(item))
-			result['shifts'] = aux
+				aux = stopShift(item)
+				aux['id'] = item
+				if aux['success'] == True:
+					auxSuccess.append(aux)
+				else:
+					auxError.append(aux)
+			result['success'] = auxSuccess
+			result['error'] = auxError
 		else:
 			result['code'] = 5 #Use ajax to perform requests
 	else:
