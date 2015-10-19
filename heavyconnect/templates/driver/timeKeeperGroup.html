@@ -168,7 +168,19 @@
 				success : function(data, status, xhr) {
 					$("#messageTimekeeper").html("Clock-in successful");
 					hideModal();
-					console.log(data);
+					$("#success").append("<div><div>");
+					for (var i = 0; i < employeesTimelog.length; i++){
+						for (var j = 0; j < data.success.length; j++) {
+							if (data.success[j].id == employeesTimelog[i].user_id) {
+								console.log("suc");
+							}
+						}
+						for (var k = 0; k < data.error.length; k++) {
+							if (data.error[k].id == employeesTimelog[i].user_id) {
+								console.log("error");
+							}
+						}
+					}
 				}
 			});
 		}
@@ -286,6 +298,8 @@
 		}
 		function emptyDivs() {
 			$("#employeeList").hide();
+			$("#success").empty();
+			$("#error").empty();
 			$("#clock-out").empty();
 			$("#clock-in").empty();
 			$("#stopBreak").empty();
@@ -351,6 +365,8 @@
 						<button type="button" class="closeEquip" data-dismiss="modal"></button>
 						<span id="messageTimekeeper"></span>
 						<div id="employeeList"></div>
+						<div id="success"></div>
+						<div id="error"></div>
 						<div id="clock-out"></div>
 						<div id="clock-in"></div>
 						<div id="stopBreak"></div>
