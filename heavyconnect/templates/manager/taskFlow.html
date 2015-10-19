@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{% load staticfiles %}
+		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
+		<script>
+			$(document).ready(function() {
+				$("#foot").load("{% url 'footer' %}");
+				$("#head").load("{% url 'headerManager' %}");
+			});
+		</script>
+	</head>
+	<body>
+		<header id="head"></header>
+		<div id="wrapper">
+			<div id="content">
+				<div id="namePage">
+					TASKFLOW
+				</div>
+				<div id="divTask">
+					<div id="pendingTask">
+						<p id="taskP">PENDING TASKS</p>
+						<div class="lastClass">
+							<a href="{% url 'startTask' %}" id="last1" style="text-decoration: none;">Disk 4 passes Sed elementum purus.</a>
+						</div>
+						<div class="lastClass">
+							<a href="{% url 'startTask' %}" id="last2" style="text-decoration: none;">Lorem ipsum dolor sit amet, consectur adipiscing.</a>
+						</div>
+						<div class="lastClass">
+							<a href="{% url 'startTask' %}" id="last3" style="text-decoration: none;">Lorem ipsum dolor sit amet.</a>
+						</div>
+						<div class="lastClass">
+							<a href="{% url 'startTask' %}" id="last4" style="text-decoration: none;">Disk 6 passes.</a>
+						</div>
+					</div>
+					<div id="divCreateTask"><a href="{% url 'createTask' %}"><input type="button" id="btnCreateTask" /></a></div>
+					<div id="divLastTask"><a href="{% url 'pastTasks' %}"><input type="button" id="btnLastTasks" /></a></div>
+					<div id="divGoScheduler"><a href="{% url 'schedule' %}"><input type="button" id="btnGoScheduler" /></a></div>
+					
+				</div>
+			</div>
+			<div id="clearBoth"></div>
+		</div>
+		<footer id="foot"></footer>
+	</body>
+	<script>
+			function startNewTask()
+			{						
+					console.log("function called");
+					$.ajax({
+						method: "POST",
+						url: "",
+						dataType: "json", 
+           				data: {"csrf_token": '{{csrf_token}}'},
+						success: function(data, status, xhr)
+						{
+							if(data.success)
+							{		 	
+							 	if(data.authorized)
+							 	{	
+							 		return true;
+							 	}else
+							 	{
+							 		return false;
+							 	}
+							}
+						}
+					});
+			}
+			
+			$("#btnCreateTask").click(startNewTask);
+			
+	</script>
+</html>

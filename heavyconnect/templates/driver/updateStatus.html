@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{%load staticfiles %}
+		<meta name="viewport" content="width=768, initial-scale=1" />
+		<link rel="stylesheet" type="text/css" href="{% static 'css/equipStyle.css' %}">
+		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
+		<script>
+			$(document).ready(function() {
+				$("#foot").load("{% url 'footer' %}");
+				$("#head").load("{% url 'headerDriver' %}");
+			});
+		</script>
+		<style>
+			#buttons {
+				width: 832px;
+				float: left;
+				margin: -74px 51px;
+			}
+			#updateStatus {
+				margin-top: 80px;
+			}
+		</style>
+	</head>
+	<body>
+		<header id="head"></header>
+		<div id="wrapper">
+			<div id="content">
+				<div id="namePage" style="width: 140px; opacity: 0.5;">
+					EQUIPMENT
+				</div>
+				<div id="namePage" style="width: 140px;">
+					UPDATE STATUS
+				</div>
+				<br />
+				<div id="updateStatus" style="margin-top: 0px;">
+					<div id="buttons">
+						<div class="radioBtn" id="radioBtn1">
+							<label>OK!
+								<br />
+								Ready to work</label>
+							<input type="radio" class="radio" name="status" id="radioBtn"  />
+						</div>
+						<div class="radioBtn"  id="radioBtn2">
+							<label>SERVICE
+								<br />
+								Needed</label>
+							<input type="radio" class="radio"  name="status" id="radioBtn" />
+						</div>
+						<div class="radioBtn" id="radioBtn3">
+							<label>BROKEN!
+								<br />
+								Do not use</label>
+							<input type="radio" class="radio"  name="status" id="radioBtn" />
+						</div>
+					</div>
+					<div id="box" class="notes" style="padding: 30px">
+						<h4>NOTES:</h4>
+						<textarea style="width:95%; font-size: 26px; padding: 10px;"rows="10" cols="130" name="notes" form="updateStatusSubmit"></textarea>
+					</div>
+					<div id="updateStatusForm">
+						<form>
+							<input type="button" id="updateStatusBack" value="">
+							<input type="submit" id="updateStatusSubmit" value="">
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer id="foot"></footer>
+	</body>
+	<script></script>
+</html>

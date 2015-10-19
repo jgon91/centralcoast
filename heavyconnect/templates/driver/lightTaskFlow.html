@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{% load staticfiles %}
+		{% load i18n %}
+		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
+        <script src="{% static 'js/script.js' %}"></script>
+
+        <script src="{% static 'jSignature/jSignature.min.js'%}"></script>
+
+        <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
+        <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+        <script type="text/javascript" src="https://twitter.github.io/typeahead.js/releases/latest/typeahead.bundle.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="{% static 'css/styleSmall.css' %}">
+
+        <link rel="stylesheet" type="text/css" href="{% static 'css/selectize.default.css' %}">
+
+        <script type="text/javascript" src="{% static 'js/selectize.js' %}"></script>
+
+		<script>
+		//variables
+		var taskMoreInfo;
+		taskMoreInfo = {};
+		//Events
+		$(document).ready(function() {
+			$("#foot").load("{% url 'footer' %}");
+			$("#head").load("{% url 'headerDriver' %}");
+
+			$(".js-example-basic-single").select2();
+
+
+			$("#taskFlowSubmit").click(function() {
+			    var taskData = []
+
+			    $('#taskTable tbody tr').each(function () {
+			        if(! $(this).find('.selectized').val()){
+			        }else{
+			            taskData.push($(this).find('.selectized').val());
+			            taskData.push($(this).find('.ranch').val());
+			            taskData.push($(this).find('.taskHours').val());
+                    }
+
+			    });
+
+                <!--$('.tasks').each(function () {-->
+                    <!--taskData.push($(this).val());-->
+                <!--});-->
+				updateTaskFlow("{{ csrf_token }}", "{% url 'updateLightTaskFlow' %}", JSON.stringify(taskData));
+			});
+
+			$(".taskHours").each(function () {
+                $(this).keyup(function () {
+                    calculateSum();
+                });
+            });
+
+            $(".dropdown-menu li a").click(function(){
+              $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="caret"></span>');
+              $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+            });
+
+            $('.select-beast').selectize({
+                create: true,
+                sortField: 'text'
+            });
+        });
+
+        function updateTaskFlow(token, url, taskData) {
+            $.ajax({
+					method : "POST",
+					url : url,
+					data : {
+						"csrfmiddlewaretoken" : token,
+						"task_data" : taskData
+					},
+					datatype : "json",
+					success : function(data, status, xhr) {
+					    if(data.success){
+                            $("#showTimeKeeperModal").modal();
+                            $("#messageTimekeeper").html("Submitted Successfully");
+
+					    } else {
+						    $('#showTimekeeperModal').modal();
+						    $("#messageTimekeeper").html("There was an error. Not Submitted.");
+					    }
+					}
+
+			});
+        }
+
+        function calculateSum() {
+            var sum = 0;
+            $(".taskHours").each(function () {
+                //add only if the value is number
+                if (!isNaN(this.value) && this.value.length != 0) {
+                    sum += parseFloat(this.value);
+                }
+            });
+            $("#sum").html(sum.toFixed(2));
+        }
+
+		</script>
+	</head>
+	<body>
+		<header id="head"></header>
+		<div id="wrapper">
+			<div id="content">
+				<div class="namePage">
+					<img src="{% static 'imgSmall/iconTaskflow.png' %}"/>{% trans 'HC TASKFLOW' %}
+				</div>
+                <div class="container">
+                    <table class="table table-condensed" id="taskTable">
+                    <thead>
+                      <tr>
+                        <th>Trabajo</th>
+                        <th>Rancho</th>
+                        <th>Horas</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                            <div class="sandbox" id="job1">
+                              <select class="job tasks select-beast">
+
+                                <option value="71140 DIA FESTIVO-COSECHA">71140 DIA FESTIVO-COSECHA</option>
+                                <option value="71200 PONCHADORA MARQUETA">71200 PONCHADORA MARQUETA</option>
+                                <option value="71210 71210 PONCHADORA JUGO">71210 PONCHADORA JUGO</option>
+                                <option value="71220 71220 PONCHADORA FREEZER">71220 PONCHADORA FREEZER</option>
+                                  <option value="71250 REEMPACAR">71250 REEMPACAR</option>
+                                  <option value="71300 SUPERVISAR MARQUETA">71300 SUPERVISAR MARQUETA</option>
+                                  <option value="71310 SUPERVISAR JUGO">71310 SUPERVISAR JUGO</option>
+                                  <option value="71320 SUPERVISAR FREEZER">71320 SUPERVISAR FREEZER</option>
+                                  <option value="71330 SUPERVISAR TIRAR FRUTA">71330 SUPERVISAR TIRAR FRUTA</option>
+                                  <option value="71340 BONOS-COSECHA">71340 BONOS-COSECHA</option>
+                                  <option value="71400 CARGAR MARQUETA">71400 CARGAR MARQUETA</option>
+                                  <option value="71410 CARGAR JUGO">71410 CARGAR JUGO</option>
+                                  <option value="71420 CARGAR FREEZER">71420 CARGAR FREEZER</option>
+                                  <option value="71500 TRABAJO DESPUES DE PISCA">71500 TRABAJO DESPUES DE PISCA</option>
+                                  <option value="71510 JUNTAS COSECHAS">71510 JUNTAS COSECHAS</option>
+                                  <option value="71600 MENTOR">71600 MENTOR</option>
+                                  <option value="71900 AUX SUPERVISOR">71900 AUX SUPERVISOR</option>
+                                  <option value="71990 AUX PISCA LABOR">71990 AUX PISCA LABOR</option>
+                                  <option value="72000 CUBRE COSECHA">72000 CUBRE COSECHA</option>
+                                  <option value="72100 PREPARAR CAMPO CON TRACTOR">72100 PREPARAR CAMPO CON TRACTOR</option>
+                                  <option value="72110 INFRAESTRACTURA LABOR TRACTOR">72110 INFRAESTRACTURA LABOR TRACTOR</option>
+                                  <option value="72250 FUMIGACION">72250 FUMIGACION</option>
+                                  <option value="72300 SACAR PLASTICO DE FUMIGACION">72300 SACAR PLASTICO DE FUMIGACION</option>
+                                  <option value="72450 INSTALAR SISTEMA DE RIEGO">72450 INSTALAR SISTEMA DE RIEGO</option>
+                                  <option value="72500 FERTILIZAR ANTES DE PLANTAR">72500 FERTILIZAR ANTES DE PLANTAR</option>
+                                  <option value="72550 HACER CAMINOS">72550 HACER CAMINOS</option>
+                                  <option value="72650 RIEGO ANTES DE PLANTAR">72650 RIEGO ANTES DE PLANTAR</option>
+                                  <option value="72700 DESHIERBAR ANTES DE PLANTAR">72700 DESHIERBAR ANTES DE PLANTAR</option>
+                                  <option value="73000 PLANTAR TODO LABOR">73000 PLANTAR TODO LABOR</option>
+                                  <option value="73010 TIRAR FRUTA-NO COSECHA">73010 TIRAR FRUTA-NO COSECHA</option>
+                                  <option value="73020 MANTENIMIENTO DE TRAMPAS">73020 MANTENIMIENTO DE TRAMPAS</option>
+                                  <option value="73030 SACAR PLANTAS DE PLASTICO">73030 SACAR PLANTAS DE PLASTICO</option>
+                                  <option value="73050 RIEGO">73050 RIEGO</option>
+                                  <option value="73060 REPLANTAR">73060 REPLANTAR</option>
+                                  <option value="73100 DESHIERBAR">73100 DESHIERBAR</option>
+                                  <option value="73120 CORTAR GUIAS">73120 CORTAR GUIAS</option>
+                                  <option value="73130 CORTAR RETONO">73130 CORTAR RETONO</option>
+                                  <option value="73140 TELA DE HIELO">73140 TELA DE HIELO</option>
+                                  <option value="73150 APLICAR PESTICIDAS PREM">73150 APLICAR PESTICIDAS PREM</option>
+                                  <option value="73160 LAVANDO LINEAS">73160 LAVANDO LINEAS</option>
+                                  <option value="73170 APLICAR FERTILIZANTE">73170 APLICAR FERTILIZANTE</option>
+                                  <option value="73100 APLICAR PERSIMILIS">73100 APLICAR PERSIMILIS</option>
+                                  <option value="73220 MONITOREAR INSECTOS">73220 MONITOREAR INSECTOS</option>
+                                  <option value="73230 ASPIRAR INSECTOS">73230 ASPIRAR INSECTOS</option>
+                                  <option value="73250 INSTALAR POSTES Y ALAMBRES">73250 INSTALAR POSTES Y ALAMBRES</option>
+                                  <option value="73300 TRINIAR PLANTAS">73300 TRINIAR PLANTAS</option>
+                                  <option value="73350 PODAR">73350 PODAR</option>
+                                  <option value="73351 MOWDOWN">73351 MOWDOWN</option>
+                                  <option value="73550 APLICAR PLASTICO">73550 APLICAR PLASTICO</option>
+                                  <option value="73700 CORTAR LA FLOR">73700 CORTAR LA FLOR</option>
+                                  <option value="73750 CULTIVACION">73750 CULTIVACION</option>
+                                  <option value="73900 ACTIVIDAD DE HOOPS">73900 ACTIVIDAD DE HOOPS</option>
+                                  <option value="73920 INSTALAR O REPARAR MANGERA DE GOTEO">73920 INSTALAR O REPARAR MANGERA DE GOTEO</option>
+                                  <option value="74000 QUITAR PLASTICO">74000 QUITAR PLASTICO</option>
+                                  <option value="74050 QUITAR VALVULAS">74050 QUITAR VALVULAS</option>
+                                  <option value="74100 LIMPIEZA CON TRACTOR">74100 LIMPIEZA CON TRACTOR</option>
+                                  <option value="74150 QUITAR POSTES Y ALAMBRES">74150 QUITAR POSTES Y ALAMBRES</option>
+                                  <option value="74200 QUITAR PLANTAS">74200 QUITAR PLANTAS</option>
+                                  <option value="74250 BASURA PLASTICO">74250 BASURA PLASTICO</option>
+                                  <option value="74950 QUITAR HOOPS">74950 QUITAR HOOPS</option>
+                                  <option value="75400 FORKLIFT HORAS LABOR">75400 FORKLIFT HORAS LABOR</option>
+                                  <option value="75470 MANTENIMIENTO DE BANOS">75470 MANTENIMIENTO DE BANOS</option>
+                                  <option value="75500 APLICAR HERBICIDAS PREM">75500 APLICAR HERBICIDAS PREM</option>
+                                  <option value="75550 MANTENER Y REGAR CAMINOS">75550 MANTENER Y REGAR CAMINOS</option>
+                                  <option value="75600 DESAGUAR CAMPOS">75600 DESAGUAR CAMPOS</option>
+                                  <option value="75700 MANTENIMIENTO DE EQUIPO">75700 MANTENIMIENTO DE EQUIPO</option>
+                                  <option value="75710 SERVICIO/ENGRASAR/PONER DISEL">75710 SERVICIO/ENGRASAR/PONER DISEL</option>
+                                  <option value="75720 MOVER EQUIPO">75720 MOVER EQUIPO</option>
+                                  <option value="75750 MANTENIMIENTO DE RANCHO">75750 MANTENIMIENTO DE RANCHO</option>
+                                  <option value="75760 DESHIERBAR ALREDEDOR DEL RANCHO">75760 DESHIERBAR ALREDEDOR DEL RANCHO</option>
+                                  <option value="75920 REPARAR SISTEMA DE RIEGO">75920 REPARAR SISTEMA DE RIEGO</option>
+                                  <option value="75950 INSTALAR CERCO">75950 INSTALAR CERCO</option>
+                                  <option value="77000 SUPERVISAR NO COSECHA">77000 SUPERVISAR NO COSECHA</option>
+                                  <option value="77140 DIA FESTIVO-NO COSECHA">77140 DIA FESTIVO-NO COSECHA</option>
+                                  <option value="77170 OFICINA">77170 OFICINA</option>
+                                  <option value="77300 TRABAJO MODIFICADO RANCHO">77300 TRABAJO MODIFICADO RANCHO</option>
+                                  <option value="77320 LLEVAR EMPLEADO AL DOCTOR">77320 LLEVAR EMPLEADO AL DOCTOR</option>
+                                  <option value="77340 BONOS - NO COSECHA">77340 BONOS - NO COSECHA</option>
+                                  <option value="77510 JUNTAS - NO COSECHA">77510 JUNTAS - NO COSECHA</option>
+                                  <option value="91021 VACACIONES">91021 VACACIONES</option>
+                                  <option value="91030 ENFERMEDAD">91030 ENFERMEDAD</option>
+                                  <option value="92000 PAGO POR CALIDAD PFQ">92000 PAGO POR CALIDAD PFQ</option>
+                                  <option value="92010 PONCHADORA/O PAGO POR CALIDAD PFQ">92010 PONCHADORA/O PAGO POR CALIDAD PFQ</option>
+                              </select>
+                            </div>
+                        </td>
+                        <td><input type="text" class="ranch form-control tasks" /></td>
+                        <td><input type="number" class="taskHours form-control tasks" /></td>
+                      </tr>
+                      <tr>
+                        <td>
+                            <div class="sandbox">
+                              <select class="job tasks select-beast">
+
+                                <option value="71140 DIA FESTIVO-COSECHA">71140 DIA FESTIVO-COSECHA</option>
+                                <option value="71200 PONCHADORA MARQUETA">71200 PONCHADORA MARQUETA</option>
+                                <option value="71210 71210 PONCHADORA JUGO">71210 PONCHADORA JUGO</option>
+                                <option value="71220 71220 PONCHADORA FREEZER">71220 PONCHADORA FREEZER</option>
+                                  <option value="71250 REEMPACAR">71250 REEMPACAR</option>
+                                  <option value="71300 SUPERVISAR MARQUETA">71300 SUPERVISAR MARQUETA</option>
+                                  <option value="71310 SUPERVISAR JUGO">71310 SUPERVISAR JUGO</option>
+                                  <option value="71320 SUPERVISAR FREEZER">71320 SUPERVISAR FREEZER</option>
+                                  <option value="71330 SUPERVISAR TIRAR FRUTA">71330 SUPERVISAR TIRAR FRUTA</option>
+                                  <option value="71340 BONOS-COSECHA">71340 BONOS-COSECHA</option>
+                                  <option value="71400 CARGAR MARQUETA">71400 CARGAR MARQUETA</option>
+                                  <option value="71410 CARGAR JUGO">71410 CARGAR JUGO</option>
+                                  <option value="71420 CARGAR FREEZER">71420 CARGAR FREEZER</option>
+                                  <option value="71500 TRABAJO DESPUES DE PISCA">71500 TRABAJO DESPUES DE PISCA</option>
+                                  <option value="71510 JUNTAS COSECHAS">71510 JUNTAS COSECHAS</option>
+                                  <option value="71600 MENTOR">71600 MENTOR</option>
+                                  <option value="71900 AUX SUPERVISOR">71900 AUX SUPERVISOR</option>
+                                  <option value="71990 AUX PISCA LABOR">71990 AUX PISCA LABOR</option>
+                                  <option value="72000 CUBRE COSECHA">72000 CUBRE COSECHA</option>
+                                  <option value="72100 PREPARAR CAMPO CON TRACTOR">72100 PREPARAR CAMPO CON TRACTOR</option>
+                                  <option value="72110 INFRAESTRACTURA LABOR TRACTOR">72110 INFRAESTRACTURA LABOR TRACTOR</option>
+                                  <option value="72250 FUMIGACION">72250 FUMIGACION</option>
+                                  <option value="72300 SACAR PLASTICO DE FUMIGACION">72300 SACAR PLASTICO DE FUMIGACION</option>
+                                  <option value="72450 INSTALAR SISTEMA DE RIEGO">72450 INSTALAR SISTEMA DE RIEGO</option>
+                                  <option value="72500 FERTILIZAR ANTES DE PLANTAR">72500 FERTILIZAR ANTES DE PLANTAR</option>
+                                  <option value="72550 HACER CAMINOS">72550 HACER CAMINOS</option>
+                                  <option value="72650 RIEGO ANTES DE PLANTAR">72650 RIEGO ANTES DE PLANTAR</option>
+                                  <option value="72700 DESHIERBAR ANTES DE PLANTAR">72700 DESHIERBAR ANTES DE PLANTAR</option>
+                                  <option value="73000 PLANTAR TODO LABOR">73000 PLANTAR TODO LABOR</option>
+                                  <option value="73010 TIRAR FRUTA-NO COSECHA">73010 TIRAR FRUTA-NO COSECHA</option>
+                                  <option value="73020 MANTENIMIENTO DE TRAMPAS">73020 MANTENIMIENTO DE TRAMPAS</option>
+                                  <option value="73030 SACAR PLANTAS DE PLASTICO">73030 SACAR PLANTAS DE PLASTICO</option>
+                                  <option value="73050 RIEGO">73050 RIEGO</option>
+                                  <option value="73060 REPLANTAR">73060 REPLANTAR</option>
+                                  <option value="73100 DESHIERBAR">73100 DESHIERBAR</option>
+                                  <option value="73120 CORTAR GUIAS">73120 CORTAR GUIAS</option>
+                                  <option value="73130 CORTAR RETONO">73130 CORTAR RETONO</option>
+                                  <option value="73140 TELA DE HIELO">73140 TELA DE HIELO</option>
+                                  <option value="73150 APLICAR PESTICIDAS PREM">73150 APLICAR PESTICIDAS PREM</option>
+                                  <option value="73160 LAVANDO LINEAS">73160 LAVANDO LINEAS</option>
+                                  <option value="73170 APLICAR FERTILIZANTE">73170 APLICAR FERTILIZANTE</option>
+                                  <option value="73100 APLICAR PERSIMILIS">73100 APLICAR PERSIMILIS</option>
+                                  <option value="73220 MONITOREAR INSECTOS">73220 MONITOREAR INSECTOS</option>
+                                  <option value="73230 ASPIRAR INSECTOS">73230 ASPIRAR INSECTOS</option>
+                                  <option value="73250 INSTALAR POSTES Y ALAMBRES">73250 INSTALAR POSTES Y ALAMBRES</option>
+                                  <option value="73300 TRINIAR PLANTAS">73300 TRINIAR PLANTAS</option>
+                                  <option value="73350 PODAR">73350 PODAR</option>
+                                  <option value="73351 MOWDOWN">73351 MOWDOWN</option>
+                                  <option value="73550 APLICAR PLASTICO">73550 APLICAR PLASTICO</option>
+                                  <option value="73700 CORTAR LA FLOR">73700 CORTAR LA FLOR</option>
+                                  <option value="73750 CULTIVACION">73750 CULTIVACION</option>
+                                  <option value="73900 ACTIVIDAD DE HOOPS">73900 ACTIVIDAD DE HOOPS</option>
+                                  <option value="73920 INSTALAR O REPARAR MANGERA DE GOTEO">73920 INSTALAR O REPARAR MANGERA DE GOTEO</option>
+                                  <option value="74000 QUITAR PLASTICO">74000 QUITAR PLASTICO</option>
+                                  <option value="74050 QUITAR VALVULAS">74050 QUITAR VALVULAS</option>
+                                  <option value="74100 LIMPIEZA CON TRACTOR">74100 LIMPIEZA CON TRACTOR</option>
+                                  <option value="74150 QUITAR POSTES Y ALAMBRES">74150 QUITAR POSTES Y ALAMBRES</option>
+                                  <option value="74200 QUITAR PLANTAS">74200 QUITAR PLANTAS</option>
+                                  <option value="74250 BASURA PLASTICO">74250 BASURA PLASTICO</option>
+                                  <option value="74950 QUITAR HOOPS">74950 QUITAR HOOPS</option>
+                                  <option value="75400 FORKLIFT HORAS LABOR">75400 FORKLIFT HORAS LABOR</option>
+                                  <option value="75470 MANTENIMIENTO DE BANOS">75470 MANTENIMIENTO DE BANOS</option>
+                                  <option value="75500 APLICAR HERBICIDAS PREM">75500 APLICAR HERBICIDAS PREM</option>
+                                  <option value="75550 MANTENER Y REGAR CAMINOS">75550 MANTENER Y REGAR CAMINOS</option>
+                                  <option value="75600 DESAGUAR CAMPOS">75600 DESAGUAR CAMPOS</option>
+                                  <option value="75700 MANTENIMIENTO DE EQUIPO">75700 MANTENIMIENTO DE EQUIPO</option>
+                                  <option value="75710 SERVICIO/ENGRASAR/PONER DISEL">75710 SERVICIO/ENGRASAR/PONER DISEL</option>
+                                  <option value="75720 MOVER EQUIPO">75720 MOVER EQUIPO</option>
+                                  <option value="75750 MANTENIMIENTO DE RANCHO">75750 MANTENIMIENTO DE RANCHO</option>
+                                  <option value="75760 DESHIERBAR ALREDEDOR DEL RANCHO">75760 DESHIERBAR ALREDEDOR DEL RANCHO</option>
+                                  <option value="75920 REPARAR SISTEMA DE RIEGO">75920 REPARAR SISTEMA DE RIEGO</option>
+                                  <option value="75950 INSTALAR CERCO">75950 INSTALAR CERCO</option>
+                                  <option value="77000 SUPERVISAR NO COSECHA">77000 SUPERVISAR NO COSECHA</option>
+                                  <option value="77140 DIA FESTIVO-NO COSECHA">77140 DIA FESTIVO-NO COSECHA</option>
+                                  <option value="77170 OFICINA">77170 OFICINA</option>
+                                  <option value="77300 TRABAJO MODIFICADO RANCHO">77300 TRABAJO MODIFICADO RANCHO</option>
+                                  <option value="77320 LLEVAR EMPLEADO AL DOCTOR">77320 LLEVAR EMPLEADO AL DOCTOR</option>
+                                  <option value="77340 BONOS - NO COSECHA">77340 BONOS - NO COSECHA</option>
+                                  <option value="77510 JUNTAS - NO COSECHA">77510 JUNTAS - NO COSECHA</option>
+                                  <option value="91021 VACACIONES">91021 VACACIONES</option>
+                                  <option value="91030 ENFERMEDAD">91030 ENFERMEDAD</option>
+                                  <option value="92000 PAGO POR CALIDAD PFQ">92000 PAGO POR CALIDAD PFQ</option>
+                                  <option value="92010 PONCHADORA/O PAGO POR CALIDAD PFQ">92010 PONCHADORA/O PAGO POR CALIDAD PFQ</option>
+                              </select>
+                            </div>
+                        </td>
+                        <td><input type="text" class="ranch form-control tasks" /></td>
+                        <td><input type="number" class="taskHours form-control tasks" /></td>
+                      </tr>
+                      <tr>
+                        <td>
+                            <div class="sandbox">
+                              <select class="job tasks select-beast">
+
+                                <option value="71140 DIA FESTIVO-COSECHA">71140 DIA FESTIVO-COSECHA</option>
+                                <option value="71200 PONCHADORA MARQUETA">71200 PONCHADORA MARQUETA</option>
+                                <option value="71210 71210 PONCHADORA JUGO">71210 PONCHADORA JUGO</option>
+                                <option value="71220 71220 PONCHADORA FREEZER">71220 PONCHADORA FREEZER</option>
+                                  <option value="71250 REEMPACAR">71250 REEMPACAR</option>
+                                  <option value="71300 SUPERVISAR MARQUETA">71300 SUPERVISAR MARQUETA</option>
+                                  <option value="71310 SUPERVISAR JUGO">71310 SUPERVISAR JUGO</option>
+                                  <option value="71320 SUPERVISAR FREEZER">71320 SUPERVISAR FREEZER</option>
+                                  <option value="71330 SUPERVISAR TIRAR FRUTA">71330 SUPERVISAR TIRAR FRUTA</option>
+                                  <option value="71340 BONOS-COSECHA">71340 BONOS-COSECHA</option>
+                                  <option value="71400 CARGAR MARQUETA">71400 CARGAR MARQUETA</option>
+                                  <option value="71410 CARGAR JUGO">71410 CARGAR JUGO</option>
+                                  <option value="71420 CARGAR FREEZER">71420 CARGAR FREEZER</option>
+                                  <option value="71500 TRABAJO DESPUES DE PISCA">71500 TRABAJO DESPUES DE PISCA</option>
+                                  <option value="71510 JUNTAS COSECHAS">71510 JUNTAS COSECHAS</option>
+                                  <option value="71600 MENTOR">71600 MENTOR</option>
+                                  <option value="71900 AUX SUPERVISOR">71900 AUX SUPERVISOR</option>
+                                  <option value="71990 AUX PISCA LABOR">71990 AUX PISCA LABOR</option>
+                                  <option value="72000 CUBRE COSECHA">72000 CUBRE COSECHA</option>
+                                  <option value="72100 PREPARAR CAMPO CON TRACTOR">72100 PREPARAR CAMPO CON TRACTOR</option>
+                                  <option value="72110 INFRAESTRACTURA LABOR TRACTOR">72110 INFRAESTRACTURA LABOR TRACTOR</option>
+                                  <option value="72250 FUMIGACION">72250 FUMIGACION</option>
+                                  <option value="72300 SACAR PLASTICO DE FUMIGACION">72300 SACAR PLASTICO DE FUMIGACION</option>
+                                  <option value="72450 INSTALAR SISTEMA DE RIEGO">72450 INSTALAR SISTEMA DE RIEGO</option>
+                                  <option value="72500 FERTILIZAR ANTES DE PLANTAR">72500 FERTILIZAR ANTES DE PLANTAR</option>
+                                  <option value="72550 HACER CAMINOS">72550 HACER CAMINOS</option>
+                                  <option value="72650 RIEGO ANTES DE PLANTAR">72650 RIEGO ANTES DE PLANTAR</option>
+                                  <option value="72700 DESHIERBAR ANTES DE PLANTAR">72700 DESHIERBAR ANTES DE PLANTAR</option>
+                                  <option value="73000 PLANTAR TODO LABOR">73000 PLANTAR TODO LABOR</option>
+                                  <option value="73010 TIRAR FRUTA-NO COSECHA">73010 TIRAR FRUTA-NO COSECHA</option>
+                                  <option value="73020 MANTENIMIENTO DE TRAMPAS">73020 MANTENIMIENTO DE TRAMPAS</option>
+                                  <option value="73030 SACAR PLANTAS DE PLASTICO">73030 SACAR PLANTAS DE PLASTICO</option>
+                                  <option value="73050 RIEGO">73050 RIEGO</option>
+                                  <option value="73060 REPLANTAR">73060 REPLANTAR</option>
+                                  <option value="73100 DESHIERBAR">73100 DESHIERBAR</option>
+                                  <option value="73120 CORTAR GUIAS">73120 CORTAR GUIAS</option>
+                                  <option value="73130 CORTAR RETONO">73130 CORTAR RETONO</option>
+                                  <option value="73140 TELA DE HIELO">73140 TELA DE HIELO</option>
+                                  <option value="73150 APLICAR PESTICIDAS PREM">73150 APLICAR PESTICIDAS PREM</option>
+                                  <option value="73160 LAVANDO LINEAS">73160 LAVANDO LINEAS</option>
+                                  <option value="73170 APLICAR FERTILIZANTE">73170 APLICAR FERTILIZANTE</option>
+                                  <option value="73100 APLICAR PERSIMILIS">73100 APLICAR PERSIMILIS</option>
+                                  <option value="73220 MONITOREAR INSECTOS">73220 MONITOREAR INSECTOS</option>
+                                  <option value="73230 ASPIRAR INSECTOS">73230 ASPIRAR INSECTOS</option>
+                                  <option value="73250 INSTALAR POSTES Y ALAMBRES">73250 INSTALAR POSTES Y ALAMBRES</option>
+                                  <option value="73300 TRINIAR PLANTAS">73300 TRINIAR PLANTAS</option>
+                                  <option value="73350 PODAR">73350 PODAR</option>
+                                  <option value="73351 MOWDOWN">73351 MOWDOWN</option>
+                                  <option value="73550 APLICAR PLASTICO">73550 APLICAR PLASTICO</option>
+                                  <option value="73700 CORTAR LA FLOR">73700 CORTAR LA FLOR</option>
+                                  <option value="73750 CULTIVACION">73750 CULTIVACION</option>
+                                  <option value="73900 ACTIVIDAD DE HOOPS">73900 ACTIVIDAD DE HOOPS</option>
+                                  <option value="73920 INSTALAR O REPARAR MANGERA DE GOTEO">73920 INSTALAR O REPARAR MANGERA DE GOTEO</option>
+                                  <option value="74000 QUITAR PLASTICO">74000 QUITAR PLASTICO</option>
+                                  <option value="74050 QUITAR VALVULAS">74050 QUITAR VALVULAS</option>
+                                  <option value="74100 LIMPIEZA CON TRACTOR">74100 LIMPIEZA CON TRACTOR</option>
+                                  <option value="74150 QUITAR POSTES Y ALAMBRES">74150 QUITAR POSTES Y ALAMBRES</option>
+                                  <option value="74200 QUITAR PLANTAS">74200 QUITAR PLANTAS</option>
+                                  <option value="74250 BASURA PLASTICO">74250 BASURA PLASTICO</option>
+                                  <option value="74950 QUITAR HOOPS">74950 QUITAR HOOPS</option>
+                                  <option value="75400 FORKLIFT HORAS LABOR">75400 FORKLIFT HORAS LABOR</option>
+                                  <option value="75470 MANTENIMIENTO DE BANOS">75470 MANTENIMIENTO DE BANOS</option>
+                                  <option value="75500 APLICAR HERBICIDAS PREM">75500 APLICAR HERBICIDAS PREM</option>
+                                  <option value="75550 MANTENER Y REGAR CAMINOS">75550 MANTENER Y REGAR CAMINOS</option>
+                                  <option value="75600 DESAGUAR CAMPOS">75600 DESAGUAR CAMPOS</option>
+                                  <option value="75700 MANTENIMIENTO DE EQUIPO">75700 MANTENIMIENTO DE EQUIPO</option>
+                                  <option value="75710 SERVICIO/ENGRASAR/PONER DISEL">75710 SERVICIO/ENGRASAR/PONER DISEL</option>
+                                  <option value="75720 MOVER EQUIPO">75720 MOVER EQUIPO</option>
+                                  <option value="75750 MANTENIMIENTO DE RANCHO">75750 MANTENIMIENTO DE RANCHO</option>
+                                  <option value="75760 DESHIERBAR ALREDEDOR DEL RANCHO">75760 DESHIERBAR ALREDEDOR DEL RANCHO</option>
+                                  <option value="75920 REPARAR SISTEMA DE RIEGO">75920 REPARAR SISTEMA DE RIEGO</option>
+                                  <option value="75950 INSTALAR CERCO">75950 INSTALAR CERCO</option>
+                                  <option value="77000 SUPERVISAR NO COSECHA">77000 SUPERVISAR NO COSECHA</option>
+                                  <option value="77140 DIA FESTIVO-NO COSECHA">77140 DIA FESTIVO-NO COSECHA</option>
+                                  <option value="77170 OFICINA">77170 OFICINA</option>
+                                  <option value="77300 TRABAJO MODIFICADO RANCHO">77300 TRABAJO MODIFICADO RANCHO</option>
+                                  <option value="77320 LLEVAR EMPLEADO AL DOCTOR">77320 LLEVAR EMPLEADO AL DOCTOR</option>
+                                  <option value="77340 BONOS - NO COSECHA">77340 BONOS - NO COSECHA</option>
+                                  <option value="77510 JUNTAS - NO COSECHA">77510 JUNTAS - NO COSECHA</option>
+                                  <option value="91021 VACACIONES">91021 VACACIONES</option>
+                                  <option value="91030 ENFERMEDAD">91030 ENFERMEDAD</option>
+                                  <option value="92000 PAGO POR CALIDAD PFQ">92000 PAGO POR CALIDAD PFQ</option>
+                                  <option value="92010 PONCHADORA/O PAGO POR CALIDAD PFQ">92010 PONCHADORA/O PAGO POR CALIDAD PFQ</option>
+                              </select>
+                            </div>
+                        </td>
+                        <td><input type="text" class="ranch form-control tasks" /></td>
+                        <td><input type="number" class="taskHours form-control tasks" /></td>
+                      </tr>
+                      <tr>
+                        <td>
+                            <div class="sandbox">
+                              <select class="job tasks select-beast">
+
+                                <option value="71140 DIA FESTIVO-COSECHA">71140 DIA FESTIVO-COSECHA</option>
+                                <option value="71200 PONCHADORA MARQUETA">71200 PONCHADORA MARQUETA</option>
+                                <option value="71210 71210 PONCHADORA JUGO">71210 PONCHADORA JUGO</option>
+                                <option value="71220 71220 PONCHADORA FREEZER">71220 PONCHADORA FREEZER</option>
+                                  <option value="71250 REEMPACAR">71250 REEMPACAR</option>
+                                  <option value="71300 SUPERVISAR MARQUETA">71300 SUPERVISAR MARQUETA</option>
+                                  <option value="71310 SUPERVISAR JUGO">71310 SUPERVISAR JUGO</option>
+                                  <option value="71320 SUPERVISAR FREEZER">71320 SUPERVISAR FREEZER</option>
+                                  <option value="71330 SUPERVISAR TIRAR FRUTA">71330 SUPERVISAR TIRAR FRUTA</option>
+                                  <option value="71340 BONOS-COSECHA">71340 BONOS-COSECHA</option>
+                                  <option value="71400 CARGAR MARQUETA">71400 CARGAR MARQUETA</option>
+                                  <option value="71410 CARGAR JUGO">71410 CARGAR JUGO</option>
+                                  <option value="71420 CARGAR FREEZER">71420 CARGAR FREEZER</option>
+                                  <option value="71500 TRABAJO DESPUES DE PISCA">71500 TRABAJO DESPUES DE PISCA</option>
+                                  <option value="71510 JUNTAS COSECHAS">71510 JUNTAS COSECHAS</option>
+                                  <option value="71600 MENTOR">71600 MENTOR</option>
+                                  <option value="71900 AUX SUPERVISOR">71900 AUX SUPERVISOR</option>
+                                  <option value="71990 AUX PISCA LABOR">71990 AUX PISCA LABOR</option>
+                                  <option value="72000 CUBRE COSECHA">72000 CUBRE COSECHA</option>
+                                  <option value="72100 PREPARAR CAMPO CON TRACTOR">72100 PREPARAR CAMPO CON TRACTOR</option>
+                                  <option value="72110 INFRAESTRACTURA LABOR TRACTOR">72110 INFRAESTRACTURA LABOR TRACTOR</option>
+                                  <option value="72250 FUMIGACION">72250 FUMIGACION</option>
+                                  <option value="72300 SACAR PLASTICO DE FUMIGACION">72300 SACAR PLASTICO DE FUMIGACION</option>
+                                  <option value="72450 INSTALAR SISTEMA DE RIEGO">72450 INSTALAR SISTEMA DE RIEGO</option>
+                                  <option value="72500 FERTILIZAR ANTES DE PLANTAR">72500 FERTILIZAR ANTES DE PLANTAR</option>
+                                  <option value="72550 HACER CAMINOS">72550 HACER CAMINOS</option>
+                                  <option value="72650 RIEGO ANTES DE PLANTAR">72650 RIEGO ANTES DE PLANTAR</option>
+                                  <option value="72700 DESHIERBAR ANTES DE PLANTAR">72700 DESHIERBAR ANTES DE PLANTAR</option>
+                                  <option value="73000 PLANTAR TODO LABOR">73000 PLANTAR TODO LABOR</option>
+                                  <option value="73010 TIRAR FRUTA-NO COSECHA">73010 TIRAR FRUTA-NO COSECHA</option>
+                                  <option value="73020 MANTENIMIENTO DE TRAMPAS">73020 MANTENIMIENTO DE TRAMPAS</option>
+                                  <option value="73030 SACAR PLANTAS DE PLASTICO">73030 SACAR PLANTAS DE PLASTICO</option>
+                                  <option value="73050 RIEGO">73050 RIEGO</option>
+                                  <option value="73060 REPLANTAR">73060 REPLANTAR</option>
+                                  <option value="73100 DESHIERBAR">73100 DESHIERBAR</option>
+                                  <option value="73120 CORTAR GUIAS">73120 CORTAR GUIAS</option>
+                                  <option value="73130 CORTAR RETONO">73130 CORTAR RETONO</option>
+                                  <option value="73140 TELA DE HIELO">73140 TELA DE HIELO</option>
+                                  <option value="73150 APLICAR PESTICIDAS PREM">73150 APLICAR PESTICIDAS PREM</option>
+                                  <option value="73160 LAVANDO LINEAS">73160 LAVANDO LINEAS</option>
+                                  <option value="73170 APLICAR FERTILIZANTE">73170 APLICAR FERTILIZANTE</option>
+                                  <option value="73100 APLICAR PERSIMILIS">73100 APLICAR PERSIMILIS</option>
+                                  <option value="73220 MONITOREAR INSECTOS">73220 MONITOREAR INSECTOS</option>
+                                  <option value="73230 ASPIRAR INSECTOS">73230 ASPIRAR INSECTOS</option>
+                                  <option value="73250 INSTALAR POSTES Y ALAMBRES">73250 INSTALAR POSTES Y ALAMBRES</option>
+                                  <option value="73300 TRINIAR PLANTAS">73300 TRINIAR PLANTAS</option>
+                                  <option value="73350 PODAR">73350 PODAR</option>
+                                  <option value="73351 MOWDOWN">73351 MOWDOWN</option>
+                                  <option value="73550 APLICAR PLASTICO">73550 APLICAR PLASTICO</option>
+                                  <option value="73700 CORTAR LA FLOR">73700 CORTAR LA FLOR</option>
+                                  <option value="73750 CULTIVACION">73750 CULTIVACION</option>
+                                  <option value="73900 ACTIVIDAD DE HOOPS">73900 ACTIVIDAD DE HOOPS</option>
+                                  <option value="73920 INSTALAR O REPARAR MANGERA DE GOTEO">73920 INSTALAR O REPARAR MANGERA DE GOTEO</option>
+                                  <option value="74000 QUITAR PLASTICO">74000 QUITAR PLASTICO</option>
+                                  <option value="74050 QUITAR VALVULAS">74050 QUITAR VALVULAS</option>
+                                  <option value="74100 LIMPIEZA CON TRACTOR">74100 LIMPIEZA CON TRACTOR</option>
+                                  <option value="74150 QUITAR POSTES Y ALAMBRES">74150 QUITAR POSTES Y ALAMBRES</option>
+                                  <option value="74200 QUITAR PLANTAS">74200 QUITAR PLANTAS</option>
+                                  <option value="74250 BASURA PLASTICO">74250 BASURA PLASTICO</option>
+                                  <option value="74950 QUITAR HOOPS">74950 QUITAR HOOPS</option>
+                                  <option value="75400 FORKLIFT HORAS LABOR">75400 FORKLIFT HORAS LABOR</option>
+                                  <option value="75470 MANTENIMIENTO DE BANOS">75470 MANTENIMIENTO DE BANOS</option>
+                                  <option value="75500 APLICAR HERBICIDAS PREM">75500 APLICAR HERBICIDAS PREM</option>
+                                  <option value="75550 MANTENER Y REGAR CAMINOS">75550 MANTENER Y REGAR CAMINOS</option>
+                                  <option value="75600 DESAGUAR CAMPOS">75600 DESAGUAR CAMPOS</option>
+                                  <option value="75700 MANTENIMIENTO DE EQUIPO">75700 MANTENIMIENTO DE EQUIPO</option>
+                                  <option value="75710 SERVICIO/ENGRASAR/PONER DISEL">75710 SERVICIO/ENGRASAR/PONER DISEL</option>
+                                  <option value="75720 MOVER EQUIPO">75720 MOVER EQUIPO</option>
+                                  <option value="75750 MANTENIMIENTO DE RANCHO">75750 MANTENIMIENTO DE RANCHO</option>
+                                  <option value="75760 DESHIERBAR ALREDEDOR DEL RANCHO">75760 DESHIERBAR ALREDEDOR DEL RANCHO</option>
+                                  <option value="75920 REPARAR SISTEMA DE RIEGO">75920 REPARAR SISTEMA DE RIEGO</option>
+                                  <option value="75950 INSTALAR CERCO">75950 INSTALAR CERCO</option>
+                                  <option value="77000 SUPERVISAR NO COSECHA">77000 SUPERVISAR NO COSECHA</option>
+                                  <option value="77140 DIA FESTIVO-NO COSECHA">77140 DIA FESTIVO-NO COSECHA</option>
+                                  <option value="77170 OFICINA">77170 OFICINA</option>
+                                  <option value="77300 TRABAJO MODIFICADO RANCHO">77300 TRABAJO MODIFICADO RANCHO</option>
+                                  <option value="77320 LLEVAR EMPLEADO AL DOCTOR">77320 LLEVAR EMPLEADO AL DOCTOR</option>
+                                  <option value="77340 BONOS - NO COSECHA">77340 BONOS - NO COSECHA</option>
+                                  <option value="77510 JUNTAS - NO COSECHA">77510 JUNTAS - NO COSECHA</option>
+                                  <option value="91021 VACACIONES">91021 VACACIONES</option>
+                                  <option value="91030 ENFERMEDAD">91030 ENFERMEDAD</option>
+                                  <option value="92000 PAGO POR CALIDAD PFQ">92000 PAGO POR CALIDAD PFQ</option>
+                                  <option value="92010 PONCHADORA/O PAGO POR CALIDAD PFQ">92010 PONCHADORA/O PAGO POR CALIDAD PFQ</option>
+                              </select>
+                            </div>
+                        </td>
+                        <td><input type="text" class="ranch form-control tasks" /></td>
+                        <td><input type="number" class="taskHours form-control tasks"/></td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td >Total:</td>
+                        <td id="sum">x</td>
+                      </tr>
+
+                    </tbody>
+                    </table>
+
+                </div>
+            </div>
+            <a href="#"><input type="button" class="btnSubmitTF" value="SUBMIT" id="taskFlowSubmit"></a>
+        </div>
+		<footer id="foot"></footer>
+        <!-- MODAL OF ALERT - TIMEKEEPER -->
+        <div id="clearBoth"></div>
+
+		<div class="modal fade" id="showTimekeeperModal" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal-content modalTimekeeper">
+					<div class="modal-body">
+						<button type="button" class="closeEquip" data-dismiss="modal"></button>
+						<span id="messageTimekeeper"></span>
+						<br>
+						<div class="both"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</body>
+</html>

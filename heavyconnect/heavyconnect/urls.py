@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import include, url, patterns
 from django.contrib import admin
+from django.conf.urls.i18n import i18n_patterns
 
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls), name='admin'),
@@ -22,7 +23,9 @@ urlpatterns = patterns('',
 )
 
 
-urlpatterns += patterns('',
+urlpatterns += i18n_patterns('',
     #home app links
     url(r'^home/', include('home.urls')),
+    # url(r'^en-us/$', include('home.urls')),
+
 )

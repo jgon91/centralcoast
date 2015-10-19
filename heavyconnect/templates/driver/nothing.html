@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{% load staticfiles %}
+		{% load i18n %}
+		<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
+		<!--<script src="{% static 'jSignature/jSignature.min.js'%}"></script>-->
+		<script>
+			var item_count = 0;
+			var hour_start = 0;
+			var urlTest = "{% url 'stopBreak' %}";
+			$(document).ready(function() {
+				$("#foot").load("{%url 'footer'%}");
+				$("#head").load("{%url 'headerDriver'%}");
+				//$("#signature").jSignature()
+				//$("#clearSignature").click(function() {
+				//	var $sigdiv = $("#signature");
+				//	$sigdiv.jSignature("reset");
+				//});
+				getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
+				$("#startShift").click(function() {
+					startShift("{{ csrf_token }}", "{% url 'startShift' %}");
+				});
+				$(".btnBreaksGreen").click(function(){
+					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);
+				});	
+				$(".btnBreaksRed").click(function(){
+	   				stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count);
+				});
+				$("#stopBreak").click(function() {
+					createBtnBreak(item_count);
+				});
+				$("#stopShift").click(function(){
+				//	$('#signModal').modal();
+				//	var $sigdiv = $("#signature"); //nao sei o que isso faz junior
+					//Get the signature in the 64base
+				//	var datapair = $sigdiv.jSignature("getData", "base30"); //nem isso
+   					stopShift("{{ csrf_token }}", "{% url 'stopShift' %}");
+				});
+			});
+			function getEmployeeShifts(token, url) {
+				$.ajax({
+					method : "POST",
+					url : url,
+					data : {
+						"csrfmiddlewaretoken" : token
+					},
+					datatype : "json",
+					success : function(data, status, xhr) {
+						if (data.success) {
+							if (data.hour_started != 'None') {
+								changeBtn("#startShift", data.hour_started.substring(0,8));
+							}
+							for(var i = 0; i < data.breaks.length; i++) {
+								if (data.breaks[i][0] != "None") {
+									changeBtn("#startBreak" + i, data.breaks[i][0].substring(0, 8));
+								}
+								if (data.breaks[i][1] != "None") {
+									changeBtn("#stopBreak" + i, data.breaks[i][1].substring(0, 8));
+									createBtnBreak(i+1);
+									item_count++;
+								}
+							}
+							if (data.hour_ended != "None") {
+								changeBtn("#stopShift", data.hour_ended.substring(0,8));
+								$("#startBreak" + item_count).hide();
+								$("#stopBreak" + item_count).hide();
+							}
+						} else if (data.code == 1) {
+							$('#showTimekeeperModal').modal();
+							$("#messageTimekeeper").html("There is no shift records for this employee.");
+						} else if (data.code == 2) {
+							$('#showTimekeeperModal').modal();
+							$("#messageTimekeeper").html("Error. Contact Suport.");
+						} else if (data.code == 3) {
+							$('#showTimekeeperModal').modal();
+							$("#messageTimekeeper").html("Error. Contact Suport.");
+						}
+					}
+				});
+			}
+			function startShift(token, url) {
+				$.ajax({
+					method : "POST",
+					url : url,
+					data : {
+						"csrfmiddlewaretoken" : token
+					},
+					datatype : "json",
+					success : function(data, status, xhr) {
+						if (data.success) {
+							changeBtn("#startShift", data.hour_started.substring(11,19));
+						} else if (data.code == 1) {
+							$('#showTimekeeperModal').modal();
+							$("#messageTimekeeper").html("You need to finish the shift you started already before create a new one.");
+						} else if (data.code == 2) {
+							$('#showTimekeeperModal').modal();
+							$("#messageTimekeeper").html("There is no users associated whit this id.");
+						} else if (data.code == 3) {
+							$('#showTimekeeperModal').modal();
+							$("#messageTimekeeper").html("Error. Contact Suport.");
+						} else if (data.code == 4) {
+							$('#showTimekeeperModal').modal();
+							$("#messageTimekeeper").html("Error. Contact Suport.");
+						}
+					}
+				});
+			}
+			function startBreak(token, url, breaks) {
+				$.ajax({
+					method : "POST",
+					url : url,
+					data : {
+						"csrfmiddlewaretoken" : token
+					},
+					datatype : "json",
+					success : function(data, status, xhr) {
+						if (data.success) {
+							changeBtn("#startBreak" + breaks, data.time.substring(11,19));
+						} else if (data.code == 1) {
+							$('#showTimekeeperModal').modal();
+							$("#messageTimekeeper").html("You cannot start 2 breaks at the same time.");
+						} else if (data.code == 2) {
+							$('#showTimekeeperModal').modal();
+							$("#messageTimekeeper").html("The shift for today was already finished.");
+						} else if (data.code == 3) {
+							$('#showTimekeeperModal').modal();
+							$("#messageTimekeeper").html("You need to start a shift first.");
+						} else if (data.code == 4) {
+							$('#showTimekeeperModal').modal();
+							$("#messageTimekeeper").html("Error. Contact Suport.");
+						} else if (data.code == 5) {
+							$('#showTimekeeperModal').modal();
+							$("#messageTimekeeper").html("Error. Contact Suport.");
+						}
+					}
+				});
+			}
+			function stopBreak(token, url, breaks) {
+					$.ajax({
+						method: "POST",
+						url: url,
+						data: {"csrfmiddlewaretoken": token},
+						datatype: "json",
+						success: function(data, status, xhr){
+							if(data.success){
+								changeBtn("#stopBreak" + breaks, data.time.substring(11,19));
+								item_count++;
+								createBtnBreak(item_count);
+							} else if(data.code == 1){
+								$('#showTimekeeperModal').modal();
+								$("#messageTimekeeper").html("You need to start a break first.");
+							} else if(data.code == 2){
+								$('#showTimekeeperModal').modal();
+								$("#messageTimekeeper").html("The shift for today was already finished.");
+							} else if(data.code == 3){
+								$('#showTimekeeperModal').modal();
+								$("#messageTimekeeper").html("You need to start a shift first.");
+							} else if(data.code == 4){
+								$('#showTimekeeperModal').modal();
+								$("#messageTimekeeper").html("Error. Contact Suport.");
+							} else if(data.code == 5){
+								$('#showTimekeeperModal').modal();
+								$("#messageTimekeeper").html("Error. Contact Suport.");
+							}
+						}
+					});
+			}
+			function stopShift(token, url) {
+					$.ajax({
+						method: "POST",
+						url: url,
+						data: {"csrfmiddlewaretoken": token},
+						datatype: "json",
+						success: function(data, status, xhr){
+							if(data.success){
+								//$('#signModal').modal("hide");
+								changeBtn("#stopShift", data.hour_ended.substring(11,19));
+								$("#startBreak" + item_count).hide();
+								$("#stopBreak" + item_count).hide();
+							} else if(data.code == 1){
+								$('#showTimekeeperModal').modal();
+								$("#messageTimekeeper").html("You need to take at least 3 breaks.");
+							} else if(data.code == 2){
+								$('#showTimekeeperModal').modal();
+								$("#messageTimekeeper").html("The shift for today was already finished.");
+							} else if(data.code == 3){
+								$('#showTimekeeperModal').modal();
+								$("#messageTimekeeper").html("You have not started your shift yet.");
+							} else if(data.code == 4){
+								$('#showTimekeeperModal').modal();
+								$("#messageTimekeeper").html("This user is not authorized to use the system.");
+							} else if(data.code == 5){
+								$('#showTimekeeperModal').modal();
+								$("#messageTimekeeper").html("Error. Contact Suport.");
+							} else if(data.code == 6){
+								$('#showTimekeeperModal').modal();
+								$("#messageTimekeeper").html("Error. Contact Suport.");
+							}
+						}
+					});
+			}
+			function changeBtn(idBtn, hour) {
+				if(idBtn.substring(0,11) == "#startBreak"){
+					hour_start = hour;
+					$(idBtn).attr("value", hour);
+					$(idBtn).css('font-size', '20px');
+					$(idBtn).css('font-weight', '600');
+					$(idBtn).css('font-style', 'italic');
+					$(idBtn).css('background', 'url("{% static 'imgSmall/buttons/startShiftHover.png' %}") no-repeat top left');
+  					$(idBtn).css('background-size', '100% 100%');
+				} else if(idBtn.substring(0,10) == "#stopBreak"){
+					$("#startBreak" + idBtn.substring(10,11)).attr("value", hour_start);
+					$("#startBreak" + idBtn.substring(10,11)).css('background', 'none');
+					$("#startBreak" + idBtn.substring(10,11)).css('color', 'black');
+					$("#startBreak" + idBtn.substring(10,11)).css('font-size', '20px');
+					$("#startBreak" + idBtn.substring(10,11)).css('font-weight', '600');
+					$("#startBreak" + idBtn.substring(10,11)).css('font-style', 'italic');
+					$("#startBreak" + idBtn.substring(10,11)).css('box-shadow', '0px 0px 10px gray');
+					$(idBtn).attr("value", hour);
+					$(idBtn).css('background', 'none');
+					$(idBtn).css('color', 'black');
+					$(idBtn).css('font-size', '20px');
+					$(idBtn).css('font-weight', '600');
+					$(idBtn).css('font-style', 'italic');
+					$(idBtn).css('box-shadow', '0px 0px 10px gray');
+				} else {
+					$(idBtn).attr("value", hour);
+					$(idBtn).css('background', 'none');
+					$(idBtn).css('color', 'black');
+					$(idBtn).css('font-size', '20px');
+					$(idBtn).css('font-weight', '600');
+					$(idBtn).css('font-style', 'italic');
+					$(idBtn).css('box-shadow', '0px 0px 10px gray');
+				}
+			}
+			function createBtnBreak(count) {
+				$( "#divBreaks").append('<div class="row"><div class="col-xs-3 col-md-3 btnColTime"></div><div class="col-xs-2 col-md-2 btnColTime"><input type="button" id="startBreak'+count+'" value="START" class="btnGreenTime btnBreaksGreen"/></div><div class="col-xs-2 col-md-2 btnColTime"></div><div class="col-xs-2 col-md-2 btnColTime"><input type="button" id="stopBreak'+count+'" value="STOP"  class="btnRedTime btnBreaksRed"/></div><div class="col-xs-3 col-md-3 btnColTime"></div></div>');
+				$(".btnBreaksGreen").click(function() {
+					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count);
+				});
+				$(".btnBreaksRed").click(function(){
+					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count);
+				});
+			}
+		</script>
+	</head>
+	<body>
+		<header id="head"></header>
+		<div id="wrapper">
+			<div id="content">
+				<div class="namePage">
+					<img src="{% static 'imgSmall/iconTimekeeper.png' %}"/>
+					HC TIMEKEEPER
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-md-12">
+						<input type="button" id="startShift" value="START SHIFT" class=""/>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-2 col-md-2 btnColTime">
+					</div>
+					<div class="col-xs-1 col-md-1 btnColTime">
+					</div>
+					<div class="col-xs-2 col-md-2 btnColTime">
+						<input type="button" id="startBreak0" value="START" class="btnGreenTime btnBreaksGreen"/>
+					</div>
+					<div class="col-xs-2 col-md-2 btnColTime">
+					</div>
+					<div class="col-xs-2 col-md-2 btnColTime">
+						<input type="button" id="stopBreak0" value="STOP"  class="btnRedTime btnBreaksRed"/>
+					</div>
+					<div class="col-xs-3 col-md-3 btnColTime">
+					</div>
+				</div>
+				<div id="divBreaks"></div>
+				<div class="row">
+					<div class="col-xs-12 col-md-12">
+						<input type="button" id="stopShift" value="END SHIFT"/>
+					</div>
+				</div>
+			</div>
+		</div>	
+		<footer>
+				&copy;2015 Heavy Connect, Inc.
+		</footer>
+		<div id="clearBoth"></div>
+			<!-- MODAL OF ALERT - TIMEKEEPER -->
+			<div class="modal fade" id="showTimekeeperModal" role="dialog">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content modalTimekeeper">
+						<div class="modal-body">
+						<button type="button" class="closeEquip" data-dismiss="modal">
+						</button>
+							<span id="messageTimekeeper"></span><br>
+						<div class="both"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		<div class="modal fade" id="signModal" role="dialog">
+		    <div class="modal-dialog signModalDialog">
+		    	 <!-- Modal content-->
+			      <div class="modal-content">
+			        <div class="modal-header">
+			          <button type="button" class="close" data-dismiss="modal">&times;</button>
+			          <h4 class="modal-title"><strong>Sign</strong></h4>
+			        </div>
+			        <div class="modal-body" id="signatureContent">
+			         
+			          <div id="signField">
+			          	<div id="signature"></div>
+			          	<button type="button" id="clearSignature" class="btn btn-default">Limpiar</button>
+			          </div>
+			        </div>
+			 		<div class="both"></div>
+			        <div class="modal-footer">
+			          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+			          <a href=""><button type="button" id="stopShiftConfirm" class="btn btn-success">Confirmar</button></a>
+			        </div>
+			      </div>
+			</div>
+		</div>
+	</body>
+</html>

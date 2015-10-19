@@ -4,16 +4,70 @@
 	menezescode@gmail.com
 
 	notes: All the BooleanField are (required = False). This is hapening because if we don't
-	use the required false the form will only work wen the checkbox is marked.
+	use the required false the form will only work when the checkbox is marked.
 '''
 
 from django import forms
 from django.contrib.auth.models import User
-from home.models import * 
+from django.forms.extras.widgets import SelectDateWidget
+
+
+import datetime
+import json
+
+from home.models import *
 
 class loginForm(forms.Form):
 	username = forms.CharField()
 	password = forms.CharField(widget = forms.PasswordInput)
+
+class UserForm(forms.Form):
+	username = forms.CharField()
+	password = forms.CharField(widget = forms.PasswordInput)
+	first_name = forms.CharField()
+	last_name = forms.CharField()
+
+### Structor for user password update ###
+class UserFormUpdate(forms.Form):
+	first_name = forms.CharField()
+	last_name = forms.CharField()
+### End ###
+
+### Structor for employee ###
+class employeePasswordForm(forms.Form):
+	# password = forms.CharField(widget = forms.PasswordInput)
+	password1 = forms.CharField(widget = forms.PasswordInput)
+	password2 = forms.CharField(widget = forms.PasswordInput)
+### End ###
+
+
+### Structor for employee Update###
+class employeeUpdateForm(forms.Form):
+	PERMISSION_LEVEL_CHOICES = (
+		(1, 'Driver'),
+		(2, 'Manager'),
+	)
+	LANGUAGE_CHOICES = (
+		(3, 'en'),
+		(2, 'es'),
+		(1, 'pt-br'),
+	)
+	last_task = forms.ModelChoiceField(queryset = Task.objects.all(), required = False)
+	user = forms.IntegerField(required = False)
+	company_id = forms.CharField(required = False)
+	language = forms.ChoiceField(choices = LANGUAGE_CHOICES)
+	qr_code = forms.CharField(required = False)
+	start_date = forms.DateField(widget=SelectDateWidget(empty_label=("Choose Year", "Choose Month", "Choose Day")), required = False)
+	hour_cost = forms.FloatField(required = False)
+	contact_number = forms.CharField(required = False)
+	permission_level = forms.ChoiceField(choices = PERMISSION_LEVEL_CHOICES)
+	photo = forms.URLField(required = False)
+	notes = forms.CharField(max_length = 250, required = False)
+	active = forms.BooleanField(required = False)
+	manager = forms.ModelChoiceField(queryset = Employee.objects.filter(permission_level = '2'))
+### End ###
+
+
 
 ### Structure for manufacturerForm ###
 class manufacturerForm(forms.Form):
@@ -28,16 +82,27 @@ class manufacturerModelForm(forms.Form):
 
 ### Structure for repairShopForm ###
 class repairShopForm(forms.Form):
-	contact_name = forms.CharField(max_length = 20)
-	contact_number =  forms.CharField(max_length = 14)
-	contact_address = forms.CharField(max_length = 150)
+	name = forms.CharField(max_length = 20)
+	number =  forms.CharField(max_length = 14)
+	address = forms.CharField(max_length = 150)
 ### End ###
 
 ### Structure for shopForm ###
 class shopForm(forms.Form):
-	contact_name = forms.CharField()
-	contact_number = forms.CharField()
-	contact_address = forms.CharField()
+	name = forms.CharField()
+	number = forms.CharField()
+	address = forms.CharField()
+### End ###
+
+### Structure for EquipmentCategoryForm ###
+class equipmentCategoryForm(forms.Form):
+	name = forms.CharField(max_length = 25)
+### End ###
+
+### Structure for EquipmentTypeForm ###
+class equipmentTypeForm(forms.Form):
+	category = forms.ModelChoiceField(queryset = EquipmentCategory.objects.all())
+	name = forms.CharField(max_length = 25)
 ### End ###
 
 ### Structure for machineForm ###
@@ -77,9 +142,11 @@ class machineForm(forms.Form):
 		(3, 'Broken'),
 		(4, 'Quarantine'),
 	)
-	manufacturer_model_id = forms.ModelChoiceField(queryset = ManufacturerModel.objects.all())
-	repair_shop_id = forms.ModelChoiceField(queryset = RepairShop.objects.all())
-	shop_id = forms.ModelChoiceField(queryset = Shop.objects.all())
+	manufacturer_model = forms.ModelChoiceField(queryset = ManufacturerModel.objects.all())
+	repair_shop = forms.ModelChoiceField(queryset = RepairShop.objects.all())
+	shop = forms.ModelChoiceField(queryset = Shop.objects.all())
+	equipment_type = forms.ModelChoiceField(queryset = EquipmentType.objects.all())
+	nickname = forms.CharField(max_length = 20)
 	qr_code = forms.CharField(max_length = 10)
 	asset_number = forms.CharField(max_length = 15)
 	serial_number = forms.CharField(max_length = 25)
@@ -94,7 +161,7 @@ class machineForm(forms.Form):
 	service_interval = forms.IntegerField()
 	base_cost = forms.FloatField()
 	m_type = forms.ChoiceField(choices = MTYPE_CHOICES)
-	front_tires = forms.CharField(max_length = 20)														
+	front_tires = forms.CharField(max_length = 20)
 	rear_tires = forms.CharField(max_length = 20)
 	steering = forms.ChoiceField(choices = STEERING_CHOICES)
 	operator_station = forms.ChoiceField(choices = OPERATORSTATION_CHOICES)
@@ -105,9 +172,11 @@ class machineForm(forms.Form):
 
 ### Structure for implementForm ###
 class implementForm(forms.Form):
-	manufacturer_model_id = forms.ModelChoiceField(queryset = ManufacturerModel.objects.all())
-	repair_shop_id = forms.ModelChoiceField(queryset = RepairShop.objects.all())
-	shop_id = forms.ModelChoiceField(queryset = Shop.objects.all())
+	manufacturer_model = forms.ModelChoiceField(queryset = ManufacturerModel.objects.all())
+	repair_shop = forms.ModelChoiceField(queryset = RepairShop.objects.all())
+	shop = forms.ModelChoiceField(queryset = Shop.objects.all())
+	equipment_type = forms.ModelChoiceField(queryset = EquipmentType.objects.all())
+	nickname = forms.CharField(max_length = 20)
 	qr_code = forms.CharField()
 	asset_number = forms.CharField()
 	serial_number = forms.CharField()
@@ -118,7 +187,7 @@ class implementForm(forms.Form):
 	speed_range_min = forms.FloatField()
 	speed_range_max = forms.FloatField()
 	year_purchased = forms.IntegerField()
-	implement_hours = forms.IntegerField()	
+	implement_hours = forms.IntegerField()
 	service_interval = forms.IntegerField()
 	base_cost = forms.FloatField()
 	hour_cost = forms.FloatField()
@@ -126,34 +195,38 @@ class implementForm(forms.Form):
 	photo = forms.URLField()
 ### End ###
 
-### Structure for employeeForm ###
+### Structor for employee###
 class employeeForm(forms.Form):
 	PERMISSION_LEVEL_CHOICES = (
 		(1, 'Driver'),
 		(2, 'Manager'),
 	)
-	#user = forms.OneToOneField(User) Users are only created on the database
-	company_id = forms.CharField()
-	qr_code = forms.CharField()
-	start_date = forms.DateField()
-	hour_cost = forms.FloatField()
-	contact_number = forms.CharField()
+	LANGUAGE_CHOICES = (
+		(3, 'en'),
+		(2, 'es'),
+		(1, 'pt-br'),
+	)
+	last_task = forms.ModelChoiceField(queryset = Task.objects.all(), required = False)
+	user = forms.ModelChoiceField(queryset = User.objects.all(), required = False)
+	active = forms.BooleanField(required = False)
+	company_id = forms.CharField(required = False)
+	language = forms.ChoiceField(choices = LANGUAGE_CHOICES)
+	qr_code = forms.CharField(required = False)
+	start_date = forms.DateField(widget=SelectDateWidget(empty_label=("Choose Year", "Choose Month", "Choose Day")), required = False)
+	hour_cost = forms.FloatField(required = False)
+	contact_number = forms.CharField(required = False)
 	permission_level = forms.ChoiceField(choices = PERMISSION_LEVEL_CHOICES)
-	photo = forms.URLField()
+	photo = forms.URLField(required = False)
+	notes = forms.CharField(max_length = 250, required = False)
+	manager = forms.ModelChoiceField(queryset = Employee.objects.filter(permission_level = '2'))
 ### End ###
 
 ### Structure for employeeAttendanceForm ###
 class employeeAttendanceForm(forms.Form):
-	employee_id = forms.ModelChoiceField(queryset = Employee.objects.all())
+	employee = forms.ModelChoiceField(queryset = Employee.objects.all())
 	date = forms.DateField()
 	hour_started = forms.TimeField()
 	hour_ended = forms.TimeField()
-	morning_break = forms.TimeField()
-	morning_break_end = forms.TimeField()
-	afternoon_break = forms.TimeField()
-	afternoon_break_end = forms.TimeField()
-	evening_break = forms.TimeField()
-	evening_break_end = forms.TimeField()
 ### End ###
 
 ### Structure for qualificationForm ###
@@ -174,8 +247,8 @@ class employeeQualificationsForm(forms.Form):
 		(2, 'Medium'),
 		(3, 'High'),
 	)
-	employee_id = forms.ModelChoiceField(queryset = Employee.objects.all())
-	qualification_id = forms.ModelChoiceField(queryset = Qualification.objects.all())
+	employee = forms.ModelChoiceField(queryset = Employee.objects.all())
+	qualification = forms.ModelChoiceField(queryset = Qualification.objects.all())
 	level = forms.ChoiceField(choices = LEVEL_CHOICES)
 ### End ###
 
@@ -186,15 +259,15 @@ class machineQualificationForm(forms.Form):
 		(2, 'Medium'),
 		(3, 'High'),
 	)
-	machine_id = forms.ModelChoiceField(queryset = Machine.objects.all())
-	qualification_id = forms.ModelChoiceField(queryset = Qualification.objects.all())
+	machine = forms.ModelChoiceField(queryset = Machine.objects.all())
+	qualification = forms.ModelChoiceField(queryset = Qualification.objects.all())
 	qualification_required = forms.ChoiceField(choices = QUALIFICATIONREQUIRED_CHOICES)
 ### End ###
 
 ### Structure for implementQualificationForm ###
 class implementQualificationForm(forms.Form):
-	implement_id = forms.ModelChoiceField(queryset = Implement.objects.all())
-	qualification_id = forms.ModelChoiceField(queryset = Qualification.objects.all())
+	implement = forms.ModelChoiceField(queryset = Implement.objects.all())
+	qualification = forms.ModelChoiceField(queryset = Qualification.objects.all())
 	qualification_required = forms.ChoiceField(choices = machineQualificationForm.QUALIFICATIONREQUIRED_CHOICES)
 ### End ###
 
@@ -213,40 +286,82 @@ class gpsForm(forms.Form):
 
 ### Structure for employeeLocalizationForm ###
 class employeeLocalizationForm(forms.Form):
-	employee_id = forms.ModelChoiceField(queryset = Employee.objects.all())
-	gps_id = forms.ModelChoiceField(queryset = GPS.objects.all())
+	employee = forms.ModelChoiceField(queryset = Employee.objects.all())
+	gps = forms.ModelChoiceField(queryset = GPS.objects.all())
 	e_time = forms.DateTimeField()
 ### End ###
 
 ### taskForm ###
 class taskForm(forms.Form):
-	field_id = forms.ModelChoiceField(queryset = Field.objects.all())
-	t_type = forms.CharField()
-	rate_cost = forms.FloatField()
-	hours_spent = forms.FloatField()
+	STATUS_CHOICES = (
+		(1, 'Pending'),
+		(2, 'Approved'),
+		(3, 'Denied'),
+		(4, 'Ongoing'),
+		(5, 'Paused'),
+		(6, 'Finished'),
+	)
+	field = forms.ModelChoiceField(queryset = Field.objects.all())
+	category = forms.ModelChoiceField(queryset = TaskCategory.objects.all())
+	date = forms.DateTimeField(required = True)
+	time = forms.TimeField(required = True)
 	hours_prediction = forms.FloatField()
-	description =  forms.CharField()
+	description = forms.CharField()
 	passes = forms.IntegerField()
-	date = forms.DateTimeField()
-	accomplished = forms.BooleanField(required = False)
-	approval = forms.BooleanField(required = False)
+	machine = forms.CharField(max_length=10)
+	implement = forms.CharField(max_length=10)
+	implement2 = forms.CharField(max_length=10, required = False)
+
+	#@bss3
+	def clean_implement(self):
+		qr_code = self.cleaned_data['implement']
+		if qr_code is None:
+			return None
+		else:
+			try:
+				return Implement.objects.get(qr_code = qr_code)
+			except Implement.DoesNotExist:
+				raise forms.ValidationError("This QR code do not belong do any implement!")
+	
+	#@bss3
+	def clean_machine(self):
+		qr_code = self.cleaned_data['machine']
+		if qr_code is None:
+			return None
+		else:
+			try:
+				return Machine.objects.get(qr_code = qr_code)
+			except Machine.DoesNotExist:
+				raise forms.ValidationError("This QR code do not belong do any machine!")
+
+	#@bss3
+	def clean_implement2(self):
+		qr_code = self.cleaned_data['implement2']
+		if len(qr_code) == 0:
+			return None
+		else:
+			try:
+				implement2 = Implement.objects.get(qr_code = qr_code)
+				if implement2 is not self.cleaned_data['implement']:
+					return implement2
+				else:
+					raise forms.ValidationError("The second implement cannot be the same as the first!")
+			except Implement.DoesNotExist:
+				raise forms.ValidationError("This QR code do not belong do any implement!")
+### End ###
+
+### Structure for taskCategoryForm ###
+class taskCategoryForm(forms.Form):
+	description = forms.CharField()
 ### End ###
 
 ### Structure for employeeTaskForm ###
 class employeeTaskForm(forms.Form):
-	employee_id = forms.ModelChoiceField(queryset = Employee.objects.all())
-	task_id = forms.ModelChoiceField(queryset = Task.objects.all())
-	task_init = forms.DateField()
+	employee = forms.ModelChoiceField(queryset = Employee.objects.all())
+	task = forms.ModelChoiceField(queryset = Task.objects.all())
 	hours_spent = forms.FloatField()
-	substitution = forms.BooleanField(required = False)
-### End ###
-
-### Structure for taskImplementMachineForm ##
-class taskImplementMachineForm(forms.Form):
-	task_id = forms.ModelChoiceField(queryset = Task.objects.all())
-	machine_id = forms.ModelChoiceField(queryset = Machine.objects.all())
-	implement_id = forms.ModelChoiceField(queryset = Implement.objects.all())
-	machine = forms.BooleanField(required = False)
+	start_time = forms.DateTimeField(required = True)
+	end_time = forms.DateTimeField(required = True)
 ### End ###
 
 ### Structure for appendixForm ###
@@ -256,8 +371,8 @@ class appendixForm(forms.Form):
 
 ### Structure for appendixTaskForm ###
 class appendixTaskForm(forms.Form):
-	appendix_id = forms.ModelChoiceField(queryset = Appendix.objects.all())
-	task_id = forms.ModelChoiceField(queryset = Task.objects.all())
+	appendix = forms.ModelChoiceField(queryset = Appendix.objects.all())
+	task = forms.ModelChoiceField(queryset = Task.objects.all())
 	quantity = forms.IntegerField()
 	brand = forms.CharField()
 ### End ###
@@ -267,17 +382,10 @@ class serviceCategoryForm(forms.Form):
 	service_category = forms.CharField()
 ### End ###
 
-### Structure for serviceForm ###
-class serviceForm(forms.Form):
-	category_id = forms.ModelChoiceField(ServiceCategory.objects.all())
-	date = forms.DateTimeField()
-	done = forms.BooleanField(required = False)
-### End ###
-
-### Structure for machineServiceForm ### 
+### Structure for machineServiceForm ###
 class machineServiceForm(forms.Form):
-	machine_id = forms.ModelChoiceField(queryset = Machine.objects.all())
-	service_id = forms.ModelChoiceField(queryset = Service.objects.all())
+	machine = forms.ModelChoiceField(queryset = Machine.objects.all())
+	service = forms.ModelChoiceField(queryset = ServiceCategory.objects.all())
 	description = forms.CharField()
 	done = forms.BooleanField(required = False)
 	expected_date = forms.DateTimeField()
@@ -286,10 +394,149 @@ class machineServiceForm(forms.Form):
 
 ### Structure for implementServiceForm ###
 class implementServiceForm(forms.Form):
-	implement_id = forms.ModelChoiceField(queryset = Implement.objects.all())
-	service_id = forms.ModelChoiceField(queryset = Service.objects.all())
+	implement = forms.ModelChoiceField(queryset = Implement.objects.all())
+	service = forms.ModelChoiceField(queryset = ServiceCategory.objects.all())
 	description = forms.CharField()
 	expected_date = forms.DateTimeField()
 	done = forms.BooleanField(required = False)
 	price = forms.FloatField()
-### End ### 
+### End ###
+
+### Structure for questionForm ###
+class questionForm(forms.Form):
+	description = forms.CharField(max_length = 250)
+	category = forms.IntegerField()
+	refers = forms.ChoiceField(choices = ((1, 'Machine'), (2, 'Implement')))
+### End ###
+
+### Structure for machineChecklistForm ###
+class machineChecklistForm(forms.Form):
+	question = forms.ModelChoiceField(queryset = Question.objects.all())
+	qrCode = forms.ModelChoiceField(queryset = Machine.objects.all())
+	employee = forms.ModelChoiceField(queryset = Employee.objects.all())
+	answer = forms.BooleanField()
+	note = forms.CharField(max_length = 200)
+	date = forms.DateTimeField()
+	photo = forms.URLField(max_length = 200)
+### End ###
+
+### Structure for implementChecklistForm ###
+class implementChecklistForm(forms.Form):
+	question = forms.ModelChoiceField(queryset = Question.objects.all())
+	qrCode = forms.ModelChoiceField(queryset = Implement.objects.all())
+	employee = forms.ModelChoiceField(queryset = Employee.objects.all())
+	answer = forms.BooleanField()
+	note = forms.CharField(max_length = 200)
+	date = forms.DateTimeField()
+	photo = forms.URLField(max_length = 200)
+### End ###
+
+### Structure for breakForm ###
+class breakForm(forms.Form):
+	attendance = forms.ModelChoiceField(queryset = EmployeeAttendance.objects.all())
+	start = forms.TimeField()
+	end = forms.TimeField(required = False)
+### End ###
+
+### Structire for beaconForm ###
+class beaconForm(forms.Form):
+	beacon = forms.CharField(max_length = 10)
+	longitude = forms.FloatField()
+	latitude = forms.FloatField()
+	timestamp = forms.DateTimeField()
+
+	def clean_beacon(self):
+		serial = self.cleaned_data['beacon']
+
+		if serial is None or serial == '':
+			return None
+		else:
+			try:
+				return Beacon.objects.get(beacon_serial = serial)
+			except Beacon.DoesNotExist:
+				raise forms.ValidationError("This serial do not belong do any registered bluetooth beacon.")
+### End ###
+
+
+def getMachineOrImplement(self):
+	try:
+		return Machine.objects.get(qr_code = self.cleaned_data['qr_code'])
+	except Machine.DoesNotExist:
+		try:
+			return Implement.objects.get(qr_code = self.cleaned_data['qr_code'])
+		except:
+			raise forms.ValidationError('This QR code do not belong to any machine or implement')
+
+### Structure for Checlist ###
+class checkListForm(forms.Form):
+
+	CATEGORIES = (
+		(Question.CATDEFAULT, u'Default'),
+	)
+
+	category = forms.ChoiceField(choices = CATEGORIES, initial = Question.CATDEFAULT)
+	qr_code = forms.CharField(max_length = 10)
+
+	def clean_qr_code(self):
+		return getMachineOrImplement(self)
+
+class storeAnswersForm(forms.Form):
+	qr_code = forms.CharField(max_length = 10)
+	answers = forms.CharField(max_length = 1000)
+	engine_hours = forms.IntegerField()
+
+	def clean_qr_code(self):
+		return getMachineOrImplement(self)
+
+	def clean_answers(self):
+		try:
+			ans = json.loads(self.cleaned_data['answers'])
+			equipment = self.cleaned_data['qr_code']
+			now = datetime.datetime.now()
+			ret = []
+
+			if isinstance(equipment, Machine):
+				for iten in  ans:
+					awr = iten['answer']
+					note = ''
+
+					try:
+						note = iten['note']
+					except KeyError:
+						pass
+
+					ret.append(
+						MachineChecklist(
+							question = Question.objects.get(id = iten['id']),
+							qr_code = equipment,
+							answer = awr,
+							note = note,
+							date = now
+						)
+					)
+				return ret
+			elif isinstance(equipment, Implement):
+				for iten in ans:
+					awr = iten['answer']
+					note = ''
+
+					try:
+						note = iten['note']
+					except KeyError:
+						pass
+
+					ret.append(
+						ImplementChecklist(
+							question = Question.objects.get(id = iten['id']),
+							qr_code = equipment,
+							answer = awr,
+							note = note,
+							date = now
+						)
+					)
+				return ret
+			else:
+				return None
+		except ValueError:
+			raise forms.ValidationError('The json with the answers are invalid')
+

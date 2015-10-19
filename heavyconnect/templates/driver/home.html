@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{% load staticfiles %}
+		{% load i18n %}
+		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
+		<script>
+			$(document).ready(function() {
+				$("#headHome").load("{% url 'headerHome' %}");
+			});
+		</script>
+		<script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+		  ga('create', '{{ GOOGLE_ANALYTICS_PROPERTY_ID }}', '{{ GOOGLE_ANALYTICS_DOMAIN }}');
+		  ga('require', 'linkid');
+		  ga('send', 'pageview');
+
+		</script>
+
+	</head>
+	<body> 
+		<header id="headHome"></header>
+		<div class="row" id="driverMenu">
+			<div class="btnHomeDriver">
+				<a href="{% url 'time_keeper'%}">
+				<input type="button" class="btnMain" value="{% trans 'TIMEKEEPER' %}" id="btnTimerkeeper" />
+				</a>
+			</div>
+			<!--<div class="btnHomeDriver">-->
+				<!--<a href="{% url 'scanQRCode' %}?url={% url 'checklist' %}">-->
+				<!--<input type="button" class="btnMain" value="{% trans 'CHECKLIST' %}" id="btnChecklist" />-->
+				<!--</a>-->
+			<!--</div>-->
+			<!--<div class="btnHomeDriver">-->
+				<!--<a href="{% url 'lightTaskFlow'%}">-->
+				<!--<input type="button" class="btnMain" value="{% trans 'TASKFLOW' %}" id="btnTaskflow" />-->
+				<!--</a>-->
+			<!--</div>-->
+			<!--<div class="btnHomeDriver">-->
+				<!--<a href="{% url 'schedule'%}">-->
+				<!--<input type="button" class="btnMain" value="{% trans 'SCHEDULE' %}" id="btnScheduler" />-->
+				<!--</a>-->
+			<!--</div>-->
+			<!--<div class="btnHomeDriver">-->
+				<!--<a href="{% url 'scanQRCode'%}?url={% url 'equipment' %}">-->
+				<!--<input type="button" class="btnMain" value="{% trans 'EQUIPMENT' %}" id="btnEquipment" />-->
+				<!--</a>-->
+			<!--</div>-->
+
+		</div>
+	</body>
+	
+	<div>
+		<img src="{% static 'imgSmall/backgroundFooter.png' %}" id="backgroundFooter">
+	</div>
+	<!--  <footer>
+		&copy;2015 Heavy Connect, Inc.
+	</footer>  -->
+</html>
