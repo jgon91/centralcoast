@@ -21,6 +21,7 @@
 			});
 			getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
 			getAllManagerEmployees("{{ csrf_token}}", "{% url 'getAllManagerEmployees' %}");
+
 			$("input[name='employeeSelected']").change(function() {
 			   if ($("input[id='"+this.id+"']").is(":checked")) {
 					user_id = this.value;				   				   		
@@ -29,8 +30,33 @@
 				    user_id = this.value;
 					index = id_checked.indexOf(user_id);
 					id_checked.splice(index, 1);
-				}											
+				}			
+
+				console.log(id_checked);
+				
 			}); 
+
+		    $('#selectAllEmployee').click(function(event) {  
+		        if(this.checked) { // check select status
+		            $('.checkboxEmployee').each(function() { 
+		            	if (this.checked != true) {
+			                this.checked = true;
+			                user_id = this.value;				   				   		
+							id_checked.push(user_id);	  
+						}
+		            });
+		        }else{
+		            $('.checkboxEmployee').each(function() { 
+		                this.checked = false; //deselect all checkboxes 
+		                user_id = this.value;
+						index = id_checked.indexOf(user_id);
+						id_checked.splice(index, 1);
+		            });         
+		        }
+
+		        console.log(id_checked);								
+		    });
+    
 			$("#shift").click(function() {
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").html("Select the employees for this action:");
@@ -281,11 +307,19 @@
 				success : function(data, status, xhr) {	
 					if (data.success) {
 						employeesTimelog = data.employees;
+						$("#employeeList").html("<tr>"
+													+"<td><label><input id='selectAllEmployee' type='checkbox'/><label></td>"
+													+"<td>Select All</td>"
+												+"</tr>");
 						for (var i = 0; i < data.employees.length; i++) {
-							$("#employeeList").append("<tr>" + "<td><label><input type='checkbox' value='" + data.employees[i].user_id
+							$("#employeeList").append("<tr>" 
+														+ "<td><label><input class='checkboxEmployee' type='checkbox' value='" + data.employees[i].user_id
 														+ "' id='checkbox" + (i+1) + "' name='employeeSelected'/></label>"
-														+ "</td>" + "<td>" + data.employees[i].first_name + " " 
-														+ data.employees[i].last_name + "</td>" + "</tr>");
+														+ "</td>" 
+														+ "<td>" + data.employees[i].first_name + " " 
+														+ data.employees[i].last_name 
+														+ "</td>" + 
+													  "</tr>");
 						}
 					}
 				}
