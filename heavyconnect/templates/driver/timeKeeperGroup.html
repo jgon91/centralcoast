@@ -14,9 +14,16 @@
 		$(document).ready(function() {
 			$("#foot").load("{%url 'footer'%}");
 			$("#head").load("{%url 'headerDriver'%}");
-			$("#signature").jSignature()
+			$("#signature").jSignature();
+			$("#saveSignature").click(function(){
+				var $sigdiv = $("#signature");
+				var datapair = $sigdiv.jSignature("getData","base30");	
+				var attendanceId = $("#attendanceId").val();
+				alert(attendanceId);
+				saveSignature("{{ csrf_token }}", "{% url 'saveSignature' %}", datapair[1], attendanceId);
+			});
 			$("#clearSignature").click(function() {
-			var $sigdiv = $("#signature");
+				var $sigdiv = $("#signature");
 				$sigdiv.jSignature("reset");		
 			});
 			getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
@@ -162,9 +169,21 @@
 				timelogBtns();
 			});
 			$("#btnSignature").click(function(){
+				$('#showTimekeeperModal').modal('hide');
 				$('#signModal').modal();
 			});
 		});
+		function saveSignature(token, url, signature, attendanceId){
+			$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token, "id": attendanceId, "signature": signature},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					alert("Sucess");
+				}
+			});
+		}
 		function getEmployeeShifts(token, url) {
 			$.ajax({
 				method : "POST",
@@ -310,6 +329,7 @@
 					$("#tableTimelog").append("<tr><td colspan='2'>End Shift: " + data.Attendance_end + "</td></tr>");
 					$("#tableTimelog").append("<tr><td colspan='2'>Total: " + data.Total + " hours</td></tr>");
 					if (data.Attendance_end != 'Happening') { 
+						$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + data.attendanceId + "'>");
 						$("#btnSignature").append("<input type='button' value='SIGN NOW'/>");
 					}
 				}
@@ -455,6 +475,34 @@
 		<footer>
 			&copy;2015 Heavy Connect, Inc.
 		</footer>
+		
+		
+		<div id="clearBoth"></div>
+		<!-- MODAL SIGNATURE - TIMEKEEPER -->
+		<div class="modal fade" id="signModal" role="dialog">
+			<div>
+				<!-- Modal content-->
+				<div class="modal-content signModalDialog">
+					<button type="button" class="closeSignature" data-dismiss="modal"></button>
+					<div class="modal-title" id="titleSign">{% trans 'Sign Here' %}</div>
+					<div class="modal-body" id="signatureContent">
+
+					<div id="signField" style="margin-top: 100px;">
+						<div id="signature"></div>
+						<button type="button" id="clearSignature" class="btn btn-default">{% trans 'Clear' %}</button>
+						<!--<button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>-->
+						<a href="">
+							<button type="button" id="saveSignature" class="btn btn-success">
+								{% trans 'Confirmar' %}
+							</button>
+						</a>
+					</div>
+					<div id="clearBoth"></div>
+				</div>
+			</div>
+		</div>
+	  </div>
+		
 		<div id="clearBoth"></div>
 		<!-- MODAL OF ALERT - TIMEKEEPER -->
 		<div class="modal fade" id="showTimekeeperModal" role="dialog">
@@ -481,28 +529,6 @@
 				</div>
 			</div>
 		</div>
-		<div id="clearBoth"></div>
-		<!-- MODAL SIGNATURE - TIMEKEEPER -->
-		<div class="modal fade" id="signModal" role="dialog">
-			<div class="modal-dialog">
-				<!-- Modal content-->
-				<div class="modal-content signModalDialog">
-					<button type="button" class="closeSignature" data-dismiss="modal"></button>
-					<div class="modal-title" id="titleSign">{% trans 'Sign Here' %}</div>
-					<div class="modal-body" id="signatureContent">
-
-					<div id="signField" style="margin-top: 100px;">
-						<div id="signature"></div>
-						<button type="button" id="clearSignature" class="btn btn-default">{% trans 'Limpiar' %}</button>
-						<button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>
-						<a href="">
-							<button type="button" id="stopShiftConfirm" class="btn btn-success">
-								{% trans 'Confirmar' %}
-							</button>
-						</a>
-					</div>
-				</div>
-			</div>
-		</div>
+		
 	</body>
 </html>

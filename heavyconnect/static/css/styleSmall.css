@@ -312,14 +312,12 @@ input[type=button] {
 	font-weight: 600;
 }
 .signModalDialog {
-	width: 90%;
+	width: 100% !important;
 	margin: auto;
 	margin-top: 20px;
 	border-radius: 8px;
 }
-#signatureContent {
-	height: 190px;
-}
+
 .closeSignature {
 	background: url('../imgSmall/buttons/esc.png') no-repeat top left;
 	background-size: 100% 100%;

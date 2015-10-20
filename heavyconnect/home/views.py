@@ -414,7 +414,7 @@ def stopBreakGroup(request):
 			auxError = []
 			lunch = int(request.POST['lunch'])
 			for item in ids:
-				aux = startBreak(item, lunch)
+				aux = stopBreak(item, lunch)
 				aux['id'] = item
 				if aux['success'] == True:
 					auxSuccess.append(aux)
@@ -1663,6 +1663,7 @@ def timeLogById(request):
 			keeper = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #this variable will keep the last break. It is useful when the shift is not done
 			keeper2 =  datetime.timedelta(hours = 23, minutes = 59, seconds = 59) # when the break is on another day
 			for item in employeeAttendance:
+				result['attendanceId'] = item.id
 				breaks = Break.objects.filter(attendance__id = item.id)
 				breakDuration = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #variable used to decrease time from the total when one break still going on
 				breakTime = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) #help to calculate work time between breaks
