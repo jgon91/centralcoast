@@ -350,17 +350,15 @@ input[type=button]{
 }
 
 #clock {
-    left: 54%;
+    left: 35%;
     top:0%;
     font-size: 15px;
     padding: 20px;
     position: absolute;
     display: inline;
     color: white;
+    font-weight: 600;
 }
-
-
-
 
 .btnGreenTime {
 	background: url('../imgSmall/buttons/btnGreen.png') no-repeat top left;
