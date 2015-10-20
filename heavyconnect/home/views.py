@@ -147,6 +147,26 @@ def endTask(request):
 		result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+
+def saveSignature(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+		if request.is_ajax():
+			attenId = request.POST['id']
+			atenSignature = request.POST['signature']
+			atten = EmployeeAttendance.objects.get(id = attenId)
+			if atenSignature == None:
+				atten.signature = 'Not provided'
+			else:
+				atten.signature = atenSignature
+			atten.save()
+			result['success'] = True
+		else:
+			result['code'] = 2 #Use ajax to perform requests
+	else:
+		result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
 # Receives, as argument, filter information
 # from front-end (size, manufacturer, etc) and Implement_id
 # (if chosen or NULL if not chosen). Then, retrieves all machines

@@ -114,6 +114,7 @@ urlpatterns = [
     url(r'^stopShiftGroup/$', main_views.stopShiftGroup, name = 'stopShiftGroup'),
     url(r'^startBreakGroup/$', main_views.startBreakGroup, name = 'startBreakGroup'),
     url(r'^stopBreakGroup/$', main_views.stopBreakGroup, name = 'stopBreakGroup'),
+    url(r'^saveSignature/$', main_views.saveSignature, name = 'saveSignature'),
    ### End ###
 
     ###Insert###
