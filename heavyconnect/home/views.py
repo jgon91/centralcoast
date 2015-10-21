@@ -1673,35 +1673,47 @@ def timeLogById(request):
 					aux = {} #puts breakStart, breakDuration and workBreak together
 					docStart = datetime.timedelta(hours = doc.start.hour, minutes = doc.start.minute, seconds = doc.start.second)
 					hours, remainder = divmod(docStart.seconds, 3600)
-					minutes, seconds = divmod(remainder, 60) 
+					minutes, seconds = divmod(remainder, 60)
+					hours = checkHours(hours) 
+					minutes = checkMinutes(minutes)
 					aux['breakStart'] = str(hours) + ':' + str(minutes) #time that the break started
 					if breakTime <= docStart:
 						time_aux = docStart - breakTime
 						hours, remainder = divmod(time_aux.seconds, 3600)
 						minutes, seconds = divmod(remainder, 60) 
+						hours = checkHours(hours)
+						minutes = checkMinutes(minutes)
 						aux['workBreak'] = str(hours) + ':' + str(minutes)
 						count += docStart - breakTime
 					else: #Midnight is between these times
 						time_aux = (keeper2 - breakTime) + docStart
 						hours, remainder = divmod(time_aux.seconds, 3600)
 						minutes, seconds = divmod(remainder, 60) 
+						hours = checkHours(hours)
+						minutes = checkMinutes(minutes)
 						aux['workBreak'] = str(hours) + ':' + str(minutes)
 						count += (keeper2 - breakTime) + docStart
 					if (doc.end != None):
 						docEnd = datetime.timedelta(hours = doc.end.hour, minutes = doc.end.minute, seconds = doc.end.second)
 						hours, remainder = divmod(docEnd.seconds, 3600)
 						minutes, seconds = divmod(remainder, 60) 
+						hours = checkHours(hours)
+						minutes = checkMinutes(minutes)
 						aux['breakStop'] = str(hours) + ':' + str(minutes)
 						breakTime = docEnd
 						if docEnd >= docStart:
 							time_aux = docEnd - docStart
 							hours, remainder = divmod(time_aux.seconds, 3600)
 							minutes, seconds = divmod(remainder, 60) 
+							hours = checkHours(hours)
+							minutes = checkMinutes(minutes)
 							aux['breakDuration'] = str(hours) + ':' + str(minutes)
 						else: #in case of start and end are in different days, passing by midnight
 							time_aux = (keeper2 - docStart) + docEnd
 							hours, remainder = divmod(time_aux.seconds, 3600)
 							minutes, seconds = divmod(remainder, 60)
+							hours = checkHours(hours)
+							minutes = checkMinutes(minutes)
 							aux['breakDuration'] = str(hours) + ':' + str(minutes)
 					else:
 						aux['breakStop'] = 'Happening'
@@ -1733,13 +1745,18 @@ def timeLogById(request):
 						count += ((keeper2 - breakTime) + time_aux) - breakDuration		
 			hours, remainder = divmod(count.seconds, 3600)
 			minutes, seconds = divmod(remainder, 60)
+			hours = checkHours(hours)
+			minutes = checkMinutes(minutes)
 			result['Total'] = str(hours) + ':' + str(minutes)
 			hours, remainder = divmod(atten_start.seconds, 3600)
 			minutes, seconds = divmod(remainder, 60)
-			result['Attendance_start'] = str(hours) + ':' + str(minutes)
+			hours = checkHours(hours)
+			minutes = checkMinutes(minutes)
+			result['Attendance_start'] = str(hours) + ':' + str(minutes)			
 			if(Attendance_end != 'Happening'):
 				hours, remainder = divmod(Attendance_end.seconds, 3600)
 				minutes, seconds = divmod(remainder, 60)
+				minutes = checkMinutes(minutes)
 				result['Attendance_end'] = str(hours) + ':' + str(minutes)
 			else:
 				result['Attendance_end'] = Attendance_end
@@ -1749,6 +1766,18 @@ def timeLogById(request):
 	else:
 		result['Code'] = {'Code' : 2} #request is not post
 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+#function to check minutes in timeLogById
+def checkMinutes(minutes):
+	if minutes < 10:
+	    minutes = "0" + str(minutes)
+	return minutes 
+
+#function to check minutes in timeLogById
+def checkHours(hours):
+	if hours < 10:
+	    hours = "0" + str(hours)
+	return hours
 
 # This function call getHoursToday() for each day in the week of the desired day passed as argument
 # It requries a employee_id and any day of the week, and the function will check all days of that week.
