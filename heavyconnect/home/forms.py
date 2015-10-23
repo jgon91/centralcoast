@@ -317,6 +317,7 @@ class employeeForm(forms.Form):
 	permission_level = forms.ChoiceField(choices = PERMISSION_LEVEL_CHOICES)
 	photo = forms.URLField(required = False)
 	notes = forms.CharField(max_length = 250, required = False)
+	teamManager = forms.BooleanField(required = False)
 	manager = forms.ModelChoiceField(queryset = Employee.objects.filter(permission_level = '2'))
 ### End ###
 
@@ -344,6 +345,7 @@ class employeeUpdateForm(forms.Form):
 	photo = forms.URLField(required = False)
 	notes = forms.CharField(max_length = 250, required = False)
 	active = forms.BooleanField(required = False)
+	teamManager = forms.BooleanField(required = False)
 	manager = forms.ModelChoiceField(queryset = Employee.objects.filter(permission_level = '2'))
 ### End ###
 

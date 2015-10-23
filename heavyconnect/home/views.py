@@ -3740,6 +3740,7 @@ def employeeManagerUpdateForm(request):
 				emplo.permission_level = employform.cleaned_data['permission_level']
 				emplo.photo = employform.cleaned_data['photo']
 				emplo.notes = employform.cleaned_data['notes']
+				emplo.teamManager = employform.cleaned_data['teamManager']
 				emplo.manager = employform.cleaned_data['manager']
 
 				if emplo.active == False:
@@ -3792,6 +3793,7 @@ def employeeFormadd(request):
 				emplo_permission = employform.cleaned_data['permission_level']
 				emplo_photo = employform.cleaned_data['photo']
 				emplo_notes = employform.cleaned_data['notes']
+				emplo_teamManager = employform.cleaned_data['teamManager']
 				emplo_manager = employform.cleaned_data['manager']
 				try:
 					employee = Employee(user = new_user, language = emplo_language, permission_level = emplo_permission, active = '1', company_id = emplo_company, qr_code = emplo_qr_code, start_date = emplo_start, hour_cost = emplo_cost,contact_number = emplo_contact, notes = emplo_notes, photo = emplo_photo, manager = emplo_manager)
