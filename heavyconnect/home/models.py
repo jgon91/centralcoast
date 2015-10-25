@@ -258,16 +258,34 @@ class EmployeeWithdrawn(models.Model):
 	def __unicode__(self):
 		return "Date: " + str(self.date) + ", Name: " + str(self.employee.user.last_name)
 
+class Group(models.Model):
+	name = models.CharField(max_length = 20, blank = True)
+	creator = models.ForeignKey(Employee)
+	data = models.DateField()
+	permanent = models.BooleanField(default = False)
+
+	def __unicode__(self):
+		return "Creator: " + str(self.creator) + ", DateField: " + str(self.data) + ", Name: " + str(self.name)
+
+class GroupParticipant(models.Model):
+	group = models.ForeignKey(Group)
+	participant = models.ForeignKey(Employee)
+
+	def __unicode__(self):
+		return "Group: " + str(self.group) + ", participant: " + str(self.participant)
+
 class EmployeeAttendance(models.Model):
 	employee = models.ForeignKey(Employee)
 	date = models.DateField()
 	hour_started = models.TimeField()
 	hour_ended = models.TimeField(null = True, blank = True)
 	signature = models.CharField(max_length = 5000, null = True, blank = True)
+	group = models.ForeignKey(Group, null = True, blank = True) 
 
 
 	def __unicode__(self):
 		return "Employee: " + str(self.employee) + ", Date: " + str(self.date)
+
 
 class Break(models.Model):
 	attendance = models.ForeignKey(EmployeeAttendance)
