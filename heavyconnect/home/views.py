@@ -1676,6 +1676,7 @@ def timeLogById(request):
 					minutes, seconds = divmod(remainder, 60)
 					hours = checkHours(hours) 
 					minutes = checkMinutes(minutes)
+					aux['breakId'] = doc.id
 					aux['breakStart'] = str(hours) + ':' + str(minutes) #time that the break started
 					if breakTime <= docStart:
 						time_aux = docStart - breakTime
