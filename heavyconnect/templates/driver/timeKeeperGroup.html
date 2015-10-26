@@ -499,7 +499,16 @@
 				<div class="modal-content modalTimekeeper">
 					<div class="modal-body">
 						<button type="button" id="timelogBack"></button>
-						<button type="button" class="closeEquip" data-dismiss="modal"></button>
+						<button type="button" id="closeEquip" class="closeEquip" data-dismiss="modal" style="background: url({% static 'imgSmall/buttons/esc.png' %}) no-repeat top left;
+	background-size: 100% 100%;
+	width: 50px;
+	height: 50px;
+	float: right;
+	border: none;
+	border-radius: 7px;
+	box-shadow: -1px 1px 7px gray;
+	margin: 0px;
+	padding: 0px;"></button>
 						<span id="messageTimekeeper"></span>
 						<div id="employeeList"></div>
 						<table id="tableMessage">
