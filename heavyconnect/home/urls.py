@@ -77,6 +77,8 @@ urlpatterns = [
     url(r'^getAllImplementInfo/$', main_views.getAllImplementInfo, name = 'getAllImplementInfo'),
     url(r'^getAllMachineInfo/$', main_views.getAllMachineInfo, name = 'getAllMachineInfo'),
     url(r'^getAllEmployees/$', main_views.getAllEmployees, name = 'getAllEmployees'),
+    url(r'^timeKeeperGroup/$', main_views.timeKeeperGroup, name='timeKeeperGroup'),
+    url(r'^getAllManagerEmployees/$', main_views.getAllManagerEmployees, name = 'getAllManagerEmployees'),
     url(r'^scheduleManager/$', main_views.scheduleManager, name='scheduleManager'),
     url(r'^getEquipmentInfo/$', main_views.getEquipmentInfo, name = 'getEquipmentInfo'),
     url(r'^retrieveScannedMachine/$', main_views.retrieveScannedMachine, name = 'retrieveScannedMachine'),
@@ -116,6 +118,12 @@ urlpatterns = [
     url(r'^storeChecklistAnswers/$', main_views.storeChecklistAnswers, name = 'storeChecklistAnswers'),
     url(r'^switchTaskManager/$', main_views.switchTaskManager, name = 'switchTaskManager'),
     url(r'^templateCreateTaskManager/$', main_views.templateCreateTaskManager, name='templateCreateTaskManager'),
+    url(r'^saveSignature/$', main_views.saveSignature, name = 'saveSignature'),
+    url(r'^timeLogById/$', main_views.timeLogById, name = 'timeLogById'),
+    url(r'^startShiftGroup/$', main_views.startShiftGroup, name = 'startShiftGroup'),
+    url(r'^stopShiftGroup/$', main_views.stopShiftGroup, name = 'stopShiftGroup'),
+    url(r'^startBreakGroup/$', main_views.startBreakGroup, name = 'startBreakGroup'),
+    url(r'^stopBreakGroup/$', main_views.stopBreakGroup, name = 'stopBreakGroup'),
 
 
     ### End ###

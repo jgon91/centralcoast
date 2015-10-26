@@ -25,7 +25,7 @@ body {
 	margin-left: 4px;
 }
 #userImg {
-	background: url('../img/userPicture.png') no-repeat top left;
+	background: url('../imgSmall/buttons/user.png') no-repeat top left;
 	background-size: 100% 100%;
 	width: 105px;
 	height: 90px;
@@ -558,14 +558,12 @@ input[type="button"] {
 	padding-bottom: 20px;
 }
 .btnManageForm {
-	background: url('../imgSmall/buttons/btnGreen.png') no-repeat top left;
-	background-size: 100% 100%;
-	border-radius: 7px;
-	border: none;
-	box-shadow: 2px 2px 5px gray;
 	height: 50px;
-	width: 200px;
-	color: white;
+    width: 80px;
+    color: #434343;
+    font-size: 35px;
+    background-color: white;
+    border: none;
 }
 .tableListForm {
 	margin: auto;

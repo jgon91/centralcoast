@@ -172,7 +172,7 @@ input[type=button]{
 #logOff {
 	background: url('../imgSmall/buttons/exit.png') no-repeat top left;
 	background-size: 100% 100%;
-	width: 55px;
+	width: 75px;
 	height: 40px;
 	margin-right: 2.5px;
 	margin-top: 10px;
@@ -1380,6 +1380,63 @@ input[type='time'] {
 	/*** Modal Equipment End ***/
 /*** Equipment Page End ***/
 
+#employee-table td
+{
+    font-size: 20px;
+    vertical-align: middle;
+}
 
+#edit-icon
+{
+   background:url('../imgSmall/buttons/edit.png') left top;
+   background-size: 20px 20px;
+   width:20px;
+   height:20px;
+   display: block;
+   float: left;
+}
 
-
+#employeeList {
+	text-align: left;
+	font-size: 20px;
+}
+#employeeList input[type=checkbox] {
+	width: 20px;
+	height: 20px;
+	margin-bottom: 0px;
+}
+#divTimelog {
+	color: black;
+	font-size: 17px;
+	text-align: center;
+}
+#divTimelog input[type=button] {
+	border: 1px solid #DDD;
+	padding: 5px;
+	box-sizing: border-box;
+	white-space: nowrap;
+	cursor: pointer;
+	background: #E5E5E5;
+	width: 100%;
+}
+#timelogBack {
+	background: url('../imgSmall/buttons/backPastTasks.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 50px;
+	height: 50px;
+	float: left;
+	border: none;
+	border-radius: 7px;
+	box-shadow: -1px 1px 7px gray;
+	margin: 0px;
+	padding: 0px;
+}
+#tableTimelog {
+	margin: auto;
+}
+#tableTimelog tr td {
+	padding: 5px;
+}
+#colBorderTimelog {
+	background: #DDD;
+}

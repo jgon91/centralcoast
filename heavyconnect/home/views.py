@@ -281,86 +281,52 @@ def createShift(employee, result):
 
 	return result
 
-@login_required
-def startShift(request):
+def startShift(idUser):
 	result = {'success' : False}
+	try:
+		employee = Employee.objects.get(user_id = idUser)
+		attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
+		result['Employee'] = employee.id
+		if attendance is not None:
 
-	if request.method == "POST":
-		if request.is_ajax():
+			#If more than 16 hours was passed since the last shift was started we can consider that now we are creating a new shift
+			time_delta = (datetime.datetime.now() - datetime.datetime.combine(attendance.date,attendance.hour_started))
 
-			try:
-				employee = Employee.objects.get(user_id = request.user.id)
-				attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
-
-				if attendance is not None:
-
-					#If more than 16 hours was passed since the last shift was started we can consider that now we are creating a new shift
-					time_delta = (datetime.datetime.now() - datetime.datetime.combine(attendance.date,attendance.hour_started))
-
-					if ((time_delta.seconds / 3600.0) >= 16.17) or (time_delta.days >= 1):
-						result = createShift(employee, result)
-					else:
-						#In case 16 hours haven't passed yet we need to check if the shift we get was finished or not
-						if attendance.hour_ended is not None: #The last shift was finished already, so we can start a new one
-							result = createShift(employee, result)
-						else: #The last shift wasn't finished yet.
-							result['code'] = 1 #You need to finish the shift you started already before create a new one
-
-				else: #First time the employee will create a shift
+			if ((time_delta.seconds / 3600.0) >= 16.17) or (time_delta.days >= 1):
+				result = createShift(employee, result)
+			else:
+				#In case 16 hours haven't passed yet we need to check if the shift we get was finished or not
+				if attendance.hour_ended is not None: #The last shift was finished already, so we can start a new one
 					result = createShift(employee, result)
+				else: #The last shift wasn't finished yet.
+					result['code'] = 1 #You need to finish the shift you started already before create a new one
 
-			except (Employee.DoesNotExist, EmployeeAttendance.DoesNotExist) as e:
-				result['code'] =  2 #There is no users associated with this id
-		else:
-			result['code'] = 3 #Use ajax to perform requests
-	else:
-		result['code'] = 4 #Request was not POST
+		else: #First time the employee will create a shift
+			result = createShift(employee, result)
 
-	return HttpResponse(json.dumps(result),content_type='application/json')
+	except (Employee.DoesNotExist, EmployeeAttendance.DoesNotExist) as e:
+		result['code'] =  2 #There is no users associated with this id
+
+	return result
+
 
 @login_required
-def stopShift(request):
-	result = {'success' : False}
-	print 'entrou'
+def startShiftGroup(request):
+	result = {}
 	if request.method == "POST":
 		if request.is_ajax():
-			try:
-				employee = Employee.objects.get(user_id = request.user.id)
-				attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
-
-				if attendance is not None:
-
-					result['attendance-date'] = str(attendance.date)
-					result['attendance-time'] = str(attendance.hour_started)
-
-					#If more than 16 hours was passed since the last shift was started we can consider that now we are creating a new shift
-					time_delta = (datetime.datetime.now() - datetime.datetime.combine(attendance.date,attendance.hour_started))
-
-					if ((time_delta.seconds / 3600.0) < 16.17) or (time_delta.days == 0):
-						t_break = Break.objects.filter(attendance_id = attendance).order_by('-start')
-						amount = t_break.count()
-
-						if attendance.hour_ended is None:
-							for item in t_break:
-								if item.end == None: #if there is a break opened
-									item.end = datetime.datetime.now()
-									item.save()
-								break
-							attendance.hour_ended = datetime.datetime.now()
-							attendance.signature = request.POST.get('signature','NOT PROVIDED')
-							attendance.save()
-							result['success'] = True
-							result['hour_ended'] = str(attendance.hour_ended)
-						else:
-							result['code'] = 2 #The shift for today was already finished
-					else:
-						result['code'] = 3 #You have not started a shift yet
+			ids = request.POST.getlist('ids[]')
+			auxSuccess = []
+			auxError = []
+			for item in ids:
+				aux = startShift(item)
+				aux['id'] = item
+				if aux['success'] == True:
+					auxSuccess.append(aux)
 				else:
-					result['code'] = 3 #You have not started a shift yet
-			except EmployeeAttendance.DoesNotExist:
-				result['code'] = 3 #You have not started your shift yet
-			except Employee.DoesNotExist:
-				result['code'] = 4 #This user is not authorized to use the system
+					auxError.append(aux)
+			result['success'] = auxSuccess
+			result['error'] = auxError
 		else:
 			result['code'] = 5 #Use ajax to perform requests
 	else:
@@ -368,74 +334,104 @@ def stopShift(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-@login_required
-def startBreak(request):
-	result = {'success' : False}
-	if request.method == "POST":
-		if request.is_ajax():
-			try:
-				lunch = int(request.POST['lunch'])
-				employee = Employee.objects.get(user = request.user)
 
-				attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
-				if attendance is not None:
-					if attendance.hour_ended is None:
-						t_break = Break.objects.filter(attendance_id = attendance).order_by('-start')
-						count = t_break.count()
+def stopShift(idUser):
+	result = {}
+	try:
+		employee = Employee.objects.get(user_id = idUser)
+		attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
 
-						if count == 0 or t_break[0].end is not None:
-							t2_break = Break(attendance = attendance, lunch = lunch, start = datetime.datetime.now())
-							t2_break.save()
-							result['success'] = True
-							result['time'] = str(t2_break.start)
-						else:
-							result['code'] = 1 #You cannot start two breaks at the same time
-					else:
-						result['code'] = 2 #The shift for today was already finished
-				else:
-					result['code'] = 3 #You need to start a shift first
-			except EmployeeAttendance.DoesNotExist:
-				result['code'] = 3 #You need to start a shift first
-		else:
-			result['code'] = 4 #Use ajax to perform requests
-	else:
-		result['code'] = 5 #Request was not POST
+		if attendance is not None:
 
-	return HttpResponse(json.dumps(result),content_type='application/json')
+			result['attendance-date'] = str(attendance.date)
+			result['attendance-time'] = str(attendance.hour_started)
 
-@login_required
-def stopBreak(request):
-	result = {'success' : False}
-	if request.method == "POST":
-		if request.is_ajax():
-			try:
-				lunch = int(request.POST['lunch'])
-				employee = Employee.objects.get(user_id = request.user.id)
-				attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
+			#If more than 16 hours was passed since the last shift was started we can consider that now we are creating a new shift
+			time_delta = (datetime.datetime.now() - datetime.datetime.combine(attendance.date,attendance.hour_started))
+
+			if ((time_delta.seconds / 3600.0) < 16.17) or (time_delta.days == 0):
+				t_break = Break.objects.filter(attendance_id = attendance).order_by('-start')
+				amount = t_break.count()
+
 				if attendance.hour_ended is None:
-					t_break = Break.objects.filter(attendance_id = attendance).order_by('-start')
-					count = t_break.count()
-					if (count != 0) and t_break[0].end is None:
-						if t_break[0].lunch == lunch:
-							t_break = t_break[0]
-							t_break.end = datetime.datetime.now()
-							t_break.save()
-							result['success'] = True
-							result['time'] = str(t_break.end)
-						else:
-							result['code'] = 6 #The break is not compatible with the variable request.lunch
-					else:
-						result['code'] = 1 #You need to start a break first
+					for item in t_break:
+						if item.end == None: #if there is a break opened
+							item.end = datetime.datetime.now()
+							item.save()
+						break
+					attendance.hour_ended = datetime.datetime.now()
+					# attendance.signature = signature
+					attendance.save()
+					result['success'] = True
+					result['hour_ended'] = str(attendance.hour_ended)
 				else:
 					result['code'] = 2 #The shift for today was already finished
-			except EmployeeAttendance.DoesNotExist:
-				result['code'] = 3 #You need to start a shift first
+			else:
+				result['code'] = 3 #You have not started a shift yet
 		else:
-			result['code'] = 4 #Use ajax to perform requests
-	else:
-		result['code'] = 5 #Request was not POST
+			result['code'] = 3 #You have not started a shift yet
+	except EmployeeAttendance.DoesNotExist:
+		result['code'] = 3 #You have not started your shift yet
+	except Employee.DoesNotExist:
+		result['code'] = 4 #This user is not authorized to use the system
+	return result
 
-	return HttpResponse(json.dumps(result),content_type='application/json')
+def startBreak(idUser, paramenterlunch):
+	result = {'success' : False}
+	try:
+		lunch = paramenterlunch
+		employee = Employee.objects.get(user = idUser)
+
+		attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
+		if attendance is not None:
+			if attendance.hour_ended is None:
+				t_break = Break.objects.filter(attendance_id = attendance).order_by('-start')
+				count = t_break.count()
+
+				if count == 0 or t_break[0].end is not None:
+					t2_break = Break(attendance = attendance, lunch = lunch, start = datetime.datetime.now())
+					t2_break.save()
+					result['success'] = True
+					# result['time'] = str(t2_break.start)
+					result['user'] = idUser
+				else:
+					result['code'] = 1 #You cannot start two breaks at the same time
+			else:
+				result['code'] = 2 #The shift for today was already finished
+		else:
+			result['code'] = 3 #You need to start a shift first
+	except EmployeeAttendance.DoesNotExist:
+		result['code'] = 3 #You need to start a shift first
+
+	return result
+
+def stopBreak(idUser, paramenterlunch):
+	result = {'success' : False}
+	try:
+		lunch = paramenterlunch
+		employee = Employee.objects.get(user_id = idUser)
+		attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
+		if attendance.hour_ended is None:
+			t_break = Break.objects.filter(attendance_id = attendance).order_by('-start')
+			count = t_break.count()
+			if (count != 0) and t_break[0].end is None:
+				if t_break[0].lunch == lunch:
+					t_break = t_break[0]
+					t_break.end = datetime.datetime.now()
+					t_break.save()
+					result['success'] = True
+					result['user'] = idUser
+					# result['time'] = str(t_break.end)
+				else:
+					result['code'] = 6 #The break is not compatible with the variable request.lunch
+			else:
+				result['code'] = 1 #You need to start a break first
+		else:
+			result['code'] = 2 #The shift for today was already finished
+	except EmployeeAttendance.DoesNotExist:
+		result['code'] = 3 #You need to start a shift first
+	return result
+
 
 @login_required
 def updateSignature(request):
@@ -1906,6 +1902,273 @@ def updateLightTaskFlow(request):
 				result['code'] =  2 #There are no users associated with this
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+
+#Get employees by manager
+def getAllManagerEmployees(request):
+	each_result = {}
+	result = {'success' : False}
+	if request.method == "POST":
+		if request.is_ajax():
+			try:
+				manager = Employee.objects.get(user = request.user)
+				all_manager_employee = Employee.objects.filter(manager = manager.id)
+				print all_manager_employee
+				employees = []
+				if manager != manager.manager:
+					each_result["first_name"] = manager.user.first_name
+					each_result["last_name"] = manager.user.last_name
+					each_result["user_id"] = manager.user.id
+					employees.append(each_result)
+					each_result = {}
+				for each in all_manager_employee:
+					each_result['first_name'] = each.user.first_name
+					each_result['last_name'] = each.user.last_name
+					each_result['user_id'] = each.user.id
+					employees.append(each_result)
+					each_result = {}
+				result['success'] = True
+				result['employees'] = employees
+				print employees
+			except DoesNotExist:
+				result['code'] = 1
+				return HttpResponse(json.dumps(result), content_type='application/json')
+		else:
+			result['code'] = 2
+			return HttpResponse(json.dumps(result), content_type='application/json')
+	else:
+		result['code'] = 3
+		return HttpResponse(json.dumps(result), content_type='application/json')
+
+	return HttpResponse(json.dumps(result), content_type='application/json')
+
+
+def saveSignature(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+		if request.is_ajax():
+			attenId = request.POST['id']
+			atenSignature = request.POST['signature']
+			atten = EmployeeAttendance.objects.get(id = attenId)
+			if atenSignature == None:
+				atten.signature = 'Not provided'
+			else:
+				atten.signature = atenSignature
+			atten.save()
+			result['success'] = True
+		else:
+			result['code'] = 2 #Use ajax to perform requests
+	else:
+		result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+#this function will retrieve hours worked in the last atendance of the employee, with breaks times and hours worked until the break
+def timeLogById(request):
+	result = {}
+	if request.method == 'POST':
+		if request.is_ajax():
+			userId = request.POST['id']
+			if userId is None:
+			    userId = request.user.id
+			array_breaks = []
+			date = datetime.datetime.now() #today date
+			start_date = datetime.datetime.combine(date, datetime.time.min) #today date at 0:00 AM
+			end_date = datetime.datetime.combine(date, datetime.time.max) # date at 11:59 PM
+			employeeAttendance = EmployeeAttendance.objects.filter(employee__user__id = userId, date__range = (start_date,end_date)).order_by('-hour_started')[:1]
+			count = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #counter to keep all the worked hours
+			keeper = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #this variable will keep the last break. It is useful when the shift is not done
+			keeper2 =  datetime.timedelta(hours = 23, minutes = 59, seconds = 59) # when the break is on another day
+			for item in employeeAttendance:
+				result['attendanceId'] = item.id
+				breaks = Break.objects.filter(attendance__id = item.id)
+				breakDuration = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #variable used to decrease time from the total when one break still going on
+				breakTime = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) #help to calculate work time between breaks
+				time_aux = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) #variable used to remove second of the date
+				atten_start = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute,seconds = item.hour_started.second)
+				for doc in breaks:
+					aux = {} #puts breakStart, breakDuration and workBreak together
+					docStart = datetime.timedelta(hours = doc.start.hour, minutes = doc.start.minute, seconds = doc.start.second)
+					hours, remainder = divmod(docStart.seconds, 3600)
+					minutes, seconds = divmod(remainder, 60)
+					hours = checkHours(hours)
+					minutes = checkMinutes(minutes)
+					aux['breakStart'] = str(hours) + ':' + str(minutes) #time that the break started
+					if breakTime <= docStart:
+						time_aux = docStart - breakTime
+						hours, remainder = divmod(time_aux.seconds, 3600)
+						minutes, seconds = divmod(remainder, 60)
+						hours = checkHours(hours)
+						minutes = checkMinutes(minutes)
+						aux['workBreak'] = str(hours) + ':' + str(minutes)
+						count += docStart - breakTime
+					else: #Midnight is between these times
+						time_aux = (keeper2 - breakTime) + docStart
+						hours, remainder = divmod(time_aux.seconds, 3600)
+						minutes, seconds = divmod(remainder, 60)
+						hours = checkHours(hours)
+						minutes = checkMinutes(minutes)
+						aux['workBreak'] = str(hours) + ':' + str(minutes)
+						count += (keeper2 - breakTime) + docStart
+					if (doc.end != None):
+						docEnd = datetime.timedelta(hours = doc.end.hour, minutes = doc.end.minute, seconds = doc.end.second)
+						hours, remainder = divmod(docEnd.seconds, 3600)
+						minutes, seconds = divmod(remainder, 60)
+						hours = checkHours(hours)
+						minutes = checkMinutes(minutes)
+						aux['breakStop'] = str(hours) + ':' + str(minutes)
+						breakTime = docEnd
+						if docEnd >= docStart:
+							time_aux = docEnd - docStart
+							hours, remainder = divmod(time_aux.seconds, 3600)
+							minutes, seconds = divmod(remainder, 60)
+							hours = checkHours(hours)
+							minutes = checkMinutes(minutes)
+							aux['breakDuration'] = str(hours) + ':' + str(minutes)
+						else: #in case of start and end are in different days, passing by midnight
+							time_aux = (keeper2 - docStart) + docEnd
+							hours, remainder = divmod(time_aux.seconds, 3600)
+							minutes, seconds = divmod(remainder, 60)
+							hours = checkHours(hours)
+							minutes = checkMinutes(minutes)
+							aux['breakDuration'] = str(hours) + ':' + str(minutes)
+					else:
+						aux['breakStop'] = 'Happening'
+						time_now = datetime.datetime.now() #variable used to get the current time
+						time_aux = datetime.timedelta(hours = time_now.hour, minutes = time_now.minute, seconds = time_now.second)
+						breakTime = docStart
+						if time_aux >= docStart:
+							breakDuration = time_aux - docStart
+							aux['breakDuration'] = str(breakDuration)
+						else:
+							breakDuration = (keeper2 - docStart) + time_aux
+							aux['breakDuration'] = str(breakDuration)
+					aux['lunch'] = doc.lunch
+					array_breaks.append(aux)
+				if item.hour_ended != None:
+					endTurn = datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second)
+					Attendance_end =  datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second)
+					if endTurn >= breakTime:
+						count += endTurn - breakTime
+					else:
+						count += (keeper2 - breakTime) + endTurn
+				else:
+					Attendance_end = 'Happening'
+					time_now = datetime.datetime.now()
+					time_aux = datetime.timedelta(hours = time_now.hour, minutes = time_now.minute, seconds = time_now.second)
+					if time_aux >= breakTime:
+						count += (time_aux - breakTime) - breakDuration
+					else:
+						count += ((keeper2 - breakTime) + time_aux) - breakDuration
+			hours, remainder = divmod(count.seconds, 3600)
+			minutes, seconds = divmod(remainder, 60)
+			hours = checkHours(hours)
+			minutes = checkMinutes(minutes)
+			result['Total'] = str(hours) + ':' + str(minutes)
+			hours, remainder = divmod(atten_start.seconds, 3600)
+			minutes, seconds = divmod(remainder, 60)
+			hours = checkHours(hours)
+			minutes = checkMinutes(minutes)
+			result['Attendance_start'] = str(hours) + ':' + str(minutes)
+			if(Attendance_end != 'Happening'):
+				hours, remainder = divmod(Attendance_end.seconds, 3600)
+				minutes, seconds = divmod(remainder, 60)
+				minutes = checkMinutes(minutes)
+				result['Attendance_end'] = str(hours) + ':' + str(minutes)
+			else:
+				result['Attendance_end'] = Attendance_end
+			result['breaks'] = array_breaks
+		else:
+			result['Code'] = {'Code' : 1} #request is not ajax
+	else:
+		result['Code'] = {'Code' : 2} #request is not post
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+#function to check minutes in timeLogById
+def checkMinutes(minutes):
+	if minutes < 10:
+	    minutes = "0" + str(minutes)
+	return minutes
+
+#function to check minutes in timeLogById
+def checkHours(hours):
+	if hours < 10:
+	    hours = "0" + str(hours)
+	return hours
+
+
+@login_required
+def stopShiftGroup(request):
+	result = {}
+	if request.method == "POST":
+		if request.is_ajax():
+			ids = request.POST.getlist('ids[]')
+			auxSuccess = []
+			auxError = []
+			for item in ids:
+				aux = stopShift(item)
+				aux['id'] = item
+				if aux['success'] == True:
+					auxSuccess.append(aux)
+				else:
+					auxError.append(aux)
+			result['success'] = auxSuccess
+			result['error'] = auxError
+		else:
+			result['code'] = 5 #Use ajax to perform requests
+	else:
+		result['code'] = 6 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+@login_required
+def startBreakGroup(request):
+	result = {}
+	if request.method == "POST":
+		if request.is_ajax():
+			ids = request.POST.getlist('ids[]')
+			auxSuccess = []
+			auxError = []
+			lunch = int(request.POST['lunch'])
+			for item in ids:
+				aux = startBreak(item, lunch)
+				aux['id'] = item
+				if aux['success'] == True:
+					auxSuccess.append(aux)
+				else:
+					auxError.append(aux)
+			result['success'] = auxSuccess
+			result['error'] = auxError
+		else:
+			result['code'] = 5 #Use ajax to perform requests
+	else:
+		result['code'] = 6 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+@login_required
+def stopBreakGroup(request):
+	result = {}
+	if request.method == "POST":
+		if request.is_ajax():
+			ids = request.POST.getlist('ids[]')
+			auxSuccess = []
+			auxError = []
+			lunch = int(request.POST['lunch'])
+			for item in ids:
+				aux = stopBreak(item, lunch)
+				aux['id'] = item
+				if aux['success'] == True:
+					auxSuccess.append(aux)
+				else:
+					auxError.append(aux)
+			result['success'] = auxSuccess
+			result['error'] = auxError
+		else:
+			result['code'] = 5 #Use ajax to perform requests
+	else:
+		result['code'] = 6 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
 #Return the information about the driver and his or her schedule
 @login_required
 def getEmployeeShifts(request):
@@ -3360,3 +3623,7 @@ def breakFormView(request):
 		return redirect('formOk')
 	else:
 		return render(request, 'formTest.html', {'form': form})
+
+@login_required
+def timeKeeperGroup(request):
+	return render(request, 'driver/timeKeeperGroup.html')
