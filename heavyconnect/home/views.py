@@ -236,18 +236,22 @@ def startShiftGroup(request):
 	result = {}
 	if request.method == "POST":
 		if request.is_ajax():
-			ids = request.POST.getlist('ids[]')
-			auxSuccess = []
-			auxError = []
-			for item in ids:
-				aux = startShift(item)
-				aux['id'] = item
-				if aux['success'] == True:
-					auxSuccess.append(aux)
-				else:
-					auxError.append(aux)
-			result['success'] = auxSuccess
-			result['error'] = auxError
+			if 'ids[]' not in request.POST:
+				result = startShift(request.user.id)
+				return HttpResponse(json.dumps(result),content_type='application/json')
+			else:
+				ids = request.POST.getlist('ids[]')
+				auxSuccess = []
+				auxError = []
+				for item in ids:
+					aux = startShift(item)
+					aux['id'] = item
+					if aux['success'] == True:
+						auxSuccess.append(aux)
+					else:
+						auxError.append(aux)
+				result['success'] = auxSuccess
+				result['error'] = auxError
 		else:
 			result['code'] = 5 #Use ajax to perform requests
 	else:
@@ -303,18 +307,22 @@ def stopShiftGroup(request):
 	result = {}
 	if request.method == "POST":
 		if request.is_ajax():
-			ids = request.POST.getlist('ids[]')
-			auxSuccess = []
-			auxError = []
-			for item in ids:
-				aux = stopShift(item)
-				aux['id'] = item
-				if aux['success'] == True:
-					auxSuccess.append(aux)
-				else:
-					auxError.append(aux)
-			result['success'] = auxSuccess
-			result['error'] = auxError
+			if 'ids[]' not in request.POST:
+				result = stopShift(request.user.id)
+				return HttpResponse(json.dumps(result),content_type='application/json')
+			else:
+				ids = request.POST.getlist('ids[]')
+				auxSuccess = []
+				auxError = []
+				for item in ids:
+					aux = stopShift(item)
+					aux['id'] = item
+					if aux['success'] == True:
+						auxSuccess.append(aux)
+					else:
+						auxError.append(aux)
+				result['success'] = auxSuccess
+				result['error'] = auxError
 		else:
 			result['code'] = 5 #Use ajax to perform requests
 	else:
@@ -357,19 +365,23 @@ def startBreakGroup(request):
 	result = {}
 	if request.method == "POST":
 		if request.is_ajax():
-			ids = request.POST.getlist('ids[]')
-			auxSuccess = []
-			auxError = []
 			lunch = int(request.POST['lunch'])
-			for item in ids:
-				aux = startBreak(item, lunch)
-				aux['id'] = item
-				if aux['success'] == True:
-					auxSuccess.append(aux)
-				else:
-					auxError.append(aux)
-			result['success'] = auxSuccess
-			result['error'] = auxError
+			if 'ids[]' not in request.POST:
+				result = startBreak(request.user.id, lunch)
+				return HttpResponse(json.dumps(result),content_type='application/json')
+			else:
+				ids = request.POST.getlist('ids[]')
+				auxSuccess = []
+				auxError = []
+				for item in ids:
+					aux = startBreak(item, lunch)
+					aux['id'] = item
+					if aux['success'] == True:
+						auxSuccess.append(aux)
+					else:
+						auxError.append(aux)
+				result['success'] = auxSuccess
+				result['error'] = auxError
 		else:
 			result['code'] = 5 #Use ajax to perform requests
 	else:
@@ -409,19 +421,23 @@ def stopBreakGroup(request):
 	result = {}
 	if request.method == "POST":
 		if request.is_ajax():
-			ids = request.POST.getlist('ids[]')
-			auxSuccess = []
-			auxError = []
 			lunch = int(request.POST['lunch'])
-			for item in ids:
-				aux = stopBreak(item, lunch)
-				aux['id'] = item
-				if aux['success'] == True:
-					auxSuccess.append(aux)
-				else:
-					auxError.append(aux)
-			result['success'] = auxSuccess
-			result['error'] = auxError
+			if 'ids[]' not in request.POST:
+				result = stopBreak(request.user.id, lunch)
+				return HttpResponse(json.dumps(result),content_type='application/json')
+			else:
+				ids = request.POST.getlist('ids[]')
+				auxSuccess = []
+				auxError = []
+				for item in ids:
+					aux = stopBreak(item, lunch)
+					aux['id'] = item
+					if aux['success'] == True:
+						auxSuccess.append(aux)
+					else:
+						auxError.append(aux)
+				result['success'] = auxSuccess
+				result['error'] = auxError
 		else:
 			result['code'] = 5 #Use ajax to perform requests
 	else:
@@ -1651,9 +1667,9 @@ def timeLogById(request):
 	result = {}
 	if request.method == 'POST':
 		if request.is_ajax():
-			userId = request.POST['id']
-			if userId is None:
-			    userId = request.user.id
+			userId = request.user.id
+			if 'id' in request.POST:
+				userId = request.POST['id']
 			array_breaks = []
 			date = datetime.datetime.now() #today date
 			start_date = datetime.datetime.combine(date, datetime.time.min) #today date at 0:00 AM
@@ -2535,11 +2551,11 @@ def taskFlow(request):
 
 @login_required
 def time_keeper(request):
-	return render(request, 'driver/timeKeeper.html')
-
-@login_required
-def timeKeeperGroup(request):
-	return render(request, 'driver/timeKeeperGroup.html')
+	employee = Employee.objects.get(user = request.user)
+	if employee.teamManager:
+		return render(request, 'driver/timeKeeperGroup.html')
+	else:
+		return render(request, 'driver/timeKeeper.html')
 
 @login_required
 def equipament(request):
