@@ -462,7 +462,7 @@ input[type='time'] {
 }
 
 .modal-body {
-    max-height: calc(100vh - 210px);
+    max-height: calc(150vh - 210px);
     overflow-y: auto;
 }
 
@@ -479,7 +479,7 @@ input[type='time'] {
 	border-radius: 10px;
 	width: 90%;
 	margin: auto;
-	margin-top: 70px;
+	margin-top: 15px;
 	color: #BB330C;
 	text-align: center;
 }
