@@ -2032,7 +2032,7 @@ def timeLogById(request):
 							minutes = checkMinutes(minutes)
 							aux['breakDuration'] = str(hours) + ':' + str(minutes)
 					else:
-						aux['breakStop'] = 'Happening'
+						aux['breakStop'] = 'In Progress'
 						time_now = datetime.datetime.now() #variable used to get the current time
 						time_aux = datetime.timedelta(hours = time_now.hour, minutes = time_now.minute, seconds = time_now.second)
 						breakTime = docStart
@@ -2052,7 +2052,7 @@ def timeLogById(request):
 					else:
 						count += (keeper2 - breakTime) + endTurn
 				else:
-					Attendance_end = 'Happening'
+					Attendance_end = '--'
 					time_now = datetime.datetime.now()
 					time_aux = datetime.timedelta(hours = time_now.hour, minutes = time_now.minute, seconds = time_now.second)
 					if time_aux >= breakTime:
@@ -2069,7 +2069,7 @@ def timeLogById(request):
 			hours = checkHours(hours)
 			minutes = checkMinutes(minutes)
 			result['Attendance_start'] = str(hours) + ':' + str(minutes)
-			if(Attendance_end != 'Happening'):
+			if(Attendance_end != '--'):
 				hours, remainder = divmod(Attendance_end.seconds, 3600)
 				minutes, seconds = divmod(remainder, 60)
 				minutes = checkMinutes(minutes)
