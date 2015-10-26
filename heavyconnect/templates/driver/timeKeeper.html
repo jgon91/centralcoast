@@ -41,11 +41,11 @@
 				if (shiftStarted == 0) {
 					$("#messageTimekeeper").html("Starting shift...");
 					$('#confirmShift').hide();
-					startShift("{{ csrf_token }}", "{% url 'startShift' %}");
+					startShift("{{ csrf_token }}", "{% url 'startShiftGroup' %}");
 				} else {
 					$("#messageTimekeeper").html("Stopping shift...");
 					$('#confirmShift').hide();
-					stopShift("{{ csrf_token }}", "{% url 'stopShift' %}");
+					stopShift("{{ csrf_token }}", "{% url 'stopShiftGroup' %}");
 				}
 			});
 			$("#break").click(function() {
@@ -70,11 +70,11 @@
 				} else if (breakStarted == 0) {
 					$("#messageTimekeeper").html("Starting break...");
 					lunch = 0;
-					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count, lunch);
+					startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch);
 				} else {
 					$("#messageTimekeeper").html("Ending break...");
 					lunch = 0;
-					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count, lunch);
+					stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch);
 				}
 			});
 			$("#lunch").click(function() {
@@ -99,11 +99,11 @@
 				} else if (lunchStarted == 0) {
 					$("#messageTimekeeper").html("Starting lunch...");
 					lunch = 1;
-					startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count, lunch);
+					startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch);
 				} else {
 					$("#messageTimekeeper").html("Ending lunch...");
 					lunch = 1;
-					stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count, lunch);
+					stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch);
 				}
 			});
 			$("#timelog").click(function() {
@@ -349,13 +349,6 @@
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
 						<input type="button" id="timelog" value="{% trans 'TIMELOG' %}" class="btnsTimekeeper"/>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-12 col-md-12">
-						<a href="{% url 'timeKeeperGroup'%}">
-							<input type="button" value="{% trans 'GROUP' %}" class="btnsTimekeeper" />
-						</a>
 					</div>
 				</div>
 			</div>
