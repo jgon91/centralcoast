@@ -3275,6 +3275,46 @@ def getAllManagerEmployees(request):
 	return HttpResponse(json.dumps(result), content_type='application/json')
 
 
+def updateStartShift(request):
+	result = {'success' : False}
+	time = {'hour': 0, 'minute' : 0, 'second' : 0}
+	if request.method == "POST":
+		if request.is_ajax():
+			try:
+				shift_id = request.POST['shift_id']
+				attendance = EmployeeAttendance.objects.get(id = shift_id)
+				new_time = request.POST['new_time']
+				new_time = new_time.split(":")		
+				time['hour'] = int(new_time[0])
+				time['minute'] = int(new_time[1])
+				new_hour_started = datetime.timedelta(hours = time['hour'], minutes = time['minute'], seconds = time['second'])
+				if attendance is not None:
+					end_shift = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
+					if end_shift > new_hour_started:
+						first_break = Break.objects.filter(attendance = attendance.id).first()
+						start_first_break = datetime.timedelta(hours = first_break.start.hour, minutes = first_break.start.minute, seconds = first_break.start.second)
+						if start_first_break > new_hour_started:
+							attendance.hour_started = str(new_hour_started)
+							attendance.save()
+							result['success'] = True
+						else:
+							result['code'] = 1 # Try to update shift between the breaks 
+							return HttpResponse(json.dumps(result), content_type='application/json')
+					else:
+						result['code'] = 2 # Try to update start shift after the end shift
+						return HttpResponse(json.dumps(result), content_type='application/json')
+
+			except (EmployeeAttendance.DoesNotExist) as e:
+				result['code'] =  3 #There is no shift to update
+				return HttpResponse(json.dumps(result), content_type='application/json')
+		else:
+			result['code'] = 4 # Request is not ajax
+			return HttpResponse(json.dumps(result), content_type='application/json')
+	else:
+		result['code'] = 5 # Request method is not POST
+		return HttpResponse(json.dumps(result), content_type='application/json')
+		
+	return HttpResponse(json.dumps(result), content_type='application/json')
 
 # @menezescode: Page only to show the form was correctly sended.
 def formOk(request):
