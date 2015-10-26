@@ -5,6 +5,9 @@
 		{% load i18n %}
 		<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
 		<script src="{% static 'jSignature/jSignature.min.js'%}"></script>
+		<link rel="stylesheet" type="text/css" href="{% static 'css/styleSmall.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/styleMedium.css' %}" media="screen and (min-width: 801px)">
+
 		<script>
 		var lunch = 0;		//	0 = break ... 1 = lunch
 		var employeesTimelog = [];
@@ -61,7 +64,7 @@
 			$("#shift").click(function() {
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				$("#messageTimekeeper").html("Select the employees for this action:");
+				$("#messageTimekeeper").html("Select employees:");
 				emptyDivs();
 				$("#clock-in").append('<input type="button" value="{% trans 'CLOCK-IN' %}" class="btnsTimekeeper"/>');
 				$("#clock-out").append('<input type="button" value="{% trans 'CLOCK-OUT' %}" class="btnsTimekeeper"/>');
@@ -70,7 +73,7 @@
 			$("#clock-in").click(function() {
 				if (id_checked.length == 0) {
 					$("#messageTimekeeper").css("color", "#BB330C");	//red
-					$("#messageTimekeeper").html("Select at least 1 employee to this action!");
+					$("#messageTimekeeper").html("Please select at least 1 employee.");
 				} else {
 					$("#messageTimekeeper").css("color", "#1F3801");	//green
 					$("#messageTimekeeper").html("Starting shift...");
@@ -92,7 +95,7 @@
 			$("#break").click(function() {
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				$("#messageTimekeeper").html("Select the employees for this action");
+				$("#messageTimekeeper").html("Please select employees.");
 				emptyDivs();
 				$("#startBreak").append('<input type="button" value="{% trans 'START BREAK' %}" class="btnsTimekeeper"/>');
 				$("#stopBreak").append('<input type="button" value="{% trans 'STOP BREAK' %}" class="btnsTimekeeper"/>');
@@ -101,7 +104,7 @@
 			$("#startBreak").click(function() {
 				if (id_checked.length == 0) {
 					$("#messageTimekeeper").css("color", "#BB330C");	//red
-					$("#messageTimekeeper").html("Select at least 1 employee to this action");
+					$("#messageTimekeeper").html("Please select at least 1 employee.");
 				} else {
 					$("#messageTimekeeper").css("color", "#1F3801");	//green
 					$("#messageTimekeeper").html("Starting break...");
@@ -113,7 +116,7 @@
 			$("#stopBreak").click(function() {
 				if (id_checked.length == 0) {
 					$("#messageTimekeeper").css("color", "#BB330C");	//red
-					$("#messageTimekeeper").html("Select at least 1 employee to this action");
+					$("#messageTimekeeper").html("Please select at least 1 employee.");
 				} else {
 					$("#messageTimekeeper").css("color", "#1F3801");	//green
 					$("#messageTimekeeper").html("Ending break...");
@@ -125,7 +128,7 @@
 			$("#lunch").click(function() {
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				$("#messageTimekeeper").html("Select the employees for this action");
+				$("#messageTimekeeper").html("Please select employees.");
 				emptyDivs();
 				$("#startLunch").append('<input type="button" value="{% trans 'START LUNCH' %}" class="btnsTimekeeper"/>');
 				$("#stopLunch").append('<input type="button" value="{% trans 'STOP LUNCH' %}" class="btnsTimekeeper"/>');
@@ -134,7 +137,7 @@
 			$("#startLunch").click(function() {
 				if (id_checked.length == 0) {
 					$("#messageTimekeeper").css("color", "#BB330C");	//red
-					$("#messageTimekeeper").html("Select at least 1 employee to this action");
+					$("#messageTimekeeper").html("Please select at least 1 employee.");
 				} else {
 					$("#messageTimekeeper").css("color", "#1F3801");	//green
 					$("#messageTimekeeper").html("Starting lunch...");
@@ -146,7 +149,7 @@
 			$("#stopLunch").click(function() {
 				if (id_checked.length == 0) {
 					$("#messageTimekeeper").css("color", "#BB330C");	//red
-					$("#messageTimekeeper").html("Select at least 1 employee to this action");
+					$("#messageTimekeeper").html("Please select at least 1 employee.");
 				} else {
 					$("#messageTimekeeper").css("color", "#1F3801");	//green
 					$("#messageTimekeeper").html("Ending break...");
@@ -159,14 +162,14 @@
 				emptyDivs();
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				$("#messageTimekeeper").html("Select the employee to TIMELOG");
+				$("#messageTimekeeper").html("Please select an employee.");
 				timelogBtns();
 			});
 			$("#timelogBack").click(function() {
 				emptyDivs();
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				$("#messageTimekeeper").html("Select the employee to TIMELOG");
+				$("#messageTimekeeper").html("Please select an employee.");
 				timelogBtns();
 			});
 			$("#btnSignature").click(function(){
@@ -211,17 +214,17 @@
 					} else if (data.code == 1) {
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").css("color", "#BB330C");	//red
-						$("#messageTimekeeper").html("There is no shift records for this employee.");
+						$("#messageTimekeeper").html("There are no shift records for this employee.");
 						hideModal();
 					} else if (data.code == 2) {
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").css("color", "#BB330C");	//red
-						$("#messageTimekeeper").html("Error. Contact Suport.");
+						$("#messageTimekeeper").html("There was an error. Contact Suport.");
 						hideModal();
 					} else if (data.code == 3) {
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").css("color", "#BB330C");	//red
-						$("#messageTimekeeper").html("Error. Contact Suport.");
+						$("#messageTimekeeper").html("There was an error. Contact Suport.");
 						hideModal();
 					}
 				}
