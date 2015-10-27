@@ -3305,9 +3305,16 @@ def updateStartShift(request):
 				time['minute'] = int(new_time[1])
 				new_hour_started = datetime.timedelta(hours = time['hour'], minutes = time['minute'], seconds = time['second'])
 				if attendance is not None:
+<<<<<<< HEAD
 					print 1
 					end_shift = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
 					print 1.1
+=======
+					if attendance.hour_ended is not None:
+						end_shift = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)										
+					else: # The shift was not ended yet
+						end_shift = datetime.datetime.now()
+>>>>>>> 699ebbf1c015990513fbd7d2be104d2816412dfc
 					if end_shift > new_hour_started:
 						print 2
 						first_break = Break.objects.filter(attendance = attendance.id).first()
@@ -3382,7 +3389,10 @@ def updateBreak(request):
 										result['code'] = 1 # Try to update break inside other breaks
 										return HttpResponse(json.dumps(result), content_type='application/json')
 								else: # There is no break before
-									end_shift = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
+									if attendance.hour_ended is not None:
+										end_shift = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)										
+									else: # The shift was not ended yet
+										end_shift = datetime.datetime.now()
 									if new_hour_stopped < end_shift:
 										break_item.start = str(new_hour_started)
 										break_item.end = str(new_hour_stopped)
@@ -3395,11 +3405,14 @@ def updateBreak(request):
 								result['code'] =  3 # Try to update break before start shift or inside other break
 								return HttpResponse(json.dumps(result), content_type='application/json')
 
-						else: # There is no break after
+						else: # There is no break after							
 							if new_hour_started > start_shift:
 								if break_before is not None:
 									stop_break_before = datetime.timedelta(hours = break_before.end.hour, minutes = break_before.end.minute, seconds = break_before.end.second)									
-									end_shift = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
+									if attendance.hour_ended is not None:
+										end_shift = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)										
+									else: # The shift was not ended yet
+										end_shift = datetime.datetime.now()
 									if new_hour_started > stop_break_before and new_hour_stopped < end_shift:
 										break_item.start = str(new_hour_started)
 										break_item.end = str(new_hour_stopped)
@@ -3409,7 +3422,10 @@ def updateBreak(request):
 										result['code'] =  4 # Try to start break inside the break before or stop break after end shift
 										return HttpResponse(json.dumps(result), content_type='application/json')
 								else: # There is just 1 break
-									end_shift = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
+									if attendance.hour_ended is not None:
+										end_shift = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
+									else: # The shift was not ended yet
+										end_shift = datetime.datetime.now()
 									if new_hour_stopped < end_shift:
 										break_item.start = str(new_hour_started)
 										break_item.end = str(new_hour_stopped)
