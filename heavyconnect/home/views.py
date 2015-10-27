@@ -3332,6 +3332,147 @@ def updateStartShift(request):
 		
 	return HttpResponse(json.dumps(result), content_type='application/json')
 
+def updateBreak(request):
+	result = {'success' : False}
+	time_start = {'hour': 0, 'minute' : 0, 'second' : 0}
+	time_end = {'hour': 0, 'minute' : 0, 'second' : 0}
+	if request.method == "POST":
+		if request.is_ajax():
+			try:
+				break_id = request.POST['break_id']
+				break_item = Break.objects.get(id = break_id)	
+
+				new_time_start = request.POST['new_time_start']
+				new_time_start = new_time_start.split(":")		
+				new_time_end = request.POST['new_time_end']
+				new_time_end = new_time_end.split(":")	
+
+				time_start['hour'] = int(new_time_start[0])
+				time_start['minute'] = int(new_time_start[1])
+				time_end['hour'] = int(new_time_end[0])
+				time_end['minute'] = int(new_time_end[1])
+			
+				new_hour_started = datetime.timedelta(hours = time_start['hour'], minutes = time_start['minute'], seconds = time_start['second'])
+				new_hour_stopped = datetime.timedelta(hours = time_end['hour'], minutes = time_end['minute'], seconds = time_end['second'])
+				
+				attendance = EmployeeAttendance.objects.get(id = break_item.attendance.id)
+				break_after = Break.objects.filter(attendance = break_item.attendance.id, start__range = (break_item.end, attendance.hour_ended)).first() #First break after
+				break_before = Break.objects.filter(attendance = break_item.attendance.id, start__range = (attendance.hour_started, break_item.start)).order_by('-end').exclude(id = break_id).first() # First break before				
+				if break_item is not None:
+					if new_hour_started < new_hour_stopped:
+						start_shift = datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
+						if break_after is not None:
+							start_break_after = datetime.timedelta(hours = break_after.start.hour, minutes = break_after.start.minute, seconds = break_after.start.second)
+							if new_hour_started > start_shift and new_hour_stopped < start_break_after:
+								if break_before is not None:
+									stop_break_before = datetime.timedelta(hours = break_before.end.hour, minutes = break_before.end.minute, seconds = break_before.end.second)
+									start_break_after = datetime.timedelta(hours = break_before.end.hour, minutes = break_before.end.minute, seconds = break_before.end.second)
+									if new_hour_started > stop_break_before and new_hour_stopped < start_break_after:
+										break_item.start = str(new_hour_started)
+										break_item.end = str(new_hour_stopped)
+										break_item.save()
+										result['success'] = True
+									else:
+										result['code'] = 1 # Try to update break inside other breaks
+										return HttpResponse(json.dumps(result), content_type='application/json')
+								else: # There is no break before
+									end_shift = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
+									if new_hour_stopped < end_shift:
+										break_item.start = str(new_hour_started)
+										break_item.end = str(new_hour_stopped)
+										break_item.save()
+										result['success'] = True
+									else:
+										result['code'] =  2 # Try to update break inside other breaks
+										return HttpResponse(json.dumps(result), content_type='application/json')
+							else:
+								result['code'] =  3 # Try to update break before start shift or inside other break
+								return HttpResponse(json.dumps(result), content_type='application/json')
+
+						else: # There is no break after
+							if new_hour_started > start_shift:
+								if break_before is not None:
+									stop_break_before = datetime.timedelta(hours = break_before.end.hour, minutes = break_before.end.minute, seconds = break_before.end.second)									
+									end_shift = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
+									if new_hour_started > stop_break_before and new_hour_stopped < end_shift:
+										break_item.start = str(new_hour_started)
+										break_item.end = str(new_hour_stopped)
+										break_item.save()
+										result['success'] = True
+									else:
+										result['code'] =  4 # Try to start break inside the break before or stop break after end shift
+										return HttpResponse(json.dumps(result), content_type='application/json')
+								else: # There is just 1 break
+									end_shift = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
+									if new_hour_stopped < end_shift:
+										break_item.start = str(new_hour_started)
+										break_item.end = str(new_hour_stopped)
+										break_item.save()
+										result['success'] = True
+									else:
+										result['code'] =  5 # Try to update after end shift
+										return HttpResponse(json.dumps(result), content_type='application/json')	
+							else:
+								result['code'] =  3 # Try to update break before start shift or inside other break
+								return HttpResponse(json.dumps(result), content_type='application/json')						
+					else:
+						result['code'] =  6 # Hour to started is greater than Hour stopped
+						return HttpResponse(json.dumps(result), content_type='application/json')
+						
+			except (EmployeeAttendance.DoesNotExist) as e:
+				result['code'] =  7 # Break does not exist
+				return HttpResponse(json.dumps(result), content_type='application/json')
+		else:
+			result['code'] = 8 # Request is not ajax
+			return HttpResponse(json.dumps(result), content_type='application/json')
+	else:
+		result['code'] = 9 # Request method is not POST
+		return HttpResponse(json.dumps(result), content_type='application/json')
+		
+	return HttpResponse(json.dumps(result), content_type='application/json')
+
+def updateStopShift(request):
+	result = {'success' : False}
+	time = {'hour': 0, 'minute' : 0, 'second' : 0}
+	if request.method == "POST":
+		if request.is_ajax():
+			try:
+				shift_id = request.POST['shift_id']
+				attendance = EmployeeAttendance.objects.get(id = shift_id)
+				new_time = request.POST['new_time']
+				new_time = new_time.split(":")		
+				time['hour'] = int(new_time[0])
+				time['minute'] = int(new_time[1])
+				new_hour_stopped = datetime.timedelta(hours = time['hour'], minutes = time['minute'], seconds = time['second'])
+				if attendance is not None:
+					start_shift = datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
+					if start_shift < new_hour_stopped:
+						last_break = Break.objects.filter(attendance = attendance.id).order_by('-id')[0]
+						print last_break
+						stop_last_break = datetime.timedelta(hours = last_break.end.hour, minutes = last_break.end.minute, seconds = last_break.end.second)
+						if stop_last_break < new_hour_stopped:
+							attendance.hour_ended = str(new_hour_stopped)
+							attendance.save()
+							result['success'] = True
+						else:
+							result['code'] = 1 # Try to update shift between the breaks 
+							return HttpResponse(json.dumps(result), content_type='application/json')
+					else:
+						result['code'] = 2 # Try to update end shift before the start shift
+						return HttpResponse(json.dumps(result), content_type='application/json')
+
+			except (EmployeeAttendance.DoesNotExist) as e:
+				result['code'] =  3 #There is no shift to update
+				return HttpResponse(json.dumps(result), content_type='application/json')
+		else:
+			result['code'] = 4 # Request is not ajax
+			return HttpResponse(json.dumps(result), content_type='application/json')
+	else:
+		result['code'] = 5 # Request method is not POST
+		return HttpResponse(json.dumps(result), content_type='application/json')
+		
+	return HttpResponse(json.dumps(result), content_type='application/json')
+
 # @menezescode: Page only to show the form was correctly sended.
 def formOk(request):
 	return render(request, 'formOk.html')
