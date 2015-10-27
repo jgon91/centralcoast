@@ -3305,7 +3305,10 @@ def updateStartShift(request):
 				time['minute'] = int(new_time[1])
 				new_hour_started = datetime.timedelta(hours = time['hour'], minutes = time['minute'], seconds = time['second'])
 				if attendance is not None:
-					end_shift = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
+					if attendance.hour_ended is not None:
+						end_shift = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)										
+					else: # The shift was not ended yet
+						end_shift = datetime.datetime.now()
 					if end_shift > new_hour_started:
 						first_break = Break.objects.filter(attendance = attendance.id).first()
 						start_first_break = datetime.timedelta(hours = first_break.start.hour, minutes = first_break.start.minute, seconds = first_break.start.second)
