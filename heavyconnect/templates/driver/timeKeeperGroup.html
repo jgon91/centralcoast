@@ -317,17 +317,30 @@
 					var i = 0;
 					var breaks = 1;
 					var lunchs = 1;
-					$("#divTimelog").append("<table id='tableTimelog' ><tr><td colspan='2'>Start Shift: " + data.Attendance_start + "</td></tr>");
+					workBreak = [];
+					breakN = [];
+					breakBeg = [];
+					breakEnd = [];
+					lun = [];
+					currentStart = data.Attendance_start;
+					$("#divTimelog").append("<table id='tableTimelog' ><tr id='trStartShift'><td colspan='2'>Start Shift: " + data.Attendance_start + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' onclick='editStartShift(this.id, currentStart)'/></td></tr>");
 					for (i = 0; i < data.breaks.length; i++) {
+						workBreak[data.breaks[i].breakId] = data.breaks[i].workBreak;
+						breakN[data.breaks[i].breakId] = breaks;
+						breakBeg[data.breaks[i].breakId] = data.breaks[i].breakStart;
+						breakEnd[data.breaks[i].breakId] = data.breaks[i].breakStop;
 						if (data.breaks[i].lunch == 0){
-							$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" + breaks + "º Break " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
+							lun[data.breaks[i].breakId] = 0
+							$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" + breaks + "º Break " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
 							breaks++;
 						} else {
-							$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" + lunchs + "º Lunch " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
+							lun[data.breaks[i].breakId] = 1;
+							$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" + lunchs + "º Lunch " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
 							lunchs++;
 						}
 					}
-					$("#tableTimelog").append("<tr><td colspan='2'>End Shift: " + data.Attendance_end + "</td></tr>");
+					currentEnd = data.Attendance_end;
+					$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + data.Attendance_end + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' onclick='editStopShift(this.id, currentEnd)'/></td></tr>");
 					$("#tableTimelog").append("<tr><td colspan='2'>Total: " + data.Total + " hours</td></tr>");
 					if (data.Attendance_end != 'Happening') { 
 						$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + data.attendanceId + "'>");
@@ -407,6 +420,87 @@
 			$("#timelogBack").hide();
 			$("#btnSignature").empty();
 		}
+		function editStartShift(editId, currentStart) {
+			shift_id = editId;
+			$("#trStartShift").html("<td colspan='2'>Start Shift: <input id='newTime' type='time'/></td><td><input type='button' class='editedIcon' onclick='callEditStartShift(shift_id)'/></td>");
+			$("#newTime").val(currentStart);
+		}
+		function callEditStartShift(shift_id) {
+			var new_time = $("#newTime").val();
+			updateStartShift("{{ csrf_token }}", "{% url 'updateStartShift' %}", shift_id, new_time);
+		}
+		function updateStartShift(token, url, shift_id, new_time) {
+			$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token, "shift_id": shift_id, "new_time": new_time},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					emptyDivs();
+					$("#timelogBack").show();
+					$("#messageTimekeeper").css("color", "#1F3801");	//green
+					$("#messageTimekeeper").html("TIMELOG");
+					timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+				}
+			});
+		}
+		function editBreak(editId, workBreak, breakN, breakBeg, breakEnd, lun) {
+			breakId = editId;
+			if (lun == 0) {
+				$("#" + breakId).html("<td class='colBorderTimelog'>" + workBreak + "</td><td>" + breakN + "º Break <input id='newBreakBeg" + breakId + "' type='time'/> - <input id='newBreakEnd" + breakId + "' type='time'/></td><td><input type='button' class='editedIcon' onclick='callEditBreak(breakId)'/></td>");
+				$("#newBreakBeg" + breakId).val(breakBeg);
+				$("#newBreakEnd" + breakId).val(breakEnd);
+			}
+			if (lun == 1) {
+				$("#" + breakId).html("<td class='colBorderTimelog'>" + workBreak + "</td><td>" + breakN + "º Lunch <input id='newBreakBeg" + breakId + "' type='time'/> - <input id='newBreakEnd" + breakId + "' type='time'/></td><td><input type='button' class='editedIcon' onclick='callEditBreak(breakId)'/></td>");
+				$("#newBreakBeg" + breakId).val(breakBeg);
+				$("#newBreakEnd" + breakId).val(breakEnd);
+			}
+		}
+		function callEditBreak(break_id) {
+			var new_time_start = $("#newBreakBeg" + break_id).val();
+			var new_time_end = $("#newBreakEnd" + break_id).val();
+			updateBreak("{{ csrf_token }}", "{% url 'updateBreak' %}", break_id, new_time_start, new_time_end);
+		}
+		function updateBreak(token, url, break_id, new_time_start, new_time_end) {
+			$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token, "break_id": break_id, "new_time_start": new_time_start, "new_time_end": new_time_end},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					emptyDivs();
+					$("#timelogBack").show();
+					$("#messageTimekeeper").css("color", "#1F3801");	//green
+					$("#messageTimekeeper").html("TIMELOG");
+					timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+				}
+			});
+		}
+		function editStopShift(editId, currentEnd) {
+			shift_id = editId;
+			$("#trStopShift").html("<td colspan='2'>End Shift: <input id='newTimeEnd' type='time'/></td><td><input type='button' class='editedIcon' onclick='callEditStopShift(shift_id)'/></td>");
+			$("#newTimeEnd").val(currentEnd);
+		}
+		function callEditStopShift(shift_id) {
+			var new_time = $("#newTimeEnd").val();
+			updateStopShift("{{ csrf_token }}", "{% url 'updateStopShift' %}", shift_id, new_time);
+		}
+		function updateStopShift(token, url, shift_id, new_time) {
+			$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token, "shift_id": shift_id, "new_time": new_time},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					emptyDivs();
+					$("#timelogBack").show();
+					$("#messageTimekeeper").css("color", "#1F3801");	//green
+					$("#messageTimekeeper").html("TIMELOG");
+					timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+				}
+			});
+		}
 		</script>
 		<style>
 			label {
@@ -434,7 +528,6 @@
 					<img src="{% static 'imgSmall/iconTimekeeper.png' %}"/>
 					{% trans 'HC TIMEKEEPER' %}
 				</div>
-				
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
 						<input type="button" id="shift" value="{% trans 'SHIFT' %}" class="btnsTimekeeper"/>
@@ -461,7 +554,6 @@
 			&copy;2015 Heavy Connect, Inc.
 		</footer>
 		
-		
 		<div id="clearBoth"></div>
 		<!-- MODAL SIGNATURE - TIMEKEEPER -->
 		<div class="modal fade" id="signModal" role="dialog">
@@ -471,7 +563,6 @@
 					<button type="button" class="closeSignature" data-dismiss="modal"></button>
 					<div class="modal-title" id="titleSign">{% trans 'Sign Here' %}</div>
 					<div class="modal-body" id="signatureContent">
-
 					<div id="signField" style="margin-top: 100px;">
 						<div id="signature"></div>
 						<button type="button" id="clearSignature" class="btn btn-default">{% trans 'Clear' %}</button>
@@ -518,7 +609,6 @@
 					</div>
 				</div>
 			</div>
-		</div>
-		
+		</div>		
 	</body>
 </html>

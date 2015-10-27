@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+		Remove this if you use the .htaccess -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+		<link href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css" />
+		<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+		<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+		<link rel="stylesheet" type="text/css" href="../static/css/style.css">
+		<title>Project 2</title>
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<meta name="viewport" content="width=device-width; initial-scale=1.0">
+		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+		<link rel="shortcut icon" href="/favicon.ico">
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+	</head>
+	<script>
+		$(function() {
+			$("#btnSave").button().click(function(event) {
+				event.preventDefault();
+				alert("photo saved!");
+			});
+			$("#btnTake").button().click(function(event) {
+				event.preventDefault();
+			});
+			$("#btnTakeMore").button().click(function(event) {
+				event.preventDefault();
+				$("#photoLive").show();
+				$("#photoMade").hide();
+				$("#btnTake").show();
+				$("#btnTakeMore").hide();
+			});
+			$(".btnEffect").button().click(function(event) {
+				event.preventDefault();
+			});
+			$(".btnColor").button().click(function(event) {
+				event.preventDefault();
+			});
+		});
+		$(document).ready(function() {
+			$("#photoMade").hide();
+			$("#btnTakeMore").hide();
+			effect = 0;
+			border = 0;
+			$("#mini0").click(function() {
+				effect = 0;
+				border = 0;
+				setEffect();
+			});
+			$("#mini1").click(function() {
+				effect = 1;
+				setEffect();
+			});
+			$("#mini2").click(function() {
+				effect = 2;
+				setEffect();
+			});
+			$("#mini3").click(function() {
+				effect = 3;
+				setEffect();
+			});
+			$("#mini4").click(function() {
+				effect = 4;
+				setEffect();
+			});
+			$("#mini5").click(function() {
+				effect = 5;
+				setEffect();
+			});
+			$("#mini6").click(function() {
+				effect = 6;
+				setEffect();
+			});
+			$("#mini7").click(function() {
+				effect = 7;
+				setEffect();
+			});
+			$("#mini8").click(function() {
+				effect = 8;
+				setEffect();
+			});
+			$("#mini9").click(function() {
+				effect = 9;
+				setEffect();
+			});
+			$("#mini10").click(function() {
+				effect = 10;
+				setEffect();
+			});
+			$("#mini11").click(function() {
+				effect = 11;
+				setEffect();
+			});
+			$("#border0").click(function() {
+				effect = 0;
+				border = 0;
+				setEffect();
+			});
+			$("#border1").click(function() {
+				border = 1;
+				setEffect();
+			});
+			$("#border2").click(function() {
+				border = 2;
+				setEffect();
+			});
+			$("#border3").click(function() {
+				border = 3;
+				setEffect();
+			});
+			$("#border4").click(function() {
+				border = 4;
+				setEffect();
+			});
+			$("#border5").click(function() {
+				border = 5;
+				setEffect();
+			});
+			$("#border6").click(function() {
+				border = 6;
+				setEffect();
+			});
+			$("#border7").click(function() {
+				border = 7;
+				setEffect();
+			});
+			$("#border8").click(function() {
+				border = 8;
+				setEffect();
+			});
+			$("#border9").click(function() {
+				border = 9;
+				setEffect();
+			});
+			$("#border10").click(function() {
+				border = 10;
+				setEffect();
+			});
+			$("#border11").click(function() {
+				border = 11;
+				setEffect();
+			});
+			$("#btnTake").click(function() {
+				var image;
+				image = take();
+				uploadImage(image);
+			});
+
+			var video = document.querySelector("#photoLive");
+			navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
+
+			if (navigator.getUserMedia) {
+				navigator.getUserMedia({
+					video : true
+				}, handleVideo, videoError);
+			}
+			function handleVideo(stream) {
+				video.src = window.URL.createObjectURL(stream);
+			}
+			function videoError(e) {
+				// do something
+			}
+			function take() {
+				var video = document.getElementById("photoLive");
+				var canvas = document.getElementById("draw");
+				var ctx = canvas.getContext("2d");
+				ctx.drawImage(video, 0, 0, 350, 260);
+
+				var dataURL = canvas.toDataURL("image/png");
+				return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+			}
+		});
+		function setEffect() {
+			$.ajax({
+				method : "POST",
+				url : "{% url 'applyContour' %}",
+				data : {
+					"csrfmiddlewaretoken" : "{{ csrf_token }}",
+					"effect" : effect,
+					"border" : border,
+				},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					$("#photoMade").html("<img src='data:image/jpeg;base64," + data.image + "'>");
+					//alert("effect = " + effect);
+					//alert("border = " + border);
+				}
+			});
+		}
+		function uploadImage(image) {
+			$.ajax({
+				method : "POST",
+				url : "{% url 'uploadImage' %}",
+				data : {
+					"csrfmiddlewaretoken" : "{{ csrf_token }}",
+					"image" : image
+				},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					console.log(data);
+					$("#photoMade").html("<img src='data:image/jpeg;base64," + data.image + "'>");
+					$("#photoLive").hide();
+					$("#photoMade").show();
+					$("#btnTake").hide();
+					$("#btnTakeMore").show();
+				}
+			});
+		}
+	</script>
+	<body>
+		<div id="wrapper">
+			<div id="content">
+				<div id="divEffects">
+					<img src="../static/img/back.jpg" class="btnEffect" id="mini0"/>
+					<img src="../static/img/back.jpg" class="btnEffect" id="mini1"/>
+					<img src="../static/img/back.jpg" class="btnEffect" id="mini2"/>
+					<img src="../static/img/back.jpg" class="btnEffect" id="mini3"/>
+					<img src="../static/img/back.jpg" class="btnEffect" id="mini4"/>
+					<img src="../static/img/back.jpg" class="btnEffect" id="mini5"/>
+					<img src="../static/img/back.jpg" class="btnEffect" id="mini6"/>
+					<img src="../static/img/back.jpg" class="btnEffect" id="mini7"/>
+					<img src="../static/img/back.jpg" class="btnEffect" id="mini8"/>
+					<img src="../static/img/back.jpg" class="btnEffect" id="mini9"/>
+					<img src="../static/img/back.jpg" class="btnEffect" id="mini10"/>
+					<img src="../static/img/back.jpg" class="btnEffect" id="mini11"/>
+					<h2 style="color: white;">Effects</h2>
+				</div>
+				<div id="divColors">
+					<input type="button" class="btnColor" id="border0">
+					</input>
+					<input type="button" class="btnColor" id="border1">
+					</input>
+					<input type="button" class="btnColor" id="border2">
+					</input>
+					<input type="button" class="btnColor" id="border3">
+					</input>
+					<input type="button" class="btnColor" id="border4">
+					</input>
+					<input type="button" class="btnColor" id="border5">
+					</input>
+					<input type="button" class="btnColor" id="border6">
+					</input>
+					<input type="button" class="btnColor" id="border7">
+					</input>
+					<input type="button" class="btnColor" id="border8">
+					</input>
+					<input type="button" class="btnColor" id="border9">
+					</input>
+					<input type="button" class="btnColor" id="border10">
+					</input>
+					<input type="button" class="btnColor" id="border11">
+					</input>
+					<h2 style="color: white; margin-top: 8%;">Border Color</h2>
+				</div>
+				<video autoplay="true" id="photoLive"></video>
+				<div id="photoMade"></div>
+				<canvas id="draw" width="350" height="350" style="display: none;"></canvas>
+				<input type="button" id="btnSave" value="Save Photo">
+				</input>
+				<input type="button" id="btnTake" value="Take Photo">
+				</input>
+				<input type="button" id="btnTakeMore" value="Take More">
+				</input>
+			</div>
+		</div>
+	</body>
+</html>

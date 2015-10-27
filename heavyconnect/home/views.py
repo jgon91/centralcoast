@@ -3305,13 +3305,19 @@ def updateStartShift(request):
 				time['minute'] = int(new_time[1])
 				new_hour_started = datetime.timedelta(hours = time['hour'], minutes = time['minute'], seconds = time['second'])
 				if attendance is not None:
+					print 1
 					end_shift = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
+					print 1.1
 					if end_shift > new_hour_started:
+						print 2
 						first_break = Break.objects.filter(attendance = attendance.id).first()
 						start_first_break = datetime.timedelta(hours = first_break.start.hour, minutes = first_break.start.minute, seconds = first_break.start.second)
+						print 3
 						if start_first_break > new_hour_started:
 							attendance.hour_started = str(new_hour_started)
+							print 4
 							attendance.save()
+							print 5
 							result['success'] = True
 						else:
 							result['code'] = 1 # Try to update shift between the breaks 

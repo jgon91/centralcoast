@@ -407,9 +407,27 @@ input[type=button] {
 #tableTimelog tr td {
 	padding: 5px;
 }
-#colBorderTimelog {
+.colBorderTimelog {
 	background: #DDD;
 }
+.editIcon {
+	background: url('../imgSmall/editIcon.png') no-repeat top left !important;
+	background-size: 100% 100% !important;
+	width: 20px !important;
+	height: 20px !important;
+	border: none !important;
+}
+.editedIcon {
+	background: url('../imgSmall/editedIcon.png') no-repeat top left !important;
+	background-size: 100% 100% !important;
+	width: 20px !important;
+	height: 20px !important;
+	border: none !important;
+}
+/*#trStartShift input[type=time] {
+	height: 20px !important;
+	margin-left: 2px;
+}*/
 /* MODAL TIMEKEEPER BEGIN /*
  /*** Timekeeper Page End ***/
 
