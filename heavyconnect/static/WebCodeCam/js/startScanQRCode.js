@@ -14,9 +14,13 @@ function startScan(decoder, si, sl, sQ, sv, sp, spAll, url, machine, implement, 
 					 alert(text);// Shows the QRCode scanned
 
 					 if(url.val() != undefined){
+					 	if(url.val() == "1"){
+						checkEmployeeScanned("{{ csrf_token }}", "/home/checkEmployeeQrCode/", text);
+						}
 					 	checkEquipment("{{ csrf_token }}", "/home/getEquipmentInfo/", text);
 						
-					}if($("#machineBtn").val() == 1){
+					}
+					if($("#machineBtn").val() == 1){
 						loadEquipmentInfo("{{ csrf_token }}", "/home/getEquipmentInfo/", text);
 						machine.val(text);//Create Task
 						
