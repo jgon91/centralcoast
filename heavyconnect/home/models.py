@@ -259,13 +259,13 @@ class EmployeeWithdrawn(models.Model):
 		return "Date: " + str(self.date) + ", Name: " + str(self.employee.user.last_name)
 
 class Group(models.Model):
-	name = models.CharField(max_length = 20, blank = True)
+	name = models.CharField(max_length = 20)
 	creator = models.ForeignKey(Employee)
-	data = models.DateField()
+	date = models.DateField()
 	permanent = models.BooleanField(default = False)
 
 	def __unicode__(self):
-		return "Creator: " + str(self.creator) + ", DateField: " + str(self.data) + ", Name: " + str(self.name)
+		return "Creator: " + str(self.creator) + ", DateField: " + str(self.date) + ", Name: " + str(self.name)
 
 class GroupParticipant(models.Model):
 	group = models.ForeignKey(Group)

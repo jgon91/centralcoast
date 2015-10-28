@@ -349,6 +349,21 @@ class employeeUpdateForm(forms.Form):
 	manager = forms.ModelChoiceField(queryset = Employee.objects.filter(permission_level = '2'))
 ### End ###
 
+### Structure for Grou[ ###
+class Group(forms.Form):
+	name = forms.CharField(required = False)
+	creator = forms.ModelChoiceField(queryset = Employee.objects.all())
+	data = forms.DateField()
+	permanent = models.BooleanField(default = False)
+### End ###
+
+
+### Structure for GroupParticipant ###
+# class GroupParticipant(forms.Form):
+# 	group = forms.ModelChoiceField(queryset = Group.objects.all(), empty_label = ("Group Name"))
+# 	participant = forms.ModelChoiceField(queryset = Employee.objects.all())
+### End ###
+
 ### Structure for employeeAttendanceForm ###
 class employeeAttendanceForm(forms.Form):
 	employee = forms.ModelChoiceField(queryset = Employee.objects.all())

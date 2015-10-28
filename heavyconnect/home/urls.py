@@ -117,6 +117,7 @@ urlpatterns = [
     url(r'^updateStartShift/$', main_views.updateStartShift, name = 'updateStartShift'),
     url(r'^updateBreak/$', main_views.updateBreak, name = 'updateBreak'),
     url(r'^updateStopShift/$', main_views.updateStopShift, name = 'updateStopShift'),
+    url(r'^CreateGroup/$', main_views.CreateGroup, name = 'CreateGroup'),
    ### End ###
 
     ###Insert###
