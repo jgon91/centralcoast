@@ -3539,6 +3539,26 @@ def updateStopShift(request):
 		
 	return HttpResponse(json.dumps(result), content_type='application/json')
 
+
+@login_required
+def checkEmployeeQrCode(request):
+	result = {'success' : False}
+ 	if request.is_ajax():
+		qr_code = request.GET['qr_code']
+		try:
+			employee = Employee.objects.get(qr_code = qr_code)
+			print employee
+			if employee is not None:
+				result['success'] = True				
+		except:
+			result['code'] = 1 # Employee does not exist
+			return HttpResponse(json.dumps(result), content_type='application/json')
+	else:
+		result['code'] = 2 # Request is not ajax
+		return HttpResponse(json.dumps(result), content_type='application/json')
+
+	return HttpResponse(json.dumps(result), content_type='application/json')
+
 # @menezescode: Page only to show the form was correctly sended.
 def formOk(request):
 	return render(request, 'formOk.html')
