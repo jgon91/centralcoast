@@ -449,6 +449,7 @@ def CreateGroup(request):
 	result = {'success' : False}
 	if request.method == "POST":
 		if request.is_ajax():
+			invalid = []
 			codes = request.POST.getlist('qr_code[]') # array with qr_codes
 			creator = Employee.objects.get(user__id = request.user.id)
 			date = str(datetime.date.today())
@@ -466,18 +467,24 @@ def CreateGroup(request):
 				except:
 					group, created = Group.objects.get_or_create(creator = creator, date = date, permanent = permanent, name = name) #if the group is already created just add members, it could be just a instance to save after.
 					emploGroup = GroupParticipant.objects.filter(group__id = group.id).values_list('participant__qr_code')
-					# aux1 = []
-					# for item2 in emploGroup:
-					# 	aux1.append(str(''.join(item2))) # convert tuple type which is deliveried by the query
+					aux1 = []
+					for item2 in emploGroup:
+					 	aux1.append(str(''.join(item2))) # convert tuple type which is deliveried by the query
 					for item in codes:
-						try:
-					# 		if not item in aux1: #check is the qr_code is not one already in the group
-							employee = Employee.objects.get(qr_code = item)
-							aux = GroupParticipant(group = group, participant = employee)
-							aux.save()
-						except:
-							result['code'] = 4 #No employee with this qr_code
-							return HttpResponse(json.dumps(result),content_type='application/json')
+				 		if item in aux1: #check is the qr_code is already in the group
+				 			invalid.append(item)
+				 		else:
+							employee = Employee.objects.filter(qr_code = item)
+							for item3 in employee:		
+								if item3 != None:							
+									aux = GroupParticipant(group = group, participant = item3)
+									aux.save()
+								else:
+									invalid.append(item)
+								break
+					if len(invalid) > 0: # if there is one invalid the create was not totally sucessful
+						result['invalid'] = invalid
+						return HttpResponse(json.dumps(result),content_type='application/json')
 					return render(request, 'manager/formSuccess.html')
 		else:
 			result['code'] = 2 #Use ajax to perform requests
