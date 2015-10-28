@@ -5,11 +5,13 @@ from django.shortcuts import render, redirect, render_to_response
 from django.utils.dateformat import DateFormat
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
+from django.db.models import Q
 
 import json
 from datetime import datetime
 from datetime import date
 import time
+
 
 from home.forms import *
 from home.models import *
@@ -444,7 +446,7 @@ def stopBreakGroup(request):
 		result['code'] = 6 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-
+@login_required
 def CreateGroup(request):
 	result = {'success' : False}
 	if request.method == "POST":
@@ -492,8 +494,46 @@ def CreateGroup(request):
 		result['code'] = 3 #Use ajax to perform requests
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+@login_required
+def RetrieveGruop(request):
+	result = {'sucess' : False}
+	if request.method == "POST":
+		if request.is_ajax():
+			date = str(datetime.date.today())
+			groups = Group.objects.filter(Q(date = date, creator__user__id = request.user.id) | Q(permanent = True, creator__user__id = request.user.id))
+			groupArray = []
+			for item in groups:
+				aux = {}
+				aux['id'] = item.id
+				aux['Name'] = item.name
+				groupArray.append(aux)
+			result['group'] = groupArray
+			result['success'] = True
+		else:
+			result['code'] = 2 #Use ajax to perform requests
+	else:
+		result['code'] = 3 #Use ajax to perform requests
+	return HttpResponse(json.dumps(result),content_type='application/json')
 
-
+def RetrieveParticipant(request):
+	result = {'sucess' : False}
+	if request.method == "POST":
+		if request.is_ajax():
+			group = request.POST['group']
+			participantArray = []
+			participant = GroupParticipant.objects.filter(group_id = group)
+			for item in participant:
+				aux = {}
+				aux['name'] = str(item.participant.user.first_name) + ' ' + str(item.participant.user.last_name)
+				aux['id'] = item.participant.user.id
+				participantArray.append(aux)
+			result['participant'] = participantArray
+			result['success'] = True
+		else:
+			result['code'] = 2 #Use ajax to perform requests
+	else:
+		result['code'] = 3 #Use ajax to perform requests
+	return HttpResponse(json.dumps(result),content_type='application/json')
 
 @login_required
 def getEmployeeLocation(request):

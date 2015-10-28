@@ -265,7 +265,7 @@ class Group(models.Model):
 	permanent = models.BooleanField(default = False)
 
 	def __unicode__(self):
-		return "Creator: " + str(self.creator) + ", DateField: " + str(self.date) + ", Name: " + str(self.name)
+		return "Creator: " + str(self.creator) + ", DateField: " + str(self.date) + ", Name: " + str(self.name) + ", ID Group: " + str(self.id)
 
 class GroupParticipant(models.Model):
 	group = models.ForeignKey(Group)
