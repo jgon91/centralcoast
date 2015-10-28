@@ -119,6 +119,7 @@ urlpatterns = [
     url(r'^updateStopShift/$', main_views.updateStopShift, name = 'updateStopShift'),
     url(r'^CreateGroup/$', main_views.CreateGroup, name = 'CreateGroup'),
     url(r'^RetrieveGruop/$', main_views.RetrieveGruop, name = 'RetrieveGruop'),
+    url(r'^RetrieveParticipant/$', main_views.RetrieveParticipant, name = 'RetrieveParticipant'),
    ### End ###
 
     ###Insert###

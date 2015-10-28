@@ -503,7 +503,7 @@ def RetrieveGruop(request):
 			groups = Group.objects.filter(Q(date = date, creator__user__id = request.user.id) | Q(permanent = True, creator__user__id = request.user.id))
 			groupArray = []
 			for item in groups:
-				aux = 	{}
+				aux = {}
 				aux['id'] = item.id
 				aux['Name'] = item.name
 				groupArray.append(aux)
@@ -515,6 +515,25 @@ def RetrieveGruop(request):
 		result['code'] = 3 #Use ajax to perform requests
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+def RetrieveParticipant(request):
+	result = {'sucess' : False}
+	if request.method == "POST":
+		if request.is_ajax():
+			group = request.POST['group']
+			participantArray = []
+			participant = GroupParticipant.objects.filter(group_id = group)
+			for item in participant:
+				aux = {}
+				aux['name'] = str(item.participant.user.first_name) + ' ' + str(item.participant.user.last_name)
+				aux['id'] = item.participant.user.id
+				participantArray.append(aux)
+			result['participant'] = participantArray
+			result['success'] = True
+		else:
+			result['code'] = 2 #Use ajax to perform requests
+	else:
+		result['code'] = 3 #Use ajax to perform requests
+	return HttpResponse(json.dumps(result),content_type='application/json')
 
 @login_required
 def getEmployeeLocation(request):
