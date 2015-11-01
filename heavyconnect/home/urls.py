@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^taskFlow/$', main_views.taskFlow, name='taskFlow'),
     url(r'^serverDate/$', main_views.updatedDate, name='updated_date'),
     url(r'^time_keeper/$', main_views.time_keeper, name='time_keeper'),
+    url(r'^time_keeper_test/$', main_views.time_keeper_test, name='time_keeper_test'),
     url(r'^updateStatus/$', main_views.updateStatus, name='updateStatus'),
     url(r'^checklist/$', main_views.checklist, name='checklist'),
     url(r'^fleet/$', main_views.fleet, name='fleet'),

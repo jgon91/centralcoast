@@ -2650,6 +2650,10 @@ def time_keeper(request):
 		return render(request, 'driver/timeKeeperGroup.html')
 	else:
 		return render(request, 'driver/timeKeeper.html')
+	
+@login_required
+def time_keeper_test(request):
+	return render(request, 'driver/timeKeeperTest.html')
 
 @login_required
 def equipament(request):
