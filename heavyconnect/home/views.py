@@ -3586,8 +3586,7 @@ def checkEmployeeQrCode(request):
  	if request.is_ajax():
 		qr_code = request.GET['qr_code']
 		try:
-			employee = Employee.objects.get(qr_code = qr_code)
-			print employee
+			employee = Employee.objects.get(qr_code = qr_code)			
 			if employee is not None:
 				result['success'] = True				
 		except:

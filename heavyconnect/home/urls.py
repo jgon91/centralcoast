@@ -118,12 +118,9 @@ urlpatterns = [
     url(r'^updateBreak/$', main_views.updateBreak, name = 'updateBreak'),
     url(r'^updateStopShift/$', main_views.updateStopShift, name = 'updateStopShift'),
     url(r'^CreateGroup/$', main_views.CreateGroup, name = 'CreateGroup'),
-<<<<<<< HEAD
     url(r'^checkEmployeeQrCode/$', main_views.checkEmployeeQrCode, name = 'checkEmployeeQrCode'),
-=======
     url(r'^RetrieveGruop/$', main_views.RetrieveGruop, name = 'RetrieveGruop'),
     url(r'^RetrieveParticipant/$', main_views.RetrieveParticipant, name = 'RetrieveParticipant'),
->>>>>>> 369673610115b863e473aecf9984a2071c2e3aa7
    ### End ###
 
     ###Insert###
