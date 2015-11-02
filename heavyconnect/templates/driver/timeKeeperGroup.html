@@ -179,7 +179,45 @@
 				$('#showTimekeeperModal').modal('hide');
 				$('#signModal').modal();
 			});
+			$("#createTeam").click(function(){
+    			emptyDivs();
+    			$('#showTimekeeperModal').modal();
+    			$("#messageTimekeeper").css("color", "#1F3801");	//green
+    			$("#messageTimekeeper").html("Create New Team");
+    			$("#team").css("text-align", "left");
+    			$("#team").append('<form id="formTeam">');
+    			$("#team").append('<br>Team Name: <input type="text" id="nameTeam" placeholder="{% trans 'Team Name...' %}"/>');
+    			$("#team").append('<br>Team Permanent: <input type="radio" name="permanent" value="yes"/> Yes <input type="radio" name="permanent" value="no"/>No');
+    			$("#team").append('<br>Add New Employee: <input type="button" id="qrcode" onclick="openAdd()" value="{% trans 'Scan QR-Code' %}" class="btnsTimekeeper"/>');
+    			$("#team").append('<br><input type="button" id="addNow" onclick="createNow(id_scanned)" value="Create Now"></form>');
+			});
 		});
+		function openAdd() {
+			$('#qrCodeModal').modal();
+		}
+		function createNow(arrayIds) {
+			var nameTeam = $("#nameTeam").val();
+			var perm = $('input[name=permanent]:checked').val();
+			if (perm == 'yes') {
+				var permanent = true;
+			} else {
+				var permanent = false;
+			}
+			createGroup("{{ csrf_token }}", "{% url 'createGroup' %}", nameTeam, arrayIds, permanent);
+		}
+		function createGroup(token, url, nameTeam, arrayIds, permanent){
+			$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token, "name": nameTeam, "qr_code": arrayIds, "permanent": permanent},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					emptyDivs();
+					$("#messageTimekeeper").css("color", "#1F3801");	//green
+					$("#messageTimekeeper").html("Team Created!");
+				}
+			});
+		}
 		function saveSignature(token, url, signature, attendanceId){
 			$.ajax({
 				method : "POST",
@@ -346,9 +384,10 @@
 						}
 					}
 					currentEnd = data.Attendance_end;
-					$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + data.Attendance_end + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' onclick='editStopShift(this.id, currentEnd)'/></td></tr>");
+					$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + data.Attendance_end + "</td></tr>");
 					$("#tableTimelog").append("<tr><td colspan='2'>Total: " + data.Total + " hours</td></tr>");
-					if (data.Attendance_end != 'Happening') { 
+					if (data.Attendance_end != 'Happening') {
+						$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + data.Attendance_end + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' onclick='editStopShift(this.id, currentEnd)'/></td></tr>"); 
 						$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + data.attendanceId + "'>");
 						$("#btnSignature").append("<input type='button' value='SIGN NOW'/>");
 					}
@@ -416,6 +455,7 @@
 			$("#employeeList").hide();
 			$("#success").empty();
 			$("#error").empty();
+			$("#team").empty();
 			$("#clock-in").empty();
 			$("#clock-out").empty();
 			$("#stopBreak").empty();
@@ -507,17 +547,15 @@
 				}
 			});
 		}
-
-		function addEmployeeGroup(btn){
-			if(btn.value == "No"){
-				$("#qrCodeModal").modal("hide");
-				$("#addEmployee").modal("hide");						
-			}else{
+		function addEmployeeGroup(keeppingAdd) {
+			if (keeppingAdd == false) {
+				$("#addEmployee").modal("hide");
+				$("#qrCodeModal").modal("hide");						
+			} else {
 				$("#qrCodeModal").modal();
 				$("#addEmployee").modal("hide");
 			}
 		}
-
 		function checkEmployeeScanned(token, url, id) {			
 			$.ajax({
 				method : "GET",
@@ -535,7 +573,7 @@
 						$("#addEmployee").modal();					
 						$("#errorQrCode").css("color", "green")										
 						$("#errorQrCode").html("{% trans 'Employee added to the group!' %}")				
-						id_scanned.push(id); 										
+						id_scanned.push(id);									
 					} else {							
 						$("#addEmployee").modal();	
 						$("#errorQrCode").css("color", "red")	
@@ -571,6 +609,11 @@
 				<div class="namePage">
 					<img src="{% static 'imgSmall/iconTimekeeper.png' %}"/>
 					{% trans 'HC TIMEKEEPER' %}
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-md-12">
+						<input type="button" id="createTeam" value="{% trans 'CREATE TEAM' %}" class="btnsTimekeeper"/>
+					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
@@ -645,6 +688,7 @@
 								<td><div id="error"></div></td>
 							</tr>
 						</table>
+						<div id="team"></div>
 						<div id="clock-in"></div>
 						<div id="clock-out"></div>
 						<div id="startBreak"></div>
@@ -716,8 +760,8 @@
 							{% trans 'Would you like to add another employee to the Group?' %}
 						</p>
 					</div>
-					<input type="button" value="{% trans 'Yes' %}" class="btnModalYes" id="btnYesAddEmployee" onclick="addEmployeeGroup(this);"/>
-					<input type="button" value="{% trans 'No' %}" class="btnModalNo" id="btnNoAddEmployee" onclick="addEmployeeGroup(this);"/>
+					<input type="button" value="{% trans 'Yes' %}" class="btnModalYes" id="btnYesAddEmployee" onclick="addEmployeeGroup(true);"/>
+					<input type="button" value="{% trans 'No' %}" class="btnModalNo" id="btnNoAddEmployee" onclick="addEmployeeGroup(false);"/>
 					<div class="both"></div>
 				</div>
 			</div>

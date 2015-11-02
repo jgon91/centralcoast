@@ -447,7 +447,7 @@ def stopBreakGroup(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 @login_required
-def CreateGroup(request):
+def createGroup(request):
 	result = {'success' : False}
 	if request.method == "POST":
 		if request.is_ajax():
