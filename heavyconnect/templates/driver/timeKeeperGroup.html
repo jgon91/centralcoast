@@ -59,11 +59,6 @@
 		            });         
 		        }								
 		    });
-    		
-    		$("#qrcode").click(function(){
-    			$('#qrCodeModal').modal();
-    		});
-
 			$("#shift").click(function() {
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
@@ -188,7 +183,7 @@
     			$("#team").append('<form id="formTeam">');
     			$("#team").append('<br>Team Name: <input type="text" id="nameTeam" placeholder="{% trans 'Team Name...' %}"/>');
     			$("#team").append('<br>Team Permanent: <input type="radio" name="permanent" value="yes"/> Yes <input type="radio" name="permanent" value="no"/>No');
-    			$("#team").append('<br>Add New Employee: <input type="button" id="qrcode" onclick="openAdd()" value="{% trans 'Scan QR-Code' %}" class="btnsTimekeeper"/>');
+    			$("#team").append('<br>Add New Employee: <input type="button" id="scanNow" onclick="openAdd()" value="{% trans 'Scan QR-Code' %}" class="btnsTimekeeper"/>');
     			$("#team").append('<br><input type="button" id="addNow" onclick="createNow(id_scanned)" value="Create Now"></form>');
 			});
 		});
@@ -203,6 +198,8 @@
 			} else {
 				var permanent = false;
 			}
+			emptyDivs();
+			$("#messageTimekeeper").html("Creating team...");
 			createGroup("{{ csrf_token }}", "{% url 'createGroup' %}", nameTeam, arrayIds, permanent);
 		}
 		function createGroup(token, url, nameTeam, arrayIds, permanent){
@@ -256,17 +253,17 @@
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").css("color", "#BB330C");	//red
 						$("#messageTimekeeper").html("There is no shift records for this employee.");
-						hideModal();
+						//hideModal();
 					} else if (data.code == 2) {
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").css("color", "#BB330C");	//red
 						$("#messageTimekeeper").html("Error. Contact Suport.");
-						hideModal();
+						//hideModal();
 					} else if (data.code == 3) {
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").css("color", "#BB330C");	//red
 						$("#messageTimekeeper").html("Error. Contact Suport.");
-						hideModal();
+						//hideModal();
 					}
 				}
 			});
@@ -280,7 +277,7 @@
 				success : function(data, status, xhr) {
 					$("#messageTimekeeper").css("color", "#1F3801");	//green
 					$("#messageTimekeeper").html("Clock-in");
-					hideModal();
+					//hideModal();
 					printResult(data);
 				}
 			});
@@ -300,7 +297,7 @@
 					if (lunch == 1) {
 						$("#messageTimekeeper").html("Lunch");
 					}
-					hideModal();
+					//hideModal();
 					printResult(data);
 				}
 			});
@@ -319,7 +316,7 @@
 					if (lunch == 1) {
 						$("#messageTimekeeper").html("Lunch");
 					}
-					hideModal();
+					//hideModal();
 					printResult(data);
 				}
 			});
@@ -333,7 +330,7 @@
 				success: function(data, status, xhr){
 					$("#messageTimekeeper").css("color", "#1F3801");	//green
 					$("#messageTimekeeper").html("Clock-out successful");
-					hideModal();
+					//hideModal();
 					printResult(data);
 				}
 			});
@@ -612,7 +609,7 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" id="createTeam" value="{% trans 'CREATE TEAM' %}" class="btnsTimekeeper"/>
+						<input type="button" id="createTeam" value="{% trans 'CREATE TEAM' %}" class="btnCreateTeam"/>
 					</div>
 				</div>
 				<div class="row">
@@ -633,11 +630,6 @@
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
 						<input type="button" id="timelog" value="{% trans 'TIMELOG' %}" class="btnsTimekeeper"/>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-12 col-md-12">
-						<input type="button" id="qrcode" value="{% trans 'Scan QR-Code' %}" class="btnsTimekeeper"/>
 					</div>
 				</div>
 			</div>

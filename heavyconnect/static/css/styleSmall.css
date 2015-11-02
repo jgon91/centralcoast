@@ -248,6 +248,19 @@ input[type=button] {
 /*** Home Page End ***/
 
 /*** Timekeeper Page Begin ***/
+.btnCreateTeam {
+	background: gray;
+	background-size: 100% 100%;
+	border-radius: 7px;
+	border: 1px solid #1F3801 !important;
+	box-shadow: 2px 2px 5px gray;
+	height: 50px;
+	width: 200px;
+	color: white;
+	margin-bottom: 10px;
+	font-size: 25px;
+	font-weight: 700;
+}
 .btnsTimekeeper {
 	background: url('../imgSmall/buttons/btnGreen.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -303,6 +316,35 @@ input[type=button] {
 }
 .btnColTime {
 	padding: 0px;
+}
+#scanNow {
+	background: url('../imgSmall/buttons/btnGreen.png') no-repeat top left;
+	background-size: 100% 100%;
+	border-radius: 7px;
+	border: none;
+	box-shadow: 2px 2px 5px gray;
+	height: 35px;
+	width: 150px;
+	color: white;
+	margin-bottom: 10px;
+	font-size: 20px;
+	font-weight: 600;
+	margin-left: 3%;
+}
+#addNow {
+	background: gray;
+	background-size: 100% 100%;
+	border-radius: 7px;
+	border: none;
+	box-shadow: 2px 2px 5px gray;
+	height: 50px;
+	width: 200px;
+	color: white;
+	margin-bottom: 10px;
+	font-size: 25px;
+	font-weight: 700;
+	margin-top: 25px;
+	margin-left: 30%;
 }
 /* MODAL SGNATURE BEGIN */
 #titleSign {
