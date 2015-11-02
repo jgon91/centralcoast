@@ -180,7 +180,6 @@ def retrieveMachine(request):
 	result = {'success' : False}
 
 	machine = Machine.objects.all()
-	print machine
 
 	# if request.method == 'POST':
 	# 	if request.is_ajax():
@@ -2174,12 +2173,10 @@ def timeKeeperReportAux(attendance, finished):
 
 
 def getEmployeeScheduleManager(request):
-	print "It is here 2"
 	result = []
 	color = ['#F7F003','#05C60E', '#FF0000', '#B3D1FF','#FF6600', '#A2A9AF']
 	if request.method == 'GET':
 		if request.is_ajax():
-			print "It is here 3"
 			aux = request.GET['start'] #get the date in the POST request
 			aux2 = request.GET['end']
 			date_start = datetime.datetime.strptime(aux, '%Y-%m-%d')
@@ -2283,20 +2280,15 @@ def getEmployeeTaskManager(request):
 						aux['machine'] = []
 						aux['implement'] = []
 					result.append(aux)
-					print "Result: "
-					print result
 		else:
-			print "test 4"
 	 		result.append({'code' : 2}) #Use ajax to perform requests
 	else:
-		print "test 5"
 	 	result.append({'code' : 3}) #Request was not GET
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
 ### Function to retrieve tasks by field ###
 def getFieldTasksManager(request):
-	print "It is here 2.2"
 	result = []
 	if request.method == 'GET':
 		if request.is_ajax():
@@ -2389,7 +2381,6 @@ def getFieldTaskNameManager(request):
 			control = {} #this dicionary will keep all fields and it colors
 			taskStatus = 0;
 			fields = request.GET.getlist('optionsSearch[]')
-			print fields
 			aux = request.GET['start'] #get the date in the POST request
 			aux1 = request.GET['end']	
 			date_start = datetime.datetime.strptime(aux, '%Y-%m-%d')
@@ -2468,7 +2459,6 @@ def getFieldTaskNameManager(request):
 funtions = {1 :  getEmployeeScheduleManager,2 : getFieldTasksManager, 3 : getFieldTaskNameManager, 4 : getEmployeeTaskManager}
 	### This function will choose which function to call
 def switchTaskManager(request):
-	print "It is here  " + request.GET['search'] + request.GET['condition']
 	search = int(request.GET['search'])
 	return funtions[search](request)
 
@@ -3375,7 +3365,6 @@ def getAllManagerEmployees(request):
 					each_result = {}				
 				result['success'] = True
 				result['employees'] = employees
-				print employees
 			except DoesNotExist:
 				result['code'] = 1
 				return HttpResponse(json.dumps(result), content_type='application/json')
@@ -3398,6 +3387,7 @@ def updateStartShift(request):
 				shift_id = request.POST['shift_id']
 				attendance = EmployeeAttendance.objects.get(id = shift_id)
 				new_time = request.POST['new_time']
+				print new_time 
 				new_time = new_time.split(":")		
 				time['hour'] = int(new_time[0])
 				time['minute'] = int(new_time[1])
@@ -3558,7 +3548,6 @@ def updateStopShift(request):
 					start_shift = datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
 					if start_shift < new_hour_stopped:
 						last_break = Break.objects.filter(attendance = attendance.id).order_by('-id')[0]
-						print last_break
 						stop_last_break = datetime.timedelta(hours = last_break.end.hour, minutes = last_break.end.minute, seconds = last_break.end.second)
 						if stop_last_break < new_hour_stopped:
 							attendance.hour_ended = str(new_hour_stopped)
@@ -3820,7 +3809,6 @@ def implementUpdateView(request):
 				imple.photo2 = impleForm.cleaned_data['photo2']
 				#imple.note = impleForm.cleaned_data['note']
 				imple.beacon = impleForm.cleaned_data['beacon']
-				print "test2"
 				imple.save()
 				return render(request, 'manager/formSuccess.html')
 			except:
