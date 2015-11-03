@@ -120,8 +120,8 @@ urlpatterns = [
     url(r'^updateStopShift/$', main_views.updateStopShift, name = 'updateStopShift'),
     url(r'^createGroup/$', main_views.createGroup, name = 'createGroup'),
     url(r'^checkEmployeeQrCode/$', main_views.checkEmployeeQrCode, name = 'checkEmployeeQrCode'),
-    url(r'^RetrieveGruop/$', main_views.RetrieveGruop, name = 'RetrieveGruop'),
-    url(r'^RetrieveParticipant/$', main_views.RetrieveParticipant, name = 'RetrieveParticipant'),
+    url(r'^retrieveGroup/$', main_views.retrieveGroup, name = 'retrieveGroup'),
+    url(r'^retrieveParticipant/$', main_views.retrieveParticipant, name = 'retrieveParticipant'),
    ### End ###
 
     ###Insert###

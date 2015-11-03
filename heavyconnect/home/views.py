@@ -494,7 +494,7 @@ def createGroup(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 @login_required
-def RetrieveGruop(request):
+def retrieveGroup(request):
 	result = {'sucess' : False}
 	if request.method == "POST":
 		if request.is_ajax():
@@ -514,7 +514,7 @@ def RetrieveGruop(request):
 		result['code'] = 3 #Use ajax to perform requests
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-def RetrieveParticipant(request):
+def retrieveParticipant(request):
 	result = {'sucess' : False}
 	if request.method == "POST":
 		if request.is_ajax():
