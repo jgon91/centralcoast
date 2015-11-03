@@ -210,9 +210,9 @@
 			var nameTeam = $("#nameTeam").val();
 			var perm = $('input[name=permanent]:checked').val();
 			if (perm == 'yes') {
-				var permanent = true;
+				var permanent = 1;
 			} else {
-				var permanent = false;
+				var permanent = 0;
 			}
 			emptyDivs();
 			$("#messageTimekeeper").html("Creating team...");

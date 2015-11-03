@@ -455,7 +455,7 @@ def createGroup(request):
 			creator = Employee.objects.get(user__id = request.user.id)
 			date = str(datetime.date.today())
 			name = request.POST['name']
-			permanent = request.POST['permanent']
+			permanent = int(request.POST['permanent'])
 			try: #test if there is one permanent group with the same name
 				test = Group.objects.get(permanent = True, name = name, creator = creator)
 				result['code'] = 5 # there is one permanent group with this name
@@ -465,7 +465,7 @@ def createGroup(request):
 					test = Group.objects.get(date = date, name = name, creator = creator)
 					result['code'] = 6 # there is one group with the same name in the same day by the same creator
 					return HttpResponse(json.dumps(result),content_type='application/json')
-				except:
+				except:		
 					group, created = Group.objects.get_or_create(creator = creator, date = date, permanent = permanent, name = name) #if the group is already created just add members, it could be just a instance to save after.
 					emploGroup = GroupParticipant.objects.filter(group__id = group.id).values_list('participant__qr_code')
 					aux1 = []
