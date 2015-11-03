@@ -20,7 +20,7 @@
 		$(document).ready(function() {
 			$("#foot").load("{%url 'footer'%}");
 			$("#head").load("{%url 'headerDriver'%}");
-			//$("#signature").jSignature();
+			//$("#signature").jSignature();	
 			$("#saveSignature").click(function(){
 				var $sigdiv = $("#signature");
 				var datapair = $sigdiv.jSignature("getData","base30");	
@@ -92,7 +92,7 @@
 					$("#messageTimekeeper").html("Select 1 Team to this action:");
 				} else {
 					$("#messageTimekeeper").css("color", "#1F3801");	//green
-					$("#messageTimekeeper").html("Starting Team shift...");
+					$("#messageTimekeeper").html("Stopping Team shift...");
 					emptyDivs();
 					action = 2;
 					retrieveParticipant("{{ csrf_token }}", "{% url 'retrieveParticipant' %}", teamChecked);
@@ -225,11 +225,10 @@
 				data : {"csrfmiddlewaretoken" : token, "name": nameTeam, "qr_code": arrayIds, "permanent": permanent},
 				datatype : "json",
 				success : function(data, status, xhr) {
-					if (data.success) {
-						emptyDivs();
-						$("#messageTimekeeper").css("color", "#1F3801");	//green
-						$("#messageTimekeeper").html("Team Created!");
-					}
+					emptyDivs();
+					$("#messageTimekeeper").css("color", "#1F3801");	//green
+					$("#messageTimekeeper").html("Team Created!");
+					retrieveGroup("{{ csrf_token }}", "{% url 'retrieveGroup' %}");
 				}
 			});
 		}
@@ -296,8 +295,10 @@
 				datatype : "json",
 				success : function(data, status, xhr) {
 					if (data.success) {
+						//arrayTeams = [];
 						arrayTeams = data.group;
 						$("#teamsList").css("text-align", "left");
+						$("#teamsList").html('');
 						for (var i = 0; i < data.group.length; i++) {
 							$("#teamsList").append('<input type="radio" name="teamRadio" value="' + data.group[i].id + '"/>  ' + data.group[i].Name + '<br>');
 						}
@@ -465,13 +466,14 @@
 							}
 						}
 						currentEnd = data.Attendance_end;
-						$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + data.Attendance_end + "</td></tr>");
-						$("#tableTimelog").append("<tr><td colspan='2'>Total: " + data.Total + " hours</td></tr>");
 						if (data.Attendance_end != 'Happening') {
 							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + data.Attendance_end + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' onclick='editStopShift(this.id, currentEnd)'/></td></tr>"); 
 							$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + data.attendanceId + "'>");
 							$("#btnSignature").append("<input type='button' value='SIGN NOW'/>");
+						}else{
+							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + data.Attendance_end + "</td></tr>");
 						}
+						$("#tableTimelog").append("<tr><td colspan='2'>Total: " + data.Total + " hours</td></tr>");
 					//}
 				}
 			});
