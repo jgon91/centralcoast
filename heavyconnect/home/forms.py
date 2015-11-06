@@ -370,6 +370,7 @@ class employeeAttendanceForm(forms.Form):
 	date = forms.DateField()
 	hour_started = forms.TimeField()
 	hour_ended = forms.TimeField()
+	edited = forms.BooleanField()
 ### End ###
 
 ### Structure for qualificationForm ###
@@ -578,6 +579,7 @@ class implementChecklistForm(forms.Form):
 class breakForm(forms.Form):
 	attendance = forms.ModelChoiceField(queryset = EmployeeAttendance.objects.all())
 	lunch = forms.BooleanField()
+	edited = forms.BooleanField()
 	start = forms.TimeField()
 	end = forms.TimeField(required = False)
 ### End ###

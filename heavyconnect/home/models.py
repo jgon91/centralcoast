@@ -281,6 +281,7 @@ class EmployeeAttendance(models.Model):
 	hour_ended = models.TimeField(null = True, blank = True)
 	signature = models.CharField(max_length = 5000, null = True, blank = True)
 	group = models.ForeignKey(Group, null = True, blank = True) 
+	edited = models.BooleanField(default = False)
 
 
 	def __unicode__(self):
@@ -290,6 +291,7 @@ class EmployeeAttendance(models.Model):
 class Break(models.Model):
 	attendance = models.ForeignKey(EmployeeAttendance)
 	lunch = models.BooleanField()
+	edited = models.BooleanField(default = False)
 	start = models.TimeField()
 	end = models.TimeField(null = True, blank = True)
 
