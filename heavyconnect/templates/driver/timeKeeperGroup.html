@@ -16,6 +16,8 @@
 		var teamChecked = -1;
 		var arrayNames = [];
 		var arrayTeams = [];
+		var idGroup = 0;
+		var arrayErrors = [];
 
 		$(document).ready(function() {
 			$("#foot").load("{%url 'footer'%}");
@@ -63,6 +65,15 @@
 		            });         
 		        }								
 		    });
+		    $('html').on('click', function(e) {
+		    	if (e.target.className == "errorIcon") {
+		    		//show popover
+		    	} else {
+		    		if (typeof $(e.target).data('original-title') == 'undefined' && !$(e.target).parents().is('.popover.in')) {
+    					$('[data-original-title]').popover('hide');
+  					}
+  				}
+			});
 			$("#shift").click(function() {
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
@@ -179,12 +190,19 @@
 				$("#messageTimekeeper").html("Select the Team to TIMELOG:");
 				teamsBtns();
 			});
-			$("#timelogBack").click(function() {
+			$("#timelogBack1").click(function() {
 				emptyDivs();
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
 				$("#messageTimekeeper").html("Select the Team to TIMELOG:");
 				teamsBtns();
+			});
+			$("#timelogBack2").click(function() {
+				emptyDivs();
+				$('#showTimekeeperModal').modal();
+				$("#messageTimekeeper").css("color", "#1F3801");	//green
+				$("#messageTimekeeper").html("Select the Employee to TIMELOG:");
+				callTeam(idGroup);
 			});
 			$("#btnSignature").click(function(){
 				$('#showTimekeeperModal').modal('hide');
@@ -195,12 +213,10 @@
     			$('#showTimekeeperModal').modal();
     			$("#messageTimekeeper").css("color", "#1F3801");	//green
     			$("#messageTimekeeper").html("Create New Team");
-    			$("#team").css("text-align", "left");
-    			$("#team").append('<form id="formTeam">');
-    			$("#team").append('<br>Team Name: <input type="text" id="nameTeam" placeholder="{% trans 'Team Name...' %}"/>');
-    			$("#team").append('<br>Team Permanent: <input type="radio" name="permanent" value="yes"/> Yes <input type="radio" name="permanent" value="no"/>No');
-    			$("#team").append('<br>Add New Employee: <input type="button" id="scanNow" onclick="openAdd()" value="{% trans 'Scan QR-Code' %}" class="btnsTimekeeper"/>');
-    			$("#team").append('<br><input type="button" id="addNow" onclick="createNow(id_scanned)" value="Create Now"></form>');
+    			$("#team").append('<table id="tableCreateTeam"><tr><td><input type="text" id="nameTeam" placeholder="{% trans 'Team Name...' %}"/></td></tr>'
+    							+ '<tr><td>Save Team?&nbsp;&nbsp;<input type="checkbox" id="saveTeam"/></td></tr>'
+    							+ '<tr><td><input type="button" id="scanNow" onclick="openAdd()" value="{% trans 'Add Employees' %}" class="btnsTimekeeper"/></td></tr>'
+    							+ '<tr><td><input type="button" id="addNow" onclick="createNow(id_scanned)" value="Create Now"></td></tr></table>');
 			});
 		});
 		function openAdd() {
@@ -208,9 +224,8 @@
 		}
 		function createNow(arrayIds) {
 			var nameTeam = $("#nameTeam").val();
-			var perm = $('input[name=permanent]:checked').val();
-			if (perm == 'yes') {
-				var permanent = 1;
+			if ($('#saveTeam').is(":checked")) {
+  				var permanent = 1;
 			} else {
 				var permanent = 0;
 			}
@@ -333,6 +348,7 @@
 							stopBreakGroup("{{ csrf_token }}", "{% url 'stopBreakGroup' %}");
 						}
 						if (action == 5) {
+							$("#timelogBack1").show();
 							$("#messageTimekeeper").html("Select the Employee to TIMELOG:");
 							for (var j = 0; j < data.participant.length; j++) {
 								$("#divTimelog").append("<br><input type='button' id='" + id_checked[j] + "' onclick='timelogId(this.id)' value='" + arrayNames[j] + "'/><br>");
@@ -350,6 +366,11 @@
 				data : {"csrfmiddlewaretoken" : token, "ids": id_checked},
 				datatype : "json",
 				success : function(data, status, xhr) {
+					arrayErrors = [];
+					arrayErrors[1] = 'You need to finish the current shift before create a new one.';
+					arrayErrors[2] = 'There is no users associated with this id.';
+					arrayErrors[5] = 'Error. Contact Suport.';
+					arrayErrors[6] = 'Error. Contact Suport.';
 					printResult(data);
 					if (data.success) {
 						$("#messageTimekeeper").css("color", "#1F3801");	//green
@@ -366,6 +387,12 @@
 				data : {"csrfmiddlewaretoken" : token, "ids": id_checked, "lunch": lunch},
 				datatype : "json",
 				success : function(data, status, xhr) {
+					arrayErrors = [];
+					arrayErrors[1] = 'You cannot start two breaks at the same time.';
+					arrayErrors[2] = 'The shift for today was already finished.';
+					arrayErrors[3] = 'You need to start a shift first.';
+					arrayErrors[5] = 'Error. Contact Suport.';
+					arrayErrors[6] = 'Error. Contact Suport.';
 					printResult(data);
 					if (data.success) {
 						$("#messageTimekeeper").css("color", "#1F3801");	//green
@@ -386,6 +413,12 @@
 				data: {"csrfmiddlewaretoken": token, "ids": id_checked, "lunch": lunch},
 				datatype: "json",
 				success: function(data, status, xhr){
+					arrayErrors = [];
+					arrayErrors[1] = 'You need to start a break first.';
+					arrayErrors[2] = 'The shift for today was already finished.';
+					arrayErrors[3] = 'You need to start a shift first.';
+					arrayErrors[5] = 'Error. Contact Suport.';
+					arrayErrors[6] = 'Error. Contact Suport.';
 					printResult(data);
 					if (data.success) {
 						$("#messageTimekeeper").css("color", "#1F3801");	//green
@@ -406,6 +439,12 @@
 				data: {"csrfmiddlewaretoken": token, "ids": id_checked},
 				datatype: "json",
 				success: function(data, status, xhr){
+					arrayErrors = [];
+					arrayErrors[2] = 'The shift for today was already finished.';
+					arrayErrors[3] = 'You have not started a shift yet.';
+					arrayErrors[4] = 'This user is not authorized to use the system.';
+					arrayErrors[5] = 'Error. Contact Suport.';
+					arrayErrors[6] = 'Error. Contact Suport.';
 					printResult(data);
 					if (data.success) {
 						$("#messageTimekeeper").css("color", "#1F3801");	//green
@@ -420,13 +459,14 @@
 			}
 		}
 		function callTeam(groupId) {
+			idGroup = groupId;
 			emptyDivs();
 			action = 5;
 			retrieveParticipant("{{ csrf_token }}", "{% url 'retrieveParticipant' %}", groupId);
 		}
 		function timelogId(idShow) {
 			emptyDivs();
-			$("#timelogBack").show();
+			$("#timelogBack2").show();
 			$("#messageTimekeeper").css("color", "#1F3801");	//green
 			$("#messageTimekeeper").html("TIMELOG");
 			idTimelog = idShow;
@@ -449,29 +489,45 @@
 						breakEnd = [];
 						lun = [];
 						currentStart = data.Attendance_start;
-						$("#divTimelog").append("<table id='tableTimelog' ><tr id='trStartShift'><td colspan='2'>Start Shift: " + data.Attendance_start + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' onclick='editStartShift(this.id, currentStart)'/></td></tr>");
-						for (i = 0; i < data.breaks.length; i++) {
-							workBreak[data.breaks[i].breakId] = data.breaks[i].workBreak;
-							breakN[data.breaks[i].breakId] = breaks;
-							breakBeg[data.breaks[i].breakId] = data.breaks[i].breakStart;
-							breakEnd[data.breaks[i].breakId] = data.breaks[i].breakStop;
-							if (data.breaks[i].lunch == 0){
-								lun[data.breaks[i].breakId] = 0
-								$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" + breaks + "º Break " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
-								breaks++;
-							} else {
-								lun[data.breaks[i].breakId] = 1;
-								$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" + lunchs + "º Lunch " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
-								lunchs++;
-							}
-						}
 						currentEnd = data.Attendance_end;
-						if (data.Attendance_end != 'Happening') {
+						if (data.Attendance_end == 'Happening') {
+							$("#divTimelog").append("<table id='tableTimelog' ><tr id='trStartShift'><td colspan='2'>Start Shift: " + data.Attendance_start + "</td></tr>");
+							for (i = 0; i < data.breaks.length; i++) {
+								workBreak[data.breaks[i].breakId] = data.breaks[i].workBreak;
+								breakN[data.breaks[i].breakId] = breaks;
+								breakBeg[data.breaks[i].breakId] = data.breaks[i].breakStart;
+								breakEnd[data.breaks[i].breakId] = data.breaks[i].breakStop;
+								if (data.breaks[i].lunch == 0){
+									lun[data.breaks[i].breakId] = 0
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" + breaks + "º Break " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
+									breaks++;
+								} else {
+									lun[data.breaks[i].breakId] = 1;
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" + lunchs + "º Lunch " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
+									lunchs++;
+								}
+							}
+							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + data.Attendance_end + "</td></tr>");
+						} else {
+							$("#divTimelog").append("<table id='tableTimelog' ><tr id='trStartShift'><td colspan='2'>Start Shift: " + data.Attendance_start + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' onclick='editStartShift(this.id, currentStart)'/></td></tr>");
+							for (i = 0; i < data.breaks.length; i++) {
+								workBreak[data.breaks[i].breakId] = data.breaks[i].workBreak;
+								breakN[data.breaks[i].breakId] = breaks;
+								breakBeg[data.breaks[i].breakId] = data.breaks[i].breakStart;
+								breakEnd[data.breaks[i].breakId] = data.breaks[i].breakStop;
+								if (data.breaks[i].lunch == 0){
+									lun[data.breaks[i].breakId] = 0
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" + breaks + "º Break " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
+									breaks++;
+								} else {
+									lun[data.breaks[i].breakId] = 1;
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" + lunchs + "º Lunch " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
+									lunchs++;
+								}
+							}
 							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + data.Attendance_end + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' onclick='editStopShift(this.id, currentEnd)'/></td></tr>"); 
 							$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + data.attendanceId + "'>");
-							$("#btnSignature").append("<input type='button' value='SIGN NOW'/>");
-						}else{
-							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + data.Attendance_end + "</td></tr>");
+							$("#btnSignature").append("<input type='button' value='SIGN'/>");
 						}
 						$("#tableTimelog").append("<tr><td colspan='2'>Total: " + data.Total + " hours</td></tr>");
 					//}
@@ -526,11 +582,15 @@
 				}
 				for (var k = 0; k < data.error.length; k++) {
 					if (data.error[k].id == id_checked[i]) {
-						$("#error").append("<br>" + arrayNames[i]);
+						$("#error").append("<br>" + arrayNames[i] + " <a href='#' id='pop" + k + "' class='popError' data-toggle='popover' data-content='" + arrayErrors[data.error[k].code] + "' data-placement='right'><input type='button' onclick='popoverError(this.id)' id='pop" + k + "' class='errorIcon'/></a>");
 					}
 				}
 			}
 		}
+		function popoverError(popId) {
+			$('#' + popId).popover();
+		}
+		
 		function hideModal() {
 			setTimeout(function(){
     			$('#showTimekeeperModal').modal('hide')
@@ -549,10 +609,12 @@
 			$("#stopLunch").empty();
 			$("#startLunch").empty();
 			$("#divTimelog").empty();
-			$("#timelogBack").hide();
+			$("#timelogBack1").hide();
+			$("#timelogBack2").hide();
 			$("#btnSignature").empty();
 		}
 		function editStartShift(editId, currentStart) {
+			$(".editIcon").attr('disabled', true);
 			shift_id = editId;
 			$("#trStartShift").html("<td colspan='2'>Start Shift: <input id='newTime' type='time'/></td><td><input type='button' class='editedIcon' onclick='callEditStartShift(shift_id)'/></td>");
 			$("#newTime").val(currentStart);
@@ -569,8 +631,9 @@
 				datatype : "json",
 				success : function(data, status, xhr) {
 					if (data.success) {
+						$(".editIcon").attr('disabled', false);
 						emptyDivs();
-						$("#timelogBack").show();
+						$("#timelogBack2").show();
 						$("#messageTimekeeper").css("color", "#1F3801");	//green
 						$("#messageTimekeeper").html("TIMELOG");
 						timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
@@ -579,6 +642,7 @@
 			});
 		}
 		function editBreak(editId, workBreak, breakN, breakBeg, breakEnd, lun) {
+			$(".editIcon").attr('disabled', true);
 			breakId = editId;
 			if (lun == 0) {
 				$("#" + breakId).html("<td class='colBorderTimelog'>" + workBreak + "</td><td>" + breakN + "º Break <input id='newBreakBeg" + breakId + "' type='time'/> - <input id='newBreakEnd" + breakId + "' type='time'/></td><td><input type='button' class='editedIcon' onclick='callEditBreak(breakId)'/></td>");
@@ -604,8 +668,9 @@
 				datatype : "json",
 				success : function(data, status, xhr) {
 					if (data.success) {
+						$(".editIcon").attr('disabled', false);
 						emptyDivs();
-						$("#timelogBack").show();
+						$("#timelogBack2").show();
 						$("#messageTimekeeper").css("color", "#1F3801");	//green
 						$("#messageTimekeeper").html("TIMELOG");
 						timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
@@ -614,6 +679,7 @@
 			});
 		}
 		function editStopShift(editId, currentEnd) {
+			$(".editIcon").attr('disabled', true);
 			shift_id = editId;
 			$("#trStopShift").html("<td colspan='2'>End Shift: <input id='newTimeEnd' type='time'/></td><td><input type='button' class='editedIcon' onclick='callEditStopShift(shift_id)'/></td>");
 			$("#newTimeEnd").val(currentEnd);
@@ -630,8 +696,9 @@
 				datatype : "json",
 				success : function(data, status, xhr) {
 					if (data.success) {
+						$(".editIcon").attr('disabled', false);
 						emptyDivs();
-						$("#timelogBack").show();
+						$("#timelogBack2").show();
 						$("#messageTimekeeper").css("color", "#1F3801");	//green
 						$("#messageTimekeeper").html("TIMELOG");
 						timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
@@ -748,7 +815,7 @@
 						<!--<button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>-->
 						<a href="">
 							<button type="button" id="saveSignature" class="btn btn-success">
-								{% trans 'Confirmar' %}
+								{% trans 'Confirm' %}
 							</button>
 						</a>
 					</div>
@@ -765,8 +832,9 @@
 				<!-- Modal content-->
 				<div class="modal-content modalTimekeeper">
 					<div class="modal-body">
-						<button type="button" id="timelogBack"></button>
-						<button type="button" class="closeEquip" data-dismiss="modal"></button>
+						<button type="button" id="timelogBack1"></button>
+						<button type="button" id="timelogBack2"></button>
+						<button type="button" class="closeTimekeeper" data-dismiss="modal"></button>
 						<span id="messageTimekeeper"></span>
 						<div id="employeeList"></div>
 						<div id="teamsList"></div>
@@ -862,4 +930,9 @@
 	<script type="text/javascript" src="{% static 'WebCodeCam/js/startScanQRCode.js' %}"></script>
 	<script type="text/javascript" src="{% static 'WebCodeCam/js/qrcodelib.js' %}"></script>
 	<script type="text/javascript" src="{% static 'WebCodeCam/js/WebCodeCam.js' %}"></script>
+	<script>
+	$(document).ready(function(){
+    	$('[data-toggle="popover"]').popover();   
+	});
+</script>
 </html>

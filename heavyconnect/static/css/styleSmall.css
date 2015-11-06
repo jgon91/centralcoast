@@ -248,8 +248,23 @@ input[type=button] {
 /*** Home Page End ***/
 
 /*** Timekeeper Page Begin ***/
+#tableCreateTeam, #team {
+	margin: auto;
+	width: 90%;
+	text-align: center;
+}
+#team td {
+	padding: 5px;
+}
+#team input[type='text'] {
+	width: 100%;
+} 
+#team input[type='checkbox'] {
+	width: 20px;
+	height: 20px;
+}
 .btnCreateTeam {
-	background: gray;
+	background: #1F3801;
 	background-size: 100% 100%;
 	border-radius: 7px;
 	border: 1px solid #1F3801 !important;
@@ -323,8 +338,8 @@ input[type=button] {
 	border-radius: 7px;
 	border: none;
 	box-shadow: 2px 2px 5px gray;
-	height: 35px;
-	width: 150px;
+	height: 40px;
+	width: 170px;
 	color: white;
 	margin-bottom: 10px;
 	font-size: 20px;
@@ -332,7 +347,7 @@ input[type=button] {
 	margin-left: 3%;
 }
 #addNow {
-	background: gray;
+	background: #1F3801;
 	background-size: 100% 100%;
 	border-radius: 7px;
 	border: none;
@@ -340,11 +355,8 @@ input[type=button] {
 	height: 50px;
 	width: 200px;
 	color: white;
-	margin-bottom: 10px;
 	font-size: 25px;
 	font-weight: 700;
-	margin-top: 25px;
-	margin-left: 30%;
 }
 /* MODAL SGNATURE BEGIN */
 #titleSign {
@@ -399,8 +411,8 @@ input[type=button] {
 .closeTimekeeper {
 	background: url('../imgSmall/buttons/esc.png') no-repeat top left;
 	background-size: 100% 100%;
-	width: 50px;
-	height: 50px;
+	width: 40px;
+	height: 40px;
 	float: right;
 	border: none;
 	border-radius: 7px;
@@ -431,11 +443,11 @@ input[type=button] {
 	background: #E5E5E5;
 	width: 100%;
 }
-#timelogBack {
+#timelogBack1, #timelogBack2 {
 	background: url('../imgSmall/buttons/backPastTasks.png') no-repeat top left;
 	background-size: 100% 100%;
-	width: 50px;
-	height: 50px;
+	width: 40px;
+	height: 40px;
 	float: left;
 	border: none;
 	border-radius: 7px;
@@ -451,6 +463,17 @@ input[type=button] {
 }
 .colBorderTimelog {
 	background: #DDD;
+}
+.popover-content {
+	padding: 0px 5px !important;
+	font-size: 15px !important;
+}
+.errorIcon {
+	background: url('../imgSmall/errorIcon.png') no-repeat top left !important;
+	background-size: 100% 100% !important;
+	width: 20px !important;
+	height: 20px !important;
+	border: none !important;
 }
 .editIcon {
 	background: url('../imgSmall/editIcon.png') no-repeat top left !important;
