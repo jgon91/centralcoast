@@ -3402,6 +3402,7 @@ def updateStartShift(request):
 						start_first_break = datetime.timedelta(hours = first_break.start.hour, minutes = first_break.start.minute, seconds = first_break.start.second)
 						if start_first_break > new_hour_started:
 							attendance.hour_started = str(new_hour_started)
+							attendance.edited = True
 							attendance.save()
 							result['success'] = True
 						else:
@@ -3461,6 +3462,7 @@ def updateBreak(request):
 									if new_hour_started > stop_break_before and new_hour_stopped < start_break_after:
 										break_item.start = str(new_hour_started)
 										break_item.end = str(new_hour_stopped)
+										#break_item.edited = True
 										break_item.save()
 										result['success'] = True
 									else:
@@ -3474,6 +3476,7 @@ def updateBreak(request):
 									if new_hour_stopped < end_shift:
 										break_item.start = str(new_hour_started)
 										break_item.end = str(new_hour_stopped)
+										#break_item.edited = True
 										break_item.save()
 										result['success'] = True
 									else:
@@ -3494,6 +3497,7 @@ def updateBreak(request):
 									if new_hour_started > stop_break_before and new_hour_stopped < end_shift:
 										break_item.start = str(new_hour_started)
 										break_item.end = str(new_hour_stopped)
+										#break_item.edited = True
 										break_item.save()
 										result['success'] = True
 									else:
@@ -3507,6 +3511,7 @@ def updateBreak(request):
 									if new_hour_stopped < end_shift:
 										break_item.start = str(new_hour_started)
 										break_item.end = str(new_hour_stopped)
+										break_item.edited = True
 										break_item.save()
 										result['success'] = True
 									else:
@@ -3551,6 +3556,7 @@ def updateStopShift(request):
 						stop_last_break = datetime.timedelta(hours = last_break.end.hour, minutes = last_break.end.minute, seconds = last_break.end.second)
 						if stop_last_break < new_hour_stopped:
 							attendance.hour_ended = str(new_hour_stopped)
+							attendance.edited = True
 							attendance.save()
 							result['success'] = True
 						else:
