@@ -22,7 +22,7 @@
 		$(document).ready(function() {
 			$("#foot").load("{%url 'footer'%}");
 			$("#head").load("{%url 'headerDriver'%}");
-			//$("#signature").jSignature();	
+			$("#signature").jSignature();	
 			$("#saveSignature").click(function(){
 				var $sigdiv = $("#signature");
 				var datapair = $sigdiv.jSignature("getData","base30");	
@@ -251,12 +251,16 @@
 			$.ajax({
 				method : "POST",
 				url : url,
+				async: false,
 				data : {"csrfmiddlewaretoken" : token, "id": attendanceId, "signature": signature},
 				datatype : "json",
 				success : function(data, status, xhr) {
-					if (data.success) {
-						//alert("Sucess");
-					}
+					//if (data.success) {
+						alert("Sucess");
+						var $sigdiv = $("#signature");
+						$sigdiv.jSignature("reset");
+						$('#signModal').modal('hide');
+					//}
 				}
 			});
 		}
@@ -813,11 +817,11 @@
 						<div id="signature"></div>
 						<button type="button" id="clearSignature" class="btn btn-default">{% trans 'Clear' %}</button>
 						<!--<button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>-->
-						<a href="">
-							<button type="button" id="saveSignature" class="btn btn-success">
+						
+							<button type="button" id="saveSignature" class="btn btn-success" >
 								{% trans 'Confirm' %}
 							</button>
-						</a>
+						
 					</div>
 					<div id="clearBoth"></div>
 				</div>
@@ -924,7 +928,7 @@
 		</div>
 
 	</body>
-	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<!-- <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script> -->
 	<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="{% static 'WebCodeCam/js/main.js' %}"></script>
 	<script type="text/javascript" src="{% static 'WebCodeCam/js/startScanQRCode.js' %}"></script>
