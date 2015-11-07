@@ -4162,7 +4162,7 @@ def employeeUpdatePasswordForm(request):
 
 ### End  ###
 
-### Form to update employee ###
+### View to update employee ###
 @login_required
 def employeeUpdateFormView(request):
 	result = {'success' : False}
@@ -4195,6 +4195,24 @@ def employeeUpdateFormView(request):
 			return HttpResponse(json.dumps(result),content_type='application/json')
 		return render(request,'driver/employeeUpdate', {'form': userform, 'form1': employform})
 ### end ###
+
+
+
+### View to retrieve AttendanceChecklist
+@login_required
+def retrieveAttendanceChecklist(request):
+ 	result = {'success' : False}
+ 	checklist = AttendanceChecklist.objects.all()
+ 	questionArray = []
+ 	for item in checklist:
+ 		aux = {}
+ 		aux['id'] = item.id
+ 		aux['description'] = item.description
+ 		aux['category'] = item.category
+ 		questionArray.append(aux)
+ 	result['checklist'] = questionArray
+ 	result['success'] = True
+ 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 def testbase64(request):
 	result = {'success' : False}
