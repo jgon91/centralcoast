@@ -285,7 +285,7 @@ class EmployeeAttendance(models.Model):
 
 
 	def __unicode__(self):
-		return "Employee: " + str(self.employee) + ", Date: " + str(self.date)
+		return "Employee: " + str(self.employee) + ", Date: " + str(self.date) + ", AttendanceID: " + str(self.id)
 
 
 class Break(models.Model):
@@ -528,3 +528,34 @@ class ImplementChecklist(models.Model):
 
 	def __unicode__(self):
 		return "Answer: " + str(self.answer) + ", Note: " + str(self.note)
+
+class TimeKeeperRules(models.Model):
+	hour = models.FloatField() #It is float because it would be 5:30 hours
+	breaks = models.IntegerField() 
+	lunchs = models.IntegerField()
+	lunchBool = models.BooleanField() #if ti is required to ask about the lunch
+
+	def __unicode__(self):
+		return "ID: " + str(self.id) + ", Hours: " + str(self.hour) + ", Breaks: " + str(self.breaks) + ", Lunch: " +  str(self.lunchs) + ", LunchBool: " + str(self.lunchBool)
+
+
+class AttendanceChecklist(models.Model):
+	QUESTION_CHOICES = (
+		(1, 'Always'),
+		(2, 'Less lunch than Expected'),
+		(3, 'Less Breaks than Expected'),
+	)
+	category = models.IntegerField(choices = QUESTION_CHOICES)
+	description = models.CharField(max_length = 250)
+
+	def __unicode__(self):
+		return "Id: " + str(self.id) + ", category: " + str(self.category) + ", description: " + str(self.description)
+
+class ConfirmationCheck(models.Model):
+	question = models.ForeignKey(AttendanceChecklist)
+	attendance = models.ForeignKey(EmployeeAttendance) #It has date, employee
+	answer = models.BooleanField()
+	note = models.CharField(max_length = 200, blank = True)
+
+	def __unicode__(self):
+		return "Id: " + str(self.id) + ", question: " + str(self.question)
