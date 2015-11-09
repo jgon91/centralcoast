@@ -344,7 +344,6 @@ input[type=button] {
 	margin-bottom: 10px;
 	font-size: 20px;
 	font-weight: 600;
-	margin-left: 3%;
 }
 #addNow {
 	background: #1F3801;
@@ -384,7 +383,7 @@ input[type=button] {
 	margin: 0px;
 	padding: 0px;
 }
-#btnSignature input[type=button] {
+#btnSignature input[type=button], #divSignNow input[type=button] {
 	border: 1px solid #DDD;
 	padding: 5px;
 	box-sizing: border-box;

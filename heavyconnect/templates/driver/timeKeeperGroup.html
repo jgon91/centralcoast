@@ -205,8 +205,9 @@
 				callTeam(idGroup);
 			});
 			$("#btnSignature").click(function(){
-				$('#showTimekeeperModal').modal('hide');
-				$('#signModal').modal();
+				$("#messageTimekeeper").css("color", "#1F3801");	//green
+				$("#messageTimekeeper").html("Checking shift...");
+				callChecklist("{{ csrf_token }}", "{% url 'retrieveAttendanceChecklist' %}");
 			});
 			$("#createTeam").click(function(){
     			emptyDivs();
@@ -214,7 +215,7 @@
     			$("#messageTimekeeper").css("color", "#1F3801");	//green
     			$("#messageTimekeeper").html("Create New Team");
     			$("#team").append('<table id="tableCreateTeam"><tr><td><input type="text" id="nameTeam" placeholder="{% trans 'Team Name...' %}"/></td></tr>'
-    							+ '<tr><td>Save Team?&nbsp;&nbsp;<input type="checkbox" id="saveTeam"/></td></tr>'
+    							+ '<tr><td><label>Save Team?&nbsp;&nbsp;<input type="checkbox" id="saveTeam"/></label></td></tr>'
     							+ '<tr><td><input type="button" id="scanNow" onclick="openAdd()" value="{% trans 'Add Employees' %}" class="btnsTimekeeper"/></td></tr>'
     							+ '<tr><td><input type="button" id="addNow" onclick="createNow(id_scanned)" value="Create Now"></td></tr></table>');
 			});
@@ -244,23 +245,6 @@
 					$("#messageTimekeeper").css("color", "#1F3801");	//green
 					$("#messageTimekeeper").html("Team Created!");
 					retrieveGroup("{{ csrf_token }}", "{% url 'retrieveGroup' %}");
-				}
-			});
-		}
-		function saveSignature(token, url, signature, attendanceId){
-			$.ajax({
-				method : "POST",
-				url : url,
-				async: false,
-				data : {"csrfmiddlewaretoken" : token, "id": attendanceId, "signature": signature},
-				datatype : "json",
-				success : function(data, status, xhr) {
-					//if (data.success) {
-						alert("Sucess");
-						var $sigdiv = $("#signature");
-						$sigdiv.jSignature("reset");
-						$('#signModal').modal('hide');
-					//}
 				}
 			});
 		}
@@ -457,6 +441,59 @@
 				}
 			});
 		}
+		function callChecklist(token, url) {
+			$.ajax({
+				method: "POST",
+				url: url,
+				data: {"csrfmiddlewaretoken": token},
+				datatype: "json",
+				success: function(data, status, xhr){
+					if (data.success) {
+						emptyDivs();
+    					$("#messageTimekeeper").css("color", "#1F3801");	//green
+    					$("#messageTimekeeper").html("Check before sign:");
+    					$("#questions").css("text-align", "left");
+    					$("#questions").css("font-size", "20px");
+    					$("#questions").append("<table>");
+    					for (i = 0; i < data.checklist.length; i++) {
+    						$("#questions").append("<tr><td><label><input type='checkbox' onClick='allChecked(" + data.checklist.length + ")' class='checkQuestions'/>&nbsp;&nbsp;" + data.checklist[i].description + "</label></td></td>");
+    					}
+    					$("#questions").append("</table>");
+    					$("#divSignNow").append("<input type='button' id='btnSignNow' onClick='callBtnSign()' value='SIGN NOW'/>");
+    					$("#btnSignNow").attr("disabled", true);
+					}
+				}
+			});
+		}
+		function allChecked(questionsN) {
+			var countQuestions = $('input:checkbox[class=checkQuestions]:checked');
+			if (questionsN == countQuestions.length) {
+				 $("#btnSignNow").attr("disabled", false);
+			} else {
+				$("#btnSignNow").attr("disabled", true);
+			}
+		}
+		function callBtnSign() {
+			$('#showTimekeeperModal').modal('hide');
+			$('#signModal').modal();
+		}
+		function saveSignature(token, url, signature, attendanceId){
+			$.ajax({
+				method : "POST",
+				url : url,
+				async: false,
+				data : {"csrfmiddlewaretoken" : token, "id": attendanceId, "signature": signature},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					//if (data.success) {
+						alert("Sucess");
+						var $sigdiv = $("#signature");
+						$sigdiv.jSignature("reset");
+						$('#signModal').modal('hide');
+					//}
+				}
+			});
+		}
 		function teamsBtns() {
 			for (var i = 0; i < arrayTeams.length; i++) {
 				$("#divTimelog").append("<br><input type='button' id='" + arrayTeams[i].id + "' onclick='callTeam(this.id)' value='" + arrayTeams[i].Name + "'/><br>");
@@ -615,7 +652,10 @@
 			$("#divTimelog").empty();
 			$("#timelogBack1").hide();
 			$("#timelogBack2").hide();
+			$("#questions").empty();
 			$("#btnSignature").empty();
+			$("#divSignNow").empty();
+			$("#btnSignNow").empty();
 		}
 		function editStartShift(editId, currentStart) {
 			$(".editIcon").attr('disabled', true);
@@ -856,7 +896,9 @@
 						<div id="startLunch"></div>
 						<div id="stopLunch"></div>
 						<div id="divTimelog"></div>
-						<div id="btnSignature"></div>						
+						<div id="questions"></div>
+						<div id="btnSignature"></div>
+						<div id="divSignNow"></div>						
 						<br>
 						<div class="both"></div>
 					</div>
