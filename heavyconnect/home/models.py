@@ -530,7 +530,7 @@ class ImplementChecklist(models.Model):
 		return "Answer: " + str(self.answer) + ", Note: " + str(self.note)
 
 class TimeKeeperRules(models.Model):
-	hour = models.FloatField() #It is float because it would be 5:30 hours
+	hour = models.TimeField() 
 	breaks = models.IntegerField() 
 	lunchs = models.IntegerField()
 	lunchBool = models.BooleanField() #if ti is required to ask about the lunch

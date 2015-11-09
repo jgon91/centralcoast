@@ -4197,22 +4197,91 @@ def employeeUpdateFormView(request):
 		return render(request,'driver/employeeUpdate', {'form': userform, 'form1': employform})
 ### end ###
 
+###This view will check if the number of breaks and luches as correct
+def checkAttendanceBreaks(attendanceID):
+	result = {}
+	count = 0
+	lunchCount = 0 #number of lunches
+	breakCount = 0 #number of breaks 
+	lunchLimit = 0 #limit of lunches
+	breakLimit = 0 #limif of breaks
+	lunchEnforced = False #if one lunch is opcional
+	result['lunch'] = 0 #number lunch
+	result['break'] = 0 #number of breaks
+	result['LunchLimit'] = 0 # limit number
+	result['breakLimit'] = 0 # Limit number
+	result['problemLunch'] = True
+	result['problemBreak'] = True
+	attendance = EmployeeAttendance.objects.get(id = attendanceID)
+	breaks = Break.objects.filter(attendance__id = attendanceID)
+	date = str(attendance.date) + ' ' + str(attendance.hour_started) # creating format date plus time
+	hours = getHoursToday(attendance.employee.id, date)
+	rules = TimeKeeperRules.objects.filter(hour__lte = hours).order_by('-hour')[:1]
+	for item in rules:
+		breakLimit = item.breaks #Number of breaks according by rule
+		lunchLimit = item.lunchs #Number of lunch according by rule
+		lunchEnforced = item.lunchBool #If one of the lunch is opcional
+	for item in breaks:
+		if item.lunch is True:
+			lunchCount = lunchCount + 1
+		else:
+			breakCount = breakCount + 1
 
+	result['breaks'] = breakCount
+	result['breakLimit'] = breakLimit
+	result['lunch'] = lunchCount
+	result['LunchLimit'] = lunchLimit
+	if breakLimit == breakCount: # if the number of breaks is correct
+			result['problemBreak'] = False
+	if lunchLimit >= lunchCount:
+		count = lunchLimit - lunchCount
+		if count <= 1:
+			if lunchEnforced == True:
+				result['problemLunch'] = False
+			else:
+				if count == 0:
+					result['problemLunch'] = False
+	result['hours'] = hours
+	return result
 
 ### View to retrieve AttendanceChecklist
 @login_required
 def retrieveAttendanceChecklist(request):
  	result = {'success' : False}
- 	checklist = AttendanceChecklist.objects.all()
- 	questionArray = []
- 	for item in checklist:
- 		aux = {}
- 		aux['id'] = item.id
- 		aux['description'] = item.description
- 		aux['category'] = item.category
- 		questionArray.append(aux)
- 	result['checklist'] = questionArray
- 	result['success'] = True
+ 	if request.method == 'GET':
+		if request.is_ajax():
+		 	checklist = AttendanceChecklist.objects.all()
+		 	attendance = checkAttendanceBreaks(request.POST['attendance'])
+		 	result['problemLunch'] = attendance['problemLunch']
+		 	result['problemBreak'] = attendance['problemBreak']
+		 	result['break'] = attendance['breaks']
+		 	result['lunch'] = attendance['lunch']
+		 	result['breakLimit'] = attendance['breakLimit']
+		 	result['LunchLimit'] = attendance['LunchLimit']
+		 	questionArray = []
+		 	for item in checklist:
+		 		aux = {}
+		 		if item.category == 1:
+			 		aux['id'] = item.id
+			 		aux['description'] = item.description
+			 		aux['category'] = item.category
+		 			questionArray.append(aux)
+		 		if attendance['problemBreak'] == True and item.category == 3:
+		 			aux['id'] = item.id
+			 		aux['description'] = item.description
+			 		aux['category'] = item.category
+		 			questionArray.append(aux)
+		 		if attendance['problemLunch'] == True and item.category == 2:
+		 			aux['id'] = item.id
+			 		aux['description'] = item.description
+			 		aux['category'] = item.category
+		 			questionArray.append(aux)
+		 	result['checklist'] = questionArray
+		 	result['success'] = True
+	 	else:
+			result['code'] = 2 #Use ajax to perform requests
+	else:
+		result['code'] = 3 #Request was not GET
  	return HttpResponse(json.dumps(result),content_type='application/json')
 
 def testbase64(request):
