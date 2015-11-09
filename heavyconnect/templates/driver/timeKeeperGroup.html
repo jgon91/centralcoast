@@ -11,7 +11,7 @@
 		var employeesTimelog = [];
 		var idTimelog;
 		var user_id;
-		var id_checked = [];
+		var id_checked = [];	
 		var id_scanned = []; // Reiniatilize this array when create a new group
 		var teamChecked = -1;
 		var arrayNames = [];
@@ -648,31 +648,48 @@
 				$("#addEmployee").modal("hide");
 			}
 		}
-		function checkEmployeeScanned(token, url, id) {			
-			$.ajax({
-				method : "GET",
-				url : url,
-				//async: false,
-				data : {
-					"csrfmiddlewaretoken" : token,
-					"qr_code" : id
-				}, // id could be qrCode or employeeId
-				datatype : "json",
-				success : function(data, status, xhr) {
-					$("#errorQrCode").html("")				
-					if (data.success) {		
-						$("#qrCodeModal").modal("hide");				
-						$("#addEmployee").modal();					
-						$("#errorQrCode").css("color", "green")										
-						$("#errorQrCode").html("{% trans 'Employee added to the group!' %}")				
-						id_scanned.push(id);									
-					} else {							
-						$("#addEmployee").modal();	
-						$("#errorQrCode").css("color", "red")	
-						$("#errorQrCode").html("{% trans 'This employee does not exist!' %}")				
+		function checkEmployeeScanned(token, url, id) {		
+			if (checkQrCode(id)){
+				$.ajax({
+					method : "GET",
+					url : url,
+					//async: false,
+					data : {
+						"csrfmiddlewaretoken" : token,
+						"qr_code" : id
+					}, // id could be qrCode or employeeId
+					datatype : "json",
+					success : function(data, status, xhr) {
+						$("#errorQrCode").html("")			
+						var data_scanned = {}; 								
+						if (data.success) {								
+							$("#qrCodeModal").modal("hide");
+							feedBackQrCode("show", "green", "{% trans 'Employee added to the group!' %}");					
+							data_scanned.qr_code = id;
+							data_scanned.employee = data.employee					
+							id_scanned.push(data_scanned);													
+						} else {		
+							feedBackQrCode("show", "red", "{% trans 'This employee does not exist!' %}");				
+						}
 					}
+				});
+			}else{
+				feedBackQrCode("show", "red", "{% trans 'Employee already added to the group!' %}");						
+			}
+		}
+		function checkQrCode(qr_code){
+			for (var i = 0; i < id_scanned.length; i++) {
+				if (qr_code == id_scanned[i].qr_code) {
+					return false;
 				}
-			});
+			}	
+			return true;
+		}
+		function feedBackQrCode(modal, color, message){
+			$("#addEmployee").modal(modal);					
+			$("#errorQrCode").css("color", color)										
+			$("#errorQrCode").html(message)	
+			$("#qr_code").val(""); // Clean input text #qr_code						
 		}
 		</script>
 		<style>
@@ -842,7 +859,7 @@
 					<span class="modal-title" id="titleModalSchedule" style="margin-left: 50px;">{% trans 'Scan QR-Code says:' %}					
 					</span>
 					</br>
-					<span id="errorQrCode" style="font-weight: bold"></span>
+					<span id="errorQrCode" style="font-weight: bold; text-align: center;"></span>
 					<div class="modal-body equipmentAlertModalBody">
 						<p>
 							{% trans 'Would you like to add another employee to the Group?' %}

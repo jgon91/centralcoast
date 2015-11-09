@@ -465,7 +465,7 @@ def createGroup(request):
 					test = Group.objects.get(date = date, name = name, creator = creator)
 					result['code'] = 6 # there is one group with the same name in the same day by the same creator
 					return HttpResponse(json.dumps(result),content_type='application/json')
-				except:		
+				except:			
 					group, created = Group.objects.get_or_create(creator = creator, date = date, permanent = permanent, name = name) #if the group is already created just add members, it could be just a instance to save after.
 					emploGroup = GroupParticipant.objects.filter(group__id = group.id).values_list('participant__qr_code')
 					aux1 = []
@@ -3579,10 +3579,11 @@ def checkEmployeeQrCode(request):
  	if request.is_ajax():
 		qr_code = request.GET['qr_code']
 		try:
-			employee = Employee.objects.get(qr_code = qr_code)			
-			if employee is not None:
-				result['success'] = True				
-		except:
+			employee = Employee.objects.get(qr_code = qr_code)				
+			if employee is not None:		
+				result['success'] = True	
+				result['employee'] = employee.user.first_name + " " + employee.user.last_name				
+		except:			
 			result['code'] = 1 # Employee does not exist
 			return HttpResponse(json.dumps(result), content_type='application/json')
 	else:
