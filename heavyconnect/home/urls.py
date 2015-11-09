@@ -122,6 +122,7 @@ urlpatterns = [
     url(r'^checkEmployeeQrCode/$', main_views.checkEmployeeQrCode, name = 'checkEmployeeQrCode'),
     url(r'^retrieveGroup/$', main_views.retrieveGroup, name = 'retrieveGroup'),
     url(r'^retrieveParticipant/$', main_views.retrieveParticipant, name = 'retrieveParticipant'),
+    url(r'^retrieveAttendanceChecklist/$', main_views.retrieveAttendanceChecklist, name = 'retrieveAttendanceChecklist'),
    ### End ###
 
     ###Insert###
