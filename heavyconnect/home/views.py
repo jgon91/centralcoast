@@ -1771,7 +1771,7 @@ def timeLogById(request):
 			keeper2 =  datetime.timedelta(hours = 23, minutes = 59, seconds = 59) # when the break is on another day
 			for item in employeeAttendance:
 				result['attendanceId'] = item.id
-				breaks = Break.objects.filter(attendance__id = item.id)
+				breaks = Break.objects.filter(attendance__id = item.id).order_by('start')
 				breakDuration = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #variable used to decrease time from the total when one break still going on
 				breakTime = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) #help to calculate work time between breaks
 				time_aux = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) #variable used to remove second of the date
@@ -3404,15 +3404,21 @@ def updateStartShift(request):
 						end_shift = datetime.datetime.now()
 					if end_shift > new_hour_started:
 						first_break = Break.objects.filter(attendance = attendance.id).first()
-						start_first_break = datetime.timedelta(hours = first_break.start.hour, minutes = first_break.start.minute, seconds = first_break.start.second)
-						if start_first_break > new_hour_started:
+						if first_break:
+							start_first_break = datetime.timedelta(hours = first_break.start.hour, minutes = first_break.start.minute, seconds = first_break.start.second)
+							if start_first_break > new_hour_started:
+								attendance.hour_started = str(new_hour_started)
+								attendance.edited = True
+								attendance.save()
+								result['success'] = True
+							else:
+								result['code'] = 1 # Try to update shift between the breaks 
+								return HttpResponse(json.dumps(result), content_type='application/json')
+						else:
 							attendance.hour_started = str(new_hour_started)
 							attendance.edited = True
 							attendance.save()
 							result['success'] = True
-						else:
-							result['code'] = 1 # Try to update shift between the breaks 
-							return HttpResponse(json.dumps(result), content_type='application/json')
 					else:
 						result['code'] = 2 # Try to update start shift after the end shift
 						return HttpResponse(json.dumps(result), content_type='application/json')
@@ -3553,20 +3559,27 @@ def updateStopShift(request):
 				new_time = new_time.split(":")		
 				time['hour'] = int(new_time[0])
 				time['minute'] = int(new_time[1])
-				new_hour_stopped = datetime.timedelta(hours = time['hour'], minutes = time['minute'], seconds = time['second'])
-				if attendance is not None:
-					start_shift = datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
-					if start_shift < new_hour_stopped:
-						last_break = Break.objects.filter(attendance = attendance.id).order_by('-id')[0]
-						stop_last_break = datetime.timedelta(hours = last_break.end.hour, minutes = last_break.end.minute, seconds = last_break.end.second)
-						if stop_last_break < new_hour_stopped:
+				new_hour_stopped = datetime.timedelta(hours = time['hour'], minutes = time['minute'], seconds = time['second'])				
+				if attendance is not None:					
+					start_shift = datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)					
+					if start_shift < new_hour_stopped:						
+						breaks = Break.objects.filter(attendance = shift_id)											
+						if breaks.first():			
+							last_break = Break.objects.filter(attendance = shift_id).order_by('-id')[0]										
+							stop_last_break = datetime.timedelta(hours = last_break.end.hour, minutes = last_break.end.minute, seconds = last_break.end.second)
+							if stop_last_break < new_hour_stopped:
+								attendance.hour_ended = str(new_hour_stopped)
+								attendance.edited = True
+								attendance.save()
+								result['success'] = True
+							else:
+								result['code'] = 1 # Try to update shift between the breaks 
+								return HttpResponse(json.dumps(result), content_type='application/json')
+						else: # There is no breaks							
 							attendance.hour_ended = str(new_hour_stopped)
 							attendance.edited = True
 							attendance.save()
 							result['success'] = True
-						else:
-							result['code'] = 1 # Try to update shift between the breaks 
-							return HttpResponse(json.dumps(result), content_type='application/json')
 					else:
 						result['code'] = 2 # Try to update end shift before the start shift
 						return HttpResponse(json.dumps(result), content_type='application/json')
