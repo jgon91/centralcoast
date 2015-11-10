@@ -4212,6 +4212,7 @@ def checkAttendanceBreaks(userID):
 	result['breakLimit'] = 0 # Limit number
 	result['problemLunch'] = True
 	result['problemBreak'] = True
+	result['optionalLunch'] = False
 	attendance = EmployeeAttendance.objects.filter(employee__user__id = userID).order_by('-date', '-hour_started').first()
 	breaks = Break.objects.filter(attendance__id = attendance.id)
 	hour =  str(attendance.hour_started.hour) + ':' + str(attendance.hour_started.minute) + ':' + str(attendance.hour_started.second)
@@ -4236,12 +4237,13 @@ def checkAttendanceBreaks(userID):
 			result['problemBreak'] = False
 	if lunchLimit >= lunchCount:
 		count = lunchLimit - lunchCount
-		if count <= 1:
+		if count == 1: #If difference is 1 lunch
 			if lunchEnforced == True:
+				result['optionalLunch'] = True
 				result['problemLunch'] = False
-			else:
-				if count == 0:
-					result['problemLunch'] = False
+		else:
+			if count == 0:
+				result['problemLunch'] = False
 	result['hours'] = hours
 	return result
 
@@ -4252,13 +4254,14 @@ def retrieveAttendanceChecklist(request):
 	if request.method == 'POST':
 		if request.is_ajax():
 		 	checklist = AttendanceChecklist.objects.all()
-		 	attendance = checkAttendanceBreaks(request.POST['id'])
+		 	attendance = checkAttendanceBreaks(request.POST['id']) #user id
 		 	result['problemLunch'] = attendance['problemLunch']
 		 	result['problemBreak'] = attendance['problemBreak']
 		 	result['break'] = attendance['breaks']
 		 	result['lunch'] = attendance['lunch']
 		 	result['breakLimit'] = attendance['breakLimit']
 		 	result['LunchLimit'] = attendance['LunchLimit']
+		 	result['optionalLunch'] = attendance['optionalLunch']
 		 	questionArray = []
 		 	for item in checklist:
 		 		aux = {}
@@ -4273,6 +4276,11 @@ def retrieveAttendanceChecklist(request):
 			 		aux['category'] = item.category
 		 			questionArray.append(aux)
 		 		if attendance['problemLunch'] == True and item.category == 2:
+		 			aux['id'] = item.id
+			 		aux['description'] = item.description
+			 		aux['category'] = item.category
+		 			questionArray.append(aux)
+		 		if attendance['optionalLunch'] == True and item.category == 4:
 		 			aux['id'] = item.id
 			 		aux['description'] = item.description
 			 		aux['category'] = item.category

@@ -544,6 +544,7 @@ class AttendanceChecklist(models.Model):
 		(1, 'Always'),
 		(2, 'Less lunch than Expected'),
 		(3, 'Less Breaks than Expected'),
+		(4, 'Optional Lunch'),
 	)
 	category = models.IntegerField(choices = QUESTION_CHOICES)
 	description = models.CharField(max_length = 250)
