@@ -4198,7 +4198,7 @@ def employeeUpdateFormView(request):
 ### end ###
 
 ###This view will check if the number of breaks and luches as correct
-def checkAttendanceBreaks(attendanceID):
+def checkAttendanceBreaks(userID):
 	result = {}
 	count = 0
 	lunchCount = 0 #number of lunches
@@ -4212,9 +4212,10 @@ def checkAttendanceBreaks(attendanceID):
 	result['breakLimit'] = 0 # Limit number
 	result['problemLunch'] = True
 	result['problemBreak'] = True
-	attendance = EmployeeAttendance.objects.get(id = attendanceID)
-	breaks = Break.objects.filter(attendance__id = attendanceID)
-	date = str(attendance.date) + ' ' + str(attendance.hour_started) # creating format date plus time
+	attendance = EmployeeAttendance.objects.filter(employee__user__id = userID).order_by('-date', '-hour_started').first()
+	breaks = Break.objects.filter(attendance__id = attendance.id)
+	hour =  str(attendance.hour_started.hour) + ':' + str(attendance.hour_started.minute) + ':' + str(attendance.hour_started.second)
+	date = str(attendance.date) + ' ' + hour # creating format date plus time
 	hours = getHoursToday(attendance.employee.id, date)
 	rules = TimeKeeperRules.objects.filter(hour__lte = hours).order_by('-hour')[:1]
 	for item in rules:
@@ -4248,10 +4249,10 @@ def checkAttendanceBreaks(attendanceID):
 @login_required
 def retrieveAttendanceChecklist(request):
  	result = {'success' : False}
- 	if request.method == 'POST':
+	if request.method == 'POST':
 		if request.is_ajax():
 		 	checklist = AttendanceChecklist.objects.all()
-		 	attendance = checkAttendanceBreaks(request.POST['attendance'])
+		 	attendance = checkAttendanceBreaks(request.POST['id'])
 		 	result['problemLunch'] = attendance['problemLunch']
 		 	result['problemBreak'] = attendance['problemBreak']
 		 	result['break'] = attendance['breaks']
