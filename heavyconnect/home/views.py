@@ -4251,10 +4251,15 @@ def checkAttendanceBreaks(userID):
 @login_required
 def retrieveAttendanceChecklist(request):
  	result = {'success' : False}
+ 	print 1
 	if request.method == 'POST':
+		print 1
 		if request.is_ajax():
+			print 1
 		 	checklist = AttendanceChecklist.objects.all()
+		 	print 2
 		 	attendance = checkAttendanceBreaks(request.POST['id']) #user id
+		 	print 3
 		 	result['problemLunch'] = attendance['problemLunch']
 		 	result['problemBreak'] = attendance['problemBreak']
 		 	result['break'] = attendance['breaks']

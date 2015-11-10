@@ -207,7 +207,7 @@
 			$("#btnSignature").click(function(){
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
 				$("#messageTimekeeper").html("Checking shift...");
-				callChecklist("{{ csrf_token }}", "{% url 'retrieveAttendanceChecklist' %}");
+				callChecklist("{{ csrf_token }}", "{% url 'retrieveAttendanceChecklist' %}", idTimelog);
 			});
 			$("#createTeam").click(function(){
     			emptyDivs();
@@ -441,15 +441,17 @@
 				}
 			});
 		}
-		function callChecklist(token, url) {
+		function callChecklist(token, url, user_id) {
 			$.ajax({
 				method: "POST",
 				url: url,
-				data: {"csrfmiddlewaretoken": token},
+				data: {"csrfmiddlewaretoken": token, "id": user_id},
 				datatype: "json",
 				success: function(data, status, xhr){
 					if (data.success) {
+						var attendanceId = $("#attendanceId").val();
 						emptyDivs();
+						$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + attendanceId + "'>");
     					$("#messageTimekeeper").css("color", "#1F3801");	//green
     					$("#messageTimekeeper").html("Check before sign:");
     					$("#questions").css("text-align", "left");
@@ -478,6 +480,7 @@
 			$('#signModal').modal();
 		}
 		function saveSignature(token, url, signature, attendanceId){
+			console.log(signature + " - " + attendanceId);
 			$.ajax({
 				method : "POST",
 				url : url,
