@@ -4248,7 +4248,7 @@ def checkAttendanceBreaks(attendanceID):
 @login_required
 def retrieveAttendanceChecklist(request):
  	result = {'success' : False}
- 	if request.method == 'GET':
+ 	if request.method == 'POST':
 		if request.is_ajax():
 		 	checklist = AttendanceChecklist.objects.all()
 		 	attendance = checkAttendanceBreaks(request.POST['attendance'])
@@ -4281,7 +4281,7 @@ def retrieveAttendanceChecklist(request):
 	 	else:
 			result['code'] = 2 #Use ajax to perform requests
 	else:
-		result['code'] = 3 #Request was not GET
+		result['code'] = 3 #Request was not POST
  	return HttpResponse(json.dumps(result),content_type='application/json')
 
 def testbase64(request):
