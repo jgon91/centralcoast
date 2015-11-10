@@ -6,6 +6,7 @@ from django.utils.dateformat import DateFormat
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.db.models import Q
+from django.db.models import Count
 
 import json
 from datetime import datetime
@@ -2684,6 +2685,10 @@ def templateAddEquipmentManager(request):
 @login_required
 def scheduleManager(request):
     return render(request, 'manager/scheduleManager.html')
+   
+@login_required
+def timekeeperReport(request):
+	return render(request, 'manager/timekeeperReport.html')
 
 @login_required
 def pastTasks(request):
@@ -4458,3 +4463,77 @@ def breakFormView(request):
 		return redirect('formOk')
 	else:
 		return render(request, 'formTest.html', {'form': form})
+
+@login_required	
+def employeeWeekReport(request):
+	if request.method == 'POST':
+	 	if request.is_ajax():
+	 		result = {}
+			cols = []
+			
+			cols.append({'label': "Name", "type": "string"})
+			cols.append({'label': "Date", "type": "string"})
+			cols.append({'label': "Edited", "type": "boolean"})
+			rows = []
+			start_date = datetime.datetime.strptime("2015-11-01 00:00:00", '%Y-%m-%d %H:%M:%S')
+			end_date = datetime.datetime.now()
+			employeeAttendance = EmployeeAttendance.objects.filter(employee_id = 44, date__range = (start_date, end_date)).order_by('date')
+			
+			for item in employeeAttendance:
+				row = {}
+				row['c'] = [{"v": item.employee.user.first_name + " " + item.employee.user.last_name}, { "v": item.date.isoformat()}, {"v": item.edited}]
+				rows.append(row)
+				
+			result['cols'] = cols
+			result['rows'] = rows
+			
+		else:
+	 		result.append({'result' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'result' : 3}) #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+@login_required	
+def employeeWeekReportGroupBy(request):
+	if request.method == 'POST':
+	 	if request.is_ajax():
+	 		result = {}
+	 		cols = []
+	 		rows = []
+			
+			cols.append({'label': "Date", "type": "string"})
+			cols.append({'label': "Edited", "type": "number"})
+
+			start_date = datetime.datetime.strptime("2015-11-01 00:00:00", '%Y-%m-%d %H:%M:%S')
+			end_date = datetime.datetime.now()
+			employeeAttendance = EmployeeAttendance.objects.filter(employee_id = 44, date__range = (start_date, end_date)).order_by('date')
+			#result.append(['Day', 'Edited'])
+			for item in employeeAttendance:
+				row = {}
+				
+				row['c'] = [{ "v": item.date.isoformat()}, {"v": item.edited}]
+				rows.append(row)
+			
+			result['cols'] = cols
+			result['rows'] = rows
+		else:
+	 		result.append({'result' : 2}) #Use ajax to perform requests
+	else:
+	 	result.append({'result' : 3}) #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
