@@ -1770,7 +1770,7 @@ def timeLogById(request):
 			keeper2 =  datetime.timedelta(hours = 23, minutes = 59, seconds = 59) # when the break is on another day
 			for item in employeeAttendance:
 				result['attendanceId'] = item.id
-				breaks = Break.objects.filter(attendance__id = item.id)
+				breaks = Break.objects.filter(attendance__id = item.id).order_by('start')
 				breakDuration = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #variable used to decrease time from the total when one break still going on
 				breakTime = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) #help to calculate work time between breaks
 				time_aux = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) #variable used to remove second of the date
