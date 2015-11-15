@@ -732,7 +732,7 @@ def updateEquipmentStatus(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-
+@login_required
 def retrieveAllEquipmentInfoGPS(request):
 	result = {'success' : False}
 	if request.method == "POST":
@@ -746,7 +746,7 @@ def retrieveAllEquipmentInfoGPS(request):
 					for item2 in beaconGPS: 
 						aux['latitude'] = item2.gps.latitude
 						aux['longitude'] = item2.gps.longitude
-						aux['Date'] = str(item2.gps.timestamp)
+						aux['Date'] = str(item2.timestamp)
 				else:
 					aux['latitude'] = None
 					aux['longitude'] = None
@@ -780,7 +780,58 @@ def retrieveAllEquipmentInfoGPS(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
-
+@login_required
+def retrieveAllMachineInfoGPS(request):
+	result = {'success' : False}
+	# if request.method == "POST":
+	# 	if request.is_ajax():
+	machine = Machine.objects.all()
+	arraymachine = []
+	for item in machine:
+		aux = {}
+		if item.beacon != None:
+			beaconGPS = BeaconGPS.objects.filter(beacon__id = item.beacon.id).order_by('-timestamp')[:1]
+			for item2 in beaconGPS: 
+				aux['latitude'] = item2.gps.latitude
+				aux['longitude'] = item2.gps.longitude
+				aux['Date'] = str(item2.timestamp)
+		else:
+			aux['latitude'] = None
+			aux['longitude'] = None
+			aux['Date'] = None
+		aux['qr_code'] = item.qr_code
+		aux['manufacture'] = item.manufacturer_model.manufacturer.name
+		aux['serial'] = item.serial_number
+		aux['status'] = item.status
+		aux['model'] = item.manufacturer_model.model
+		aux['asset_number'] = item.asset_number
+		aux['horsepower'] = item.horsepower
+		aux['hitch_capacity'] = item.hitch_capacity
+		aux['hitch_category'] = str(item.hitch_category)
+		aux['drawbar_category'] = item.drawbar_category
+		aux['speed_range_min'] = item.speed_range_min
+		aux['speed_range_max'] = item.speed_range_max
+		aux['year_purchased'] = item.year_purchased
+		aux['engine_hours'] = item.engine_hours
+		aux['base_cost'] = str(item.base_cost)
+		aux['m_type'] = item.m_type
+		aux['front_tires'] = item.front_tires
+		aux['rear_tires'] = item.rear_tires
+		aux['steering'] = item.steering
+		aux['operator_station'] = item.operator_station
+		aux['hour_cost'] = item.hour_cost
+		aux['photo'] = item.photo
+		aux['photo1'] = item.photo1
+		aux['photo2'] = item.photo2
+		aux['nickname'] = item.nickname
+		arraymachine.append(aux)
+	result['machine'] = arraymachine
+	result['success'] = True
+	# 	else:
+	# 		result['code'] = 2 #The request is not AJAX
+	# else:
+	# 	result['code'] = 1 #The request is not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
 
