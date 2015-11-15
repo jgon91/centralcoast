@@ -732,6 +732,58 @@ def updateEquipmentStatus(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+
+def retrieveAllEquipmentInfoGPS(request):
+	result = {'success' : False}
+	if request.method == "POST":
+		if request.is_ajax():
+			equipment = Implement.objects.all()
+			arrayEquipment = []
+			for item in equipment:
+				aux = {}
+				if item.beacon != None:
+					beaconGPS = BeaconGPS.objects.filter(beacon__id = item.beacon.id).order_by('-timestamp')[:1]
+					for item2 in beaconGPS: 
+						aux['latitude'] = item2.gps.latitude
+						aux['longitude'] = item2.gps.longitude
+						aux['Date'] = str(item2.gps.timestamp)
+				else:
+					aux['latitude'] = None
+					aux['longitude'] = None
+					aux['Date'] = None
+				aux['nickname'] = item.nickname
+				aux['hitch_category'] = item.hitch_category
+				aux['speed_range_min'] = item.speed_range_min
+				aux['speed_range_max'] = item.speed_range_max
+				aux['base_cost'] = item.base_cost
+				# aux['equipment_type'] = str(item.equipment_type)
+				aux['manufacturer'] = item.manufacturer_model.manufacturer.name
+				aux['model'] = item.manufacturer_model.model
+				aux['asset_number'] = item.asset_number
+				aux['serial_number'] = item.serial_number
+				aux['horse_power_req'] = item.horse_power_req
+				aux['hitch_capacity'] = item.hitch_capacity_req
+				aux['drawbar_category'] = item.drawbar_category
+				aux['year_purchased'] = item.year_purchased
+				aux['status'] = item.status
+				aux['hour_cost'] = item.hour_cost
+				aux['photo'] = item.photo
+				aux['photo1'] = item.photo1
+				aux['photo2'] = item.photo2
+				arrayEquipment.append(aux)
+			result['Equipment'] = arrayEquipment
+			result['success'] = True
+		else:
+			result['code'] = 2 #The request is not AJAX
+	else:
+		result['code'] = 1 #The request is not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+
+
+
+
 # Driver 3.2
 # Get equipment info by qr_code, which can be a machine or a implement and return it
 @login_required

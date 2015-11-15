@@ -123,6 +123,7 @@ urlpatterns = [
     url(r'^retrieveGroup/$', main_views.retrieveGroup, name = 'retrieveGroup'),
     url(r'^retrieveParticipant/$', main_views.retrieveParticipant, name = 'retrieveParticipant'),
     url(r'^retrieveAttendanceChecklist/$', main_views.retrieveAttendanceChecklist, name = 'retrieveAttendanceChecklist'),
+    url(r'^retrieveAllEquipmentInfoGPS/$', main_views.retrieveAllEquipmentInfoGPS, name = 'retrieveAllEquipmentInfoGPS'),
     #url(r'^checkAttendanceBreaks/$', main_views.checkAttendanceBreaks, name = 'retrieveAttendanceChecklist'),
    ### End ###
 
