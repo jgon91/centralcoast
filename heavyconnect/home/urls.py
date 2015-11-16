@@ -133,6 +133,8 @@ urlpatterns = [
     ### End ###
     
     ### Reports ###
+    url(r'^reports/$', main_views.reports, name = 'reports'),
+    url(r'^listEquipmentReport/$', main_views.listEquipmentReport, name = 'listEquipmentReport'),
     url(r'^timekeeperReport/$', main_views.timekeeperReport, name = 'timekeeperReport'),
     url(r'^employeeWeekReport/$', main_views.employeeWeekReport, name = 'employeeWeekReport'),
     url(r'^employeeWeekReportGroupBy/$', main_views.employeeWeekReportGroupBy, name = 'employeeWeekReportGroupBy'),

@@ -60,20 +60,20 @@
 
 			function initialize(){
  			  var iconGood = {
-					url: '{% static "img/TractorGood.png" %}', // url
-					scaledSize: new google.maps.Size(30, 30), // scaled size
+					url: '{% static "imgSmall/tractorGreen.png" %}', // url
+					scaledSize: new google.maps.Size(40, 40), // scaled size
 					origin: new google.maps.Point(0,0), // origin
 					anchor: new google.maps.Point(0, 0) // anchor
    			};
    			var iconBroken = {
-					url: '{% static "img/TractorBroken.png" %}', // url
-					scaledSize: new google.maps.Size(30, 30), // scaled size
+					url: '{% static "imgSmall/tractorRed.png" %}', // url
+					scaledSize: new google.maps.Size(40, 40), // scaled size
 					origin: new google.maps.Point(0,0), // origin
 					anchor: new google.maps.Point(0, 0) // anchor
    			};
    			var iconService = {
-					url: '{% static "img/TractorService.png" %}', // url
-					scaledSize: new google.maps.Size(30, 30), // scaled size
+					url: '{% static "imgSmall/tractorYellow.png" %}', // url
+					scaledSize: new google.maps.Size(40, 40), // scaled size
 					origin: new google.maps.Point(0,0), // origin
 					anchor: new google.maps.Point(0, 0) // anchor
    			};
@@ -95,147 +95,12 @@
 					mapTypeId: google.maps.MapTypeId.HYBRID
 			  }
 
-				// Define the LatLng coordinates for the polygon.
-				//  new google.maps.LatLng(),
-				var fieldCoodinates1 = [
-					new google.maps.LatLng(36.638749, -121.637210),
-					new google.maps.LatLng(36.637145, -121.638126),
-					new google.maps.LatLng(36.634698, -121.631316),
-					new google.maps.LatLng(36.636262, -121.630419),
-				];
-				var fieldCoodinates2 = [
-					new google.maps.LatLng(36.639619, -121.629333),
-					new google.maps.LatLng(36.638830, -121.627064),
-					new google.maps.LatLng(36.635610, -121.627844),
-					new google.maps.LatLng(36.636710, -121.631010),
-				];
-				var fieldCoodinates3 = [
-					new google.maps.LatLng(36.642679, -121.641854),
-					new google.maps.LatLng(36.641549, -121.639430),
-					new google.maps.LatLng(36.640339, -121.640175),
-					new google.maps.LatLng(36.640707, -121.641142),
-					new google.maps.LatLng(36.640149, -121.641581),
-					new google.maps.LatLng(36.640638, -121.642750),
-					new google.maps.LatLng(36.640992, -121.642564),
-					new google.maps.LatLng(36.641182, -121.642818),
-				];
-				var fieldCoodinates4 = [
-					new google.maps.LatLng(36.633040, -121.632045),
-					new google.maps.LatLng(36.631818, -121.628675),
-					new google.maps.LatLng(36.630371, -121.628144),
-					new google.maps.LatLng(36.629038, -121.626391),
-					new google.maps.LatLng(36.628631, -121.626875),
-					new google.maps.LatLng(36.630910, -121.633177),
-				];
-				var fieldCoodinates5 = [
-					new google.maps.LatLng(36.630743, -121.633246),
-					new google.maps.LatLng(36.628520, -121.626921),
-					new google.maps.LatLng(36.627131, -121.628144),
-					new google.maps.LatLng(36.629206, -121.634054),
-				];
-				var fieldCoodinates6 = [
-					new google.maps.LatLng(36.629166, -121.634125),
-					new google.maps.LatLng(36.626991, -121.628223),
-					new google.maps.LatLng(36.625614, -121.629527),
-					new google.maps.LatLng(36.627555, -121.635034),
-				];
-				var fieldCoodinates7 = [
-					new google.maps.LatLng(36.638202, -121.638169),
-					new google.maps.LatLng(36.632870, -121.641179),
-					new google.maps.LatLng(36.639851, -121.657108),
-					new google.maps.LatLng(36.644553, -121.652464),
-					new google.maps.LatLng(36.643996, -121.651183),
-					new google.maps.LatLng(36.643211, -121.651680),
-					new google.maps.LatLng(36.642811, -121.650574),
-					new google.maps.LatLng(36.643490, -121.649923),
-					new google.maps.LatLng(36.641714, -121.645648),
-					new google.maps.LatLng(36.641244, -121.645973),
-					new google.maps.LatLng(36.640965, -121.645322),
-					new google.maps.LatLng(36.641348, -121.644975),
-					new google.maps.LatLng(36.640321, -121.642677),
-					new google.maps.LatLng(36.639904, -121.642893),
-					new google.maps.LatLng(36.639260, -121.641548),
-					new google.maps.LatLng(36.639625, -121.641245),
-				];
-
-				// Construct the polygon.
-				var field = new google.maps.Polygon({
-					name: 'Field 1',
-					paths: fieldCoodinates1,
-					strokeColor: '#000000',
-					strokeOpacity: 0.8,
-					strokeWeight: 3,
-					fillColor: '#FF0000',
-					fillOpacity: 0.35
-				});
-				var field2 = new google.maps.Polygon({
-					name: 'Field 2',
-					paths: fieldCoodinates2,
-					strokeColor: '#000000',
-					strokeOpacity: 0.8,
-					strokeWeight: 3,
-					fillColor: '#00ff00',
-					fillOpacity: 0.35
-				});
-				var field3 = new google.maps.Polygon({
-					name: 'Field 3',
-					paths: fieldCoodinates3,
-					strokeColor: '#000000',
-					strokeOpacity: 0.8,
-					strokeWeight: 3,
-					fillColor: '#0000ff',
-					fillOpacity: 0.35
-				});
-				var field4 = new google.maps.Polygon({
-					name: 'Field 4',
-					paths: fieldCoodinates4,
-					strokeColor: '#000000',
-					strokeOpacity: 0.8,
-					strokeWeight: 3,
-					fillColor: '#ff8000',
-					fillOpacity: 0.35
-				});
-				var field5 = new google.maps.Polygon({
-					name: 'Field 5',
-					paths: fieldCoodinates5,
-					strokeColor: '#000000',
-					strokeOpacity: 0.8,
-					strokeWeight: 3,
-					fillColor: '#ffff00',
-					fillOpacity: 0.35
-				});
-				var field6 = new google.maps.Polygon({
-					name: 'Field 6',
-					paths: fieldCoodinates6,
-					strokeColor: '#000000',
-					strokeOpacity: 0.8,
-					strokeWeight: 3,
-					fillColor: '#00ffff',
-					fillOpacity: 0.35
-				});
-				var field7 = new google.maps.Polygon({
-					name: 'Field 7',
-					paths: fieldCoodinates7,
-					strokeColor: '#000000',
-					strokeOpacity: 0.8,
-					strokeWeight: 3,
-					fillColor: '#6600cc',
-					fillOpacity: 0.35
-				});
-
 			  infowindow = new google.maps.InfoWindow();
 
     		var marker, i;
 
 				map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
-				field.setMap(map);
-				field2.setMap(map);
-				field3.setMap(map);
-				field4.setMap(map);
-				field5.setMap(map);
-				field6.setMap(map);
-				field7.setMap(map);
 
 				for(i = 1; i < tractorsQuant; i++){
 			  	  var marker = new google.maps.Marker({
@@ -253,114 +118,8 @@
 	       		 }
 	      		})(marker, i));
 			  }
-				// Add a listener for the click event.
-				google.maps.event.addListener(field, 'click', showArrays);
-				google.maps.event.addListener(field2, 'click', showArrays2);
-				google.maps.event.addListener(field3, 'click', showArrays3);
-				google.maps.event.addListener(field4, 'click', showArrays4);
-				google.maps.event.addListener(field5, 'click', showArrays5);
-				google.maps.event.addListener(field6, 'click', showArrays6);
-				google.maps.event.addListener(field7, 'click', showArrays7);
-
-				function showArrays(event) {
-
-					// Since this polygon has only one path, we can call getPath()
-					// to return the MVCArray of LatLngs.
-					var vertices = this.getPath();
-
-					var contentString = '<a href="http://www.google.com"><b>Ranch 1</b><br></a>';
-
-					// Replace the info window's content and position.
-					infoWindow.setContent(contentString);
-					infoWindow.setPosition(event.latLng);
-
-					infoWindow.open(map);
-				}
-				function showArrays2(event) {
-
-					// Since this polygon has only one path, we can call getPath()
-					// to return the MVCArray of LatLngs.
-					var vertices = this.getPath();
-
-					var contentString = '<a href="http://www.google.com"><b>Ranch 2</b><br></a>';
-
-					// Replace the info window's content and position.
-					infoWindow.setContent(contentString);
-					infoWindow.setPosition(event.latLng);
-
-					infoWindow.open(map);
-				}
-				function showArrays3(event) {
-
-					// Since this polygon has only one path, we can call getPath()
-					// to return the MVCArray of LatLngs.
-					var vertices = this.getPath();
-
-					var contentString = '<a href="http://www.google.com"><b>Ranch 3</b><br></a>';
-
-					// Replace the info window's content and position.
-					infoWindow.setContent(contentString);
-					infoWindow.setPosition(event.latLng);
-
-					infoWindow.open(map);
-				}
-				function showArrays4(event) {
-
-					// Since this polygon has only one path, we can call getPath()
-					// to return the MVCArray of LatLngs.
-					var vertices = this.getPath();
-
-					var contentString = '<a href="http://www.google.com"><b>Ranch 4</b><br></a>';
-
-					// Replace the info window's content and position.
-					infoWindow.setContent(contentString);
-					infoWindow.setPosition(event.latLng);
-
-					infoWindow.open(map);
-				}
-				function showArrays5(event) {
-
-					// Since this polygon has only one path, we can call getPath()
-					// to return the MVCArray of LatLngs.
-					var vertices = this.getPath();
-
-					var contentString = '<a href="http://www.google.com"><b>Ranch 5</b><br></a>';
-
-					// Replace the info window's content and position.
-					infoWindow.setContent(contentString);
-					infoWindow.setPosition(event.latLng);
-
-					infoWindow.open(map);
-				}
-				function showArrays6(event) {
-
-					// Since this polygon has only one path, we can call getPath()
-					// to return the MVCArray of LatLngs.
-					var vertices = this.getPath();
-
-					var contentString = '<a href="http://www.google.com"><b>Ranch 6</b><br></a>';
-
-					// Replace the info window's content and position.
-					infoWindow.setContent(contentString);
-					infoWindow.setPosition(event.latLng);
-
-					infoWindow.open(map);
-				}
-				function showArrays7(event) {
-
-					// Since this polygon has only one path, we can call getPath()
-					// to return the MVCArray of LatLngs.
-					var vertices = this.getPath();
-
-					var contentString = '<a href="http://www.google.com"><b>Ranch 7</b><br></a>';
-
-					// Replace the info window's content and position.
-					infoWindow.setContent(contentString);
-					infoWindow.setPosition(event.latLng);
-
-					infoWindow.open(map);
-				}
-
+			
+				
 				//google.maps.event.addDomListener(window, 'load', initialize);
 			}
 		</script>

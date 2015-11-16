@@ -2860,6 +2860,16 @@ def listImplement(request):
 def geofence(request):
 	return render(request, 'geoFence.html')
 
+@login_required
+def reports(request):
+	return render(request, 'manager/reports.html')
+
+@login_required
+def listEquipmentReport(request):
+	return render(request, 'manager/reports/listEquipmentReport.html')
+
+
+
 def retrieveScannedEmployee(request):
 	result = {'success' : False}
   	if request.method == 'POST':
@@ -3091,7 +3101,7 @@ def getFilteredMachineWithGPS(request):
 		if request.POST['status_quarantine'] == '0':
 			status_quarantine = 4
 
-	 	if not request.is_ajax():
+	 	if request.is_ajax():
 			try:
 				# Filtering by manufacturer, hitch_cap_req, horse_power_req, and status.
 				# Do not filter by manufacture in case if this filter hasn't been chosen
