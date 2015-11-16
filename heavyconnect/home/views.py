@@ -6,6 +6,7 @@ from django.utils.dateformat import DateFormat
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 from django.db.models import Q
+from django.core.files import File
 
 import json
 from datetime import datetime
@@ -1768,6 +1769,7 @@ def timeLogById(request):
 			count = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #counter to keep all the worked hours
 			keeper = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #this variable will keep the last break. It is useful when the shift is not done
 			keeper2 =  datetime.timedelta(hours = 23, minutes = 59, seconds = 59) # when the break is on another day
+			print employeeAttendance
 			for item in employeeAttendance:
 				result['attendanceId'] = item.id
 				breaks = Break.objects.filter(attendance__id = item.id).order_by('start')
@@ -3077,7 +3079,8 @@ def getAllEmployees(request):
 				for each in all_employee:
 					each_result['first_name'] = each.user.first_name
 					each_result['last_name'] = each.user.last_name
-					each_result['user_id'] = each.user.id					
+					each_result['user_id'] = each.user.id
+					each_result['photo'] = each.photoEmployee.name																			
 					employees.append(each_result)
 					each_result = {}
 				result['success'] = True
@@ -3351,16 +3354,19 @@ def getAllManagerEmployees(request):
 				manager = Employee.objects.get(user = request.user)								
 				all_manager_employee = Employee.objects.filter(manager = manager.id)	
 				employees = []
-				if manager != manager.manager:					
+				if manager != manager.manager:										
 					each_result["first_name"] = manager.user.first_name
 					each_result["last_name"] = manager.user.last_name
 					each_result["user_id"] = manager.user.id
+					each_result['photo'] = manager.photoEmployee.name
+					print each_result['photo']
 					employees.append(each_result)
 					each_result = {}	
-				for each in all_manager_employee:
+				for each in all_manager_employee:					
 					each_result['first_name'] = each.user.first_name
 					each_result['last_name'] = each.user.last_name
-					each_result['user_id'] = each.user.id					
+					each_result['user_id'] = each.user.id	
+					each_result['photo'] = each.photoEmployee.name				
 					employees.append(each_result)
 					each_result = {}				
 				result['success'] = True
@@ -4108,17 +4114,20 @@ def employeeManagerUpdateForm(request):
 def employeeFormadd(request):
 	result = {'success' : False}
 	if request.method == "POST":
+		print "hey"		
 		userform = UserForm(request.POST)
-		employform = employeeForm(request.POST)
+		employform = employeeForm(request.POST, request.FILES)
 		if userform.is_valid() and employform.is_valid():
+			print "test"
 			new_user_username = userform.cleaned_data['username']
 			new_user_password = userform.cleaned_data['password']
 			new_user_first_name = userform.cleaned_data['first_name']
 			new_user_last_name = userform.cleaned_data['last_name']
 			new_user, created = User.objects.get_or_create(username = new_user_username, defaults = {'first_name' : new_user_first_name, 'last_name' : new_user_last_name})
 			if created:
+				print "test0"
 				new_user.set_password(new_user_password)
-				new_user.save()
+				new_user.save()				
 				emplo_company = employform.cleaned_data['company_id']
 				emplo_language = employform.cleaned_data['language']
 				emplo_qr_code = employform.cleaned_data['qr_code']
@@ -4129,10 +4138,19 @@ def employeeFormadd(request):
 				emplo_photo = employform.cleaned_data['photo']
 				emplo_notes = employform.cleaned_data['notes']
 				emplo_teamManager = employform.cleaned_data['teamManager']
-				emplo_manager = employform.cleaned_data['manager']
+				emplo_manager = employform.cleaned_data['manager']							
+				print "test1"	
 				try:
-					employee = Employee(user = new_user, language = emplo_language, permission_level = emplo_permission, active = '1', company_id = emplo_company, qr_code = emplo_qr_code, start_date = emplo_start, hour_cost = emplo_cost,contact_number = emplo_contact, notes = emplo_notes, photo = emplo_photo, manager = emplo_manager)
-					employee.save()
+					image = request.FILES['image']		
+				except:
+					print "test1.1"
+					image = ""	
+				try:					
+					print "test2.0"		
+					# last_employee = Employee.objects.latest('id')										
+					employee = Employee(user = new_user, language = emplo_language, permission_level = emplo_permission, active = '1', company_id = emplo_company, qr_code = emplo_qr_code, start_date = emplo_start, hour_cost = emplo_cost,contact_number = emplo_contact, notes = emplo_notes, photo = emplo_photo, manager = emplo_manager, photoEmployee = image)
+					employee.save()																							
+					print "test2.2"
 					result['success'] = True
 				except:
 					User.objects.get(username = new_user_username).delete()
@@ -4147,10 +4165,16 @@ def employeeFormadd(request):
 			return HttpResponse(json.dumps(result),content_type='application/json')
 	else:
 		userform = UserForm(request.POST)
-		employform = employeeForm(request.POST)
+		employform = employeeForm(request.POST, request.FILES)
 	employform = employeeForm(initial = {'start_date' : datetime.datetime.now()})
 	return render(request,'manager/formEmployee.html', {'form': userform, 'form1': employform})
 ### End ###
+
+# def handle_uploaded_file(f, employee_id):
+#     with open('media/employee' + employee_id + '.jpg', 'wb+') as destination:
+#         for chunk in f.chunks():
+#             destination.write(chunk)
+#     return destination
 
 ### Password update view ###
 @login_required
