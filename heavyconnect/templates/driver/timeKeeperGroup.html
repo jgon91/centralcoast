@@ -6,13 +6,14 @@
 		<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
 		<script src="{% static 'jSignature/jSignature.min.js'%}"></script>
 		<script>
-		var action = -1;	//1 = start shift ... 2 = stop shift ... 3 = start break ... 4 = stop break ... 5 = timelog 
+		var action = -1;	//1 = start shift ... 2 = stop shift ... 3 = start break ... 4 = stop break ... 5 = timelog
 		var lunch = 0;		//	0 = break ... 1 = lunch
 		var employeesTimelog = [];
 		var idTimelog;
 		var user_id;
-		var id_checked = [];	
+		var id_checked = [];
 		var id_scanned = []; // Reiniatilize this array when create a new group
+		var name_scanned = [];
 		var teamChecked = -1;
 		var arrayNames = [];
 		var arrayTeams = [];
@@ -22,16 +23,16 @@
 		$(document).ready(function() {
 			$("#foot").load("{%url 'footer'%}");
 			$("#head").load("{%url 'headerDriver'%}");
-			$("#signature").jSignature();	
+			$("#signature").jSignature();
 			$("#saveSignature").click(function(){
 				var $sigdiv = $("#signature");
-				var datapair = $sigdiv.jSignature("getData","base30");	
+				var datapair = $sigdiv.jSignature("getData","base30");
 				var attendanceId = $("#attendanceId").val();
 				saveSignature("{{ csrf_token }}", "{% url 'saveSignature' %}", datapair[1], attendanceId);
 			});
 			$("#clearSignature").click(function() {
 				var $sigdiv = $("#signature");
-				$sigdiv.jSignature("reset");		
+				$sigdiv.jSignature("reset");
 			});
 			getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
 			getAllManagerEmployees("{{ csrf_token}}", "{% url 'getAllManagerEmployees' %}");
@@ -39,31 +40,31 @@
 
 			$("input[name='employeeSelected']").change(function() {
 			   if ($("input[id='"+this.id+"']").is(":checked")) {
-					user_id = this.value;				   				   		
-					id_checked.push(user_id);									
+					user_id = this.value;
+					id_checked.push(user_id);
 				} else {
 				    user_id = this.value;
 					index = id_checked.indexOf(user_id);
 					id_checked.splice(index, 1);
 				}
 			});
-		    $('#selectAllEmployee').click(function(event) {  
+		    $('#selectAllEmployee').click(function(event) {
 		        if(this.checked) { // check select status
-		            $('.checkboxEmployee').each(function() { 
+		            $('.checkboxEmployee').each(function() {
 		            	if (this.checked != true) {
 			                this.checked = true;
-			                user_id = this.value;				   				   		
-							id_checked.push(user_id);	  
+			                user_id = this.value;
+							id_checked.push(user_id);
 						}
 		            });
 		        }else{
-		            $('.checkboxEmployee').each(function() { 
-		                this.checked = false; //deselect all checkboxes 
+		            $('.checkboxEmployee').each(function() {
+		                this.checked = false; //deselect all checkboxes
 		                user_id = this.value;
 						index = id_checked.indexOf(user_id);
 						id_checked.splice(index, 1);
-		            });         
-		        }								
+		            });
+		        }
 		    });
 		    $('html').on('click', function(e) {
 		    	if (e.target.className == "errorIcon") {
@@ -217,6 +218,7 @@
     			$("#team").append('<table id="tableCreateTeam"><tr><td><input type="text" id="nameTeam" placeholder="{% trans 'Team Name...' %}"/></td></tr>'
     							+ '<tr><td><label>Save Team?&nbsp;&nbsp;<input type="checkbox" id="saveTeam"/></label></td></tr>'
     							+ '<tr><td><input type="button" id="scanNow" onclick="openAdd()" value="{% trans 'Add Employees' %}" class="btnsTimekeeper"/></td></tr>'
+    							+ '<tr><td><div id="addingList"></div></tr></td>'
     							+ '<tr><td><input type="button" id="addNow" onclick="createNow(id_scanned)" value="Create Now"></td></tr></table>');
 			});
 		});
@@ -415,7 +417,7 @@
 						}
 						if (lunch == 1) {
 							$("#messageTimekeeper").html("Lunch Ended:");
-						}	
+						}
 					}
 				}
 			});
@@ -569,9 +571,15 @@
 									lunchs++;
 								}
 							}
-							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + data.Attendance_end + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' onclick='editStopShift(this.id, currentEnd)'/></td></tr>"); 
+							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + data.Attendance_end + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' onclick='editStopShift(this.id, currentEnd)'/></td></tr>");
 							$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + data.attendanceId + "'>");
-							$("#btnSignature").append("<input type='button' value='SIGN'/>");
+							if (data.signature == true) {
+								$("#btnSignature").append("<input type='button' id='btnSign' value='SIGNED'/>");
+								$("#btnSign").css("background", "#799520");
+							} else {
+								$("#btnSignature").append("<input type='button' id='btnSign' value='SIGN'/>");
+								$("#btnSign").css("background", "#E5E5E5");
+							}
 						}
 						$("#tableTimelog").append("<tr><td colspan='2'>Total: " + data.Total + " hours</td></tr>");
 					//}
@@ -587,7 +595,7 @@
 					"csrfmiddlewaretoken" : token,
 				},
 				datatype : "json",
-				success : function(data, status, xhr) {	
+				success : function(data, status, xhr) {
 					if (data.success) {
 						//$("#content").append("<img src='{% static 'media/' %}" + data.employees[0].photo + " '/>");
 						employeesTimelog = data.employees;
@@ -596,13 +604,13 @@
 													+"<td>Select All</td>"
 												+"</tr>");
 						for (var i = 0; i < data.employees.length; i++) {
-							$("#employeeList").append("<tr>" 
+							$("#employeeList").append("<tr>"
 														+ "<td><label><input class='checkboxEmployee' type='checkbox' value='" + data.employees[i].user_id
 														+ "' id='checkbox" + (i+1) + "' name='employeeSelected'/></label>"
-														+ "</td>" 
-														+ "<td>" + data.employees[i].first_name + " " 
-														+ data.employees[i].last_name 
-														+ "</td>" + 
+														+ "</td>"
+														+ "<td>" + data.employees[i].first_name + " "
+														+ data.employees[i].last_name
+														+ "</td>" +
 													  "</tr>");
 						}
 					}
@@ -635,7 +643,7 @@
 		function popoverError(popId) {
 			$('#' + popId).popover();
 		}
-		
+
 		function hideModal() {
 			setTimeout(function(){
     			$('#showTimekeeperModal').modal('hide')
@@ -757,13 +765,13 @@
 		function addEmployeeGroup(keeppingAdd) {
 			if (keeppingAdd == false) {
 				$("#addEmployee").modal("hide");
-				$("#qrCodeModal").modal("hide");						
+				$("#qrCodeModal").modal("hide");
 			} else {
 				$("#qrCodeModal").modal();
 				$("#addEmployee").modal("hide");
 			}
 		}
-		function checkEmployeeScanned(token, url, id) {		
+		function checkEmployeeScanned(token, url, id) {
 			if (checkQrCode(id)){
 				$.ajax({
 					method : "GET",
@@ -775,21 +783,28 @@
 					}, // id could be qrCode or employeeId
 					datatype : "json",
 					success : function(data, status, xhr) {
-						$("#errorQrCode").html("")			
-						var data_scanned = {}; 								
-						if (data.success) {								
+						$("#errorQrCode").html("")
+						var data_scanned = {};
+						if (data.success) {
 							$("#qrCodeModal").modal("hide");
-							feedBackQrCode("show", "green", "{% trans 'Employee added to the group!' %}");					
+							feedBackQrCode("show", "green", "{% trans 'Employee added to the group!' %}");
 							data_scanned.qr_code = id;
-							data_scanned.employee = data.employee					
-							id_scanned.push(data_scanned);													
-						} else {		
-							feedBackQrCode("show", "red", "{% trans 'This employee does not exist!' %}");				
+							data_scanned.employee = data.employee
+							id_scanned.push(data_scanned);
+							$("#addingList").empty();
+							var addingHtml = '<select><option> -- Employees Added -- </option>';
+							for (i = 0; i < id_scanned.length; i++) {
+								addingHtml += '<option disabled>' + id_scanned[i].employee + '</option>';
+    						}
+    						addingHtml += '</select>';
+    						$("#addingList").append(addingHtml);
+						} else {
+							feedBackQrCode("show", "red", "{% trans 'This employee does not exist!' %}");
 						}
 					}
 				});
 			}else{
-				feedBackQrCode("show", "red", "{% trans 'Employee already added to the group!' %}");						
+				feedBackQrCode("show", "red", "{% trans 'Employee already added to the group!' %}");
 			}
 		}
 		function checkQrCode(qr_code){
@@ -797,21 +812,21 @@
 				if (qr_code == id_scanned[i].qr_code) {
 					return false;
 				}
-			}	
+			}
 			return true;
 		}
 		function feedBackQrCode(modal, color, message){
-			$("#addEmployee").modal(modal);					
-			$("#errorQrCode").css("color", color)										
-			$("#errorQrCode").html(message)	
-			$("#qr_code").val(""); // Clean input text #qr_code						
+			$("#addEmployee").modal(modal);
+			$("#errorQrCode").css("color", color)
+			$("#errorQrCode").html(message)
+			$("#qr_code").val(""); // Clean input text #qr_code
 		}
 		</script>
 		<style>
 			label {
 				 padding: 10px;
 				 margin: 0px;
-				 display: block; 
+				 display: block;
 			}
 			#tableMessage {
 				margin: auto;
@@ -864,7 +879,7 @@
 		<footer>
 			&copy;2015 Heavy Connect, Inc.
 		</footer>
-		
+
 		<div id="clearBoth"></div>
 		<!-- MODAL SIGNATURE - TIMEKEEPER -->
 		<div class="modal fade" id="signModal" role="dialog">
@@ -878,18 +893,18 @@
 						<div id="signature"></div>
 						<button type="button" id="clearSignature" class="btn btn-default">{% trans 'Clear' %}</button>
 						<!--<button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>-->
-						
+
 							<button type="button" id="saveSignature" class="btn btn-success" >
 								{% trans 'Confirm' %}
 							</button>
-						
+
 					</div>
 					<div id="clearBoth"></div>
 				</div>
 			</div>
 		</div>
 	  </div>
-		
+
 		<div id="clearBoth"></div>
 		<!-- MODAL OF ALERT - TIMEKEEPER -->
 		<div class="modal fade" id="showTimekeeperModal" role="dialog">
@@ -919,13 +934,13 @@
 						<div id="divTimelog"></div>
 						<div id="questions"></div>
 						<div id="btnSignature"></div>
-						<div id="divSignNow"></div>						
+						<div id="divSignNow"></div>
 						<br>
 						<div class="both"></div>
 					</div>
 				</div>
 			</div>
-		</div>		
+		</div>
 
 		<div class="modal fade" id="qrCodeModal" role="dialog">
 			<div>
@@ -974,7 +989,7 @@
 				<!-- Modal content-->
 				<div class="modal-content modalTask" style="text-align: center;">
 					<button type="button" class="closeTask" data-dismiss="modal"></button>
-					<span class="modal-title" id="titleModalSchedule" style="margin-left: 50px;">{% trans 'Scan QR-Code says:' %}					
+					<span class="modal-title" id="titleModalSchedule" style="margin-left: 50px;">{% trans 'Scan QR-Code says:' %}
 					</span>
 					</br>
 					<span id="errorQrCode" style="font-weight: bold; text-align: center;"></span>
@@ -999,7 +1014,7 @@
 	<script type="text/javascript" src="{% static 'WebCodeCam/js/WebCodeCam.js' %}"></script>
 	<script>
 	$(document).ready(function(){
-    	$('[data-toggle="popover"]').popover();   
+    	$('[data-toggle="popover"]').popover();
 	});
 </script>
 </html>

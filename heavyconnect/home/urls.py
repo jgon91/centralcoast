@@ -123,12 +123,21 @@ urlpatterns = [
     url(r'^retrieveGroup/$', main_views.retrieveGroup, name = 'retrieveGroup'),
     url(r'^retrieveParticipant/$', main_views.retrieveParticipant, name = 'retrieveParticipant'),
     url(r'^retrieveAttendanceChecklist/$', main_views.retrieveAttendanceChecklist, name = 'retrieveAttendanceChecklist'),
+    url(r'^retrieveAllEquipmentInfoGPS/$', main_views.retrieveAllEquipmentInfoGPS, name = 'retrieveAllEquipmentInfoGPS'),
+    url(r'^retrieveAllMachineInfoGPS/$', main_views.retrieveAllMachineInfoGPS, name = 'retrieveAllMachineInfoGPS'),
     #url(r'^checkAttendanceBreaks/$', main_views.checkAttendanceBreaks, name = 'retrieveAttendanceChecklist'),
    ### End ###
 
-    ###Insert###
+    ### Insert ###
     url(r'^createManufacture/$', CRUD.createManufacture, name = 'createManufacture'),
-    ###End###
+    ### End ###
+    
+    ### Reports ###
+    url(r'^timekeeperReport/$', main_views.timekeeperReport, name = 'timekeeperReport'),
+    url(r'^employeeWeekReport/$', main_views.employeeWeekReport, name = 'employeeWeekReport'),
+    url(r'^employeeWeekReportGroupBy/$', main_views.employeeWeekReportGroupBy, name = 'employeeWeekReportGroupBy'),
+    
+    ### End ###
 
     ### Froms ###
     url(r'^formOk/$', main_views.formOk, name = 'formOk'),
