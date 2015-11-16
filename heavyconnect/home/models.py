@@ -245,7 +245,8 @@ class Employee(models.Model):
 	photo = models.URLField(max_length = 200, blank = True, null = True)
 	notes = models.CharField(max_length = 250, null = True, blank = True)
 	manager = models.ForeignKey('self', null = True, blank = True)
-	teamManager = models.BooleanField(default = False)
+	teamManager = models.BooleanField(default = False)	
+	photoEmployee = models.ImageField(upload_to='employee', default='employee/no.jpg')
 
 	def __unicode__(self):
 		return  "First Name: " + str(self.user.first_name) + ", Last Name: " + str(self.user.last_name) + ", User ID: " + str(self.user.id) + ", ID: " + str(self.id) + " Team Manager :" + str(self.teamManager)
