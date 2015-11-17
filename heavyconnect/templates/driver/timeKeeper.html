@@ -32,11 +32,11 @@
 				} else {
 					$("#messageTimekeeper").html("Clock-out?");
 				}
-				emptyModal();
+				emptyDivs();
 				$("#confirmShift").append('<input type="button" value="{% trans 'CONFIRM' %}" class="btnsTimekeeper"/>');
 			});
 			$("#confirmShift").click(function() {
-				emptyModal();
+				emptyDivs();
 				if (shiftStarted == 0) {
 					$("#messageTimekeeper").html("Starting shift...");
 					$('#confirmShift').hide();
@@ -54,11 +54,11 @@
 				} else {
 					$("#messageTimekeeper").html("End break?");
 				}
-				emptyModal();
+				emptyDivs();
 				$("#confirmBreak").append('<input type="button" value="{% trans 'CONFIRM' %}" class="btnsTimekeeper"/>');
 			});
 			$("#confirmBreak").click(function() {
-				emptyModal();
+				emptyDivs();
 				if (lunchStarted == 1) {
 					$("#messageTimekeeper").html("You cannot start 2 breaks at the same time.");
 					hideModal();
@@ -79,11 +79,11 @@
 				} else {
 					$("#messageTimekeeper").html("End lunch?");
 				}
-				emptyModal();
+				emptyDivs();
 				$("#confirmLunch").append('<input type="button" value="{% trans 'CONFIRM' %}" class="btnsTimekeeper"/>');
 			});
 			$("#confirmLunch").click(function() {
-				emptyModal();
+				emptyDivs();
 				if (breakStarted == 1) {
 					$("#messageTimekeeper").html("You cannot start 2 breaks at the same time.");
 				} else if (lunchStarted == 0) {
@@ -98,7 +98,7 @@
 			});
 			$("#timelog").click(function() {
 				$('#showTimekeeperModal').modal();
-				emptyModal();
+				emptyDivs();
 				$("#messageTimekeeper").html("TIMELOG");
 				timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
 			});
@@ -303,9 +303,8 @@
 								$("#btnSignature").append("<input type='button' id='btnSign' value='SIGN'/>");
 								$("#btnSign").css("background", "#E5E5E5");
 							}
-							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + data.Attendance_end + "</td></tr>");
 					}
-					$("#tableTimelog").append("<tr><td colspan='2'>Total: " + data.Total + " hours</td></tr>");
+					$("#tableTimelog").append("<tr><td colspan='3'>Total: " + data.Total + " hours</td></tr>");
 				}
 			});
 		}
@@ -402,11 +401,14 @@
 				}
 			});
 		}
-		function emptyModal() {
+		function emptyDivs() {
 				$("#confirmShift").empty();
 				$("#confirmBreak").empty();
 				$("#confirmLunch").empty();
 				$("#divTimelog").empty();
+				$("#btnSignature").empty();
+				$("#divSignNow").empty();
+				$("#btnSignNow").empty();
 		}
 		</script>
 	</head>
@@ -450,12 +452,14 @@
 				<!-- Modal content-->
 				<div class="modal-content modalTimekeeper">
 					<div class="modal-body">
-						<button type="button" class="closeEquip" data-dismiss="modal"></button>
+						<button type="button" class="closeTimekeeper" data-dismiss="modal"></button>
 						<span id="messageTimekeeper"></span>
 						<div id="confirmShift"></div>
 						<div id="confirmBreak"></div>
 						<div id="confirmLunch"></div>
 						<div id="divTimelog"></div>
+						<div id="btnSignature"></div>
+						<div id="divSignNow"></div>
 						<br>
 						<div class="both"></div>
 					</div>
