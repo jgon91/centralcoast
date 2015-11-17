@@ -627,7 +627,7 @@ def getQuickUser(request):
 				result['last_name'] = employee.user.last_name
 				result['permission_level'] = employee.permission_level
 				result['user_id'] = employee.user_id
-				result['url'] = employee.photo
+				result['url'] = employee.photoEmployee.name
 				result['success'] = True
 	 		except Employee.DoesNotExist:
 	 			result['code'] = 1 #There is no users associated with this
@@ -2034,7 +2034,7 @@ def getEmployeeShifts(request):
 				result['qr_code'] = employee.qr_code
 				result['contact_number'] = employee. contact_number
 				result['permission_level'] = employee.permission_level
-				result['photo_url'] = employee.photo
+				result['photo_url'] = employee.photoEmployee
 
 				attendance = EmployeeAttendance.objects.filter(employee = employee).order_by('-date').first()
 
@@ -2880,7 +2880,7 @@ def retrieveScannedEmployee(request):
 				employee = Employee.objects.get(qr_code = request.POST['qr_code'])
 				result['first_name'] = employee.user.first_name
 				result['last_name'] = employee.user.last_name
-				result['photo'] = employee.photo
+				result['photo'] = employee.photoEmployee.name
 			except Employee.DoesNotExist:
 				result['code'] = 1 #There is no records for this employee
 		else:
@@ -4185,11 +4185,11 @@ def employeeManagerUpdateForm(request):
 	result = {'success' : False}
 	if request.method == "POST":
 		userform = UserFormUpdate(request.POST)
-		employform = employeeUpdateForm(request.POST)
+		employform = employeeUpdateForm(request.POST, request.FILES)
 		user_id = request.POST['user']
 		if userform.is_valid() and employform.is_valid():
-			try:
-				emplo = Employee.objects.get(user_id = user_id)
+			try:				
+				emplo = Employee.objects.get(user_id = user_id)			
 				emplo.user.first_name = userform.cleaned_data['first_name']
 				emplo.user.last_name = userform.cleaned_data['last_name']
 				emplo.company_id = employform.cleaned_data['company_id']
@@ -4199,17 +4199,21 @@ def employeeManagerUpdateForm(request):
 				emplo.qr_code = employform.cleaned_data['qr_code']
 				emplo.hour_cost = employform.cleaned_data['hour_cost']
 				emplo.contact_number = employform.cleaned_data['contact_number']
-				emplo.permission_level = employform.cleaned_data['permission_level']
-				emplo.photo = employform.cleaned_data['photo']
+				emplo.permission_level = employform.cleaned_data['permission_level']				
 				emplo.notes = employform.cleaned_data['notes']
 				emplo.teamManager = employform.cleaned_data['teamManager']
-				emplo.manager = employform.cleaned_data['manager']
+				emplo.manager = employform.cleaned_data['manager']				
 
 				if emplo.active == False:
 					 emplo.user.is_active = False
 				else:
 					emplo.user.is_active = True
-					
+				try:
+					image = request.FILES['image']
+				except:
+					image = "employee/no.jpg"
+
+				emplo.photoEmployee = image
 				emplo.user.save()
 				emplo.save()
 				return render(request, 'manager/formSuccess.html')
@@ -4223,7 +4227,7 @@ def employeeManagerUpdateForm(request):
 			user_id = request.GET.get('user_id')
 			emplo = Employee.objects.get(user__id = user_id)
 			userform = UserFormUpdate(initial = {'first_name' : emplo.user.first_name, 'last_name' : emplo.user.last_name})
-			employform = employeeUpdateForm(initial = {'user' : user_id,'notes' : emplo.notes, 'photo' : emplo.photo, 'permission_level' : emplo.permission_level ,'contact_number' : emplo.contact_number ,'hour_cost' : emplo.hour_cost, 'qr_code' : emplo.qr_code ,'language' : emplo.language , 'active' : emplo.active, 'last_task' : emplo.last_task ,'start_date' : emplo.start_date,'company_id' : emplo.company_id, 'manager' : emplo.manager, 'active' : emplo.active})
+			employform = employeeUpdateForm(initial = {'user' : user_id,'notes' : emplo.notes, 'photoEmployee' : emplo.photoEmployee, 'permission_level' : emplo.permission_level ,'contact_number' : emplo.contact_number ,'hour_cost' : emplo.hour_cost, 'qr_code' : emplo.qr_code ,'language' : emplo.language , 'active' : emplo.active, 'last_task' : emplo.last_task ,'start_date' : emplo.start_date,'company_id' : emplo.company_id, 'manager' : emplo.manager, 'active' : emplo.active})
 			return render(request,'manager/employeeUpdate.html', {'form': userform, 'form1': employform})
 		except:
 			result['code'] = 2 #Employee does not exist
@@ -4238,15 +4242,13 @@ def employeeFormadd(request):
 		print "hey"		
 		userform = UserForm(request.POST)
 		employform = employeeForm(request.POST, request.FILES)
-		if userform.is_valid() and employform.is_valid():
-			print "test"
+		if userform.is_valid() and employform.is_valid():			
 			new_user_username = userform.cleaned_data['username']
 			new_user_password = userform.cleaned_data['password']
 			new_user_first_name = userform.cleaned_data['first_name']
 			new_user_last_name = userform.cleaned_data['last_name']
 			new_user, created = User.objects.get_or_create(username = new_user_username, defaults = {'first_name' : new_user_first_name, 'last_name' : new_user_last_name})
-			if created:
-				print "test0"
+			if created:				
 				new_user.set_password(new_user_password)
 				new_user.save()				
 				emplo_company = employform.cleaned_data['company_id']
@@ -4255,23 +4257,18 @@ def employeeFormadd(request):
 				emplo_start = employform.cleaned_data['start_date']
 				emplo_cost = employform.cleaned_data['hour_cost']
 				emplo_contact = employform.cleaned_data['contact_number']
-				emplo_permission = employform.cleaned_data['permission_level']
-				emplo_photo = employform.cleaned_data['photo']
+				emplo_permission = employform.cleaned_data['permission_level']				
 				emplo_notes = employform.cleaned_data['notes']
 				emplo_teamManager = employform.cleaned_data['teamManager']
-				emplo_manager = employform.cleaned_data['manager']							
-				print "test1"	
+				emplo_manager = employform.cleaned_data['manager']											
 				try:
 					image = request.FILES['image']		
-				except:
-					print "test1.1"
+				except:					
 					image = ""	
-				try:					
-					print "test2.0"		
+				try:										
 					# last_employee = Employee.objects.latest('id')										
 					employee = Employee(user = new_user, language = emplo_language, permission_level = emplo_permission, active = '1', company_id = emplo_company, qr_code = emplo_qr_code, start_date = emplo_start, hour_cost = emplo_cost,contact_number = emplo_contact, notes = emplo_notes, photo = emplo_photo, manager = emplo_manager, photoEmployee = image)
-					employee.save()																							
-					print "test2.2"
+					employee.save()																												
 					result['success'] = True
 				except:
 					User.objects.get(username = new_user_username).delete()
@@ -4334,8 +4331,7 @@ def employeeUpdateFormView(request):
 			emplo.user.last_name = userform.cleaned_data['last_name']
 			emplo.manager = employform.cleaned_data['manager']
 			emplo.language = employform.cleaned_data['language']
-			emplo.contact_number = employform.cleaned_data['contact_number']
-			emplo.photo = employform.cleaned_data['photo']
+			emplo.contact_number = employform.cleaned_data['contact_number']		
 			emplo.notes = employform.cleaned_data['notes']
 			emplo.active = employform.cleaned_data['active']
 			emplo.user.save()
