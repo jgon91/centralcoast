@@ -2870,6 +2870,10 @@ def reports(request):
 def listEquipmentReport(request):
 	return render(request, 'manager/reports/listEquipmentReport.html')
 
+@login_required
+def equipmentOnMap(request):
+	return render(request, 'manager/equipmentOnMap.html')
+
 
 
 def retrieveScannedEmployee(request):

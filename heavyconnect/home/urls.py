@@ -46,6 +46,7 @@ urlpatterns = [
     url(r'^formSuccess/$', main_views.formSuccess, name='formSuccess'),
     url(r'^listEmployee/$', main_views.listEmployee, name='listEmployee'),
     url(r'^scheduleManager/$', main_views.scheduleManager, name='scheduleManager'),
+    url(r'^equipmentOnMap/$', main_views.equipmentOnMap, name='equipmentOnMap'),
 
     ### Functions ###
     url(r'^employeeLocation/$', main_views.getEmployeeLocation, name = 'employeeLocation'),
