@@ -2,11 +2,14 @@
 <html lang="en">
 	<head>
 		{% load staticfiles %}
+		{% load i18n %}
 		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
 		<script>
-			$(document).ready(function() {
-				$("#headHome").load("{% url 'headerHome' %}");
+			$(document).ready(function() {				
+				$("#headHome").load("{% url 'headerHome' %}");				
 			});
+
+
 		</script>
 	</head>
 	<body>

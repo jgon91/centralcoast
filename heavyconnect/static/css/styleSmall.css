@@ -135,15 +135,14 @@ input[type=button] {
     height: 55px;
     margin-top: 2.5px;
 }
-#userImg {
-    background: url('../imgSmall/buttons/userPicture.png') no-repeat top left;
+#userImg {       
     background-size: 100% 100%;
     width: 55px;
     height: 55px;
     margin-right: 2.5px;
     margin-top: 2.5px;
     float: right;
-    border: none;
+    border: solid 1px white;
     border-radius: 7px;
 }
 #logOff {

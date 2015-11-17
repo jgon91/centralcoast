@@ -659,6 +659,23 @@ def updatePhoto(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+@login_required
+def getImageUser(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+	 	if request.is_ajax():
+	 		try:
+				employee = Employee.objects.get(user_id = request.user.id)				
+				result['imageUrl'] = employee.photoEmployee.name
+				result['success'] = True
+	 		except Employee.DoesNotExist:
+	 			result['code'] = 1 #There is no users associated with this
+	 	else:
+	 		result['code'] = 2 #Use ajax to perform requests
+	else:
+	 	result['code'] = 3 #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
 
 # Driver 3.4.1.1
 # Get equipment status, which can be a machine or a implement
@@ -1283,14 +1300,19 @@ def getFilteredMachine(request):
 		status_attention = 0
 		status_broken = 0
 		status_quarantine = 0
+		print request.POST['status_ok']
 		if request.POST['status_ok'] == 'False':
 			status_ok = 1
+			print "OK"
 		if request.POST['status_attention'] == 'False':
 			status_attention = 2
+			print "ok2"
 		if request.POST['status_broken'] == 'False':
 			status_broken = 3
+			print "ok3"
 		if request.POST['status_quarantine'] == 'False':
 			status_quarantine = 4
+			print "ok4"
 
 	 	if request.is_ajax():
 	 		try:

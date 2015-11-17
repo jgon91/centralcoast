@@ -37,4 +37,22 @@
 			</div>
 		</div>
 	</body>
+	<script>
+	function getProfileImage(token, url){
+			$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token},
+				async: true,
+				datatype : "json",
+				success : function(data, status, xhr) {
+					//console.log(data.imageUrl);
+					$("#userImg").css("background", "url({% static 'media/' %}" + data.imageUrl + ")");
+					$("#userImg").css("background-size", "100% 100%");	
+					$("#userImg").css("border-radius", "7px");			
+				}
+			});
+		}			
+		getProfileImage("{{ csrf_token }}", "{% url 'getImageUser' %}");
+	</script>
 </html>
