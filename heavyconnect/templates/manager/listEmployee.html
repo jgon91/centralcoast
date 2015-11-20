@@ -28,9 +28,10 @@
 							for(var i = 0; i < data.employees.length; i++){
 								if(i%2 == 0) {
 									$(".tableListForm").append("<tr class='rowCream'><td>" + data.employees[i].first_name + " " + data.employees[i].last_name + "</td><td><a href='{% url 'employeeManagerUpdateForm' %}?user_id="+ data.employees[i].user_id +"' ><input type='button' class='btnManageForm' value='{% trans 'EDIT' %}'/></a></td><td><a href='#' ><input type='button' class='btnManageForm' value='{% trans 'SEE' %}'/></a></tr>");
-							} else {
-								$(".tableListForm").append("<tr class='rowGray'><td>" + data.employees[i].first_name + " " + data.employees[i].last_name + "</td><td><a href='{% url 'employeeManagerUpdateForm' %}?user_id="+ data.employees[i].user_id +"' ><input type='button' class='btnManageForm' value='{% trans 'EDIT' %}'/></a></td><td><a href='#' ><input type='button' class='btnManageForm' value='{% trans 'SEE' %}'/></a></tr>");
-							}}
+								} else {
+									$(".tableListForm").append("<tr class='rowGray'><td>" + data.employees[i].first_name + " " + data.employees[i].last_name + "</td><td><a href='{% url 'employeeManagerUpdateForm' %}?user_id="+ data.employees[i].user_id +"' ><input type='button' class='btnManageForm' value='{% trans 'EDIT' %}'/></a></td><td><a href='#' ><input type='button' class='btnManageForm' value='{% trans 'SEE' %}'/></a></tr>");
+								}
+							}
 
 							//$(".editEmployee").click( function(){ 
 							//	editEmployee(token, this.id);

@@ -46,6 +46,7 @@ urlpatterns = [
     url(r'^formSuccess/$', main_views.formSuccess, name='formSuccess'),
     url(r'^listEmployee/$', main_views.listEmployee, name='listEmployee'),
     url(r'^scheduleManager/$', main_views.scheduleManager, name='scheduleManager'),
+    url(r'^equipmentOnMap/$', main_views.equipmentOnMap, name='equipmentOnMap'),
 
     ### Functions ###
     url(r'^employeeLocation/$', main_views.getEmployeeLocation, name = 'employeeLocation'),
@@ -125,6 +126,7 @@ urlpatterns = [
     url(r'^retrieveAttendanceChecklist/$', main_views.retrieveAttendanceChecklist, name = 'retrieveAttendanceChecklist'),
     url(r'^retrieveAllEquipmentInfoGPS/$', main_views.retrieveAllEquipmentInfoGPS, name = 'retrieveAllEquipmentInfoGPS'),
     url(r'^retrieveAllMachineInfoGPS/$', main_views.retrieveAllMachineInfoGPS, name = 'retrieveAllMachineInfoGPS'),
+    url(r'^getImageUser/$', main_views.getImageUser, name = 'getImageUser'),
     #url(r'^checkAttendanceBreaks/$', main_views.checkAttendanceBreaks, name = 'retrieveAttendanceChecklist'),
    ### End ###
 
@@ -133,6 +135,8 @@ urlpatterns = [
     ### End ###
     
     ### Reports ###
+    url(r'^reports/$', main_views.reports, name = 'reports'),
+    url(r'^listEquipmentReport/$', main_views.listEquipmentReport, name = 'listEquipmentReport'),
     url(r'^timekeeperReport/$', main_views.timekeeperReport, name = 'timekeeperReport'),
     url(r'^employeeWeekReport/$', main_views.employeeWeekReport, name = 'employeeWeekReport'),
     url(r'^employeeWeekReportGroupBy/$', main_views.employeeWeekReportGroupBy, name = 'employeeWeekReportGroupBy'),

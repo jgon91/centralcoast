@@ -24,21 +24,39 @@
 		<link rel="shortcut icon" href="/favicon.ico">
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 	</head>
-	<script>
+	<script>		
 		function detectPage(){
 			if($("#page").val() == 1)
 				$("a:odd").attr("href", "{% url 'profileManager' %}");
 			else
 				$("a:odd").attr("href", "#");
-		}
+		}		
 	</script>
 	<body>
 		<div id="top">
 			<div id="menuTop">
 				<img src="{% static 'img/logoNegative.png' %}" id="logoHome"/>
 				<a href="{% url 'logout' %}"><input type="button" value="{% trans 'EXIT' %}" id="logOff"/>
-				<a><input onclick="detectPage()" type="button" id="userImg"/>
+				<a><input type="button" id="userImg"/>
 			</div>
 		</div>
 	</body>
+	<script>
+		function getProfileImage(token, url){
+			$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token},
+				async: true,
+				datatype : "json",
+				success : function(data, status, xhr) {
+					//console.log(data.imageUrl);
+					$("#userImg").css("background", "url({% static 'media/' %}" + data.imageUrl + ")");
+					$("#userImg").css("background-size", "100% 100%");	
+					$("#userImg").css("border-radius", "7px");						
+				}
+			});
+		}			
+		getProfileImage("{{ csrf_token }}", "{% url 'getImageUser' %}");
+	</script>
 </html>

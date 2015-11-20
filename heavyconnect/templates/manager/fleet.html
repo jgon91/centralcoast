@@ -23,7 +23,7 @@
 				$("#greenTab").click(function() {
 					//alert("Show Good Tractors");
 					switchStatus($(this).val());
-					showTractors("{{ csrf_token}}", "{% url 'getFilteredMachine' %}");
+					showTractors("{{ csrf_token}}", "{% url 'getFilteredMachine' %}");					
 				});
 
 				$("#yellowTab").click(function() {

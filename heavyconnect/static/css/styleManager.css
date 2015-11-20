@@ -997,3 +997,59 @@ input[type="button"] {
 .clear {
 	clear: both;
 }
+
+/**** Begin MAPS ****/
+.imgEquipmentMap{
+	width: 150px;
+	height: 150px;
+	margin: auto;
+}
+#map-canvas {
+    width: 550px;
+    height: 400px;
+    margin: auto;
+    margin-top: 15px;
+ }
+/**** End MAPS ****/
+
+/**** Begin REPORTS PAGES ****/
+.reportTable{
+	font-size: 22px;
+	margin: auto;
+	border: black solid 3px;
+	text-align: center;
+}
+.reportTable tr{
+	border: black solid 2px;
+}
+.reportTable th{
+	padding: 10px;
+}
+.reportTable td{
+	padding: 10px;
+	border: white solid 2px;
+}
+.tdStatus1{
+	background-color: green;
+}
+.tdStatus3{
+	background-color: red;
+}
+.tdStatus2{
+	background-color: yellow;
+}
+/**** End REPORTS PAGES ****/
+
+
+
+
+
+
+
+
+
+
+
+
+
+

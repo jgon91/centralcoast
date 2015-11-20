@@ -241,11 +241,11 @@ class Employee(models.Model):
 	start_date = models.DateField(blank = True, null = True)
 	hour_cost = models.FloatField(blank = True, null = True)
 	contact_number = models.CharField(max_length = 14, blank = True)
-	permission_level = models.IntegerField(choices = ((1, 'Driver'), (2, 'Manager')), default = 1)
-	photo = models.URLField(max_length = 200, blank = True, null = True)
+	permission_level = models.IntegerField(choices = ((1, 'Driver'), (2, 'Manager')), default = 1)	
 	notes = models.CharField(max_length = 250, null = True, blank = True)
 	manager = models.ForeignKey('self', null = True, blank = True)
-	teamManager = models.BooleanField(default = False)
+	teamManager = models.BooleanField(default = False)	
+	photoEmployee = models.ImageField(upload_to='employee', default='employee/no.jpg')
 
 	def __unicode__(self):
 		return  "First Name: " + str(self.user.first_name) + ", Last Name: " + str(self.user.last_name) + ", User ID: " + str(self.user.id) + ", ID: " + str(self.id) + " Team Manager :" + str(self.teamManager)

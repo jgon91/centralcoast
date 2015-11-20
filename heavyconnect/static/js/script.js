@@ -268,42 +268,47 @@ function saveTask(token, url, urlScheduler){
 /* Begin Fleet page*/
 	
 	// Variables
-	var status_ok = 1;
-	var	status_attention = false;
-	var	status_broken = false;
-	var	status_quarantine = false;
+	var status_ok = 0;
+	var	status_attention = 'False';
+	var	status_broken = 'False';
+	var	status_quarantine = 'False';
 
 	function switchStatus(status) {
 		switch (status){
 			case 1:
-				status_attention = false;
-				status_broken = false;
-				status_quarantine = false;
-				status_ok = 1;
+				status_attention = 'False';
+				status_broken = 'False';
+				status_quarantine = 'False';
+				status_ok = 0;
+				$("#viewMore").css("background-color", "#809A21");
 				break;
 			case 2:
-				status_ok = false;
-				status_broken = false;
-				status_quarantine = false;
-				status_attention = 1;
+				status_ok = 'False';
+				status_broken = 'False';
+				status_quarantine = 'False';
+				status_attention = 0;
+				$("#viewMore").css("background-color", "#F3C902");
 				break;
 			case 3:
-				status_attention = false;
-				status_ok = false;
-				status_quarantine = false;
-				status_broken = 1;
+				status_attention = 'False';
+				status_ok = 'False';
+				status_quarantine = 'False';
+				status_broken = 0;
+				$("#viewMore").css("background-color", "#BB330C");
 				break;
 			case 4:
-				status_attention = false;
-				status_broken = false;
-				status_ok = false;
-				status_quarantine = 1;
+				status_attention = 'False';
+				status_broken = 'False';
+				status_ok = 'False';
+				status_quarantine = 0;
+				$("#viewMore").css("background-color", "#434343");
 				break;
 			default:
-				status_attention = false;
-				status_broken = false;
-				status_ok = false;
-				status_quarantine = false;
+				status_attention = 0;
+				status_broken = 0;
+				status_ok = 0;
+				status_quarantine = 0;
+				break;
 		}
 	}
 	//Events
@@ -313,14 +318,10 @@ function saveTask(token, url, urlScheduler){
 		$("#" + tab).html("");
 
 		for (var i = 1; i < number_of_tractors; i++) {
-
 			if (i > 35) {
-				$("#" + tab).append("<div class=\"infoTractor hideout\"><a href=\"../equipmentManager/?qr_code="+ tractor[i].qr_code+"\"><img src=\"/static/img/" + imgs + "\"/><p>"+ tractor[i].qr_code+"</p></a></div>");
-				//if(i == 36)
-				//$("#container").append("<button id=\"viewMore\" type=\"button\" class=\"btn btn-info btn-block\">View More</button>")
-			} else
-				//$("#" + tab).append("<div class=\"infoTractor\"><a href=\"equipmentManager.html?equipmentId\"><img src=\"../img/" + imgs + "\"/><p>ID</p></a></div>");
-				$("#" + tab).append("<div class=\"infoTractor\"><a href=\"../equipmentManager/?qr_code="+ tractor[i].qr_code+"\"><img src=\"/static/img/" + imgs + "\"/><p>"+ tractor[i].qr_code+"</p></a></div>");
+				$("#" + tab).append("<div class=\"infoTractor hideout\"><a href=\"../equipment/?qr_code="+ tractor[i].qr_code+"\"><img src=\"/static/img/" + imgs + "\"/><p>"+ tractor[i].qr_code+"</p></a></div>");				
+			} else				
+				$("#" + tab).append("<div class=\"infoTractor\"><a href=\"../equipment/?qr_code="+ tractor[i].qr_code+"\"><img src=\"/static/img/" + imgs + "\"/><p>"+ tractor[i].qr_code+"</p></a></div>");
 
 		}
 
@@ -331,6 +332,11 @@ function saveTask(token, url, urlScheduler){
 		
 		//Variables 
 		//Number of tractors 
+		console.log(status_ok);
+		console.log(status_attention);
+		console.log(status_broken);
+		console.log(status_quarantine);
+
 		var tractors = {
 			good : 0,
 			service : 0,
@@ -341,6 +347,7 @@ function saveTask(token, url, urlScheduler){
 		$.ajax({
 			method: "POST",
 			url: url,
+			async: true,
 			data: {"csrfmiddlewaretoken": token, 
 					"manufacturer": "", 
 					"hitch_capacity": 0, 
@@ -349,36 +356,39 @@ function saveTask(token, url, urlScheduler){
 					"status_ok": status_ok,
 					"status_attention": status_attention,
 					"status_broken": status_broken,
-					"status_quarantine": status_quarantine},
+					"status_quarantine": status_quarantine
+			},
 			datatype: "json",
 
 			success: function(data, status, xhr){
 				var len = data.length;
 
-				if (status_ok == 1)//Green Tab
+				if (status_ok == 0)//Green Tab
 				{
+					console.log("show good");
 					tractors.good = len;
-					$("#viewMore").css("background-color", "#809A21");
+					
 					showTractorStatus("goodTab", tractors["good"], "TractorGood.png", data);
 
-				}else if (status_attention == 1)//Yellow Tab
+				}else if (status_attention == 0)//Yellow Tab
 				{
+					console.log("show attention");
 					tractors.service = len;
-					$("#viewMore").css("background-color", "#F3C902");
+					
 					showTractorStatus("serviceTab", tractors["service"], "TractorService.png", data);
 
-				}else if (status_broken == 1)//Red Tab
+				}else if (status_broken == 0)//Red Tab
 				{
-
+					console.log("show broken");
 					tractors.broken = len;
-					$("#viewMore").css("background-color", "#BB330C");
+					
 					showTractorStatus("brokenTab", tractors["broken"], "TractorBroken.png", data);
 
-				}else if (status_quarantine == 1)//Gray Tab
+				}else if (status_quarantine == 0)//Gray Tab
 				{
-
+					console.log("show quarantine");
 					tractors.repair = len;
-					$("#viewMore").css("background-color", "#434343");
+					
 					showTractorStatus("repairTab", tractors["repair"], "TractorRepair.png", data);
 
 				}else

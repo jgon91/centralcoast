@@ -2,11 +2,14 @@
 <html lang="en">
 	<head>
 		{% load staticfiles %}
+		{% load i18n %}
 		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
 		<script>
-			$(document).ready(function() {
-				$("#headHome").load("{% url 'headerHome' %}");
+			$(document).ready(function() {				
+				$("#headHome").load("{% url 'headerHome' %}");				
 			});
+
+
 		</script>
 	</head>
 	<body>
@@ -44,7 +47,7 @@
 		</div>
 		<div class="row" id="driverMenu">
 			<div class="col-xs-6 col-md-3 driverMenu">
-				<a href="{% url 'registerEmployee'%}">
+				<a href="{% url 'reports'%}">
 				<input type="button" class="btnMain" id="btnEmployee" />
 				<br>
 				<br>

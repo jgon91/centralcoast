@@ -314,11 +314,11 @@ class employeeForm(forms.Form):
 	start_date = forms.DateField(widget=SelectDateWidget(empty_label=("Choose Year", "Choose Month", "Choose Day")), required = False)
 	hour_cost = forms.FloatField(required = False)
 	contact_number = forms.CharField(required = False)
-	permission_level = forms.ChoiceField(choices = PERMISSION_LEVEL_CHOICES)
-	photo = forms.URLField(required = False)
+	permission_level = forms.ChoiceField(choices = PERMISSION_LEVEL_CHOICES)	
 	notes = forms.CharField(max_length = 250, required = False)
 	teamManager = forms.BooleanField(required = False)
 	manager = forms.ModelChoiceField(queryset = Employee.objects.filter(permission_level = '2'))
+	image = forms.ImageField(required = False)
 ### End ###
 
 
@@ -341,12 +341,12 @@ class employeeUpdateForm(forms.Form):
 	start_date = forms.DateField(widget=SelectDateWidget(empty_label=("Choose Year", "Choose Month", "Choose Day")), required = False)
 	hour_cost = forms.FloatField(required = False)
 	contact_number = forms.CharField(required = False)
-	permission_level = forms.ChoiceField(choices = PERMISSION_LEVEL_CHOICES)
-	photo = forms.URLField(required = False)
+	permission_level = forms.ChoiceField(choices = PERMISSION_LEVEL_CHOICES)	
 	notes = forms.CharField(max_length = 250, required = False)
 	active = forms.BooleanField(required = False)
 	teamManager = forms.BooleanField(required = False)
 	manager = forms.ModelChoiceField(queryset = Employee.objects.filter(permission_level = '2'))
+	image = forms.ImageField(required = False)
 ### End ###
 
 ### Structure for Grou[ ###

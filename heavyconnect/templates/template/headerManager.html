@@ -27,7 +27,7 @@
 				<a href="{% url 'createTaskManager' %}"><input type="button" class="btnTop" id="btnTaskflowUp" /></a>
 				<a href="{% url 'scheduleManager' %}"><input type="button" class="btnTop" id="btnSchedulerUp" /></a>
 				<a href="{% url 'indexManager' %}"><input type="button" class="btnTop" id="btnTimerkeeperUp" /></a>
-				<a href="{% url 'indexManager' %}"><input type="button" class="btnTop" id="btnEmployeeUp" /></a>
+				<a href="{% url 'reports' %}"><input type="button" class="btnTop" id="btnEmployeeUp" /></a>
 				<a href="{% url 'indexManager' %}"><input type="button" class="btnTop" id="btnRecorderUp" /></a>
 				<a href="{% url 'fleet' %}"><input type="button" class="btnTop" id="btnFleetUp" /></a>
 				<a href="{% url 'manageForms' %}"><input type="button" class="btnTop" id="btnManageUp" /></a>
@@ -36,4 +36,22 @@
 			</div>
 		</div>
 	</body>
+	<script>
+	function getProfileImage(token, url){
+			$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token},
+				async: true,
+				datatype : "json",
+				success : function(data, status, xhr) {
+					//console.log(data.imageUrl);
+					$("#userImg").css("background", "url({% static 'media/' %}" + data.imageUrl + ")");
+					$("#userImg").css("background-size", "100% 100%");			
+					$("#userImg").css("border-radius", "7px");	
+				}
+			});
+		}			
+		getProfileImage("{{ csrf_token }}", "{% url 'getImageUser' %}");
+	</script>
 </html>

@@ -50,7 +50,7 @@
 	<body>
 		<header id="head"></header>
 		<div id="contentForm">
-			<form method="POST" action="." id="formPage">
+			<form method="POST" action="." id="formPage" enctype="multipart/form-data">
 				{% csrf_token %}
 				Manager: * {{ form1.manager }}
 				<br>
@@ -70,7 +70,7 @@
 				<br>
 				Permission Level: {{ form1.permission_level }}
 				<br>
-				Photo: {{ form1.photo }}
+				Photo: {{ form1.image }}
 				<br>
 				Active: {{ form1.active }}
 				<br>

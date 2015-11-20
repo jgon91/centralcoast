@@ -597,6 +597,7 @@
 				datatype : "json",
 				success : function(data, status, xhr) {
 					if (data.success) {
+						//$("#content").append("<img src='{% static 'media/' %}" + data.employees[0].photo + " '/>");
 						employeesTimelog = data.employees;
 						$("#employeeList").html("<tr>"
 													+"<td><label><input id='selectAllEmployee' type='checkbox'/><label></td>"
@@ -1003,7 +1004,7 @@
 				</div>
 			</div>
 		</div>
-
+	</br>
 	</body>
 	<!-- <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script> -->
 	<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
