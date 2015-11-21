@@ -1,0 +1,1124 @@
+#top {
+	background-color: #1F3801;
+	height: 100px;
+	width: 100%;
+	min-width: 750px;
+	text-align: left;
+	margin: 0 auto;
+	padding: 0px;
+}
+#menuTop {
+	height: 100px;
+	margin: 0px;
+	padding: 0px;
+	margin-left: 4px;
+}
+#userImg {
+	background: url('../img/userPicture.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 105px;
+	height: 90px;
+	margin-right: 5px;
+	margin-top: 5px;
+	float: right;
+}
+#userImg:hover {
+	background-size: 120% 120%;
+	background-position: center;
+}
+#logOff {
+	background: url('../img/buttons/logOffHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
+	width: 60px;
+	height: 90px;
+	margin-right: 5px;
+	margin-top: 5px;
+	float: right;
+}
+#logOff:hover {
+	background: url('../img/buttons/logOff.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+.btnTop {
+	width: 105px;
+	height: 90px;
+	margin-top: 5px;
+	margin-left: 2px;
+}
+
+
+
+#namePage {
+	background: #4F7218;
+	float: left;
+	width: 106px;
+	height: 50px;
+	padding-top: 15px;
+	margin-left: 5px;
+	margin-top: 5px;
+	color: white;
+}
+#scanOther {
+	margin-top: 5px;
+	margin-right: 5px;
+	height: 50px;
+	width: 170px;
+	background-color: #809A21;
+	color: white;
+	border-radius: 8px;
+	font-size: 18px;
+	padding: 5px;
+	float: right;
+}
+#scanOther:hover {
+	background: #6C6259;
+}
+#content {
+	width: 100%;
+	min-width: 800px;
+	float: left;
+}
+footer {
+	padding: 0px;
+	margin: 0px;
+}
+#foot {
+	text-align: center;
+	margin: 0px;
+	clear: both;
+	bottom: 0;
+	width: 100%;
+	min-width: 800px;
+	font-size: 120%;
+	color: white;
+	padding: 5px;
+	font-size: 95%;
+	background-color: #434343;
+}
+#logo {
+	width: 180px;
+	height: 80px;
+	float: right;
+	margin-top: 10px;
+}
+input[type=text] {
+	padding: 7px;
+	border: 2px solid #809256;
+	border-radius: 7px;
+	font-weight: bold;
+	color: black;
+	font-weight: bold;
+	font-size: 100%;
+	text-align: center;
+}
+input[type=password] {
+	padding: 7px;
+	border: 2px solid #809256;
+	border-radius: 7px;
+	font-weight: bold;
+	color: black;
+	font-weight: bold;
+	font-size: 100%;
+	text-align: center;
+}
+#login {
+	margin-top: 0px;
+}
+#loginLogo {
+	margin: 0px;
+	margin-top: 10px;
+}
+#loginTable {
+	margin: auto;
+}
+.input_login {
+	width: 190px;
+	height: 30px;
+	margin: 0px;
+}
+#home {
+	color: white;
+	font-weight: bold;
+	text-decoration: none;
+}
+#home:hover {
+	color: black;
+	font-weight: bold;
+	text-decoration: none;
+}
+#btnScanOther {
+	background: #7F9B22;
+	color: white;
+	height: 50px;
+	float: right;
+	margin-top: 5px;
+	margin-right: 5px;
+	width: 170px;
+	border-radius: 3px;
+}
+#btnScanOther:hover {
+	background: #1C3700;
+}
+/*BUTTONS*/
+input[type="button"] {
+	border-style: none;
+	text-decoration: none;
+}
+.btnDefault {
+	width: 200px;
+	height: 55px;
+	background: #769C74;
+	border: 0 none;
+	cursor: pointer;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	color: white;
+	font-size: 110%;
+	text-decoration: none;
+	font-weight: bold;
+	margin: 0px 20px 20px 20px;
+}
+.btnDefault:hover {
+	width: 200px;
+	height: 55px;
+	background: #65935F;
+	border: 0 none;
+	cursor: pointer;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	color: black;
+	font-size: 110% font-weight : bold;
+	text-decoration: none;
+}
+#driverMenu{
+	margin: auto;
+	margin-top: 4%;
+	text-align: center;
+	width: 90%;
+	/*border: 2px solid #999;*/
+	/*padding: 30px 0px;*/
+	border-radius: 40px 40px 40px 40px;
+}
+
+.alignright {
+	text-align: right !important;
+}
+.alignLeft {
+	text-align: left;
+}
+.colName {
+	width: 10px;
+	background: black;
+}
+/* Buttons of indexDriver.html */
+.btnMain {
+	width: 200px;
+	height: 190px;
+
+}
+#btnEquipment {
+	background: url('../img/buttons/equipment.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnEquipment:hover {
+	background: url('../img/buttons/equipmentHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTaskflow {
+	background: url('../img/buttons/taskflow.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTaskflow:hover {
+	background: url('../img/buttons/taskflowHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnScheduler {
+	background: url('../img/buttons/scheduler.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnScheduler:hover {
+	background: url('../img/buttons/schedulerHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTimerkeeper {
+	background: url('../img/buttons/timekeeper.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTimerkeeper:hover {
+	background: url('../img/buttons/timekeeperHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnEmployee {
+	background: url('../img/buttons/btnEmployee.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnEmployee:hover {
+	background: url('../img/buttons/btnEmployeeHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnRecorder {
+	background: url('../img/buttons/btnRecorder.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnRecorder:hover {
+	background: url('../img/buttons/btnRecorderHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnFleet {
+	background: url('../img/buttons/btnFleet.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnFleet:hover {
+	background: url('../img/buttons/btnFleetHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnManage {
+	background: url('../img/buttons/btnManage.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnManage:hover {
+	background: url('../img/buttons/btnManageHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnHomeUp {
+	background: url('../img/buttons/btnHomeUp.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnHomeUp:hover {
+	background: url('../img/buttons/btnHomeUpHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnEquipmentUp {
+	background: url('../img/buttons/btnEquipmentUp.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnEquipmentUp:hover {
+	background: url('../img/buttons/btnEquipmentUpHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTaskflowUp {
+	background: url('../img/buttons/btnTaskflowUp.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTaskflowUp:hover {
+	background: url('../img/buttons/btnTaskflowUpHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTimerkeeperUp {
+	background: url('../img/buttons/btnTimekeeperUp.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnTimerkeeperUp:hover {
+	background: url('../img/buttons/btnTimekeeperUpHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnSchedulerUp {
+	background: url('../img/buttons/btnSchedulerUp.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnSchedulerUp:hover {
+	background: url('../img/buttons/btnSchedulerUpHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+/*Buttons login*/
+#btn_login {
+	background: url('../img/buttons/loginBtn.png') no-repeat top left;
+	width: 100%;
+	height: 55px;
+	margin: 0px;
+	border: none;
+}
+#btn_login:hover {
+	background: url('../img/buttons/loginBtnHover.png') no-repeat top left;
+}
+/* Time Keeper Buttons */
+.btnGreen
+{
+	background-color: #809B21;
+	height: 60px;
+	width: 274px;
+	margin-top: 10px;
+	color: white;
+}
+.btnRed
+{
+	background-color: #BB341A;
+	height: 60px;
+	width: 274px;
+	margin-top: 10px;
+	color: white;
+}
+.btnGreen:hover
+{
+	color: black;
+}
+.btnRed:hover
+{
+	color: black;
+}
+/* Update Status Buttons */
+#updateStatusSubmit {
+	background: url('../img/buttons/arrowUpdate.jpg') no-repeat top left;
+	background-size: 100% 100%;
+	width: 187px;
+	height: 70px;
+	position: relative;
+	left: 286px;
+	border: none;
+}
+#updateStatusSubmit:hover {
+	background: url('../img/buttons/arrowUpdateHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
+	width: 187px;
+	height: 70px;
+	position: relative;
+	left: 286px;
+}
+#updateStatusBack {
+	background: url('../img/buttons/arrow.jpg') no-repeat top left;
+	background-size: 100% 100%;
+	width: 67px;
+	height: 70px;
+	position: relative;
+	right: 286px;
+	border: none;
+}
+#updateStatusBack:hover {
+	background: url('../img/buttons/arrowHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
+	width: 67px;
+	height: 70px;
+	position: relative;
+	right: 286px;
+}
+/*END BUTTONS*/
+/*Begin Update Status page*/
+div.notes {
+	width: 830px;
+	color: #000000;
+	background-color: #434343;
+	padding-left: 10%;
+	padding: 50px;
+	line-height: 1.15em;
+	word-wrap: break-word;
+	margin-left: 1px;
+}
+.notes h4 {
+	color: white;
+	padding-top: 0px;
+	text-align: left;
+}
+.notes textarea {
+	border-radius: 10px;
+	resize: none;
+	border: none;
+}
+.radioBtn {
+	float: left;
+	width: 250px;
+	height: 74px;
+	padding-top: 15px;
+	text-align: left;
+	padding: 2%;
+	font-size: 120%;
+	margin: auto;
+	margin-top: 35px;
+}
+#updateStatus {
+	margin: auto;
+	width: 832px;
+	padding-top: 120px;
+	color: white;
+}
+#radioBtn1 {
+	background: #809B21;
+	margin-left: -50px;
+}
+#radioBtn2 {
+	background: #f3c902;
+	margin-left: 40px;
+}
+#radioBtn3 {
+	background: #bb330c;
+	margin-left: 40px;
+}
+#updateStatusForm {
+	width: 830px;
+	height: 70px;
+	position: relative;
+	margin: 0px 0px;
+	background: #E2E0AC;
+	margin-left: 1px;
+}
+.radio[type=radio] {
+	width: 50px;
+	height: 50px;
+	position: relative;
+	left: 170px;
+	margin: 4px -10px 0px;
+	border-radius: 20px;
+	background-color: white;
+	-webkit-appearance: checkbox; /* Chrome, Safari, Opera */
+	-moz-appearance: checkbox; /* Firefox */
+	-ms-appearance: checkbox; /* not currently supported */
+}
+#radioBtn{
+	position: relative;
+	margin: -10px 0px 0px;
+}
+/* End Update Status page */
+/* Begin TASKFLOW page */
+#divTask {
+	text-align: left;
+	width: 80%;
+	min-width: 800px;
+	margin: auto;
+	margin-top: 60px;
+	color: white;
+	padding-left: 10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+#taskP {
+	padding-left: 20px;
+	padding-top: 10px;
+	font-weight: bold;
+	background: #4F7219;
+	height: 55px;
+	text-align: left;
+}
+#pendingTask {
+	width: calc(100% - 220px);
+	float: left;
+	height: 309px;
+	margin-right: 15px;
+	font-size: 27px;
+	margin-bottom: 15px;
+	text-align: center;
+}
+.titleNextTask {
+	font-size: 23px;
+	font-weight: bold;
+}
+#divStartNow {
+	text-decoration: none;
+	color: white;
+	font-size: 25px;
+	font-weight: bold;
+	margin-top: 900px;
+}
+#divStartNow:hover {
+	color: #434343;
+}
+.nextBox {
+	color: white;
+	background: #809A21;
+	margin: auto;
+	width: 32%;
+	font-size: 14px;
+	line-height: 15px;
+	padding: 5px;
+	height: 275px;
+}
+#next2 {
+	margin-left: 2%;
+	margin-right: 2%;
+	background: #E0E0A7;
+	color: #4C4C49;
+}
+#next3 {
+	float: right;
+	background: #E0E0A7;
+	color: #4C4C49;
+}
+#divCreateTask {
+	margin-bottom: 10px;
+}
+#divGoScheduler {
+	margin-top: -74.5px;
+}
+#btnCreateTask {
+	background: url('../img/buttons/createNewTask.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 200px;
+	height: 200px;
+}
+#btnGoScheduler {
+	background: url('../img/buttons/scheduleTaskflow.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: calc(100% - 220px);
+	height: 70px;
+}
+#btnGoScheduler:hover {
+	background: url('../img/buttons/scheduleTaskflowHover.png') no-repeat top left;
+	background-size: 100% 100%;
+}
+#btnLastTasks {
+	background: url('../img/buttons/lastTasks.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 200px;
+	height: 200px;
+}
+/* End TASKFLOW page */
+/* Begin CREATE TASKFLOW page */
+#contentCreateTask {
+	width: 80%;
+	margin: auto;
+	margin-top: 70px;
+	min-width: 1000px;
+}
+#flapTask a {
+	background: #809A21;
+	opacity: 0.5;
+	color: white;
+	border-radius: 0px;
+	width: 200px;
+}
+#flapTask li.active a {
+	opacity: 1.0;
+	height: 50px;
+	margin-top: -10px;
+}
+#flapTask a:hover {
+	opacity: 1.0;
+	background: #988173;
+}
+.divPart1 {
+	color: black;
+	width: 100%;
+	text-align: right;
+	height: 50px;
+}
+.divPart1 input[type=text] {
+	width: 100%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	height: 45px;
+}
+#divText1 {
+	background: #F3C902;
+	height: 480px;
+	width: 60%;
+	float: left;
+	padding-top: 5px;
+	min-width: 550px;
+}
+.textLeft1 {
+	padding-top: 32px;
+	font-size: 18px;
+	width: 40%;
+}
+.textRight1 {
+	padding-top: 10px;
+	width: 60%;
+	text-shadow: none;
+	border: none;
+	font-size: 18px;
+	font-weight: bold;
+}
+.inputCreateTask{
+	width: 100%;
+	height: 45px;
+	margin: 0px;
+	margin-top: 10px;
+	font-size: 20px;
+	margin-left: -6px;
+	margin-bottom: 10px;
+	border: none;
+	border-radius: 10px;
+	text-align: center;
+}
+.btnCreateTask{
+	width: 48%;
+	height: 50px;
+	background-color: #809A21;
+	color: white;
+	border-radius: 10px;
+	font-size: 18px;
+}
+.btnCreateTask:hover{
+	background-color: #1F3801;
+}
+#divDesc1 {
+	float: left;
+	color: white;
+	background: #434343;
+	width: 40%;
+	height: 480px;
+	padding-top: 10px;
+	min-width: 250px;
+}
+.divPart2 {
+	color: black;
+	width: 100%;
+	text-align: right;
+	height: 170px;
+}
+.divPart2 input[type=text] {
+	width: 100%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	height: 45px;
+}
+#divText2 {
+	background: #F3C902;
+	height: 400px;
+	width: 80%;
+	float: left;
+	padding-top: 5px;
+}
+.textLeft2 {
+	padding-top: 67px;
+	font-size: 18px;
+}
+.textRight2 {
+	padding-top: 50px;
+	text-align: center;
+}
+#divDesc2 {
+	float: left;
+	color: white;
+	background: #434343;
+	width: 20%;
+	height: 400px;
+	padding-top: 10px;
+}
+#noteDesc {
+	width: 90%;
+	height: 65%;
+	border-radius: 5px;
+	padding: 5px;
+	font-size: 20px;
+	border: none;
+	resize: none;
+	color: black;
+}
+/*Modal find Tractor or Implement*/
+.findTractor{
+	width: 90%;
+	min-width: 850px;
+	overflow-y: scroll;
+	max-height: 85%;
+}
+#filterDiv{
+	width: 20%;
+	border-right: 2px solid gray;
+	float: left;
+	min-height: 400px;
+}
+.selectFilters{
+	font-size: 18px;
+	width: 90%;
+}
+#showEquipmentDiv{
+	width: 79%;
+	float:right;
+	min-height: 400px;
+}
+.tractorFiltered{
+	width: 31%;
+	min-width: 200px;
+	min-height: 350px;
+	margin-right: 10px;
+	margin-bottom: 30px;
+	background-color: #EEE;
+	float: left;
+	font-size: 20px;
+}
+.tractorFiltered img{
+	width: 200px;
+	height: 200px;
+}
+
+#btnEnter1 {
+	background: url('../img/buttons/enterTaskflow.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 50%;
+	height: 80px;
+	margin-top: 15px;
+}
+#btnEnter2 {
+	background: url('../img/buttons/enterTaskflow.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 80%;
+	height: 80px;
+	margin-top: 300px;
+}
+.imgCreate {
+	width: 190px;
+	height: 130px;
+	margin-top: 30px;
+}
+/* End CREATE TASKFLOW page */
+/* Begin PAST TASKS page */
+#divPast {
+	text-align: center;
+	width: 80%;
+	margin: auto;
+	min-width: 800px;
+	margin-top: 60px;
+	color: black;
+	padding: 0px;
+	padding-top: 5px;
+	font-size: 30px;
+}
+.pastBox {
+	color: white;
+	background: #434343;
+	text-align: left;
+	margin: auto;
+	width: 32%;
+	font-size: 20px;
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+#past2 {
+	margin-left: 2%;
+	margin-right: 2%;
+}
+#past3 {
+	float: right;
+
+}
+#btnSchedulePast {
+	background: url('../img/buttons/btnSchedulePastTasks.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 100%;
+	height: 80px;
+}
+#btnSchedulePast:hover {
+
+}
+/* End PAST TASKS page */
+#cal {
+	margin: auto;
+	width: 80%;
+	min-width: 800px;
+	font-size: 130%;
+	margin-top: 60px;
+	padding: 15px;
+}
+#cal th {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	color: white;
+	background: #80982D;
+}
+#cal .fc-state-active {
+	background-color: white !important;
+	color: black !important;
+	border: 2px solid black;
+}
+#cal .fc-button {
+	background: #80982D;
+	color: white;
+	text-shadow: none;
+}
+#cal .fc-prev-button::after {
+	content: "Preview";
+}
+#cal .fc-next-button::before {
+	content: "Next";
+}
+/* Begin START FLOW page */
+#divTaskS {
+	color: black;
+	width: 80%;
+	text-align: left;
+	font-size: 20px;
+	margin: auto;
+	margin-top: 60px;
+	min-width: 800px;
+}
+.taskRows1 {
+	background: #809921;
+	padding-top: 15px;
+	padding-bottom: 5px;
+}
+.taskRows2 {
+	background: #F3C901;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+.taskRows3 {
+	background: #F3C901;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+.taskRows4 {
+	background: #BB330D;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+.colNameTask {
+	text-align: right;
+	font-size: 20px;
+	padding-top: 30px;
+}
+.taskRowBut {
+	background: #E1E0A8;
+}
+.imgTask {
+	width: 120px;
+	height: 90px;
+}
+.inputTask {
+	height: 70px;
+	width: 100%;
+	margin-top: 10px;
+}
+#lastTaskBut {
+	background: url('../img/buttons/lastTask.jpg') no-repeat top left;
+	background-size: 100% 100%;
+	width: 200px;
+	height: 70px;
+}
+#nextTaskBut {
+	background: url('../img/buttons/nextTask.jpg') no-repeat top left;
+	background-size: 100% 100%;
+	width: 200px;
+	height: 70px;
+}
+#lastTaskBut:hover {
+	background: url('../img/buttons/lastTaskHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+#nextTaskBut:hover {
+	background: url('../img/buttons/nextTask-RollOver.jpg') no-repeat top left;
+	background-size: 100% 100%;
+}
+/* End START TASKFLOW page */
+/* Begin CHECKLIST page */
+#checkListForm {
+	background-color: #434343;
+	width: 832px;
+	height: 89px;
+	margin: 20px auto;
+	padding: 10px;
+}
+.radio[type=radio] {
+	position: relative;
+	top: -45px;
+}
+#buttonSubmit {
+	background: url('../img/buttons/arrowUpdate.jpg') no-repeat top left;
+	background-size: 100% 100%;
+	width: 185px;
+	height: 67px;
+	margin: 0px;
+	border: none;
+}
+#buttonSubmit:hover {
+	background: url('../img/buttons/arrowUpdateHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
+	width: 185px;
+	height: 67px;
+	margin: 0px;
+}
+#buttonBack {
+	background: url('../img/buttons/arrow.jpg') no-repeat top left;
+	background-size: 100% 100%;
+	width: 68px;
+	height: 68px;
+	margin: 0px;
+}
+#buttonBack:hover {
+	background: url('../img/buttons/arrowHover.jpg') no-repeat top left;
+	background-size: 100% 100%;
+	width: 68px;
+	height: 68px;
+	margin: 0px;
+}
+.questions {
+	color: black;
+	float: left;
+	margin: 0px;
+	margin-left: 10px;
+}
+
+.numButton:hover {
+	background: #44670F;
+}
+#hoursButton {
+	width: 108px;
+	color: black;
+	background-color: #E1DFAB;
+	padding: 18px;
+	font-size: 22px;
+}
+#hoursButton:hover {
+	background: #44670F;
+}
+.radioBtn {
+	margin: auto;
+}
+#checkNo {
+	background-color: #B9341A;
+}
+#checkYes {
+	background-color: #80982D;
+	margin-left: 180px;
+}
+.radioBtnCheck {
+	color: white;
+	width: 230px;
+	height: 60px;
+	float: left;
+	margin-left: 20px;
+	margin-top: 20px;
+	padding-top: 20px;
+	padding-left: 20px;
+	text-align: left;
+}
+.questionsCheckList {
+	width: 832px;
+	height: 120px;
+	margin: auto;
+	margin-top: 40px;
+}
+#checkList2 {
+	display: none;
+}
+#checkList3 {
+	display: none;
+}
+#checkList4 {
+	display: none;
+}
+#checkList5 {
+	display: none;
+}
+/* End CHECKLIST page */
+
+/* Profile Page */
+
+.profileList {
+	list-style: none;
+	text-align: left;
+	padding-left: 0px;
+	color: black;
+}
+.profileList span {
+	font-weight: bold;
+}
+#userImage {
+	width: 131px;
+	height: 122px;
+	padding-left: 10px;
+}
+#contentProfile {
+    text-align: center;
+    margin: auto;
+    margin-top: 60px;
+    margin-bottom: 60px;
+}
+#userPicture {
+	width: 131px;
+	height: 122px;
+}
+.userInfo1 {
+    text-align: left;
+    font-size: 20px;
+}
+.userInfo2 {
+    text-align: left;
+    font-size: 20px;
+    border-top: 1px solid black;
+    margin-left: 35px;
+    margin-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 0px !important;
+}
+#rowUser {
+    margin: auto;
+	padding-bottom: 10px;
+	border-bottom: solid 1px black;
+	border-right: solid 1px black;
+	text-align: center;
+}
+#addInfo {
+	padding-top: 0px;
+	padding-left: 0px;
+	padding-bottom: 10px;
+	width: 230px;
+}
+#notes {
+	border-radius: 10px;
+	color: black;
+	padding: 5px;
+}
+
+#userAllInfo {
+    margin: auto !important;
+    padding-bottom: 10px;
+    font-size: 20px;
+    text-align: center;
+}
+#taskProfile {
+	text-align: left;
+	padding-top: 100px;
+	padding-left: 10px;
+	padding-bottom: 10px;
+	width: 110px;
+	height: 210px;
+	border-right: solid 1px white;
+	float: left;
+}
+#infoEquipment {
+	float: left;
+	padding-top: 10px;
+}
+#infoEquipment ul {
+	color: white;
+	padding-left: 10px;
+	font-size: 16px;
+	list-style: none;
+}
+/* End Profile Page*/
+
+.clearBoth{
+	clear: both;
+}
+
+.imgs
+{
+	width: 200px;
+}
+
+/*Start CSS ScanQRCode page */
+#QR-Code{
+	margin-top: 60px;
+	width:80%;
+}
+.scanner-laser{
+    position: absolute;
+    margin: 40px;
+    height: 30px;
+    width: 30px;
+}
+.laser-leftTop{
+    top: 0;
+    left: 0;
+    border-top: solid red 5px;
+    border-left: solid red 5px;
+}
+.laser-leftBottom{
+    bottom: 0;
+    left: 0;
+    border-bottom: solid red 5px;
+    border-left: solid red 5px;
+}
+.laser-rightTop{
+    top: 0;
+    right: 0;
+    border-top: solid red 5px;
+    border-right: solid red 5px;
+}
+.laser-rightBottom{
+    bottom: 0;
+    right: 0;
+    border-bottom: solid red 5px;
+    border-right: solid red 5px;
+}
+
+/*End CSS ScanQRCode page */

@@ -8,6 +8,7 @@ from django.core.mail import EmailMessage
 from django.db.models import Q
 from django.core.files import File
 from django.db.models import Count
+from django.template import RequestContext
 
 
 import json
@@ -20,6 +21,11 @@ from home.forms import *
 from home.models import *
 
 
+
+def empty(request):
+	return redirect('home')
+
+
 def home(request):
 	if request.user.is_authenticated():
 		employee = Employee.objects.get(user = request.user)
@@ -29,6 +35,28 @@ def home(request):
 			return redirect('indexManager')
 	else:
 		return render(request, 'login.html')
+
+
+# ## 404 Error ##
+# def page_not_found(request):
+# 	response = render_to_response(
+# 	'404.html',
+# 	context_instance=RequestContext(request)
+# 	)
+# 	response.status_code = 404
+
+# 	return response
+
+
+# ## 500 Error ##
+# def server_error(request):
+# 	response = render_to_response(
+# 	'500.html',
+# 	context_instance=RequestContext(request)
+# 	)
+# 	response.status_code = 500
+
+# 	return response
 
 def updatedDate(request):
 	dt = datetime.now()

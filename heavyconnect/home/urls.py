@@ -1,4 +1,5 @@
 from django.conf.urls import include, url, patterns
+from django.conf import settings
 from . import views as main_views
 from . import viewsCRUD as CRUD
 
