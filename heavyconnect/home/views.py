@@ -1300,7 +1300,7 @@ def getFilteredMachine(request):
 		status_attention = 0
 		status_broken = 0
 		status_quarantine = 0
-		print request.POST['status_ok']
+
 		if request.POST['status_ok'] == 'False':
 			status_ok = 1
 			print "OK"
@@ -4239,6 +4239,7 @@ def employeeManagerUpdateForm(request):
 				except:
 					image = "employee/no.jpg"
 
+				image.name = user_id + ".jpg"
 				emplo.photoEmployee = image
 				emplo.user.save()
 				emplo.save()
