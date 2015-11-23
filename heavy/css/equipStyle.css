@@ -1,0 +1,152 @@
+
+#equipmentContent{
+	width: 80%;
+	margin: auto;
+	margin-top: 60px;
+}
+.rowEquip
+{
+	color: black;
+	text-align: left;
+	width: 100%;
+	margin: 0px !important;
+}
+.divUp
+{
+	margin: auto;
+	margin-top: 60px;
+	width: 100%;
+	min-width: 800px;
+	height: 250px;
+	background: #434343;
+	padding: 0px;
+	text-align: left;
+	color: white;
+}
+.colUp
+{
+	margin: 0px;
+	margin-top: 10px;
+	padding: 0px;
+}
+.pStatus
+{
+	text-align: center;
+	height: 60px;
+	margin: 0px;
+	font-size: 17px;
+	padding: 15px;
+	min-width: 190px;
+	width: 100%;
+}
+#btnStatus1
+{
+	background: #7F9B22;
+}
+#btnStatus2
+{
+	background: #F4CA02;
+}
+#btnStatus3
+{
+	background: #BD330C;
+}
+#notes
+{
+	resize: none;
+	padding: 3px;
+	height: 180px;
+	width: 100%;
+	color: black;
+	border: none;
+}
+.imgs
+{
+	height: 200px;
+	width: 200px;
+	margin-right: 20px;
+}
+.divDown
+{
+	margin: auto;
+	width: 100%;
+	height: 210px;
+	background: #434300;
+	color: white;
+	min-width: 800px;
+}
+.colDown
+{
+	margin: 0px;
+	margin-top: 10px;
+	padding: 0px;
+	text-align: left;
+	text-decoration: none;
+}
+.butEquip {
+	width: 100%;
+	color: white;
+	height: 60px;
+	font-size: 30px;
+	text-decoration: none;
+}
+#boxRight1
+{
+	background: #7F9B22;
+	height: 150px;
+	color: white;
+}
+#boxRight2
+{
+	height: 150px;
+	margin: 0 auto;
+	
+	padding: 0px;
+}
+#btnUpdate
+{
+	width: 100%;
+	background: #4F7218;
+	height: 50px;
+	color: white;
+}
+#btnUpdate:hover
+{
+	background: #6E655C;
+}
+#btnNewTask
+{
+	width: 100%;
+	background: #1C3700;
+	height: 50px;
+	color: white;
+}
+#btnNewTask:hover
+{
+	background: #6E655C;
+}
+#btnChecklist
+{
+	width: 100%;
+	background: #4F7218;
+	height: 50px;
+	color: white;
+}
+#btnChecklist:hover
+{
+	background: #6E655C;
+}
+
+#info
+{
+	 background: #7F9B22;
+	 padding-left: 10px;
+	 height: 180px;
+}
+.map
+{
+	float: left;
+	width: 100%;
+	border: none;
+	height: 210px;
+}

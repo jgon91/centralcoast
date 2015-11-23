@@ -27,7 +27,9 @@ SECRET_KEY = 'dgaaxm0o4)7max48$chs1im)av623&qw^t*e4evk8m*@48al3^'
 DEBUG = True
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '*'
+    ]
 
 
 # Application definition
@@ -130,6 +132,8 @@ LOCALE_PATHS = (
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
+
+# STATIC_ROOT = '../heavy/'   
 
 STATIC_URL = '/static/'
 
