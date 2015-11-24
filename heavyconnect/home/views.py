@@ -37,26 +37,26 @@ def home(request):
 		return render(request, 'login.html')
 
 
-# ## 404 Error ##
-# def page_not_found(request):
-# 	response = render_to_response(
-# 	'404.html',
-# 	context_instance=RequestContext(request)
-# 	)
-# 	response.status_code = 404
+## 404 Error ##
+def page_not_found(request):
+	response = render_to_response(
+	'404.html',
+	context_instance=RequestContext(request)
+	)
+	response.status_code = 404
 
-# 	return response
+	return response
 
 
-# ## 500 Error ##
-# def server_error(request):
-# 	response = render_to_response(
-# 	'500.html',
-# 	context_instance=RequestContext(request)
-# 	)
-# 	response.status_code = 500
+## 500 Error ##
+def server_error(request):
+	response = render_to_response(
+	'500.html',
+	context_instance=RequestContext(request)
+	)
+	response.status_code = 500
 
-# 	return response
+	return response
 
 def updatedDate(request):
 	dt = datetime.now()

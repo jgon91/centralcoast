@@ -3,3 +3,4 @@ venv/
 heavyconnect/db.sqlite3
 heavyconnect/heavyconnect/settings.py
 .DS_Store
+heavyconnect/importStatic/

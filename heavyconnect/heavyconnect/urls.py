@@ -21,8 +21,8 @@ from django.conf.urls.static import static
 from home import views as main_views
 
 
-# handler404 = 'home.views.page_not_found'
-# handler500 = 'home.views.server_error'
+handler404 = 'home.views.page_not_found'
+handler500 = 'home.views.server_error'
 
 
 urlpatterns = patterns('',
