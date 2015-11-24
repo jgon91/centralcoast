@@ -226,8 +226,10 @@ def retrieveMachine(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
-def createShift(employee, result):
+def createShift(new_hour_started, employee, result):
 	now = datetime.datetime.now()
+	if new_hour_started not None:
+		now = new_hour_started
 	eAttendance = EmployeeAttendance(employee = employee, date = now, hour_started = now)
 	eAttendance.save()
 	result['success'] = True
@@ -235,7 +237,7 @@ def createShift(employee, result):
 
 	return result
 
-def startShift(idUser):
+def startShift(request, idUser):
 	result = {'success' : False}
 	try:
 		employee = Employee.objects.get(user_id = idUser)
@@ -245,18 +247,36 @@ def startShift(idUser):
 			
 			#If more than 16 hours was passed since the last shift was started we can consider that now we are creating a new shift
 			time_delta = (datetime.datetime.now() - datetime.datetime.combine(attendance.date,attendance.hour_started))
+			# !!!!!!! Joao verifica essas linhas de codigo abaixo  !!!!!!!!!!
+			new_hour_started = None
+			if 'time' in request.POST:
+				time = {'hour': 0, 'minute' : 0, 'second' : 0}
+				new_time = request.POST['time']
+				new_time = new_time.split(":")		
+				time['hour'] = int(new_time[0])
+				time['minute'] = int(new_time[1])
+				new_hour_started = datetime.timedelta(hours = time['hour'], minutes = time['minute'], seconds = time['second'])
+				time_delta = (new_hour_started - datetime.datetime.combine(attendance.date,attendance.hour_started))
 			
 			if ((time_delta.seconds / 3600.0) >= 16.17) or (time_delta.days >= 1):
-				result = createShift(employee, result)
+				result = createShift(new_hour_started, employee, result)
 			else:
 				#In case 16 hours haven't passed yet we need to check if the shift we get was finished or not
 				if attendance.hour_ended is not None: #The last shift was finished already, so we can start a new one
-					result = createShift(employee, result)
+					result = createShift(new_hour_started, employee, result)
 				else: #The last shift wasn't finished yet.
 					result['code'] = 1 #You need to finish the shift you started already before create a new one
 
 		else: #First time the employee will create a shift
-			result = createShift(employee, result)
+			new_hour_started = None
+			if 'time' in request.POST:
+				time = {'hour': 0, 'minute' : 0, 'second' : 0}
+				new_time = request.POST['time']
+				new_time = new_time.split(":")		
+				time['hour'] = int(new_time[0])
+				time['minute'] = int(new_time[1])
+				new_hour_started = datetime.timedelta(hours = time['hour'], minutes = time['minute'], seconds = time['second'])
+			result = createShift(new_hour_started, employee, result)
 
 	except (Employee.DoesNotExist, EmployeeAttendance.DoesNotExist) as e:
 		result['code'] =  2 #There is no users associated with this id
@@ -269,14 +289,14 @@ def startShiftGroup(request):
 	if request.method == "POST":
 		if request.is_ajax():
 			if 'ids[]' not in request.POST:
-				result = startShift(request.user.id)
+				result = startShift(request, request.user.id)
 				return HttpResponse(json.dumps(result),content_type='application/json')
 			else:
 				ids = request.POST.getlist('ids[]')
 				auxSuccess = []
 				auxError = []
 				for item in ids:
-					aux = startShift(item)
+					aux = startShift(request, item)
 					aux['id'] = item
 					if aux['success'] == True:
 						auxSuccess.append(aux)
@@ -293,7 +313,7 @@ def startShiftGroup(request):
 
 
 
-def stopShift(idUser):
+def stopShift(request, idUser):
 	result = {}
 	try:
 		employee = Employee.objects.get(user_id = idUser)
@@ -306,7 +326,16 @@ def stopShift(idUser):
 
 			#If more than 16 hours was passed since the last shift was started we can consider that now we are creating a new shift
 			time_delta = (datetime.datetime.now() - datetime.datetime.combine(attendance.date,attendance.hour_started))
-
+			new_hour_started = None
+			if 'time' in request.POST:
+				time = {'hour': 0, 'minute' : 0, 'second' : 0}
+				new_time = request.POST['time']
+				new_time = new_time.split(":")		
+				time['hour'] = int(new_time[0])
+				time['minute'] = int(new_time[1])
+				new_hour_started = datetime.timedelta(hours = time['hour'], minutes = time['minute'], seconds = time['second'])
+				time_delta = (new_hour_started - datetime.datetime.combine(attendance.date,attendance.hour_started))
+			
 			if ((time_delta.seconds / 3600.0) < 16.17) or (time_delta.days == 0):
 				t_break = Break.objects.filter(attendance_id = attendance).order_by('-start')
 				amount = t_break.count()
@@ -314,10 +343,16 @@ def stopShift(idUser):
 				if attendance.hour_ended is None:
 					for item in t_break: 
 						if item.end == None: #if there is a break opened
-							item.end = datetime.datetime.now()
+							if 'time' in request.POST:
+								item.end = new_hour_started
+							else:
+								item.end = datetime.datetime.now()
 							item.save()
 						break
-					attendance.hour_ended = datetime.datetime.now()
+					if 'time' in request.POST:
+						attendance.hour_ended = new_hour_started
+					else:
+						attendance.hour_ended = datetime.datetime.now()
 					# attendance.signature = signature
 					attendance.save()
 					result['success'] = True
@@ -340,14 +375,14 @@ def stopShiftGroup(request):
 	if request.method == "POST":
 		if request.is_ajax():
 			if 'ids[]' not in request.POST:
-				result = stopShift(request.user.id)
+				result = stopShift(request, request.user.id)
 				return HttpResponse(json.dumps(result),content_type='application/json')
 			else:
 				ids = request.POST.getlist('ids[]')
 				auxSuccess = []
 				auxError = []
 				for item in ids:
-					aux = stopShift(item)
+					aux = stopShift(request, item)
 					aux['id'] = item
 					if aux['success'] == True:
 						auxSuccess.append(aux)
@@ -363,7 +398,7 @@ def stopShiftGroup(request):
 
 
 
-def startBreak(idUser, paramenterlunch):
+def startBreak(request, idUser, paramenterlunch):
 	result = {'success' : False}
 	try:
 		lunch = paramenterlunch
@@ -376,7 +411,16 @@ def startBreak(idUser, paramenterlunch):
 				count = t_break.count()
 
 				if count == 0 or t_break[0].end is not None:
-					t2_break = Break(attendance = attendance, lunch = lunch, start = datetime.datetime.now())
+					time = datetime.datetime.now()
+					if 'time' in request.POST:
+						timePOST = {'hour': 0, 'minute' : 0, 'second' : 0}
+						new_time = request.POST['time']
+						print new_time 
+						new_time = new_time.split(":")		
+						timePOST['hour'] = int(new_time[0])
+						timePOST['minute'] = int(new_time[1])
+						time = datetime.timedelta(hours = timePOST['hour'], minutes = timePOST['minute'], seconds = timePOST['second'])
+					t2_break = Break(attendance = attendance, lunch = lunch, start = time)
 					t2_break.save()
 					result['success'] = True
 					# result['time'] = str(t2_break.start)
@@ -399,14 +443,14 @@ def startBreakGroup(request):
 		if request.is_ajax():
 			lunch = int(request.POST['lunch'])
 			if 'ids[]' not in request.POST:
-				result = startBreak(request.user.id, lunch)
+				result = startBreak(request, request.user.id, lunch)
 				return HttpResponse(json.dumps(result),content_type='application/json')
 			else:
 				ids = request.POST.getlist('ids[]')
 				auxSuccess = []
 				auxError = []
 				for item in ids:
-					aux = startBreak(item, lunch)
+					aux = startBreak(request, item, lunch)
 					aux['id'] = item
 					if aux['success'] == True:
 						auxSuccess.append(aux)
@@ -421,7 +465,7 @@ def startBreakGroup(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
-def stopBreak(idUser, paramenterlunch):
+def stopBreak(request, idUser, paramenterlunch):
 	result = {'success' : False}
 	try:
 		lunch = paramenterlunch
@@ -433,7 +477,16 @@ def stopBreak(idUser, paramenterlunch):
 			if (count != 0) and t_break[0].end is None:
 				if t_break[0].lunch == lunch:
 					t_break = t_break[0]
-					t_break.end = datetime.datetime.now()
+					time = datetime.datetime.now()
+					if 'time' in request.POST:
+						timePOST = {'hour': 0, 'minute' : 0, 'second' : 0}
+						new_time = request.POST['time']
+						print new_time 
+						new_time = new_time.split(":")		
+						timePOST['hour'] = int(new_time[0])
+						timePOST['minute'] = int(new_time[1])
+						time = datetime.timedelta(hours = timePOST['hour'], minutes = timePOST['minute'], seconds = timePOST['second'])
+					t_break.end = time
 					t_break.save()
 					result['success'] = True
 					result['user'] = idUser
@@ -455,14 +508,14 @@ def stopBreakGroup(request):
 		if request.is_ajax():
 			lunch = int(request.POST['lunch'])
 			if 'ids[]' not in request.POST:
-				result = stopBreak(request.user.id, lunch)
+				result = stopBreak(request, request.user.id, lunch)
 				return HttpResponse(json.dumps(result),content_type='application/json')
 			else:
 				ids = request.POST.getlist('ids[]')
 				auxSuccess = []
 				auxError = []
 				for item in ids:
-					aux = stopBreak(item, lunch)
+					aux = stopBreak(request, item, lunch)
 					aux['id'] = item
 					if aux['success'] == True:
 						auxSuccess.append(aux)
@@ -2076,7 +2129,6 @@ def getEmployeeShifts(request):
 		if request.is_ajax():
 
 			employee = Employee.objects.get(user_id = request.user.id)
-
 			try:
 				
 				result['first_name'] = employee.user.first_name
@@ -2084,8 +2136,6 @@ def getEmployeeShifts(request):
 				result['qr_code'] = employee.qr_code
 				result['contact_number'] = employee. contact_number
 				result['permission_level'] = employee.permission_level
-				result['photo_url'] = employee.photoEmployee
-
 				attendance = EmployeeAttendance.objects.filter(employee = employee).order_by('-date').first()
 
 				if attendance is not None:
@@ -2116,7 +2166,6 @@ def getEmployeeShifts(request):
 	 		result['code'] = 2 #Use ajax to perform requests
 	else:
 	 	result['code'] = 3 #Request was not POST
-
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 @login_required
