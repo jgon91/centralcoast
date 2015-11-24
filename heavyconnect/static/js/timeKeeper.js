@@ -1,22 +1,58 @@
-//Script Time Kepper Off-line
+//Script Time Keeper Off-line
+
+//sync function
+function sync() {
+    for (var i = 0; i < dataTimeKeeper.length; i++) {
+        if (dataTimeKeeper[i].pendent == true) {
+            if (dataTimeKeeper[i].actionLocal == 1) {
+                alert("start shift");
+                //startShift("{{ csrf_token }}", "{% url 'startShiftGroup' %}", dataTimeKeeper[i].timeLocal, i);
+            }
+            if (dataTimeKeeper[i].actionLocal == 2) {
+                lunch = 0;
+                alert("start break");
+                //startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
+            }
+            if (dataTimeKeeper[i].actionLocal == 3) {
+                alert("stop break");
+                lunch = 0;
+                //stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
+            }
+            if (dataTimeKeeper[i].actionLocal == 4) {
+                alert("start lunch");
+                lunch = 1;
+                //startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
+            }
+            if (dataTimeKeeper[i].actionLocal == 5) {
+                alert("stop lunch");
+                lunch = 1;
+                //stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
+            }
+            if (dataTimeKeeper[i].actionLocal == 6) {
+                alert("stop shift");
+                //stopShift("{{ csrf_token }}", "{% url 'stopShiftGroup' %}", dataTimeKeeper[i].timeLocal, i);
+            }
+        }
+    }
+}
 
 //Constructor
-var	dataTimeKepper = [];
+var	dataTimeKeeper = [];
 
 //Object to count actions
 var count = {};
 initializeCounter();
 
 function saveData(actionLocal){
-	//actionlocal = 1- start shift, 2- start break, 3- stop break, 4- start lunch, 5- stop lunch, 6- end shift
-	
-	var currentdate = new Date(); 
-	var datetime = currentdate.getHours() + ":"  
-                + currentdate.getMinutes() + ":" 
+	//actionLocal: 1 = start shift, 2 = start break, 3 = stop break, 4 = start lunch, 5 = stop lunch, 6 = end shift
+
+	var currentdate = new Date();
+	var datetime = currentdate.getHours() + ":"
+                + currentdate.getMinutes() + ":"
                 + currentdate.getSeconds();
 
 	switch(actionLocal){
-		case 1:			
+		case 1:
 			return checkStartShift(actionLocal, datetime); // Start Shift
 			break;
 		case 2:
@@ -34,31 +70,31 @@ function saveData(actionLocal){
 		case 6:
 			return checkStopShift(actionLocal, datetime);// Stop Lunch
 		 	break;
-		 default:			
+		 default:
 		 	break;
 	}
-}	
+}
 
 function saveAction(actionLocal, time){
-	//console.log("Starting shift")	
-	action = {};	
+	//console.log("Starting shift")
+	action = {};
 
 	action.actionLocal = actionLocal;
 	action.timeLocal = time;
-	action.pendent = false;
-	
-	dataTimeKepper.push(action);
+	action.pendent = true;
 
-	console.log(dataTimeKepper);
+	dataTimeKeeper.push(action);
 
-	localStorage.setItem('dataTimeKepper', JSON.stringify(dataTimeKepper));
+	//console.log(dataTimeKeeper);
+
+	localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
 }
 
 function checkStartBreakLunch(actionLocal, datetime, tmp_break, tmp_lunch){
-	
+
 	getValueStorage();
 
-	if (count.startShift == count.endShift+1){	
+	if (count.startShift == count.endShift+1){
 		if (count.startBreak == count.stopBreak){
 			if(count.startLunch == count.stopLunch){
 				saveAction(actionLocal, datetime);
@@ -75,7 +111,7 @@ function checkStartBreakLunch(actionLocal, datetime, tmp_break, tmp_lunch){
 
 				return false;
 			}
-			
+
 		}else{
 			console.log("Break Happening");
 
@@ -92,7 +128,7 @@ function checkStopBreakLunch(actionLocal, datetime, tmp_break, tmp_lunch){
 
 	getValueStorage();
 
-	if (count.startShift == count.endShift+1){	
+	if (count.startShift == count.endShift+1){
 		if (count.startBreak == count.stopBreak+tmp_break){
 			if(count.startLunch == count.stopLunch+tmp_lunch){
 				saveAction(actionLocal, datetime);
@@ -110,7 +146,7 @@ function checkStopBreakLunch(actionLocal, datetime, tmp_break, tmp_lunch){
 
 				return false;
 			}
-			
+
 		}else{
 			console.log("Break is Happening");
 
@@ -125,25 +161,25 @@ function checkStopBreakLunch(actionLocal, datetime, tmp_break, tmp_lunch){
 }
 
 function checkStartShift(actionLocal, datetime){
-	
+
 	getValueStorage();
 
-	if (count.startShift == count.endShift){	
-		if (dataTimeKepper.length == 0 || dataTimeKepper[dataTimeKepper.length-1].pendent == false){
+	if (count.startShift == count.endShift){
+		if (dataTimeKeeper.length == 0 || dataTimeKeeper[dataTimeKeeper.length-1].pendent == false){
 			localStorage.clear();
 			initializeCounter();
 			saveAction(actionLocal, datetime);
-			
+
 			count.startShift += 1;
 			localStorage.setItem('count', JSON.stringify(count));
-			
+
 			return true;
 		}else{
 			console.log("You can't start the shift, previous shift is pendent");
 
 			return false;
-		}	
-		
+		}
+
 	}else{
 		console.log("Shift doesn't started or Shift is already ended");
 
@@ -156,7 +192,7 @@ function checkStopShift(actionLocal, datetime){
 
 	var checked;
 	checked = checkStartBreakLunch(actionLocal, datetime, 0, 0);
-	
+
 	if (checked){
 		count.endShift += 1;
 		localStorage.setItem('count', JSON.stringify(count));
@@ -174,7 +210,7 @@ function initializeCounter(){
 	count.stopBreak = 0;
 	count.startLunch = 0;
 	count.stopLunch = 0;
-	console.log(count);
+	//console.log(count);
 	localStorage.setItem('count', JSON.stringify(count));
 }
 
