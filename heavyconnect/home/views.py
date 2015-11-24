@@ -228,7 +228,7 @@ def retrieveMachine(request):
 
 def createShift(new_hour_started, employee, result):
 	now = datetime.datetime.now()
-	if new_hour_started not None:
+	if new_hour_started is not None:
 		now = new_hour_started
 	eAttendance = EmployeeAttendance(employee = employee, date = now, hour_started = now)
 	eAttendance.save()
