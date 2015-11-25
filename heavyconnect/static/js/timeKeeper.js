@@ -5,32 +5,26 @@ function sync() {
     for (var i = 0; i < dataTimeKeeper.length; i++) {
         if (dataTimeKeeper[i].pendent == true) {
             if (dataTimeKeeper[i].actionLocal == 1) {
-                alert("start shift");
-                //startShift("{{ csrf_token }}", "{% url 'startShiftGroup' %}", dataTimeKeeper[i].timeLocal, i);
+                startShift("{{ csrf_token }}", "{% url 'startShift' %}", dataTimeKeeper[i].timeLocal, i);
             }
             if (dataTimeKeeper[i].actionLocal == 2) {
                 lunch = 0;
-                alert("start break");
-                //startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
+                startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
             }
             if (dataTimeKeeper[i].actionLocal == 3) {
-                alert("stop break");
                 lunch = 0;
-                //stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
+                stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
             }
             if (dataTimeKeeper[i].actionLocal == 4) {
-                alert("start lunch");
                 lunch = 1;
-                //startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
+                startBreak("{{ csrf_token }}", "{% url 'startBreak' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
             }
             if (dataTimeKeeper[i].actionLocal == 5) {
-                alert("stop lunch");
                 lunch = 1;
-                //stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
+                stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
             }
             if (dataTimeKeeper[i].actionLocal == 6) {
-                alert("stop shift");
-                //stopShift("{{ csrf_token }}", "{% url 'stopShiftGroup' %}", dataTimeKeeper[i].timeLocal, i);
+                stopShift("{{ csrf_token }}", "{% url 'stopShift' %}", dataTimeKeeper[i].timeLocal, i);
             }
         }
     }
@@ -45,7 +39,7 @@ initializeCounter();
 
 function saveData(actionLocal){
 	//actionLocal: 1 = start shift, 2 = start break, 3 = stop break, 4 = start lunch, 5 = stop lunch, 6 = end shift
-
+	offilne = -1;
 	var currentdate = new Date();
 	var datetime = currentdate.getHours() + ":"
                 + currentdate.getMinutes() + ":"

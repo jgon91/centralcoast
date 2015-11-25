@@ -8,7 +8,7 @@
 		<script src="{% static 'js/timeKeeper.js'%}"></script>
 		<script>
 		var idTimelog = 48;
-		var checkingData = 0;
+		var offline = -1;
 		var item_count = 0;
 		var hour_start = 0;
 		var shiftStarted = 0;
@@ -39,19 +39,42 @@
 			$("#confirmShift").click(function() {
 				emptyDivs();
 				if (shiftStarted == 0) {
-					$("#messageTimekeeper").html("Starting shift...");
 					$('#confirmShift').hide();
-					alert("started");
 					saveData(1);
-					sync();
-					//startShift("{{ csrf_token }}", "{% url 'startShiftGroup' %}");
-					//console.log(dataTimeKeeper);
+					console.log("Offline 1 = " + offline);
+					console.log("Length = " + dataTimeKeeper.length);
+					for (var i = 0; i < dataTimeKeeper.length; i++) {
+						console.log("Pendent = " + dataTimeKeeper[i].pendent);
+						if (dataTimeKeeper[i].pendent == true) {
+							offline++;
+						}
+					}
+					console.log("Offline 2 = " + offline);
+					if (offline > 0) {
+						$("#messageTimekeeper").html("Synchronizing Data...");
+						sync();
+					} else {
+						$("#messageTimekeeper").html("Starting shift...");
+						var position = dataTimeKeeper.length - 1;
+						console.log("Position = " + position);
+						console.log("Time = " + dataTimeKeeper[position].timeLocal);
+						startShift("{{ csrf_token }}", "{% url 'startShift' %}", dataTimeKeeper[position].timeLocal, position);
+					}
 				} else {
 					$("#messageTimekeeper").html("Stopping shift...");
 					$('#confirmShift').hide();
 					saveData(6);
-					sync();
-					//stopShift("{{ csrf_token }}", "{% url 'stopShiftGroup' %}");
+					for (var i = 0; i < dataTimeKeeper.length; i++) {
+						if (dataTimeKeeper[i].pendent == true) {
+							offline++;
+						}
+					}
+					if (offline > 0) {
+						sync();
+					} else {
+						var position = dataTimeKeeper.length - 1;
+						stopShift("{{ csrf_token }}", "{% url 'stopShift' %}", dataTimeKeeper[position].timeLocal, position);
+					}
 				}
 			});
 			$("#break").click(function() {
@@ -73,14 +96,32 @@
 					$("#messageTimekeeper").html("Starting break...");
 					lunch = 0;
 					saveData(2);
-					sync();
-					//startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch);
+					for (var i = 0; i < dataTimeKeeper.length; i++) {
+						if (dataTimeKeeper[i].pendent == true) {
+							offline++;
+						}
+					}
+					if (offline > 0) {
+						sync();
+					} else {
+						var position = dataTimeKeeper.length - 1;
+						startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
+					}
 				} else {
 					$("#messageTimekeeper").html("Ending break...");
 					lunch = 0;
 					saveData(3);
-					sync();
-					//stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch);
+					for (var i = 0; i < dataTimeKeeper.length; i++) {
+						if (dataTimeKeeper[i].pendent == true) {
+							offline++;
+						}
+					}
+					if (offline > 0) {
+						sync();
+					} else {
+						var position = dataTimeKeeper.length - 1;
+						stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
+					}
 				}
 			});
 			$("#lunch").click(function() {
@@ -101,14 +142,32 @@
 					$("#messageTimekeeper").html("Starting lunch...");
 					lunch = 1;
 					saveData(4);
-					sync();
-					//startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch);
+					for (var i = 0; i < dataTimeKeeper.length; i++) {
+						if (dataTimeKeeper[i].pendent == true) {
+							offline++;
+						}
+					}
+					if (offline > 0) {
+						sync();
+					} else {
+						var position = dataTimeKeeper.length - 1;
+						startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
+					}
 				} else {
 					$("#messageTimekeeper").html("Ending lunch...");
 					lunch = 1;
 					saveData(5);
-					sync();
-					//stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch);
+					for (var i = 0; i < dataTimeKeeper.length; i++) {
+						if (dataTimeKeeper[i].pendent == true) {
+							offline++;
+						}
+					}
+					if (offline > 0) {
+						sync();
+					} else {
+						var position = dataTimeKeeper.length - 1;
+						stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
+					}
 				}
 			});
 			$("#timelog").click(function() {
@@ -158,11 +217,15 @@
 			$.ajax({
 				method : "POST",
 				url : url,
-				data : {"csrfmiddlewaretoken" : token},
+				data : {"csrfmiddlewaretoken" : token, "time" : timeLocal},
 				datatype : "json",
 				success : function(data, status, xhr) {
 					if (data.success) {
-						$("#messageTimekeeper").html("Clock-in successful");
+						if (offline > 0) {
+							offilne--;
+						} else {
+							$("#messageTimekeeper").html("Clock-in successful");
+						}
 						shiftStarted = 1;
 						dataTimeKeeper[position].pendent = false;
 					} else if (data.code == 1) {
@@ -182,20 +245,29 @@
 				method : "POST",
 				url : url,
 				acync: false,
-				data : {"csrfmiddlewaretoken" : token, "lunch": lunch},
+				data : {"csrfmiddlewaretoken" : token, "lunch": lunch, "time" : timeLocal},
 				datatype : "json",
 				success : function(data, status, xhr) {
 					if (data.success) {
-						if (lunch == 0) {
-							$("#messageTimekeeper").html("Break started");
-							breakStarted = 1;
-							dataTimeKeeper[position].pendent = false;
+						if (offline > 0) {
+							offilne--;
+							if (lunch == 0) {
+								breakStarted = 1;
+							}
+							if (lunch == 1) {
+								lunchStarted = 1;
+							}
+						} else {
+							if (lunch == 0) {
+								$("#messageTimekeeper").html("Break started");
+								breakStarted = 1;
+							}
+							if (lunch == 1) {
+								$("#messageTimekeeper").html("Lunch started");
+								lunchStarted = 1;
+							}
 						}
-						if (lunch == 1) {
-							$("#messageTimekeeper").html("Lunch started");
-							lunchStarted = 1;
-							dataTimeKeeper[position].pendent = false;
-						}
+						dataTimeKeeper[position].pendent = false;
 					} else if (data.code == 1) {
 						$("#messageTimekeeper").html("You cannot start 2 breaks at the same time.");
 					} else if (data.code == 2) {
@@ -214,20 +286,29 @@
 			$.ajax({
 				method: "POST",
 				url: url,
-				data: {"csrfmiddlewaretoken": token, "lunch": lunch},
+				data: {"csrfmiddlewaretoken": token, "lunch": lunch, "time" : timeLocal},
 				datatype: "json",
 				success: function(data, status, xhr){
 					if(data.success){
-						if (lunch == 0) {
-							$("#messageTimekeeper").html("Break ended");
-							breakStarted = 0;
-							dataTimeKeeper[position].pendent = false;
+						if (offline > 0) {
+							offilne--;
+							if (lunch == 0) {
+								breakStarted = 0;
+							}
+							if (lunch == 1) {
+								lunchStarted = 0;
+							}
+						} else {
+							if (lunch == 0) {
+								$("#messageTimekeeper").html("Break ended");
+								breakStarted = 0;
+							}
+							if (lunch == 1) {
+								$("#messageTimekeeper").html("Lunch ended");
+								lunchStarted = 0;
+							}
 						}
-						if (lunch == 1) {
-							$("#messageTimekeeper").html("Lunch ended");
-							lunchStarted = 0;
-							dataTimeKeeper[position].pendent = false;
-						}
+						dataTimeKeeper[position].pendent = false;
 					} else if(data.code == 1){
 						$("#messageTimekeeper").html("You need to start a break first.");
 					} else if(data.code == 2){
@@ -246,11 +327,15 @@
 			$.ajax({
 				method: "POST",
 				url: url,
-				data: {"csrfmiddlewaretoken": token},
+				data: {"csrfmiddlewaretoken": token, "time" : timeLocal},
 				datatype: "json",
 				success: function(data, status, xhr){
 					if(data.success){
-						$("#messageTimekeeper").html("Shift ended");
+						if (offline > 0) {
+							offilne--;
+						} else {
+							$("#messageTimekeeper").html("Shift ended");
+						}
 						shiftStarted = 0;
 						dataTimeKeeper[position].pendent = false;
 					} else if(data.code == 1){
