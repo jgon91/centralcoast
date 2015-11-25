@@ -58,10 +58,9 @@
 						var position = dataTimeKeeper.length - 1;
 						console.log("Position = " + position);
 						console.log("Time = " + dataTimeKeeper[position].timeLocal);
-						startShift("{{ csrf_token }}", "{% url 'startShift' %}", dataTimeKeeper[position].timeLocal, position);
+						startShift("{{ csrf_token }}", "{% url 'startShiftGroup' %}", dataTimeKeeper[position].timeLocal, position);
 					}
 				} else {
-					$("#messageTimekeeper").html("Stopping shift...");
 					$('#confirmShift').hide();
 					saveData(6);
 					for (var i = 0; i < dataTimeKeeper.length; i++) {
@@ -70,10 +69,12 @@
 						}
 					}
 					if (offline > 0) {
+						$("#messageTimekeeper").html("Synchronizing Data...");
 						sync();
 					} else {
+						$("#messageTimekeeper").html("Stopping shift...");
 						var position = dataTimeKeeper.length - 1;
-						stopShift("{{ csrf_token }}", "{% url 'stopShift' %}", dataTimeKeeper[position].timeLocal, position);
+						stopShift("{{ csrf_token }}", "{% url 'stopShiftGroup' %}", dataTimeKeeper[position].timeLocal, position);
 					}
 				}
 			});
@@ -93,7 +94,6 @@
 					$("#messageTimekeeper").html("You cannot start 2 breaks at the same time.");
 					hideModal();
 				} else if (breakStarted == 0) {
-					$("#messageTimekeeper").html("Starting break...");
 					lunch = 0;
 					saveData(2);
 					for (var i = 0; i < dataTimeKeeper.length; i++) {
@@ -102,13 +102,14 @@
 						}
 					}
 					if (offline > 0) {
+						$("#messageTimekeeper").html("Synchronizing Data...");
 						sync();
 					} else {
+						$("#messageTimekeeper").html("Starting break...");
 						var position = dataTimeKeeper.length - 1;
 						startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
 					}
 				} else {
-					$("#messageTimekeeper").html("Ending break...");
 					lunch = 0;
 					saveData(3);
 					for (var i = 0; i < dataTimeKeeper.length; i++) {
@@ -117,10 +118,12 @@
 						}
 					}
 					if (offline > 0) {
+						$("#messageTimekeeper").html("Synchronizing Data...");
 						sync();
 					} else {
+						$("#messageTimekeeper").html("Ending break...");
 						var position = dataTimeKeeper.length - 1;
-						stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
+						stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
 					}
 				}
 			});
@@ -139,7 +142,6 @@
 				if (breakStarted == 1) {
 					$("#messageTimekeeper").html("You cannot start 2 breaks at the same time.");
 				} else if (lunchStarted == 0) {
-					$("#messageTimekeeper").html("Starting lunch...");
 					lunch = 1;
 					saveData(4);
 					for (var i = 0; i < dataTimeKeeper.length; i++) {
@@ -148,13 +150,14 @@
 						}
 					}
 					if (offline > 0) {
+						$("#messageTimekeeper").html("Synchronizing Data...");
 						sync();
 					} else {
+						$("#messageTimekeeper").html("Starting lunch...");
 						var position = dataTimeKeeper.length - 1;
 						startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
 					}
 				} else {
-					$("#messageTimekeeper").html("Ending lunch...");
 					lunch = 1;
 					saveData(5);
 					for (var i = 0; i < dataTimeKeeper.length; i++) {
@@ -163,10 +166,12 @@
 						}
 					}
 					if (offline > 0) {
+						$("#messageTimekeeper").html("Synchronizing Data...");
 						sync();
 					} else {
+						$("#messageTimekeeper").html("Ending lunch...");
 						var position = dataTimeKeeper.length - 1;
-						stopBreak("{{ csrf_token }}", "{% url 'stopBreak' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
+						stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
 					}
 				}
 			});
