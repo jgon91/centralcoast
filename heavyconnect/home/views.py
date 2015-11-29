@@ -244,7 +244,6 @@ def startShift(request, idUser):
 		attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
 		result['Employee'] = employee.id
 		if attendance is not None:
-			
 			#If more than 16 hours was passed since the last shift was started we can consider that now we are creating a new shift
 			time_delta = (datetime.datetime.now() - datetime.datetime.combine(attendance.date,attendance.hour_started))
 			# !!!!!!! Joao verifica essas linhas de codigo abaixo  !!!!!!!!!!
@@ -255,7 +254,7 @@ def startShift(request, idUser):
 				new_time = new_time.split(":")		
 				time['hour'] = int(new_time[0])
 				time['minute'] = int(new_time[1])
-				new_hour_started = datetime.timedelta(hours = time['hour'], minutes = time['minute'], seconds = time['second'])
+				new_hour_started = datetime.datetime(year = 2015, month = 11, day = 25, hour = time['hour'], minute = time['minute'], second = time['second'])
 				time_delta = (new_hour_started - datetime.datetime.combine(attendance.date,attendance.hour_started))
 			
 			if ((time_delta.seconds / 3600.0) >= 16.17) or (time_delta.days >= 1):
@@ -275,7 +274,7 @@ def startShift(request, idUser):
 				new_time = new_time.split(":")		
 				time['hour'] = int(new_time[0])
 				time['minute'] = int(new_time[1])
-				new_hour_started = datetime.timedelta(hours = time['hour'], minutes = time['minute'], seconds = time['second'])
+				new_hour_started = datetime.datetime(year = 2015, month = 11, day = 25, hour = time['hour'], minute = time['minute'], second = time['second'])
 			result = createShift(new_hour_started, employee, result)
 
 	except (Employee.DoesNotExist, EmployeeAttendance.DoesNotExist) as e:
@@ -333,7 +332,7 @@ def stopShift(request, idUser):
 				new_time = new_time.split(":")		
 				time['hour'] = int(new_time[0])
 				time['minute'] = int(new_time[1])
-				new_hour_started = datetime.timedelta(hours = time['hour'], minutes = time['minute'], seconds = time['second'])
+				new_hour_started = datetime.datetime(year = 2015, month = 11, day = 25, hour = time['hour'], minute = time['minute'], second = time['second'])
 				time_delta = (new_hour_started - datetime.datetime.combine(attendance.date,attendance.hour_started))
 			
 			if ((time_delta.seconds / 3600.0) < 16.17) or (time_delta.days == 0):
@@ -403,23 +402,20 @@ def startBreak(request, idUser, paramenterlunch):
 	try:
 		lunch = paramenterlunch
 		employee = Employee.objects.get(user = idUser)
-
 		attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
 		if attendance is not None:
 			if attendance.hour_ended is None:
 				t_break = Break.objects.filter(attendance_id = attendance).order_by('-start')
 				count = t_break.count()
-
 				if count == 0 or t_break[0].end is not None:
 					time = datetime.datetime.now()
 					if 'time' in request.POST:
 						timePOST = {'hour': 0, 'minute' : 0, 'second' : 0}
 						new_time = request.POST['time']
-						print new_time 
 						new_time = new_time.split(":")		
 						timePOST['hour'] = int(new_time[0])
 						timePOST['minute'] = int(new_time[1])
-						time = datetime.timedelta(hours = timePOST['hour'], minutes = timePOST['minute'], seconds = timePOST['second'])
+						time = datetime.datetime(year = 2015, month = 11, day = 25, hour = timePOST['hour'], minute = timePOST['minute'], second = timePOST['second'])
 					t2_break = Break(attendance = attendance, lunch = lunch, start = time)
 					t2_break.save()
 					result['success'] = True
@@ -443,6 +439,7 @@ def startBreakGroup(request):
 		if request.is_ajax():
 			lunch = int(request.POST['lunch'])
 			if 'ids[]' not in request.POST:
+				print 1
 				result = startBreak(request, request.user.id, lunch)
 				return HttpResponse(json.dumps(result),content_type='application/json')
 			else:
@@ -485,7 +482,7 @@ def stopBreak(request, idUser, paramenterlunch):
 						new_time = new_time.split(":")		
 						timePOST['hour'] = int(new_time[0])
 						timePOST['minute'] = int(new_time[1])
-						time = datetime.timedelta(hours = timePOST['hour'], minutes = timePOST['minute'], seconds = timePOST['second'])
+						time = datetime.datetime(year = 2015, month = 11, day = 25, hour = timePOST['hour'], minute = timePOST['minute'], second = timePOST['second'])
 					t_break.end = time
 					t_break.save()
 					result['success'] = True

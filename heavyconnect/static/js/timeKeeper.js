@@ -1,37 +1,10 @@
 //Script Time Keeper Off-line
 
-//sync function
-function sync() {
-    for (var i = 0; i < dataTimeKeeper.length; i++) {
-        if (dataTimeKeeper[i].pendent == true) {
-            if (dataTimeKeeper[i].actionLocal == 1) {
-                startShift("{{ csrf_token }}", "{% url 'startShiftGroup' %}", dataTimeKeeper[i].timeLocal, i);
-            }
-            if (dataTimeKeeper[i].actionLocal == 2) {
-                lunch = 0;
-                startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
-            }
-            if (dataTimeKeeper[i].actionLocal == 3) {
-                lunch = 0;
-                stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
-            }
-            if (dataTimeKeeper[i].actionLocal == 4) {
-                lunch = 1;
-                startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
-            }
-            if (dataTimeKeeper[i].actionLocal == 5) {
-                lunch = 1;
-                stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
-            }
-            if (dataTimeKeeper[i].actionLocal == 6) {
-                stopShift("{{ csrf_token }}", "{% url 'stopShiftGroup' %}", dataTimeKeeper[i].timeLocal, i);
-            }
-        }
-    }
-}
+
 
 //Constructor
 var	dataTimeKeeper = [];
+localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
 
 //Object to count actions
 var count = {};
@@ -76,7 +49,6 @@ function saveAction(actionLocal, time){
 	action.actionLocal = actionLocal;
 	action.timeLocal = time;
 	action.pendent = true;
-
 	dataTimeKeeper.push(action);
 
 	//console.log(dataTimeKeeper);
@@ -87,7 +59,7 @@ function saveAction(actionLocal, time){
 function checkStartBreakLunch(actionLocal, datetime, tmp_break, tmp_lunch){
 
 	getValueStorage();
-
+	console.log(count.startShift + " - " + count.endShift);
 	if (count.startShift == count.endShift+1){
 		if (count.startBreak == count.stopBreak){
 			if(count.startLunch == count.stopLunch){
@@ -112,7 +84,7 @@ function checkStartBreakLunch(actionLocal, datetime, tmp_break, tmp_lunch){
 			return false;
 		}
 	}else{
-		console.log("Shift doesn't started or Shift is already ended");
+		console.log("Shift doesn't started or Shift is already ended.");
 
 		return false;
 	}
@@ -212,7 +184,7 @@ function getValueStorage(){
 
 	//Getting values from the storage
 	var value = localStorage.getItem('count');
-	count.starShift = JSON.parse(value).startShift;
+	count.startShift = JSON.parse(value).startShift;
 	count.endShift = JSON.parse(value).endShift;
 	count.startBreak = JSON.parse(value).startBreak;
 	count.stopBreak = JSON.parse(value).stopBreak;

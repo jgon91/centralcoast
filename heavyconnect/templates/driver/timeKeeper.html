@@ -19,7 +19,7 @@
 		$(document).ready(function() {
 			$("#foot").load("{%url 'footer'%}");
 			$("#head").load("{%url 'headerDriver'%}");
-			$("#signature").jSignature()
+			$("#signature").jSignature();
 			$("#clearSignature").click(function() {
 			var $sigdiv = $("#signature");
 				$sigdiv.jSignature("reset");
@@ -34,6 +34,7 @@
 					$("#messageTimekeeper").html("Clock-out?");
 				}
 				emptyDivs();
+				$('#confirmShift').show();
 				$("#confirmShift").append('<input type="button" value="{% trans 'CONFIRM' %}" class="btnsTimekeeper"/>');
 			});
 			$("#confirmShift").click(function() {
@@ -62,6 +63,7 @@
 					}
 				} else {
 					$('#confirmShift').hide();
+					dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
 					saveData(6);
 					for (var i = 0; i < dataTimeKeeper.length; i++) {
 						if (dataTimeKeeper[i].pendent == true) {
@@ -95,6 +97,8 @@
 					hideModal();
 				} else if (breakStarted == 0) {
 					lunch = 0;
+					//JUNIOR COLOCOU AQUI -- USAR LOCALSTORAGE, NAO VARIAVEL DO JS
+					dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
 					saveData(2);
 					for (var i = 0; i < dataTimeKeeper.length; i++) {
 						if (dataTimeKeeper[i].pendent == true) {
@@ -111,6 +115,7 @@
 					}
 				} else {
 					lunch = 0;
+					dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
 					saveData(3);
 					for (var i = 0; i < dataTimeKeeper.length; i++) {
 						if (dataTimeKeeper[i].pendent == true) {
@@ -123,6 +128,7 @@
 					} else {
 						$("#messageTimekeeper").html("Ending break...");
 						var position = dataTimeKeeper.length - 1;
+						sync();
 						stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
 					}
 				}
@@ -143,6 +149,7 @@
 					$("#messageTimekeeper").html("You cannot start 2 breaks at the same time.");
 				} else if (lunchStarted == 0) {
 					lunch = 1;
+					dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
 					saveData(4);
 					for (var i = 0; i < dataTimeKeeper.length; i++) {
 						if (dataTimeKeeper[i].pendent == true) {
@@ -159,6 +166,7 @@
 					}
 				} else {
 					lunch = 1;
+					dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
 					saveData(5);
 					for (var i = 0; i < dataTimeKeeper.length; i++) {
 						if (dataTimeKeeper[i].pendent == true) {
@@ -171,6 +179,7 @@
 					} else {
 						$("#messageTimekeeper").html("Ending lunch...");
 						var position = dataTimeKeeper.length - 1;
+						sync();
 						stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
 					}
 				}
@@ -223,6 +232,7 @@
 				method : "POST",
 				url : url,
 				data : {"csrfmiddlewaretoken" : token, "time" : timeLocal},
+				async: false,
 				datatype : "json",
 				success : function(data, status, xhr) {
 					if (data.success) {
@@ -233,6 +243,7 @@
 						}
 						shiftStarted = 1;
 						dataTimeKeeper[position].pendent = false;
+						localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
 					} else if (data.code == 1) {
 						$("#messageTimekeeper").html("You need to finish the shift you started already before create a new one.");
 					} else if (data.code == 2) {
@@ -249,7 +260,7 @@
 			$.ajax({
 				method : "POST",
 				url : url,
-				acync: false,
+				async: false,
 				data : {"csrfmiddlewaretoken" : token, "lunch": lunch, "time" : timeLocal},
 				datatype : "json",
 				success : function(data, status, xhr) {
@@ -273,6 +284,7 @@
 							}
 						}
 						dataTimeKeeper[position].pendent = false;
+						localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
 					} else if (data.code == 1) {
 						$("#messageTimekeeper").html("You cannot start 2 breaks at the same time.");
 					} else if (data.code == 2) {
@@ -291,9 +303,13 @@
 			$.ajax({
 				method: "POST",
 				url: url,
+				async: false,
 				data: {"csrfmiddlewaretoken": token, "lunch": lunch, "time" : timeLocal},
 				datatype: "json",
 				success: function(data, status, xhr){
+					//Pu this inside the if
+					dataTimeKeeper[position].pendent = false;
+					localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
 					if(data.success){
 						if (offline > 0) {
 							offilne--;
@@ -313,7 +329,6 @@
 								lunchStarted = 0;
 							}
 						}
-						dataTimeKeeper[position].pendent = false;
 					} else if(data.code == 1){
 						$("#messageTimekeeper").html("You need to start a break first.");
 					} else if(data.code == 2){
@@ -332,6 +347,7 @@
 			$.ajax({
 				method: "POST",
 				url: url,
+				async: false,
 				data: {"csrfmiddlewaretoken": token, "time" : timeLocal},
 				datatype: "json",
 				success: function(data, status, xhr){
@@ -343,6 +359,7 @@
 						}
 						shiftStarted = 0;
 						dataTimeKeeper[position].pendent = false;
+						localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
 					} else if(data.code == 1){
 						$("#messageTimekeeper").html("You need to take at least 3 breaks.");
 					} else if(data.code == 2){
@@ -520,6 +537,42 @@
 				$("#btnSignature").empty();
 				$("#divSignNow").empty();
 				$("#btnSignNow").empty();
+		}
+		
+		//sync function
+		function sync() {
+			dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
+			console.log(dataTimeKeeper + " - " + dataTimeKeeper.length);
+		    for (var i = 0; i < dataTimeKeeper.length; i++) {
+		        if (dataTimeKeeper[i].pendent == true) {
+		            if (dataTimeKeeper[i].actionLocal == 1) {
+		            	console.log("Call startShift");
+		                startShift("{{ csrf_token }}", "{% url 'startShiftGroup' %}", dataTimeKeeper[i].timeLocal, i);
+		            }
+		            if (dataTimeKeeper[i].actionLocal == 2) {
+		                lunch = 0;
+		                console.log("Call startBreak");
+		                startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
+		            }
+		            if (dataTimeKeeper[i].actionLocal == 3) {
+		                lunch = 0;
+		                stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
+		            }
+		            if (dataTimeKeeper[i].actionLocal == 4) {
+		                lunch = 1;
+		                startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
+		            }
+		            if (dataTimeKeeper[i].actionLocal == 5) {
+		                lunch = 1;
+		                stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
+		            }
+		            if (dataTimeKeeper[i].actionLocal == 6) {
+		                stopShift("{{ csrf_token }}", "{% url 'stopShiftGroup' %}", dataTimeKeeper[i].timeLocal, i);
+		            }
+		        }
+		    }
+		    //
+		    $("#messageTimekeeper").html("Synchronization done.");
 		}
 		</script>
 	</head>
