@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-30 16:01-0700\n"
+"POT-Creation-Date: 2015-11-29 13:38-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,357 +18,518 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: heavyconnect/settings.py:119
+#: heavyconnect/settings.py:124
 msgid "English"
 msgstr ""
 
-#: heavyconnect/settings.py:120
+#: heavyconnect/settings.py:125
 msgid "Spanish"
 msgstr ""
 
-#: heavyconnect/settings.py:121
+#: heavyconnect/settings.py:126
 msgid "Brazilian Portuguese"
 msgstr ""
 
-#: templates/driver/checklist.html:26
+#: templates/driver/checklist.html:91
 msgid "Engine hours"
 msgstr ""
 
-#: templates/driver/checklist.html:27
+#: templates/driver/checklist.html:92
 msgid "Save"
 msgstr ""
 
-#: templates/driver/checklist.html:33
+#: templates/driver/checklist.html:100
 msgid "Checklist Saved"
 msgstr ""
 
-#: templates/driver/checklist.html:51
+#: templates/driver/checklist.html:103
+msgid "Engine hours required"
+msgstr ""
+
+#: templates/driver/checklist.html:145
 msgid "HC CHECKLIST"
 msgstr ""
 
-#: templates/driver/checklist.html:72
+#: templates/driver/checklist.html:166
 msgid "YES"
 msgstr ""
 
-#: templates/driver/checklist.html:76
+#: templates/driver/checklist.html:170
 msgid "NO"
 msgstr ""
 
-#: templates/driver/createTask.html:154
+#: templates/driver/checklist.html:182
+msgid "Take Picture"
+msgstr ""
+
+#: templates/driver/createTask.html:158
+#: templates/manager/createTaskManager.html:167
+#: templates/manager/templateCreateTaskManager.html:162
 msgid "Nickname:"
 msgstr ""
 
-#: templates/driver/createTask.html:154 templates/driver/createTask.html:191
+#: templates/driver/createTask.html:158 templates/driver/createTask.html:195
+#: templates/manager/createTaskManager.html:167
+#: templates/manager/createTaskManager.html:204
+#: templates/manager/templateCreateTaskManager.html:162
+#: templates/manager/templateCreateTaskManager.html:201
 msgid "Drawbar Category:"
 msgstr ""
 
-#: templates/driver/createTask.html:279
+#: templates/driver/createTask.html:324
+#: templates/manager/createTaskManager.html:355
 msgid "CREATE TASK"
 msgstr ""
 
-#: templates/driver/createTask.html:283 templates/driver/startTask.html:202
+#: templates/driver/createTask.html:328 templates/driver/startTask.html:202
 #: templates/driver/startTask.html:215
+#: templates/manager/createTaskManager.html:359
+#: templates/manager/createTaskManager.html:373
+#: templates/manager/templateCreateTaskManager.html:306
+#: templates/manager/templateCreateTaskManager.html:333
 msgid "Task"
 msgstr ""
 
-#: templates/driver/createTask.html:284 templates/driver/startTask.html:203
+#: templates/driver/createTask.html:329 templates/driver/startTask.html:203
+#: templates/manager/createTaskManager.html:361
+#: templates/manager/templateCreateTaskManager.html:312
 msgid "Machine"
 msgstr ""
 
-#: templates/driver/createTask.html:285 templates/driver/startTask.html:204
+#: templates/driver/createTask.html:330 templates/driver/startTask.html:204
+#: templates/manager/createTaskManager.html:362
+#: templates/manager/templateCreateTaskManager.html:315
 msgid "Implement"
 msgstr ""
 
-#: templates/driver/createTask.html:286 templates/driver/createTask.html:401
+#: templates/driver/createTask.html:331 templates/driver/createTask.html:446
 #: templates/driver/startTask.html:205 templates/driver/startTask.html:319
 #: templates/driver/taskFlow.html:138 templates/driver/taskFlow.html.py:147
 #: templates/driver/taskFlow.html:156
+#: templates/manager/createTaskManager.html:363
+#: templates/manager/createTaskManager.html:503
+#: templates/manager/templateCreateTaskManager.html:318
+#: templates/manager/templateCreateTaskManager.html:468
 msgid "Field"
 msgstr ""
 
-#: templates/driver/createTask.html:287
+#: templates/driver/createTask.html:332
+#: templates/manager/createTaskManager.html:364
+#: templates/manager/templateCreateTaskManager.html:321
 msgid "Time"
 msgstr ""
 
-#: templates/driver/createTask.html:288
+#: templates/driver/createTask.html:333
+#: templates/manager/createTaskManager.html:365
+#: templates/manager/templateCreateTaskManager.html:324
 msgid "Add Info"
 msgstr ""
 
-#: templates/driver/createTask.html:296
+#: templates/driver/createTask.html:341
 msgid "Task:"
 msgstr ""
 
-#: templates/driver/createTask.html:313 templates/driver/createTask.html:343
-#: templates/driver/createTask.html:392 templates/driver/createTask.html:418
-#: templates/driver/createTask.html:458 templates/driver/startTask.html:233
+#: templates/driver/createTask.html:358 templates/driver/createTask.html:388
+#: templates/driver/createTask.html:437 templates/driver/createTask.html:463
+#: templates/driver/createTask.html:503 templates/driver/startTask.html:233
 #: templates/driver/startTask.html:263 templates/driver/startTask.html:311
+#: templates/manager/createTaskManager.html:390
+#: templates/manager/createTaskManager.html:416
+#: templates/manager/createTaskManager.html:445
+#: templates/manager/createTaskManager.html:494
+#: templates/manager/createTaskManager.html:520
+#: templates/manager/createTaskManager.html:560
+#: templates/manager/templateCreateTaskManager.html:350
+#: templates/manager/templateCreateTaskManager.html:376
+#: templates/manager/templateCreateTaskManager.html:408
+#: templates/manager/templateCreateTaskManager.html:459
+#: templates/manager/templateCreateTaskManager.html:485
+#: templates/manager/templateCreateTaskManager.html:525
 msgid "NEXT"
 msgstr ""
 
-#: templates/driver/createTask.html:321 templates/driver/schedule.html:78
+#: templates/driver/createTask.html:366 templates/driver/schedule.html:78
+#: templates/manager/scheduleManager.html:263
 msgid "MACHINE:"
 msgstr ""
 
-#: templates/driver/createTask.html:326 templates/driver/createTask.html:358
-#: templates/driver/createTask.html:375
+#: templates/driver/createTask.html:371 templates/driver/createTask.html:403
+#: templates/driver/createTask.html:420
+#: templates/manager/createTaskManager.html:429
+#: templates/manager/createTaskManager.html:460
+#: templates/manager/createTaskManager.html:477
+#: templates/manager/templateCreateTaskManager.html:390
+#: templates/manager/templateCreateTaskManager.html:423
+#: templates/manager/templateCreateTaskManager.html:441
 msgid "Search"
 msgstr ""
 
-#: templates/driver/createTask.html:327 templates/driver/createTask.html:359
-#: templates/driver/createTask.html:376 templates/driver/startTask.html:247
+#: templates/driver/createTask.html:372 templates/driver/createTask.html:404
+#: templates/driver/createTask.html:421 templates/driver/startTask.html:247
 #: templates/driver/startTask.html:278 templates/driver/startTask.html:294
+#: templates/manager/createTaskManager.html:430
+#: templates/manager/createTaskManager.html:461
+#: templates/manager/createTaskManager.html:478
+#: templates/manager/templateCreateTaskManager.html:391
+#: templates/manager/templateCreateTaskManager.html:424
+#: templates/manager/templateCreateTaskManager.html:442
 msgid "Scan"
 msgstr ""
 
-#: templates/driver/createTask.html:337 templates/driver/createTask.html:386
-#: templates/driver/createTask.html:412 templates/driver/createTask.html:452
-#: templates/driver/createTask.html:485 templates/driver/pastTasks.html:176
+#: templates/driver/createTask.html:382 templates/driver/createTask.html:431
+#: templates/driver/createTask.html:457 templates/driver/createTask.html:497
+#: templates/driver/createTask.html:530 templates/driver/pastTasks.html:176
 #: templates/driver/startTask.html:257 templates/driver/startTask.html:305
 #: templates/driver/startTask.html:329
+#: templates/manager/createTaskManager.html:440
+#: templates/manager/createTaskManager.html:488
+#: templates/manager/createTaskManager.html:514
+#: templates/manager/createTaskManager.html:554
+#: templates/manager/createTaskManager.html:587
+#: templates/manager/templateCreateTaskManager.html:402
+#: templates/manager/templateCreateTaskManager.html:453
+#: templates/manager/templateCreateTaskManager.html:479
+#: templates/manager/templateCreateTaskManager.html:519
+#: templates/manager/templateCreateTaskManager.html:552
 msgid "RETURN"
 msgstr ""
 
-#: templates/driver/createTask.html:352 templates/driver/createTask.html:369
+#: templates/driver/createTask.html:397 templates/driver/createTask.html:414
 #: templates/driver/pastTasks.html:154 templates/driver/pastTasks.html:163
 #: templates/driver/startTask.html:272 templates/driver/taskFlow.html:188
+#: templates/manager/createTaskManager.html:454
+#: templates/manager/createTaskManager.html:471
+#: templates/manager/manageForms.html:80
+#: templates/manager/templateCreateTaskManager.html:417
+#: templates/manager/templateCreateTaskManager.html:435
 msgid "IMPLEMENT"
 msgstr ""
 
-#: templates/driver/createTask.html:427
+#: templates/driver/createTask.html:472
 msgid "Date:"
 msgstr ""
 
-#: templates/driver/createTask.html:435
+#: templates/driver/createTask.html:480
 msgid "Start Time:"
 msgstr ""
 
-#: templates/driver/createTask.html:443
+#: templates/driver/createTask.html:488
 msgid "Hours Prediction:"
 msgstr ""
 
-#: templates/driver/createTask.html:467
+#: templates/driver/createTask.html:512
 msgid "Passes:"
 msgstr ""
 
-#: templates/driver/createTask.html:476
+#: templates/driver/createTask.html:521
 msgid "Description:"
 msgstr ""
 
-#: templates/driver/createTask.html:491
+#: templates/driver/createTask.html:536
+#: templates/manager/createTaskManager.html:593
+#: templates/manager/templateCreateTaskManager.html:558
 msgid "SUBMIT"
 msgstr ""
 
-#: templates/driver/createTask.html:508
+#: templates/driver/createTask.html:553
+#: templates/manager/createTaskManager.html:610
+#: templates/manager/templateCreateTaskManager.html:572
 msgid "Find a Machine"
 msgstr ""
 
-#: templates/driver/createTask.html:512 templates/driver/createTask.html:560
+#: templates/driver/createTask.html:557 templates/driver/createTask.html:605
+#: templates/manager/createTaskManager.html:614
+#: templates/manager/createTaskManager.html:662
+#: templates/manager/templateCreateTaskManager.html:575
+#: templates/manager/templateCreateTaskManager.html:624
 msgid "Filters"
 msgstr ""
 
-#: templates/driver/createTask.html:513 templates/driver/createTask.html:561
+#: templates/driver/createTask.html:558 templates/driver/createTask.html:606
+#: templates/manager/createTaskManager.html:615
+#: templates/manager/createTaskManager.html:663
+#: templates/manager/templateCreateTaskManager.html:576
+#: templates/manager/templateCreateTaskManager.html:625
 msgid "Manufacturers:"
 msgstr ""
 
-#: templates/driver/createTask.html:515 templates/driver/createTask.html:520
-#: templates/driver/createTask.html:528 templates/driver/createTask.html:563
-#: templates/driver/createTask.html:568 templates/driver/createTask.html:576
+#: templates/driver/createTask.html:560 templates/driver/createTask.html:565
+#: templates/driver/createTask.html:573 templates/driver/createTask.html:608
+#: templates/driver/createTask.html:613 templates/driver/createTask.html:621
+#: templates/manager/createTaskManager.html:617
+#: templates/manager/createTaskManager.html:622
+#: templates/manager/createTaskManager.html:630
+#: templates/manager/createTaskManager.html:665
+#: templates/manager/createTaskManager.html:670
+#: templates/manager/createTaskManager.html:678
+#: templates/manager/templateCreateTaskManager.html:579
+#: templates/manager/templateCreateTaskManager.html:585
+#: templates/manager/templateCreateTaskManager.html:594
+#: templates/manager/templateCreateTaskManager.html:628
+#: templates/manager/templateCreateTaskManager.html:635
+#: templates/manager/templateCreateTaskManager.html:645
 msgid "All"
 msgstr ""
 
-#: templates/driver/createTask.html:518
+#: templates/driver/createTask.html:563
+#: templates/manager/createTaskManager.html:620
+#: templates/manager/templateCreateTaskManager.html:582
 msgid "HP:"
 msgstr ""
 
-#: templates/driver/createTask.html:521 templates/driver/createTask.html:569
+#: templates/driver/createTask.html:566 templates/driver/createTask.html:614
+#: templates/manager/createTaskManager.html:623
+#: templates/manager/createTaskManager.html:671
+#: templates/manager/templateCreateTaskManager.html:586
+#: templates/manager/templateCreateTaskManager.html:636
 msgid "175 HP Or Greater"
 msgstr ""
 
-#: templates/driver/createTask.html:522 templates/driver/createTask.html:570
+#: templates/driver/createTask.html:567 templates/driver/createTask.html:615
+#: templates/manager/createTaskManager.html:624
+#: templates/manager/createTaskManager.html:672
+#: templates/manager/templateCreateTaskManager.html:587
+#: templates/manager/templateCreateTaskManager.html:637
 msgid "100 HP Or Greater"
 msgstr ""
 
-#: templates/driver/createTask.html:523 templates/driver/createTask.html:571
+#: templates/driver/createTask.html:568 templates/driver/createTask.html:616
+#: templates/manager/createTaskManager.html:625
+#: templates/manager/createTaskManager.html:673
+#: templates/manager/templateCreateTaskManager.html:588
+#: templates/manager/templateCreateTaskManager.html:638
 msgid "40 HP Or Greater"
 msgstr ""
 
-#: templates/driver/createTask.html:526
+#: templates/driver/createTask.html:571
+#: templates/manager/createTaskManager.html:628
+#: templates/manager/templateCreateTaskManager.html:591
 msgid "Hitch Capacity:"
 msgstr ""
 
-#: templates/driver/createTask.html:529 templates/driver/createTask.html:577
+#: templates/driver/createTask.html:574 templates/driver/createTask.html:622
+#: templates/manager/createTaskManager.html:631
+#: templates/manager/createTaskManager.html:679
+#: templates/manager/templateCreateTaskManager.html:595
+#: templates/manager/templateCreateTaskManager.html:646
 msgid "20 000 lbs or Greater"
 msgstr ""
 
-#: templates/driver/createTask.html:530 templates/driver/createTask.html:578
+#: templates/driver/createTask.html:575 templates/driver/createTask.html:623
+#: templates/manager/createTaskManager.html:632
+#: templates/manager/createTaskManager.html:680
+#: templates/manager/templateCreateTaskManager.html:596
+#: templates/manager/templateCreateTaskManager.html:647
 msgid "15 000 lbs or Greater"
 msgstr ""
 
-#: templates/driver/createTask.html:531 templates/driver/createTask.html:579
+#: templates/driver/createTask.html:576 templates/driver/createTask.html:624
+#: templates/manager/createTaskManager.html:633
+#: templates/manager/createTaskManager.html:681
+#: templates/manager/templateCreateTaskManager.html:597
+#: templates/manager/templateCreateTaskManager.html:648
 msgid "10 000 lbs or Greater"
 msgstr ""
 
-#: templates/driver/createTask.html:532 templates/driver/createTask.html:580
+#: templates/driver/createTask.html:577 templates/driver/createTask.html:625
+#: templates/manager/createTaskManager.html:634
+#: templates/manager/createTaskManager.html:682
+#: templates/manager/templateCreateTaskManager.html:598
+#: templates/manager/templateCreateTaskManager.html:649
 msgid "5 000 lbs or Greater"
 msgstr ""
 
-#: templates/driver/createTask.html:542 templates/driver/createTask.html:590
-#: templates/driver/createTask.html:627 templates/driver/startTask.html:380
+#: templates/driver/createTask.html:587 templates/driver/createTask.html:635
+#: templates/driver/createTask.html:703 templates/driver/startTask.html:380
+#: templates/manager/createTaskManager.html:644
+#: templates/manager/createTaskManager.html:692
+#: templates/manager/templateCreateTaskManager.html:695
 msgid "Close"
 msgstr ""
 
-#: templates/driver/createTask.html:556
+#: templates/driver/createTask.html:601
+#: templates/manager/createTaskManager.html:658
+#: templates/manager/templateCreateTaskManager.html:621
 msgid "Find a implement"
 msgstr ""
 
-#: templates/driver/createTask.html:566
+#: templates/driver/createTask.html:611
+#: templates/manager/createTaskManager.html:668
+#: templates/manager/templateCreateTaskManager.html:632
 msgid "HP required"
 msgstr ""
 
-#: templates/driver/createTask.html:574
+#: templates/driver/createTask.html:619
+#: templates/manager/createTaskManager.html:676
+#: templates/manager/templateCreateTaskManager.html:642
 msgid "Hitch Capacity required:"
 msgstr ""
 
-#: templates/driver/createTask.html:609 templates/driver/scanQRCode.html:67
+#: templates/driver/createTask.html:647 templates/driver/scanQRCode.html:151
+#: templates/manager/createTaskManager.html:704
+msgid "Add New Equipment"
+msgstr ""
+
+#: templates/driver/createTask.html:663 templates/driver/scanQRCode.html:133
+#: templates/manager/createTaskManager.html:720
+msgid "Equipment not Found"
+msgstr ""
+
+#: templates/driver/createTask.html:667 templates/driver/scanQRCode.html:139
+#: templates/driver/timeKeeperGroup.html:1001
+#: templates/manager/createTaskManager.html:724
+msgid "Yes"
+msgstr ""
+
+#: templates/driver/createTask.html:668 templates/driver/scanQRCode.html:140
+#: templates/driver/timeKeeperGroup.html:1002
+#: templates/manager/createTaskManager.html:725
+msgid "No"
+msgstr ""
+
+#: templates/driver/createTask.html:685 templates/driver/scanQRCode.html:99
 #: templates/driver/startTask.html:353
+#: templates/driver/timeKeeperGroup.html:956
+#: templates/manager/createTaskManager.html:744
+#: templates/manager/templateCreateTaskManager.html:676
 msgid "Scan QR-Code"
 msgstr ""
 
-#: templates/driver/equipment.html:284 templates/driver/equipment.html:350
+#: templates/driver/equipment.html:281 templates/driver/equipment.html:347
 #: templates/driver/taskFlow.html:185
 msgid "TRACTOR"
 msgstr ""
 
-#: templates/driver/equipment.html:287 templates/driver/equipment.html:358
-#: templates/manager/map.html:116
+#: templates/driver/equipment.html:284 templates/driver/equipment.html:355
+#: templates/manager/map.html:127
 msgid "Status"
 msgstr ""
 
-#: templates/driver/equipment.html:289
+#: templates/driver/equipment.html:286
 msgid "OK - Ready to work"
 msgstr ""
 
-#: templates/driver/equipment.html:293
+#: templates/driver/equipment.html:290
 msgid "SERVICE Needed"
 msgstr ""
 
-#: templates/driver/equipment.html:297
+#: templates/driver/equipment.html:294
 msgid "BROKEN! Do not use"
 msgstr ""
 
-#: templates/driver/equipment.html:302
+#: templates/driver/equipment.html:299
 msgid "Notes"
 msgstr ""
 
-#: templates/driver/equipment.html:307 templates/driver/equipment.html:351
+#: templates/driver/equipment.html:304 templates/driver/equipment.html:348
 msgid "QR Sticker"
 msgstr ""
 
-#: templates/driver/equipment.html:309 templates/driver/equipment.html:352
+#: templates/driver/equipment.html:306 templates/driver/equipment.html:349
 msgid "Reiter Asset"
 msgstr ""
 
-#: templates/driver/equipment.html:311 templates/driver/equipment.html:353
+#: templates/driver/equipment.html:308 templates/driver/equipment.html:350
 msgid "Manufacturer"
 msgstr ""
 
-#: templates/driver/equipment.html:313 templates/driver/equipment.html:354
+#: templates/driver/equipment.html:310 templates/driver/equipment.html:351
 msgid "Model"
 msgstr ""
 
-#: templates/driver/equipment.html:315 templates/driver/equipment.html:356
+#: templates/driver/equipment.html:312 templates/driver/equipment.html:353
 msgid "Hours"
 msgstr ""
 
-#: templates/driver/equipment.html:317 templates/driver/equipment.html:357
+#: templates/driver/equipment.html:314 templates/driver/equipment.html:354
 msgid "Horse Power"
 msgstr ""
 
-#: templates/driver/equipment.html:326
+#: templates/driver/equipment.html:323
 msgid "SPEC"
 msgstr ""
 
-#: templates/driver/equipment.html:355
+#: templates/driver/equipment.html:352
 msgid "Serial Number"
 msgstr ""
 
-#: templates/driver/equipment.html:359
+#: templates/driver/equipment.html:356
 msgid "Hitch Capacity"
 msgstr ""
 
-#: templates/driver/equipment.html:360
+#: templates/driver/equipment.html:357
 msgid "Hitch Category"
 msgstr ""
 
-#: templates/driver/equipment.html:361
+#: templates/driver/equipment.html:358
 msgid "Drawn Category"
 msgstr ""
 
-#: templates/driver/equipment.html:362
+#: templates/driver/equipment.html:359
 msgid "Acquired"
 msgstr ""
 
-#: templates/driver/equipment.html:363
+#: templates/driver/equipment.html:360
 msgid "Speed Range Min"
 msgstr ""
 
-#: templates/driver/equipment.html:364
+#: templates/driver/equipment.html:361
 msgid "Speed Range Max"
 msgstr ""
 
-#: templates/driver/equipment.html:365
+#: templates/driver/equipment.html:362
 msgid "Engine Hours"
 msgstr ""
 
-#: templates/driver/equipment.html:366
+#: templates/driver/equipment.html:363
 msgid "Base Cost"
 msgstr ""
 
-#: templates/driver/equipment.html:367
+#: templates/driver/equipment.html:364
 msgid "Machine Type"
 msgstr ""
 
-#: templates/driver/equipment.html:368
+#: templates/driver/equipment.html:365
 msgid "Front Tires"
 msgstr ""
 
-#: templates/driver/equipment.html:369
+#: templates/driver/equipment.html:366
 msgid "Rear Tires"
 msgstr ""
 
-#: templates/driver/equipment.html:370
+#: templates/driver/equipment.html:367
 msgid "Steering"
 msgstr ""
 
-#: templates/driver/equipment.html:371
+#: templates/driver/equipment.html:368
 msgid "Operation Station"
 msgstr ""
 
-#: templates/driver/equipment.html:403
+#: templates/driver/equipment.html:400
 msgid "Previous"
 msgstr ""
 
-#: templates/driver/equipment.html:404
+#: templates/driver/equipment.html:401
 msgid "Next"
 msgstr ""
 
-#: templates/driver/home.html:18
+#: templates/driver/home.html:33
 msgid "EQUIPMENT"
 msgstr ""
 
-#: templates/driver/home.html:23
+#: templates/driver/home.html:38
 msgid "TASKFLOW"
 msgstr ""
 
-#: templates/driver/home.html:28
+#: templates/driver/home.html:43
 msgid "SCHEDULE"
 msgstr ""
 
-#: templates/driver/home.html:33
+#: templates/driver/home.html:48
 msgid "TIMEKEEPER"
 msgstr ""
 
-#: templates/driver/home.html:38
+#: templates/driver/home.html:53
 msgid "CHECKLIST"
 msgstr ""
 
@@ -382,6 +543,9 @@ msgstr ""
 
 #: templates/driver/pastTasks.html:153 templates/driver/pastTasks.html:162
 #: templates/driver/startTask.html:241
+#: templates/manager/createTaskManager.html:424
+#: templates/manager/manageForms.html:44
+#: templates/manager/templateCreateTaskManager.html:384
 msgid "MACHINE"
 msgstr ""
 
@@ -402,7 +566,8 @@ msgstr ""
 msgid "DURATION"
 msgstr ""
 
-#: templates/driver/scanQRCode.html:82 templates/driver/startTask.html:368
+#: templates/driver/scanQRCode.html:114 templates/driver/startTask.html:368
+#: templates/driver/timeKeeperGroup.html:971
 msgid "Type QR-Code"
 msgstr ""
 
@@ -412,30 +577,37 @@ msgstr ""
 
 #: templates/driver/schedule.html:47 templates/driver/startTask.html:335
 #: templates/driver/taskFlow.html:197
+#: templates/manager/scheduleManager.html:125
 msgid "Start"
 msgstr ""
 
 #: templates/driver/schedule.html:65
+#: templates/manager/scheduleManager.html:211
 msgid "HC Scheduler"
 msgstr ""
 
 #: templates/driver/schedule.html:73
+#: templates/manager/scheduleManager.html:255
 msgid "TASK INFORMATION"
 msgstr ""
 
 #: templates/driver/schedule.html:75
+#: templates/manager/scheduleManager.html:257
 msgid "TASK:"
 msgstr ""
 
 #: templates/driver/schedule.html:76
+#: templates/manager/scheduleManager.html:259
 msgid "DESCRIPTION:"
 msgstr ""
 
 #: templates/driver/schedule.html:77
+#: templates/manager/scheduleManager.html:261
 msgid "FIELD:"
 msgstr ""
 
 #: templates/driver/schedule.html:79
+#: templates/manager/scheduleManager.html:265
 msgid "IMPLEMENT:"
 msgstr ""
 
@@ -444,6 +616,8 @@ msgid "Start Task"
 msgstr ""
 
 #: templates/driver/startTask.html:217
+#: templates/manager/createTaskManager.html:578
+#: templates/manager/templateCreateTaskManager.html:543
 msgid "Description"
 msgstr ""
 
@@ -460,43 +634,211 @@ msgstr ""
 msgid "More Info"
 msgstr ""
 
-#: templates/driver/timeKeeper.html:249
+#: templates/driver/timeKeeper.html:37 templates/driver/timeKeeper.html:89
+#: templates/driver/timeKeeper.html:138
+msgid "CONFIRM"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:532
+#: templates/driver/timeKeeperGroup.html:850
 msgid "HC TIMEKEEPER"
 msgstr ""
 
-#: templates/driver/timeKeeper.html:253
-msgid "START SHIFT"
+#: templates/driver/timeKeeper.html:536
+#: templates/driver/timeKeeperGroup.html:859
+msgid "SHIFT"
 msgstr ""
 
-#: templates/driver/timeKeeper.html:260
-msgid "START"
+#: templates/driver/timeKeeper.html:541
+#: templates/driver/timeKeeperGroup.html:864
+msgid "BREAK"
 msgstr ""
 
-#: templates/driver/timeKeeper.html:264
-msgid "STOP"
+#: templates/driver/timeKeeper.html:546
+#: templates/driver/timeKeeperGroup.html:869
+msgid "LUNCH"
 msgstr ""
 
-#: templates/driver/timeKeeper.html:271
-msgid "END SHIFT"
+#: templates/driver/timeKeeper.html:551
+#: templates/driver/timeKeeperGroup.html:874
+msgid "TIMELOG"
 msgstr ""
 
-#: templates/driver/timeKeeper.html:301
+#: templates/driver/timeKeeper.html:587
+#: templates/driver/timeKeeperGroup.html:890
 msgid "Sign Here"
 msgstr ""
 
-#: templates/driver/timeKeeper.html:306
+#: templates/driver/timeKeeper.html:592
 msgid "Limpiar"
 msgstr ""
 
-#: templates/driver/timeKeeper.html:307
+#: templates/driver/timeKeeper.html:593
+#: templates/driver/timeKeeperGroup.html:895
 msgid "Cerrar"
 msgstr ""
 
-#: templates/driver/timeKeeper.html:310
-msgid "Confirmar"
+#: templates/driver/timeKeeper.html:596
+#: templates/driver/timeKeeperGroup.html:898
+msgid "Confirm"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:83
+msgid "CLOCK-IN"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:84
+msgid "CLOCK-OUT"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:118
+msgid "START BREAK"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:119
+msgid "STOP BREAK"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:155
+msgid "START LUNCH"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:156
+msgid "STOP LUNCH"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:218
+msgid "Team Name..."
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:220
+msgid "Add Employees"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:790
+msgid "Employee added to the group!"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:802
+msgid "This employee does not exist!"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:807
+msgid "Employee already added to the group!"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:854
+msgid "CREATE TEAM"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:894
+msgid "Clear"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:992
+msgid "Scan QR-Code says:"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:998
+msgid "Would you like to add another employee to the Group?"
+msgstr ""
+
+#: templates/manager/createTaskManager.html:360
+#: templates/manager/createTaskManager.html:399
+#: templates/manager/templateCreateTaskManager.html:309
+#: templates/manager/templateCreateTaskManager.html:359
+msgid "Employee"
+msgstr ""
+
+#: templates/manager/createTaskManager.html:529
+#: templates/manager/templateCreateTaskManager.html:494
+msgid "Date"
+msgstr ""
+
+#: templates/manager/createTaskManager.html:537
+#: templates/manager/templateCreateTaskManager.html:502
+msgid "Start Time"
+msgstr ""
+
+#: templates/manager/createTaskManager.html:545
+#: templates/manager/templateCreateTaskManager.html:510
+msgid "Hours Prediction"
+msgstr ""
+
+#: templates/manager/createTaskManager.html:569
+#: templates/manager/templateCreateTaskManager.html:534
+msgid "Passes"
+msgstr ""
+
+#: templates/manager/employeeUpdate.html:80
+#: templates/manager/formEmployee.html:67
+#: templates/manager/formImplement.html:65
+#: templates/manager/formMachine.html:64
+#: templates/manager/formRepairShop.html:63 templates/manager/formShop.html:65
+#: templates/manager/templateAddEquipment.html:81
+msgid "SAVE"
+msgstr ""
+
+#: templates/manager/formImplement.html:64
+#: templates/manager/formMachine.html:65
+#: templates/manager/formRepairShop.html:64 templates/manager/formShop.html:66
+msgid "DELETE"
+msgstr ""
+
+#: templates/manager/listEmployee.html:30
+#: templates/manager/listEmployee.html:32
+#: templates/manager/listImplement.html:30
+#: templates/manager/listImplement.html:32
+#: templates/manager/listMachine.html:30 templates/manager/listMachine.html:32
+#: templates/manager/listRepairShop.html:30
+#: templates/manager/listRepairShop.html:32 templates/manager/listShop.html:30
+#: templates/manager/listShop.html.py:32
+msgid "EDIT"
+msgstr ""
+
+#: templates/manager/listEmployee.html:30
+#: templates/manager/listEmployee.html:32
+msgid "SEE"
+msgstr ""
+
+#: templates/manager/listImplement.html:30
+#: templates/manager/listImplement.html:32
+#: templates/manager/listMachine.html:30 templates/manager/listMachine.html:32
+#: templates/manager/listRepairShop.html:30
+#: templates/manager/listRepairShop.html:32 templates/manager/listShop.html:30
+#: templates/manager/listShop.html.py:32
+msgid "INFO"
+msgstr ""
+
+#: templates/manager/manageForms.html:31
+msgid "EMPLOYEE"
+msgstr ""
+
+#: templates/manager/manageForms.html:34 templates/manager/manageForms.html:47
+#: templates/manager/manageForms.html:59 templates/manager/manageForms.html:71
+#: templates/manager/manageForms.html:83
+msgid "ADD"
+msgstr ""
+
+#: templates/manager/manageForms.html:39 templates/manager/manageForms.html:52
+#: templates/manager/manageForms.html:64 templates/manager/manageForms.html:76
+#: templates/manager/manageForms.html:88
+msgid "LIST"
+msgstr ""
+
+#: templates/manager/manageForms.html:56
+msgid "SHOP"
+msgstr ""
+
+#: templates/manager/manageForms.html:68
+msgid "REPAIR SHOP"
+msgstr ""
+
+#: templates/manager/scheduleManager.html:241
+msgid "New Task"
 msgstr ""
 
 #: templates/template/headerDriver.html:35
-#: templates/template/headerHome.html:38
+#: templates/template/headerHome.html:39
 msgid "EXIT"
 msgstr ""
