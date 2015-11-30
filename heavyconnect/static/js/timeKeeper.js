@@ -4,6 +4,7 @@
 
 //Constructor
 var	dataTimeKeeper = [];
+
 localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
 
 //Object to count actions
@@ -14,9 +15,7 @@ function saveData(actionLocal){
 	//actionLocal: 1 = start shift, 2 = start break, 3 = stop break, 4 = start lunch, 5 = stop lunch, 6 = end shift
 	offilne = -1;
 	var currentdate = new Date();
-	var datetime = currentdate.getHours() + ":"
-                + currentdate.getMinutes() + ":"
-                + currentdate.getSeconds();
+	var datetime = getCurrentDate(currentdate);
 
 	switch(actionLocal){
 		case 1:
@@ -167,7 +166,17 @@ function checkStopShift(actionLocal, datetime){
 	return checked;
 
 }
+function getCurrentDate(currentdate){
+	
+	var datetime = currentdate.getFullYear() + "-"
+			+ (currentdate.getMonth()+1) + "-"
+			+ currentdate.getDate() + " "
+			+ currentdate.getHours() + ":"  
+            + currentdate.getMinutes() + ":" 
+            + currentdate.getSeconds();
 
+    return datetime;
+}
 function initializeCounter(){
 
 	count.startShift = 0;

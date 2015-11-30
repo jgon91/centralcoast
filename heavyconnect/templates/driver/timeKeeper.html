@@ -25,6 +25,7 @@
 				$sigdiv.jSignature("reset");
 			});
 			getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
+			saveData(1);
 
 			$("#shift").click(function() {
 				$('#showTimekeeperModal').modal();
@@ -52,10 +53,10 @@
 					}
 					console.log("Offline 2 = " + offline);
 					if (offline > 0) {
-						$("#messageTimekeeper").html("Synchronizing Data...");
+						$("#messageTimekeeper").html("{% trans 'Synchronizing Data' %}...");
 						sync();
 					} else {
-						$("#messageTimekeeper").html("Starting shift...");
+						$("#messageTimekeeper").html("{% trans 'Starting shift' %}...");
 						var position = dataTimeKeeper.length - 1;
 						console.log("Position = " + position);
 						console.log("Time = " + dataTimeKeeper[position].timeLocal);
@@ -71,21 +72,22 @@
 						}
 					}
 					if (offline > 0) {
-						$("#messageTimekeeper").html("Synchronizing Data...");
+						$("#messageTimekeeper").html("{% trans 'Synchronizing Data' %}...");
 						sync();
 					} else {
-						$("#messageTimekeeper").html("Stopping shift...");
+						$("#messageTimekeeper").html("{% trans 'Stopping shift' %}...");
 						var position = dataTimeKeeper.length - 1;
 						stopShift("{{ csrf_token }}", "{% url 'stopShiftGroup' %}", dataTimeKeeper[position].timeLocal, position);
 					}
 				}
-			});
+			});			
+
 			$("#break").click(function() {
 				$('#showTimekeeperModal').modal();
 				if (breakStarted == 0) {
-					$("#messageTimekeeper").html("Start break?");
+					$("#messageTimekeeper").html("{% trans 'Start break' %}?");
 				} else {
-					$("#messageTimekeeper").html("End break?");
+					$("#messageTimekeeper").html("{% trans 'End break' %}?");
 				}
 				emptyDivs();
 				$("#confirmBreak").append('<input type="button" value="{% trans 'CONFIRM' %}" class="btnsTimekeeper"/>');
@@ -93,7 +95,7 @@
 			$("#confirmBreak").click(function() {
 				emptyDivs();
 				if (lunchStarted == 1) {
-					$("#messageTimekeeper").html("You cannot start 2 breaks at the same time.");
+					$("#messageTimekeeper").html("{% trans 'You cannot start 2 breaks at the same time' %}.");
 					hideModal();
 				} else if (breakStarted == 0) {
 					lunch = 0;
@@ -106,10 +108,10 @@
 						}
 					}
 					if (offline > 0) {
-						$("#messageTimekeeper").html("Synchronizing Data...");
+						$("#messageTimekeeper").html("{% trans 'Synchronizing Data' %}...");
 						sync();
 					} else {
-						$("#messageTimekeeper").html("Starting break...");
+						$("#messageTimekeeper").html("{% trans 'Starting break' %}...");
 						var position = dataTimeKeeper.length - 1;
 						startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
 					}
@@ -123,10 +125,10 @@
 						}
 					}
 					if (offline > 0) {
-						$("#messageTimekeeper").html("Synchronizing Data...");
+						$("#messageTimekeeper").html("{% trans 'Synchronizing Data' %}...");
 						sync();
 					} else {
-						$("#messageTimekeeper").html("Ending break...");
+						$("#messageTimekeeper").html("{% trans 'Ending break' %}...");
 						var position = dataTimeKeeper.length - 1;
 						sync();
 						stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
@@ -136,9 +138,9 @@
 			$("#lunch").click(function() {
 				$('#showTimekeeperModal').modal();
 				if (lunchStarted == 0) {
-					$("#messageTimekeeper").html("Start lunch?");
+					$("#messageTimekeeper").html("{% trans 'Start lunch' %}?");
 				} else {
-					$("#messageTimekeeper").html("End lunch?");
+					$("#messageTimekeeper").html("{% trans 'End lunch' %}?");
 				}
 				emptyDivs();
 				$("#confirmLunch").append('<input type="button" value="{% trans 'CONFIRM' %}" class="btnsTimekeeper"/>');
@@ -146,7 +148,7 @@
 			$("#confirmLunch").click(function() {
 				emptyDivs();
 				if (breakStarted == 1) {
-					$("#messageTimekeeper").html("You cannot start 2 breaks at the same time.");
+					$("#messageTimekeeper").html("{% trans 'You cannot start 2 breaks at the same time' %}.");
 				} else if (lunchStarted == 0) {
 					lunch = 1;
 					dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
@@ -157,10 +159,10 @@
 						}
 					}
 					if (offline > 0) {
-						$("#messageTimekeeper").html("Synchronizing Data...");
+						$("#messageTimekeeper").html("{% trans 'Synchronizing Data' %}...");
 						sync();
 					} else {
-						$("#messageTimekeeper").html("Starting lunch...");
+						$("#messageTimekeeper").html("{% trans 'Starting lunch' %}...");
 						var position = dataTimeKeeper.length - 1;
 						startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
 					}
@@ -174,10 +176,10 @@
 						}
 					}
 					if (offline > 0) {
-						$("#messageTimekeeper").html("Synchronizing Data...");
+						$("#messageTimekeeper").html("{% trans 'Synchronizing Data' %}...");
 						sync();
 					} else {
-						$("#messageTimekeeper").html("Ending lunch...");
+						$("#messageTimekeeper").html("{% trans 'Ending lunch' %}...");
 						var position = dataTimeKeeper.length - 1;
 						sync();
 						stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
@@ -216,13 +218,13 @@
 						}
 					} else if (data.code == 1) {
 						$('#showTimekeeperModal').modal();
-						$("#messageTimekeeper").html("There is no shift records for this employee.");
+						$("#messageTimekeeper").html("{% trans 'There is no shift records for this employee' %}.");
 					} else if (data.code == 2) {
 						$('#showTimekeeperModal').modal();
-						$("#messageTimekeeper").html("Error. Contact Suport.");
+						$("#messageTimekeeper").html("{% trans 'Error. Contact Suport' %}.");
 					} else if (data.code == 3) {
 						$('#showTimekeeperModal').modal();
-						$("#messageTimekeeper").html("Error. Contact Suport.");
+						$("#messageTimekeeper").html("{% trans 'Error. Contact Suport' %}.");
 					}
 				}
 			});
@@ -239,19 +241,19 @@
 						if (offline > 0) {
 							offilne--;
 						} else {
-							$("#messageTimekeeper").html("Clock-in successful");
+							$("#messageTimekeeper").html("{% trans 'Clock-in successful' %}");
 						}
 						shiftStarted = 1;
 						dataTimeKeeper[position].pendent = false;
 						localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
 					} else if (data.code == 1) {
-						$("#messageTimekeeper").html("You need to finish the shift you started already before create a new one.");
+						$("#messageTimekeeper").html("{ % trans 'You need to finish the shift you started already before create a new one' %}.");
 					} else if (data.code == 2) {
-						$("#messageTimekeeper").html("There is no users associated whit this id.");
+						$("#messageTimekeeper").html("{% trans 'There is no users associated whit this id' %}.");
 					} else if (data.code == 3) {
-						$("#messageTimekeeper").html("Error. Contact Suport.");
+						$("#messageTimekeeper").html("{% trans 'Error. Contact Suport' %}.");
 					} else if (data.code == 4) {
-						$("#messageTimekeeper").html("Error. Contact Suport.");
+						$("#messageTimekeeper").html("{% trans 'Error. Contact Suport' %}.");
 					}
 				}
 			});
@@ -275,26 +277,26 @@
 							}
 						} else {
 							if (lunch == 0) {
-								$("#messageTimekeeper").html("Break started");
+								$("#messageTimekeeper").html("{% trans 'Break started' %}");
 								breakStarted = 1;
 							}
 							if (lunch == 1) {
-								$("#messageTimekeeper").html("Lunch started");
+								$("#messageTimekeeper").html("{% trans 'Lunch started' %}");
 								lunchStarted = 1;
 							}
 						}
 						dataTimeKeeper[position].pendent = false;
 						localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
 					} else if (data.code == 1) {
-						$("#messageTimekeeper").html("You cannot start 2 breaks at the same time.");
+						$("#messageTimekeeper").html("{% trans 'You cannot start 2 breaks at the same time' %}.");
 					} else if (data.code == 2) {
-						$("#messageTimekeeper").html("The shift for today was already finished.");
+						$("#messageTimekeeper").html("{% trans 'The shift for today was already finished' %}.");
 					} else if (data.code == 3) {
-						$("#messageTimekeeper").html("You need to start a shift first.");
+						$("#messageTimekeeper").html("{% trans 'You need to start a shift first' %}.");
 					} else if (data.code == 4) {
-						$("#messageTimekeeper").html("Error. Contact Suport.");
+						$("#messageTimekeeper").html("{% trans 'Error. Contact Suport' %}.");
 					} else if (data.code == 5) {
-						$("#messageTimekeeper").html("Error. Contact Suport.");
+						$("#messageTimekeeper").html("{% trans 'Error. Contact Suport' %}.");
 					}
 				}
 			});
@@ -321,24 +323,24 @@
 							}
 						} else {
 							if (lunch == 0) {
-								$("#messageTimekeeper").html("Break ended");
+								$("#messageTimekeeper").html("{% trans 'Break ended' %}");
 								breakStarted = 0;
 							}
 							if (lunch == 1) {
-								$("#messageTimekeeper").html("Lunch ended");
+								$("#messageTimekeeper").html("{% trans 'Lunch ended' %}");
 								lunchStarted = 0;
 							}
 						}
 					} else if(data.code == 1){
-						$("#messageTimekeeper").html("You need to start a break first.");
+						$("#messageTimekeeper").html("{% trans 'You need to start a break first' %}.");
 					} else if(data.code == 2){
-						$("#messageTimekeeper").html("The shift for today was already finished.");
+						$("#messageTimekeeper").html("{% trans 'The shift for today was already finished' %}.");
 					} else if(data.code == 3){
-						$("#messageTimekeeper").html("You need to start a shift first.");
+						$("#messageTimekeeper").html("{% trans 'You need to start a shift first' %}.");
 					} else if(data.code == 4){
-						$("#messageTimekeeper").html("Error. Contact Suport.");
+						$("#messageTimekeeper").html("{% trans 'Error. Contact Suport' %}.");
 					} else if(data.code == 5){
-						$("#messageTimekeeper").html("Error. Contact Suport.");
+						$("#messageTimekeeper").html("{% trans 'Error. Contact Suport' %}.");
 					}
 				}
 			});
@@ -355,23 +357,23 @@
 						if (offline > 0) {
 							offilne--;
 						} else {
-							$("#messageTimekeeper").html("Shift ended");
+							$("#messageTimekeeper").html("{% trans 'Shift ended' %}");
 						}
 						shiftStarted = 0;
 						dataTimeKeeper[position].pendent = false;
 						localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
 					} else if(data.code == 1){
-						$("#messageTimekeeper").html("You need to take at least 3 breaks.");
+						$("#messageTimekeeper").html("{% trans 'You need to take at least 3 breaks' %}.");
 					} else if(data.code == 2){
-						$("#messageTimekeeper").html("The shift for today was already finished.");
+						$("#messageTimekeeper").html("{% trans 'The shift for today was already finished' %}.");
 					} else if(data.code == 3){
-						$("#messageTimekeeper").html("You have not started your shift yet.");
+						$("#messageTimekeeper").html("{% trans 'You have not started your shift yet' %}.");
 					} else if(data.code == 4){
-						$("#messageTimekeeper").html("This user is not authorized to use the system.");
+						$("#messageTimekeeper").html("{% trans 'This user is not authorized to use the system' %}.");
 					} else if(data.code == 5){
-						$("#messageTimekeeper").html("Error. Contact Suport.");
+						$("#messageTimekeeper").html("{% trans 'Error. Contact Suport' %}.");
 					} else if(data.code == 6){
-						$("#messageTimekeeper").html("Error. Contact Suport.");
+						$("#messageTimekeeper").html("{% trans 'Error. Contact Suport' %}.");
 					}
 				}
 			});
@@ -572,7 +574,7 @@
 		        }
 		    }
 		    //
-		    $("#messageTimekeeper").html("Synchronization done.");
+		    $("#messageTimekeeper").html("{% trans 'Synchronization done' %}.");
 		}
 		</script>
 	</head>
@@ -642,8 +644,8 @@
 
 					<div id="signField" style="margin-top: 100px;">
 						<div id="signature"></div>
-						<button type="button" id="clearSignature" class="btn btn-default">{% trans 'Limpiar' %}</button>
-						<button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>
+						<button type="button" id="clearSignature" class="btn btn-default">{% trans 'Clear' %}</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
 						<a href="">
 							<button type="button" id="stopShiftConfirm" class="btn btn-success">
 								{% trans 'Confirm' %}
