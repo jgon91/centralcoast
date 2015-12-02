@@ -33,10 +33,7 @@ body {
 	margin-top: 5px;
 	float: right;
 }
-#userImg:hover {
-	background-size: 120% 120%;
-	background-position: center;
-}
+
 #logOff {
 	background: url('../img/buttons/exit.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -152,11 +149,7 @@ input[type=password] {
 	font-weight: bold;
 	text-decoration: none;
 }
-#home:hover {
-	color: black;
-	font-weight: bold;
-	text-decoration: none;
-}
+
 /*BUTTONS*/
 input[type="button"] {
 	border-style: none;
@@ -199,7 +192,7 @@ input[type="button"] {
 	background-size: 100% 100%;
 }
 #btnTimerkeeper {
-	background: url('../img/buttons/btnTimekeeperUp.jpg') no-repeat top left;
+	background: url('../imgSmall/buttons/timekeeper.png') no-repeat top left;
 	background-size: 100% 100%;
 }
 #btnEmployee {
@@ -223,74 +216,47 @@ input[type="button"] {
 	background: url('../img/buttons/btnHomeUp.jpg') no-repeat top left;
 	background-size: 100% 100%;
 }
-#btnHomeUp:hover {
-	background: url('../img/buttons/btnHomeUpHover.jpg') no-repeat top left;
-	background-size: 100% 100%;
-}
+
 #btnEquipmentUp {
 	background: url('../img/buttons/btnEquipmentUp.jpg') no-repeat top left;
 	background-size: 100% 100%;
 }
-#btnEquipmentUp:hover {
-	background: url('../img/buttons/btnEquipmentUpHover.jpg') no-repeat top left;
-	background-size: 100% 100%;
-}
+
 #btnTaskflowUp {
 	background: url('../img/buttons/btnTaskflowUp.jpg') no-repeat top left;
 	background-size: 100% 100%;
 }
-#btnTaskflowUp:hover {
-	background: url('../img/buttons/btnTaskflowUpHover.jpg') no-repeat top left;
-	background-size: 100% 100%;
-}
+
 #btnTimerkeeperUp {
-	background: url('../img/buttons/btnTimekeeperUp.jpg') no-repeat top left;
+	background: url('../imgSmall/buttons/timekeeper.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-#btnTimerkeeperUp:hover {
-	background: url('../img/buttons/btnTimekeeperUpHover.jpg') no-repeat top left;
-	background-size: 100% 100%;
-}
+
 #btnSchedulerUp {
 	background: url('../img/buttons/btnSchedulerUp.jpg') no-repeat top left;
 	background-size: 100% 100%;
 }
-#btnSchedulerUp:hover {
-	background: url('../img/buttons/btnSchedulerUpHover.jpg') no-repeat top left;
-	background-size: 100% 100%;
-}
+
 #btnEmployeeUp {
 	background: url('../img/buttons/btnEmployeeUp.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-#btnEmployeeUp:hover {
-	background: url('../img/buttons/btnEmployeeUpHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}
+
 #btnRecorderUp {
 	background: url('../img/buttons/btnRecorderUp.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-#btnRecorderUp:hover {
-	background: url('../img/buttons/btnRecorderUpHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}
+
 #btnFleetUp {
 	background: url('../img/buttons/btnFleetUp.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-#btnFleetUp:hover {
-	background: url('../img/buttons/btnFleetUpHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}
+
 #btnManageUp {
 	background: url('../img/buttons/btnManageUp.png') no-repeat top left;
 	background-size: 100% 100%;
 }
-#btnManageUp:hover {
-	background: url('../img/buttons/btnManageUpHover.png') no-repeat top left;
-	background-size: 100% 100%;
-}
+
 /*Begin EQUIPMENT MANAGER page*/
 #equipmentContent {
 	width: 80%;
@@ -314,36 +280,28 @@ input[type="button"] {
 	height: 40px;
 	color: white;
 }
-#btnUpdateProfile:hover {
-	color: black;
-}
+
 #btnHistory {
 	width: 100%;
 	background: #4F7218;
 	height: 40px;
 	color: white;
 }
-#btnHistory:hover {
-	color: black;
-}
+
 #btnCosts {
 	width: 100%;
 	background: #1C3700;
 	height: 40px;
 	color: white;
 }
-#btnCosts:hover {
-	color: black;
-}
+
 #btnService {
 	width: 100%;
 	background: #4F7218;
 	height: 40px;
 	color: white;
 }
-#btnService:hover {
-	color: black;
-}
+
 #boxUpInfo {
 	background: #7F9B22;
 	height: 160px;
@@ -433,12 +391,8 @@ input[type="button"] {
 #menu {
 	width: 100%;
 }
-#menu a:hover {
-	color: black;
-}
-#menu > li.active > a:hover {
-	color: black;
-}
+
+
 #menu > li > a {
 	border-radius: 0px;
 	padding-bottom: 5px;
@@ -852,10 +806,7 @@ input[type="button"] {
 	border: none;
 	color: white;
 }
-#delImplement:hover {
-	background: url('../imgSmall/buttons/startNow.png') no-repeat top left;
-	background-size: 100% 100%;
-}
+
 .findEquipment {
 	background: url('../imgSmall/buttons/search.png') no-repeat top left;
 	background-size: 100% 100%;
