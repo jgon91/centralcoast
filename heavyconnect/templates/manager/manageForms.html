@@ -12,6 +12,7 @@
 		
 	<link rel="stylesheet" type="text/css" href="{% static 'css/equipStyle.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/styleManager.css' %}">
+
 	<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
 	<script src="{% static 'js/script.js' %}"></script>
 	<script>
@@ -27,8 +28,8 @@
 		<div id="content">
 		<div id="contentManageForm">
 			<table class="tableListForm">
-				<tr class="rowCream">
-					<td>{% trans 'EMPLOYEE' %}</td>
+				<tr >
+					<td>{% trans 'EMPLOYEES' %}</td>
 					<td>
 						<a href="{% url 'registerEmployee'%}">
 							<input type="button" class="btnManageForm" value="{% trans 'ADD' %}"/>
@@ -39,54 +40,6 @@
 							<input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/>
 						</a>
 					</td>
-				</tr>
-				<tr class="rowGray">
-					<td>{% trans 'MACHINE' %}</td>
-					<td>
-						<a href="{% url 'registerMachine'%}">
-							<input type="button" class="btnManageForm" value="{% trans 'ADD' %}"/>
-						</a>
-					</td>
-					<td>
-						<a href="{% url 'listMachine'%}">
-							<input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/></td>
-						</a>
-				</tr>
-				<tr class="rowCream">
-					<td>{% trans 'SHOP' %}</td>
-					<td>
-						<a href="{% url 'registerShop'%}">
-							<input type="button" class="btnManageForm" value="{% trans 'ADD' %}"/>
-						</a>
-					</td>
-					<td>
-						<a href="{% url 'listShop'%}">
-							<input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/></td>
-						</a>
-				</tr>
-				<tr class="rowGray">
-					<td>{% trans 'REPAIR SHOP' %}</td>
-					<td>
-						<a href="{% url 'registerRepairShop'%}">
-							<input type="button" class="btnManageForm" value="{% trans 'ADD' %}"/>
-						</a>
-					</td>
-					<td>
-						<a href="{% url 'listRepairShop'%}">
-							<input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/></td>
-						</a>
-				</tr>
-				<tr class="rowCream">
-					<td>{% trans 'IMPLEMENT' %}</td>
-					<td>
-						<a href="{% url 'registerImplement'%}">
-							<input type="button" class="btnManageForm" value="{% trans 'ADD' %}"/>
-						</a>
-					</td>
-					<td>
-						<a href="{% url 'listImplement'%}">
-							<input type="button" class="btnManageForm" value="{% trans 'LIST' %}"/></td>
-						</a>
 				</tr>
 			</table>
 			
