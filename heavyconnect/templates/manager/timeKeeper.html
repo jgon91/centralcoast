@@ -395,7 +395,7 @@
 					lun = [];
 					currentStart = data.Attendance_start;
 					currentEnd = data.Attendance_end;
-					if (data.Attendance_end == 'In Progress') {
+					if (data.Attendance_end == 'Happening') {
 						$("#divTimelog").append("<table id='tableTimelog' ><tr><td colspan='2'>Start Shift: " + data.Attendance_start + "</td></tr>");
 						for (i = 0; i < data.breaks.length; i++) {
 							if (data.breaks[i].lunch == 0){

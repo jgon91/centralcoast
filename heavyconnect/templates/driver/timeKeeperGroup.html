@@ -219,7 +219,7 @@
     							+ '<tr><td><label>{% trans 'Save Team' %}?&nbsp;&nbsp;<input type="checkbox" id="saveTeam"/></label></td></tr>'
     							+ '<tr><td><input type="button" id="scanNow" onclick="openAdd()" value="{% trans 'Add Employees' %}" class="btnsTimekeeper"/></td></tr>'
     							+ '<tr><td><div id="addingList"></div></tr></td>'
-    							+ '<tr><td><input type="button" id="addNow" onclick="createNow(id_scanned)" value="Create Now"></td></tr></table>');
+    							+ '<tr><td><input type="button" id="addNow" style="background: #1F3801;background-size: 100% 100%;border-radius: 7px;border: none;box-shadow: 2px 2px 5px gray;height: 50px;width: 200px;color: white;font-size: 25px;font-weight: 700;" onclick="createNow(id_scanned)" value="Create Now"></td></tr></table>');
 			});
 		});
 		function openAdd() {
@@ -234,13 +234,14 @@
 			}
 			emptyDivs();
 			$("#messageTimekeeper").html("{% trans 'Creating team' %}...");
-			createGroup("{{ csrf_token }}", "{% url 'createGroup' %}", nameTeam, arrayIds, permanent);
+
+			createGroup("{{ csrf_token }}", "{% url 'createGroup' %}", nameTeam, JSON.stringify(arrayIds), permanent);
 		}
-		function createGroup(token, url, nameTeam, arrayIds, permanent){
+		function createGroup(token, url, nameTeam, codes, permanent){
 			$.ajax({
 				method : "POST",
 				url : url,
-				data : {"csrfmiddlewaretoken" : token, "name": nameTeam, "qr_code": arrayIds, "permanent": permanent},
+				data : {"csrfmiddlewaretoken" : token, "name": nameTeam, "qr_code": codes, "permanent": permanent},
 				datatype : "json",
 				success : function(data, status, xhr) {
 					emptyDivs();
@@ -464,7 +465,7 @@
     					}
     					$("#questions").append("</table>");
     					$("#divSignNow").append("<input type='button' id='btnSignNow' onClick='callBtnSign()' value='{% trans 'SIGN NOW' %}'/>");
-    					$("#btnSignNow").attr("disabled", true);
+    					<!--$("#btnSignNow").attr("disabled", true);-->
 					}
 				}
 			});
@@ -472,9 +473,9 @@
 		function allChecked(questionsN) {
 			var countQuestions = $('input:checkbox[class=checkQuestions]:checked');
 			if (questionsN == countQuestions.length) {
-				 $("#btnSignNow").attr("disabled", false);
+				 <!--$("#btnSignNow").attr("disabled", false);-->
 			} else {
-				$("#btnSignNow").attr("disabled", true);
+				<!--$("#btnSignNow").attr("disabled", true);-->
 			}
 		}
 		function callBtnSign() {
@@ -491,7 +492,6 @@
 				datatype : "json",
 				success : function(data, status, xhr) {
 					//if (data.success) {
-						alert("Sucess");
 						var $sigdiv = $("#signature");
 						$sigdiv.jSignature("reset");
 						$('#signModal').modal('hide');
@@ -536,7 +536,7 @@
 						lun = [];
 						currentStart = data.Attendance_start;
 						currentEnd = data.Attendance_end;
-						if (data.Attendance_end == 'Happening') {
+						if (data.Attendance_end == 'In Progress') {
 							$("#divTimelog").append("<table id='tableTimelog' ><tr id='trStartShift'><td colspan='2'>{% trans 'Start Shift' %}: " + data.Attendance_start + "</td></tr>");
 							for (i = 0; i < data.breaks.length; i++) {
 								workBreak[data.breaks[i].breakId] = data.breaks[i].workBreak;
@@ -545,17 +545,17 @@
 								breakEnd[data.breaks[i].breakId] = data.breaks[i].breakStop;
 								if (data.breaks[i].lunch == 0){
 									lun[data.breaks[i].breakId] = 0
-									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" + breaks + "º {% trans 'Break' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + breaks + " {% trans 'Break' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
 									breaks++;
 								} else {
 									lun[data.breaks[i].breakId] = 1;
-									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" + lunchs + "º {% trans 'Lunch' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + lunchs + " {% trans 'Lunch' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
 									lunchs++;
 								}
 							}
 							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>{% trans 'End Shift' %}: " + data.Attendance_end + "</td></tr>");
 						} else {
-							$("#divTimelog").append("<table id='tableTimelog' ><tr id='trStartShift'><td colspan='2'>{% trans 'Start Shift' %}: " + data.Attendance_start + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' onclick='editStartShift(this.id, currentStart)'/></td></tr>");
+							$("#divTimelog").append("<table id='tableTimelog' ><tr id='trStartShift'><td colspan='2'>{% trans 'Start Shift' %}: " + data.Attendance_start + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editStartShift(this.id, currentStart)'/></td></tr>");
 							for (i = 0; i < data.breaks.length; i++) {
 								workBreak[data.breaks[i].breakId] = data.breaks[i].workBreak;
 								breakN[data.breaks[i].breakId] = breaks;
@@ -563,21 +563,21 @@
 								breakEnd[data.breaks[i].breakId] = data.breaks[i].breakStop;
 								if (data.breaks[i].lunch == 0){
 									lun[data.breaks[i].breakId] = 0
-									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" + breaks + "º {% trans 'Break' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + breaks + " {% trans 'Break' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
 									breaks++;
 								} else {
 									lun[data.breaks[i].breakId] = 1;
-									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>" + lunchs + "º {% trans 'Lunch' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + lunchs + " {% trans 'Lunch' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\" ) no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
 									lunchs++;
 								}
 							}
-							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>{% trans 'End Shift' %}: " + data.Attendance_end + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' onclick='editStopShift(this.id, currentEnd)'/></td></tr>");
+							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>{% trans 'End Shift' %}: " + data.Attendance_end + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editStopShift(this.id, currentEnd)'/></td></tr>");
 							$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + data.attendanceId + "'>");
 							if (data.signature == true) {
-								$("#btnSignature").append("<input type='button' id='btnSign' value='{% trans 'SIGNED' %}'/>");
+								$("#btnSignature").append("<input type='button' id='btnSign' style='border: 1px solid #DDD;padding: 5px;box-sizing: border-box;white-space: nowrap;cursor: pointer;background: #E5E5E5;width: 40%;color: black;font-size: 17px;' value='{% trans 'SIGNED' %}'/>");
 								$("#btnSign").css("background", "#799520");
 							} else {
-								$("#btnSignature").append("<input type='button' id='btnSign' value='SIGN'/>");
+								$("#btnSignature").append("<input type='button' id='btnSign' style='border: 1px solid #DDD;padding: 5px;box-sizing: border-box;white-space: nowrap;cursor: pointer;background: #E5E5E5;width: 40%;color: black;font-size: 17px;' value='SIGN'/>");
 								$("#btnSign").css("background", "#E5E5E5");
 							}
 						}
@@ -672,7 +672,7 @@
 		function editStartShift(editId, currentStart) {
 			$(".editIcon").attr('disabled', true);
 			shift_id = editId;
-			$("#trStartShift").html("<td colspan='2'>{% trans 'Start Shift' %}: <input id='newTime' type='time'/></td><td><input type='button' class='editedIcon' onclick='callEditStartShift(shift_id)'/></td>");
+			$("#trStartShift").html("<td colspan='2'>{% trans 'Start Shift' %}: <input id='newTime' type='time'/></td><td><input type='button' style='background: url(\"/static/imgSmall/editedIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' class='editedIcon' onclick='callEditStartShift(shift_id)'/></td>");
 			$("#newTime").val(currentStart);
 		}
 		function callEditStartShift(shift_id) {
@@ -701,12 +701,12 @@
 			$(".editIcon").attr('disabled', true);
 			breakId = editId;
 			if (lun == 0) {
-				$("#" + breakId).html("<td class='colBorderTimelog'>" + workBreak + "</td><td>" + breakN + "º {% trans 'Break' %} <input id='newBreakBeg" + breakId + "' type='time'/> - <input id='newBreakEnd" + breakId + "' type='time'/></td><td><input type='button' class='editedIcon' onclick='callEditBreak(breakId)'/></td>");
+				$("#" + breakId).html("<td class='colBorderTimelog'>" + workBreak + "</td><td>#" + breakN + " {% trans 'Break' %} <input id='newBreakBeg" + breakId + "' type='time'/> - <input id='newBreakEnd" + breakId + "' type='time'/></td><td><input type='button' class='editedIcon' style='background: url(\"/static/imgSmall/editedIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='callEditBreak(breakId)'/></td>");
 				$("#newBreakBeg" + breakId).val(breakBeg);
 				$("#newBreakEnd" + breakId).val(breakEnd);
 			}
 			if (lun == 1) {
-				$("#" + breakId).html("<td class='colBorderTimelog'>" + workBreak + "</td><td>" + breakN + "º {% trans 'Lunch' %} <input id='newBreakBeg" + breakId + "' type='time'/> - <input id='newBreakEnd" + breakId + "' type='time'/></td><td><input type='button' class='editedIcon' onclick='callEditBreak(breakId)'/></td>");
+				$("#" + breakId).html("<td class='colBorderTimelog'>" + workBreak + "</td><td>#" + breakN + " {% trans 'Lunch' %} <input id='newBreakBeg" + breakId + "' type='time'/> - <input id='newBreakEnd" + breakId + "' type='time'/></td><td><input type='button' class='editedIcon' style='background: url(\"/static/imgSmall/editedIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='callEditBreak(breakId)'/></td>");
 				$("#newBreakBeg" + breakId).val(breakBeg);
 				$("#newBreakEnd" + breakId).val(breakEnd);
 			}
@@ -737,7 +737,7 @@
 		function editStopShift(editId, currentEnd) {
 			$(".editIcon").attr('disabled', true);
 			shift_id = editId;
-			$("#trStopShift").html("<td colspan='2'>{% trans 'End Shift' %}: <input id='newTimeEnd' type='time'/></td><td><input type='button' class='editedIcon' onclick='callEditStopShift(shift_id)'/></td>");
+			$("#trStopShift").html("<td colspan='2'>{% trans 'End Shift' %}: <input id='newTimeEnd' type='time'/></td><td><input type='button' class='editedIcon' style='background: url(\"/static/imgSmall/editedIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='callEditStopShift(shift_id)'/></td>");
 			$("#newTimeEnd").val(currentEnd);
 		}
 		function callEditStopShift(shift_id) {
@@ -851,7 +851,17 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" id="createTeam" value="{% trans 'CREATE TEAM' %}" class="btnCreateTeam"/>
+						<input type="button" id="createTeam" style = "background: #1F3801 !important;
+    background-size: 100% 100%;
+    border-radius: 7px;
+    border: 1px solid #1F3801 !important;
+    box-shadow: 2px 2px 5px gray;
+    height: 50px;
+    width: 200px;
+    color: white;
+    margin-bottom: 10px;
+    font-size: 25px;
+    font-weight: 700;" value="{% trans 'CREATE TEAM' %}" class="btnCreateTeam"/>
 					</div>
 				</div>
 				<div class="row">
@@ -912,8 +922,26 @@
 				<!-- Modal content-->
 				<div class="modal-content modalTimekeeper">
 					<div class="modal-body">
-						<button type="button" id="timelogBack1"></button>
-						<button type="button" id="timelogBack2"></button>
+						<button type="button" id="timelogBack1" style="background: url('/static/imgSmall/buttons/backPastTasks.png') no-repeat top left;
+    background-size: 100% 100%;
+    width: 40px;
+    height: 40px;
+    float: left;
+    border: none;
+    border-radius: 7px;
+    box-shadow: -1px 1px 7px gray;
+    margin: 0px;
+    padding: 0px;"></button>
+						<button type="button" id="timelogBack2" style="background: url('/static/imgSmall/buttons/backPastTasks.png') no-repeat top left;
+    background-size: 100% 100%;
+    width: 40px;
+    height: 40px;
+    float: left;
+    border: none;
+    border-radius: 7px;
+    box-shadow: -1px 1px 7px gray;
+    margin: 0px;
+    padding: 0px;"></button>
 						<button type="button" class="closeTimekeeper" data-dismiss="modal"></button>
 						<span id="messageTimekeeper"></span>
 						<div id="employeeList"></div>
@@ -953,7 +981,7 @@
 							<div style="margin auto 40px; text-align: center; padding-top: 10px;">
 								<select id="cameraId" class="form-control" style="display: inline-block;width: auto; display: none;"></select>
 								<a href="#">
-								<input id="play" value="{% trans 'Scan QR-Code' %}" title="Play" type="button" class="btn btn-success btn-sm">
+								<input id="play" style ="background: url('/static/imgSmall/buttons/scan.png') no-repeat top left;background-size: 100% 100%;width: 161px;height: 40px;font-size: 14px;padding-left: 60px;color: white;"value="{% trans 'Scan QR-Code' %}" title="Play" type="button" class="btn btn-success btn-sm">
 								</input> </a>
 							</div>
 							<div class="panel-body" id="contentQRCode" style="padding-top: 10px; padding-bottom: 0px;">
@@ -988,7 +1016,16 @@
 			<div class="modal-dialog">
 				<!-- Modal content-->
 				<div class="modal-content modalTask" style="text-align: center;">
-					<button type="button" class="closeTask" data-dismiss="modal"></button>
+					<button type="button" style="background: url('/static/imgSmall/buttons/esc.png') no-repeat top left;
+    background-size: 100% 100%;
+    width: 50px;
+    height: 50px;
+    float: right;
+    border: none;
+    border-radius: 7px;
+    box-shadow: -1px 1px 7px gray;
+    margin: 0px;
+    padding: 0px;" class="closeTask" data-dismiss="modal"></button>
 					<span class="modal-title" id="titleModalSchedule" style="margin-left: 50px;">{% trans 'Scan QR-Code says:' %}
 					</span>
 					</br>
@@ -998,8 +1035,31 @@
 							{% trans 'Would you like to add another employee to the Group?' %}
 						</p>
 					</div>
-					<input type="button" value="{% trans 'Yes' %}" class="btnModalYes" id="btnYesAddEmployee" onclick="addEmployeeGroup(true);"/>
-					<input type="button" value="{% trans 'No' %}" class="btnModalNo" id="btnNoAddEmployee" onclick="addEmployeeGroup(false);"/>
+					<input type="button" value="{% trans 'Yes' %}" style="background: url('/static/imgSmall/buttons/startNow.png') no-repeat top left;
+    background-size: 100% 100%;
+    width: 140px;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px gray;
+    margin-right: 90px;
+    margin-left: 75px;
+    margin-bottom: 0px;
+    text-decoration: none;
+    color: white;
+    font-size: 20px;
+    float: left;" class="btnModalYes" id="btnYesAddEmployee" onclick="addEmployeeGroup(true);"/>
+					<input type="button" value="{% trans 'No' %}" style="background: url('/static/imgSmall/buttons/btnRed.png') no-repeat top left !important;
+    background-size: 100% 100% !important;
+    border-radius: 10px !important;
+    border: none !important;
+    box-shadow: 2px 2px 5px gray !important;
+    color: white;
+    font-size: 20px;
+    margin-bottom: 10px !important;
+    width: 140px !important;
+    height: 40px;
+    float: left;" class="btnModalNo" id="btnNoAddEmployee" onclick="addEmployeeGroup(false);"/>
 					<div class="both"></div>
 				</div>
 			</div>
