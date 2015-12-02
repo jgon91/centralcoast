@@ -199,6 +199,14 @@ class TaskCategory(models.Model):
 	def __unicode__(self):
 		return "ID: " + str(self.id) + ", Category: " + str(self.description)
 
+class TaskCode(models.Model):
+	name = models.CharField(max_length = 100)
+	category = models.ForeignKey(TaskCategory)
+
+	def __unicode__(self):
+		return "ID: " + str(self.id) + ", Name: " + str(self.name) + ", Category" + str(self.category)
+
+
 class Task(models.Model):
 	STATUS_CHOICES = (
 		(1, 'Pending'),
@@ -208,23 +216,25 @@ class Task(models.Model):
 		(5, 'Paused'),
 		(6, 'Finished'),
 	)
-	field = models.ForeignKey(Field)
-	category = models.ForeignKey(TaskCategory)
+	# field = models.ForeignKey(Field)
+	field = models.CharField(null = True, max_length = 100, default = 0)
+	# code = models.ForeignKey(TaskCode)
+	code = models.CharField(null = True, max_length = 100, default = 0)
 	rate_cost = models.FloatField(null = True, default = 0)
 	date_assigned = models.DateTimeField(null = True)
-	hours_prediction = models.FloatField()
-	description =  models.CharField(max_length = 500)
-	passes = models.IntegerField()
+	hours_prediction = models.FloatField(null = True, default = 0)
+	description =  models.CharField(null = True, max_length = 500)
+	passes = models.IntegerField(null = True, default = 0)
 	task_init = models.DateTimeField(null = True, blank = True)
 	task_end = models.DateTimeField(null = True, blank = True)
 	hours_spent = models.FloatField(null = True, default = 0)
 	pause_start = models.DateTimeField(null = True, blank = True)
 	pause_end = models.DateTimeField(null = True, blank = True)
 	pause_total = models.FloatField(null = True, blank = True)
-	status = models.IntegerField(choices = STATUS_CHOICES, default = 1)
+	status = models.IntegerField(null = True, choices = STATUS_CHOICES, default = 1)
 
 	def __unicode__(self):
-		return "Field Name: " + str(self.field.name) + " Category: " + str(self.category.description) + ", Hour Cost: " +  str(self.rate_cost) + ", Description: " +  str(self.description)
+		return "Field Name: " + str(self.field) + " Code: " + str(self.code) + ", Hour Cost: " +  str(self.rate_cost) + ", Description: " +  str(self.description)
 
 class Employee(models.Model):
 	LANGUAGE_CHOICES = (
@@ -241,15 +251,14 @@ class Employee(models.Model):
 	start_date = models.DateField(blank = True, null = True)
 	hour_cost = models.FloatField(blank = True, null = True)
 	contact_number = models.CharField(max_length = 14, blank = True)
-	permission_level = models.IntegerField(choices = ((1, 'Driver'), (2, 'Manager')), default = 1)	
+	permission_level = models.IntegerField(choices = ((1, 'Driver'), (2, 'Manager')), default = 1)
 	notes = models.CharField(max_length = 250, null = True, blank = True)
 	manager = models.ForeignKey('self', null = True, blank = True)
-	teamManager = models.BooleanField(default = False)	
+	teamManager = models.BooleanField(default = False)
 	photoEmployee = models.ImageField(upload_to='employee', default='employee/no.jpg')
 
 	def __unicode__(self):
 		return  "First Name: " + str(self.user.first_name) + ", Last Name: " + str(self.user.last_name) + ", User ID: " + str(self.user.id) + ", ID: " + str(self.id) + " Team Manager :" + str(self.teamManager)
-
 
 class EmployeeWithdrawn(models.Model):
 	employee = models.ForeignKey(Employee)
@@ -286,6 +295,7 @@ class EmployeeAttendance(models.Model):
 
 	def __unicode__(self):
 		return "Employee: " + str(self.employee) + ", Date: " + str(self.date) + ", AttendanceID: " + str(self.id)
+
 
 
 class Break(models.Model):
