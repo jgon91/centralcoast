@@ -47,7 +47,8 @@
 			<div id="menuTop">
 				<a href="{% url 'home' %}"><input type="button" class="btnTop" id="btnHomeUp" /></a>
 
-				<a href="{% url 'time_keeper'%}"><input type="button" class="btnTop" id="btnTimerkeeperUp" /></a>
+				<a href="{% url 'time_keeper'%}"><input style="background: url('/static/imgSmall/buttons/btnTimekeeperTop.png') no-repeat top left;
+    background-size: 100% 100%;" type="button" class="btnTop" id="btnTimerkeeperUp" /></a>
 				<div id="clock"></div>
 				<a href="{% url 'logout' %}"><input type="button" value="{% trans 'EXIT' %}" id="logOff"/></a>
 				<a href="#"><input type="button" id="userImg"/></a>
