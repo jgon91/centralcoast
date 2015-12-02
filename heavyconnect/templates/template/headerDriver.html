@@ -16,22 +16,39 @@
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 		<link rel="stylesheet" type="text/css" href="{% static 'css/styleSmall.css' %}">
 		<link rel="stylesheet" type="text/css" href="{% static 'css/styleMedium.css' %}" media="screen and (min-width: 801px) and (orientation: landscape)">
-		<!--<link rel="stylesheet" type="text/css" href="{% static 'css/styleSmall.css' %}" media="screen and (max-width: 800px) and (orientation: landscape)">
-		<link rel="stylesheet" type="text/css" href="{% static 'css/styleMedium.css' %}" media="screen and (min-width: 801px)">  -->
-		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+
 		<link rel="shortcut icon" href="/favicon.ico">
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+		<script type="text/javascript">
+			function GetClock(){
+			var d=new Date();
+			var nmonth=d.getMonth(),ndate=d.getDate(),nyear=d.getYear();
+			if(nyear<1000) nyear+=1900;
+			var nhour=d.getHours(),nmin=d.getMinutes(),ap;
+			if(nhour==0){ap=" AM";nhour=12;}
+			else if(nhour<12){ap=" AM";}
+			else if(nhour==12){ap=" PM";}
+			else if(nhour>12){ap=" PM";nhour-=12;}
+
+			if(nmin<=9) nmin="0"+nmin;
+
+			document.getElementById('clock').innerHTML=""+(nmonth+1)+"/"+ndate+"/"+nyear+" "+nhour+":"+nmin+ap+"";
+			}
+
+			$(document).ready(function() {
+				GetClock();
+				setInterval(GetClock,1000);
+			});
+		</script>
 	</head>
 	
 	<body>
 		<div id="top">
 			<div id="menuTop">
 				<a href="{% url 'home' %}"><input type="button" class="btnTop" id="btnHomeUp" /></a>
-				<a href="{% url 'scanQRCode' %}?url={% url 'equipment' %}"><input type="button" class="btnTop" id="btnEquipmentUp" /></a>
-				<a href="{% url 'taskFlow'%}"><input type="button" class="btnTop" id="btnTaskflowUp" /></a>
-				<a href="{% url 'schedule'%}"><input type="button" class="btnTop" id="btnSchedulerUp" /></a>
+
 				<a href="{% url 'time_keeper'%}"><input type="button" class="btnTop" id="btnTimerkeeperUp" /></a>
-				<a href="{% url 'scanQRCode' %}?url={% url 'checklist' %}"><input type="button" class="btnTop" id="btnChecklistUp" /></a>
+				<div id="clock"></div>
 				<a href="{% url 'logout' %}"><input type="button" value="{% trans 'EXIT' %}" id="logOff"/></a>
 				<a href="#"><input type="button" id="userImg"/></a>
 			</div>

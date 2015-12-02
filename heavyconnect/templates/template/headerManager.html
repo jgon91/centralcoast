@@ -13,6 +13,9 @@
 		<!--IMPORTS-->
 		<link rel="stylesheet" type="text/css" href="{% static 'css/styleManager.css' %}">
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="{% static 'css/styleSmall.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/styleMedium.css' %}" media="screen and (min-width: 801px) and (orientation: landscape)">
+
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
 		<link rel="shortcut icon" href="/favicon.ico">
@@ -23,14 +26,9 @@
 		<div id="top">
 			<div id="menuTop">
 				<a href="{% url 'indexManager' %}"><input type="button" class="btnTop" id="btnHomeUp" /></a>
-				<a href="{% url 'equipmentManager' %}"><input type="button" class="btnTop" id="btnEquipmentUp" /></a>
-				<a href="{% url 'createTaskManager' %}"><input type="button" class="btnTop" id="btnTaskflowUp" /></a>
-				<a href="{% url 'scheduleManager' %}"><input type="button" class="btnTop" id="btnSchedulerUp" /></a>
-				<a href="{% url 'indexManager' %}"><input type="button" class="btnTop" id="btnTimerkeeperUp" /></a>
-				<a href="{% url 'reports' %}"><input type="button" class="btnTop" id="btnEmployeeUp" /></a>
-				<a href="{% url 'indexManager' %}"><input type="button" class="btnTop" id="btnRecorderUp" /></a>
-				<a href="{% url 'fleet' %}"><input type="button" class="btnTop" id="btnFleetUp" /></a>
-				<a href="{% url 'manageForms' %}"><input type="button" class="btnTop" id="btnManageUp" /></a>
+				<a href="{% url 'time_keeper_records' %}"><input type="button" class="btnTop" id="btnTimerkeeperUp" /></a>
+
+				<a href="{% url 'manageForms' %}"><input type="button" class="btnTop" id="btnManageHome" /></a>
 				<a href="{% url 'logout' %}"><input type="button" value="EXIT" id="logOff"/>
 				<a href="#"><input type="button" id="userImg"/>
 			</div>
