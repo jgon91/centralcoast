@@ -9,7 +9,8 @@ from django.db.models import Q
 from django.core.files import File
 from django.db.models import Count
 from django.template import RequestContext
-
+from django.core import serializers
+import csv
 
 import json
 from datetime import datetime
@@ -230,6 +231,9 @@ def createShift(new_hour_started, employee, result):
 	now = datetime.datetime.now()
 	if new_hour_started is not None:
 		now = new_hour_started
+	print employee
+	print now
+
 	eAttendance = EmployeeAttendance(employee = employee, date = now, hour_started = now)
 	eAttendance.save()
 	result['success'] = True
@@ -244,6 +248,7 @@ def startShift(request, idUser):
 		attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
 		result['Employee'] = employee.id
 		if attendance is not None:
+			print 'attendance is not none'
 			#If more than 16 hours was passed since the last shift was started we can consider that now we are creating a new shift
 			time_delta = (datetime.datetime.now() - datetime.datetime.combine(attendance.date,attendance.hour_started))
 			# !!!!!!! Joao verifica essas linhas de codigo abaixo  !!!!!!!!!!
@@ -268,13 +273,21 @@ def startShift(request, idUser):
 
 		else: #First time the employee will create a shift
 			new_hour_started = None
+			print 'attendance is none'
 			if 'time' in request.POST:
+				print 'time is in post request'
 				time = {'hour': 0, 'minute' : 0, 'second' : 0}
 				new_time = request.POST['time']
-				new_time = new_time.split(":")		
+				print new_time
+				new_time = new_time.split(":")
+				print new_time[0]
 				time['hour'] = int(new_time[0])
+				print time['hour']
+
 				time['minute'] = int(new_time[1])
+				print time['minute']
 				new_hour_started = datetime.datetime(year = 2015, month = 11, day = 25, hour = time['hour'], minute = time['minute'], second = time['second'])
+			print 'creating shift'
 			result = createShift(new_hour_started, employee, result)
 
 	except (Employee.DoesNotExist, EmployeeAttendance.DoesNotExist) as e:
@@ -532,7 +545,10 @@ def createGroup(request):
 	if request.method == "POST":
 		if request.is_ajax():
 			invalid = []
-			codes = request.POST.getlist('qr_code[]') # array with qr_codes
+			codes = request.POST['qr_code'] # array with qr_codes
+			qr_codes = json.loads(codes)
+			print qr_codes
+
 			creator = Employee.objects.get(user__id = request.user.id)
 			date = str(datetime.date.today())
 			name = request.POST['name']
@@ -552,12 +568,19 @@ def createGroup(request):
 					aux1 = []
 					for item2 in emploGroup:
 					 	aux1.append(str(''.join(item2))) # convert tuple type which is deliveried by the query
-					for item in codes:
+					for item in qr_codes:
+						print 'item'
+						print item
 				 		if item in aux1: #check is the qr_code is already in the group
+							print 'item in aux'
 				 			invalid.append(item)
 				 		else:
-							employee = Employee.objects.filter(qr_code = item)
-							for item3 in employee:		
+
+							employee = Employee.objects.filter(qr_code = item['qr_code'])
+							print employee
+							for item3 in employee:
+								print 'item3'
+								print item3
 								if item3 != None:							
 									aux = GroupParticipant(group = group, participant = item3)
 									aux.save()
@@ -600,8 +623,10 @@ def retrieveParticipant(request):
 	if request.method == "POST":
 		if request.is_ajax():
 			group = request.POST['group']
+			print group
 			participantArray = []
 			participant = GroupParticipant.objects.filter(group_id = group)
+			print participant
 			for item in participant:
 				aux = {}
 				aux['name'] = str(item.participant.user.first_name) + ' ' + str(item.participant.user.last_name)
@@ -2032,7 +2057,7 @@ def timeLogById(request):
 								minutes = checkMinutes(minutes)
 								aux['breakDuration'] = str(hours) + ':' + str(minutes)
 						else:
-							aux['breakStop'] = 'Happening'
+							aux['breakStop'] = 'In Progress'
 							time_now = datetime.datetime.now() #variable used to get the current time
 							time_aux = datetime.timedelta(hours = time_now.hour, minutes = time_now.minute, seconds = time_now.second)
 							breakTime = docStart
@@ -2052,7 +2077,7 @@ def timeLogById(request):
 						else:
 							count += (keeper2 - breakTime) + endTurn
 					else:
-						Attendance_end = 'Happening'
+						Attendance_end = 'In Progress'
 						time_now = datetime.datetime.now()
 						time_aux = datetime.timedelta(hours = time_now.hour, minutes = time_now.minute, seconds = time_now.second)
 						if time_aux >= breakTime:
@@ -2069,7 +2094,7 @@ def timeLogById(request):
 				hours = checkHours(hours)
 				minutes = checkMinutes(minutes)
 				result['Attendance_start'] = str(hours) + ':' + str(minutes)			
-				if(Attendance_end != 'Happening'):
+				if(Attendance_end != 'In Progress'):
 					hours, remainder = divmod(Attendance_end.seconds, 3600)
 					minutes, seconds = divmod(remainder, 60)
 					minutes = checkMinutes(minutes)
@@ -2851,7 +2876,11 @@ def time_keeper_test(request):
 	return render(request, 'driver/timeKeeperTest.html')
 
 @login_required
-def equipament(request):
+def time_keeper_records(request):
+	return render(request, 'manager/timeKeeper.html')
+
+@login_required
+def equipment(request):
     return render(request, 'driver/equipment.html')
 
 @login_required
@@ -3431,6 +3460,118 @@ def getAllMachines(request):
 
 	return HttpResponse(json.dumps(result), content_type='application/json')	
 
+
+@login_required
+def getCsv(request):
+	result = {}
+	result['success'] = True
+
+	response = HttpResponse(content_type='text/csv')
+	response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+
+	writer = csv.writer(response)
+	writer.writerow(['ID', 'Name', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked'])
+	attendances = EmployeeAttendance.objects.all().order_by('-date')#filter(date__range = (start_date, now))
+
+	if attendances.count > 0:
+		for attendance in attendances:
+			employee_id = attendance.employee.id
+			date = attendance.date
+			hour_started = attendance.hour_started
+			hour_ended = attendance.hour_ended
+			if hour_ended == None:
+				hour_ended = 'N/A'
+			if hour_started == None:
+				hour_started = 'N/A'
+			if hour_ended != 'N/A' and hour_started != 'N/A':
+				if hour_ended > hour_started:
+					hours_today = getHoursToday(attendance.employee.id, str(attendance.date) +' 00:00:00')
+				else:
+					hours_today = 'N/A'
+			else:
+				hours_today = 'N/A'
+			employee_name = attendance.employee.user.last_name + ", " + attendance.employee.user.first_name
+			writer.writerow([employee_id, employee_name, date, hour_started, hour_ended, hours_today])
+			breaks = Break.objects.filter(attendance__id = attendance.id)#.order_by('start')
+			i = 1
+			if breaks.count() > 0:
+				writer.writerow(['', '', 'Break', 'Hour Started', 'Hour Ended', 'Total Time'])
+				for item in breaks:
+					num_break = i
+					if item.start != None and item.end != None:
+						if item.end >= item.start:
+							start = datetime.timedelta(hours = item.start.hour, minutes = item.start.minute, seconds = item.start.second)
+							end = datetime.timedelta(hours = item.end.hour, minutes = item.end.minute, seconds = item.end.second)
+							total = end - start
+						else:
+							total = 'N/A'
+					else:
+						total = 'N/A'
+					writer.writerow(['', '', num_break, item.start, item.end, total])
+					i = i+1
+	return response
+def timeKeeperDailyReport(request):
+	result = {'success' : False}
+
+	# result = {'success' : False}
+
+	each_result = {}
+
+	if request.method == 'POST':
+		if request.is_ajax():
+
+			#Creating the data range to filter the attendaces
+			# now = datetime.datetime.now()
+			# start_date = datetime.datetime.combine(now, datetime.time.min)
+
+			attendances = EmployeeAttendance.objects.all().order_by('-date')#filter(date__range = (start_date, now))
+			tasks = EmployeeTask.objects.all()
+			all_attendances = []
+			total_times = []
+			all_names = []
+
+			i = 0
+			for attendance in attendances:
+				temp = {}
+				temp["first_name"] = attendance.employee.user.first_name
+				temp['last_name'] = attendance.employee.user.last_name
+				temp['employee_id'] = attendance.employee.id
+				temp['date'] = attendance.date
+				temp['hour_started']=attendance.hour_started
+
+				temp['hour_ended']=attendance.hour_ended
+
+				hours_today = getHoursToday(attendance.employee.id, str(attendance.date) +' 00:00:00')
+				if str(attendance.hour_ended) < str(attendance.hour_started):
+					hours_today = 'N/A'
+				all_names.append(attendance.employee.user.last_name + ", " + attendance.employee.user.first_name)
+				total_times.append(hours_today)
+				temp["total_hours"] = hours_today
+				all_attendances.append(temp)
+				# all_attendances[i] = temp
+				i = i+1
+			print 'hello'
+			all_attendances_ser = serializers.serialize("json", attendances)
+			print all_attendances_ser
+			tasks_ser = serializers.serialize("json", tasks)
+			print tasks_ser
+
+			# breaks = Break.objects.all()
+			# all_breaks = serializers.serialize("json", breaks)
+			# result['all_breaks'] = all_breaks
+			# result['all_attendances'] = all_attendances
+
+			result['success'] = True
+			result['all_attendances']=all_attendances_ser
+			result['total_times'] = total_times
+			result['all_names'] = all_names
+			result['tasks'] = tasks_ser
+		else:
+			result['code'] = 2  #Use ajax to perform requests
+	else:
+		result['code'] = 3  #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
 @login_required
 def machineManagerDelete(request):
 	result = {'success' : False}
@@ -4771,19 +4912,3 @@ def employeeWeekReportGroupBy(request):
 	else:
 	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
