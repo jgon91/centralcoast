@@ -1678,7 +1678,7 @@ input[type=button] {
     background: url('../imgSmall/buttons/btnScheduleTop.png') no-repeat top left;
     background-size: 100% 100%;
 }
-#btnTimerkeeperUp {
+##btnManageHome {
     background: url('../imgSmall/buttons/btnTimekeeperTop.png') no-repeat top left;
     background-size: 100% 100%;
 }
@@ -1727,7 +1727,7 @@ input[type=button] {
     background-size: 100% 100%;
 }
 #btnChecklist {
-    background: url('../imgSmall/buttons/checklist.png') no-repeat top left;
+    background: url('../imgSmall/buttons/btnChecklistTop.png') no-repeat top left;
     background-size: 100% 100%;
 }
 #backgroundFooter {
