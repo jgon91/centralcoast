@@ -230,11 +230,12 @@ def retrieveMachine(request):
 def createShift(new_hour_started, employee, result):
 	now = datetime.datetime.now()
 	if new_hour_started is not None:
+
 		now = new_hour_started
-	print employee
-	print now
+
 
 	eAttendance = EmployeeAttendance(employee = employee, date = now, hour_started = now)
+
 	eAttendance.save()
 	result['success'] = True
 	# result['hour_started'] = str(eAttendance.hour_started)
@@ -248,7 +249,6 @@ def startShift(request, idUser):
 		attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
 		result['Employee'] = employee.id
 		if attendance is not None:
-			print 'attendance is not none'
 			#If more than 16 hours was passed since the last shift was started we can consider that now we are creating a new shift
 			time_delta = (datetime.datetime.now() - datetime.datetime.combine(attendance.date,attendance.hour_started))
 			# !!!!!!! Joao verifica essas linhas de codigo abaixo  !!!!!!!!!!
@@ -256,10 +256,16 @@ def startShift(request, idUser):
 			if 'time' in request.POST:
 				time = {'hour': 0, 'minute' : 0, 'second' : 0}
 				new_time = request.POST['time']
-				new_time = new_time.split(":")		
+				new_date = new_time[0].split("-")
+				new_time = new_time.split(" ")
+				date = {'year': 0, 'month' : 0, 'day' : 0}
+				date['year'] = int(new_date[0])
+				date['month'] = int(new_date[1])
+				date['day'] = int(new_date[2])
+				new_time = new_time[1].split(":")
 				time['hour'] = int(new_time[0])
 				time['minute'] = int(new_time[1])
-				new_hour_started = datetime.datetime(year = 2015, month = 11, day = 25, hour = time['hour'], minute = time['minute'], second = time['second'])
+				new_hour_started = datetime.datetime(year = date['year'], month = date['month'], day = date['day'], hour = time['hour'], minute = time['minute'], second = time['second'])
 				time_delta = (new_hour_started - datetime.datetime.combine(attendance.date,attendance.hour_started))
 			
 			if ((time_delta.seconds / 3600.0) >= 16.17) or (time_delta.days >= 1):
@@ -273,21 +279,21 @@ def startShift(request, idUser):
 
 		else: #First time the employee will create a shift
 			new_hour_started = None
-			print 'attendance is none'
 			if 'time' in request.POST:
-				print 'time is in post request'
 				time = {'hour': 0, 'minute' : 0, 'second' : 0}
 				new_time = request.POST['time']
-				print new_time
-				new_time = new_time.split(":")
-				print new_time[0]
+				new_time = new_time.split(" ")
+				new_date = new_time[0]
+				new_date = new_date.split("-")
+				new_time = new_time[1].split(":")
 				time['hour'] = int(new_time[0])
-				print time['hour']
+				date = {'year':0, 'month': 0, 'day':0}
+				date['year'] = int(new_date[0])
+				date['month'] = int(new_date[1])
+				date['day'] = int(new_date[2])
 
 				time['minute'] = int(new_time[1])
-				print time['minute']
-				new_hour_started = datetime.datetime(year = 2015, month = 11, day = 25, hour = time['hour'], minute = time['minute'], second = time['second'])
-			print 'creating shift'
+				new_hour_started = datetime.datetime(year = date['year'], month = date['month'], day = date['day'], hour = time['hour'], minute = time['minute'], second = time['second'])
 			result = createShift(new_hour_started, employee, result)
 
 	except (Employee.DoesNotExist, EmployeeAttendance.DoesNotExist) as e:
@@ -342,12 +348,20 @@ def stopShift(request, idUser):
 			if 'time' in request.POST:
 				time = {'hour': 0, 'minute' : 0, 'second' : 0}
 				new_time = request.POST['time']
-				new_time = new_time.split(":")		
+				new_time = new_time.split(" ")
+				new_date = new_time[0].split("-")
+				new_time = new_time[1].split(":")
 				time['hour'] = int(new_time[0])
 				time['minute'] = int(new_time[1])
-				new_hour_started = datetime.datetime(year = 2015, month = 11, day = 25, hour = time['hour'], minute = time['minute'], second = time['second'])
+
+				date = {'year':0, 'month': 0, 'day':0}
+				date['year'] = int(new_date[0])
+				date['month'] = int(new_date[1])
+				date['day'] = int(new_date[2])
+
+				time['minute'] = int(new_time[1])
+				new_hour_started = datetime.datetime(year = date['year'], month = date['month'], day = date['day'], hour = time['hour'], minute = time['minute'], second = time['second'])
 				time_delta = (new_hour_started - datetime.datetime.combine(attendance.date,attendance.hour_started))
-			
 			if ((time_delta.seconds / 3600.0) < 16.17) or (time_delta.days == 0):
 				t_break = Break.objects.filter(attendance_id = attendance).order_by('-start')
 				amount = t_break.count()
@@ -424,11 +438,19 @@ def startBreak(request, idUser, paramenterlunch):
 					time = datetime.datetime.now()
 					if 'time' in request.POST:
 						timePOST = {'hour': 0, 'minute' : 0, 'second' : 0}
+						datePOST = {'year': 0, 'month' : 0, 'day' : 0}
 						new_time = request.POST['time']
-						new_time = new_time.split(":")		
+						new_time = new_time.split(" ")
+						new_date = new_time[0].split("-")
+
+						datePOST['year'] = int(new_date[0])
+						datePOST['month'] = int(new_date[1])
+						datePOST['day'] = int(new_date[2])
+						new_time = new_time[1].split(":")
 						timePOST['hour'] = int(new_time[0])
 						timePOST['minute'] = int(new_time[1])
-						time = datetime.datetime(year = 2015, month = 11, day = 25, hour = timePOST['hour'], minute = timePOST['minute'], second = timePOST['second'])
+
+						time = datetime.datetime(year = datePOST['year'], month = datePOST['month'], day = datePOST['day'], hour = timePOST['hour'], minute = timePOST['minute'], second = timePOST['second'])
 					t2_break = Break(attendance = attendance, lunch = lunch, start = time)
 					t2_break.save()
 					result['success'] = True
@@ -491,11 +513,16 @@ def stopBreak(request, idUser, paramenterlunch):
 					if 'time' in request.POST:
 						timePOST = {'hour': 0, 'minute' : 0, 'second' : 0}
 						new_time = request.POST['time']
-						print new_time 
-						new_time = new_time.split(":")		
+						new_time = new_time.split(" ")
+						datePOST = {'year': 0, 'month' : 0, 'day' : 0}
+						new_date = new_time[0].split("-")
+						datePOST['year'] = int(new_date[0])
+						datePOST['month'] = int(new_date[1])
+						datePOST['day'] = int(new_date[2])
+						new_time = new_time[1].split(":")
 						timePOST['hour'] = int(new_time[0])
 						timePOST['minute'] = int(new_time[1])
-						time = datetime.datetime(year = 2015, month = 11, day = 25, hour = timePOST['hour'], minute = timePOST['minute'], second = timePOST['second'])
+						time = datetime.datetime(year = datePOST['year'], month = datePOST['month'], day = datePOST['day'], hour = timePOST['hour'], minute = timePOST['minute'], second = timePOST['second'])
 					t_break.end = time
 					t_break.save()
 					result['success'] = True
@@ -547,7 +574,6 @@ def createGroup(request):
 			invalid = []
 			codes = request.POST['qr_code'] # array with qr_codes
 			qr_codes = json.loads(codes)
-			print qr_codes
 
 			creator = Employee.objects.get(user__id = request.user.id)
 			date = str(datetime.date.today())
@@ -569,18 +595,12 @@ def createGroup(request):
 					for item2 in emploGroup:
 					 	aux1.append(str(''.join(item2))) # convert tuple type which is deliveried by the query
 					for item in qr_codes:
-						print 'item'
-						print item
 				 		if item in aux1: #check is the qr_code is already in the group
-							print 'item in aux'
 				 			invalid.append(item)
 				 		else:
 
 							employee = Employee.objects.filter(qr_code = item['qr_code'])
-							print employee
 							for item3 in employee:
-								print 'item3'
-								print item3
 								if item3 != None:							
 									aux = GroupParticipant(group = group, participant = item3)
 									aux.save()
@@ -623,10 +643,8 @@ def retrieveParticipant(request):
 	if request.method == "POST":
 		if request.is_ajax():
 			group = request.POST['group']
-			print group
 			participantArray = []
 			participant = GroupParticipant.objects.filter(group_id = group)
-			print participant
 			for item in participant:
 				aux = {}
 				aux['name'] = str(item.participant.user.first_name) + ' ' + str(item.participant.user.last_name)
@@ -1406,16 +1424,12 @@ def getFilteredMachine(request):
 
 		if request.POST['status_ok'] == 'False':
 			status_ok = 1
-			print "OK"
 		if request.POST['status_attention'] == 'False':
 			status_attention = 2
-			print "ok2"
 		if request.POST['status_broken'] == 'False':
 			status_broken = 3
-			print "ok3"
 		if request.POST['status_quarantine'] == 'False':
 			status_quarantine = 4
-			print "ok4"
 
 	 	if request.is_ajax():
 	 		try:
@@ -1988,20 +2002,26 @@ def timeLogById(request):
 	result = {}
 	if request.method == 'POST':
 		if request.is_ajax():
-			userId = request.user.id
-			if 'id' in request.POST:
+			if 'single' in request.POST:
+				userId = request.user.id
+			else:
 				userId = request.POST['id']
+			if 'id' in request.POST:
 				array_breaks = []
 				result['signature'] = True
 				date = datetime.datetime.now() #today date
 				start_date = datetime.datetime.combine(date, datetime.time.min) #today date at 0:00 AM
 				end_date = datetime.datetime.combine(date, datetime.time.max) # date at 11:59 PM
+
 				employeeAttendance = EmployeeAttendance.objects.filter(employee__user__id = userId, date__range = (start_date,end_date)).order_by('-hour_started')[:1]
 				count = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #counter to keep all the worked hours
 				keeper = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #this variable will keep the last break. It is useful when the shift is not done
 				keeper2 =  datetime.timedelta(hours = 23, minutes = 59, seconds = 59) # when the break is on another day
+
 				for item in employeeAttendance:
-					if item.signature == '':
+					print item.signature
+					if item.signature == '' or item.signature == None:
+						print 'false'
 						result['signature'] = False
 					result['attendanceId'] = item.id
 					breaks = Break.objects.filter(attendance__id = item.id).order_by('start')
@@ -3550,11 +3570,8 @@ def timeKeeperDailyReport(request):
 				all_attendances.append(temp)
 				# all_attendances[i] = temp
 				i = i+1
-			print 'hello'
 			all_attendances_ser = serializers.serialize("json", attendances)
-			print all_attendances_ser
 			tasks_ser = serializers.serialize("json", tasks)
-			print tasks_ser
 
 			# breaks = Break.objects.all()
 			# all_breaks = serializers.serialize("json", breaks)
@@ -3721,7 +3738,6 @@ def getAllManagerEmployees(request):
 					each_result["last_name"] = manager.user.last_name
 					each_result["user_id"] = manager.user.id
 					each_result['photo'] = manager.photoEmployee.name
-					print each_result['photo']
 					employees.append(each_result)
 					each_result = {}	
 				for each in all_manager_employee:					
@@ -3755,8 +3771,7 @@ def updateStartShift(request):
 				shift_id = request.POST['shift_id']
 				attendance = EmployeeAttendance.objects.get(id = shift_id)
 				new_time = request.POST['new_time']
-				print new_time 
-				new_time = new_time.split(":")		
+				new_time = new_time.split(":")
 				time['hour'] = int(new_time[0])
 				time['minute'] = int(new_time[1])
 				new_hour_started = datetime.timedelta(hours = time['hour'], minutes = time['minute'], seconds = time['second'])
@@ -4429,8 +4444,8 @@ def employeeManagerUpdateForm(request):
 		employform = employeeUpdateForm(request.POST, request.FILES)
 		user_id = request.POST['user']
 		if userform.is_valid() and employform.is_valid():
-			try:				
-				emplo = Employee.objects.get(user_id = user_id)			
+			try:
+				emplo = Employee.objects.get(user_id = user_id)
 				emplo.user.first_name = userform.cleaned_data['first_name']
 				emplo.user.last_name = userform.cleaned_data['last_name']
 				emplo.company_id = employform.cleaned_data['company_id']
@@ -4444,17 +4459,17 @@ def employeeManagerUpdateForm(request):
 				emplo.notes = employform.cleaned_data['notes']
 				emplo.teamManager = employform.cleaned_data['teamManager']
 				emplo.manager = employform.cleaned_data['manager']				
-
 				if emplo.active == False:
 					 emplo.user.is_active = False
 				else:
 					emplo.user.is_active = True
 				try:
 					image = request.FILES['image']
+					image.name = user_id + ".jpg"
+
 				except:
 					image = "employee/no.jpg"
 
-				image.name = user_id + ".jpg"
 				emplo.photoEmployee = image
 				emplo.user.save()
 				emplo.save()
@@ -4481,7 +4496,6 @@ def employeeManagerUpdateForm(request):
 def employeeFormadd(request):
 	result = {'success' : False}
 	if request.method == "POST":
-		print "hey"		
 		userform = UserForm(request.POST)
 		employform = employeeForm(request.POST, request.FILES)
 		if userform.is_valid() and employform.is_valid():			
@@ -4490,7 +4504,7 @@ def employeeFormadd(request):
 			new_user_first_name = userform.cleaned_data['first_name']
 			new_user_last_name = userform.cleaned_data['last_name']
 			new_user, created = User.objects.get_or_create(username = new_user_username, defaults = {'first_name' : new_user_first_name, 'last_name' : new_user_last_name})
-			if created:				
+			if created:
 				new_user.set_password(new_user_password)
 				new_user.save()				
 				emplo_company = employform.cleaned_data['company_id']
@@ -4504,12 +4518,14 @@ def employeeFormadd(request):
 				emplo_teamManager = employform.cleaned_data['teamManager']
 				emplo_manager = employform.cleaned_data['manager']											
 				try:
-					image = request.FILES['image']		
+					image = request.FILES['image']
+					image.name = new_user_username + ".jpg"
 				except:					
-					image = ""	
+					image = "employee/no.jpg"
+
 				try:										
 					# last_employee = Employee.objects.latest('id')										
-					employee = Employee(user = new_user, language = emplo_language, permission_level = emplo_permission, active = '1', company_id = emplo_company, qr_code = emplo_qr_code, start_date = emplo_start, hour_cost = emplo_cost,contact_number = emplo_contact, notes = emplo_notes, photo = emplo_photo, manager = emplo_manager, photoEmployee = image)
+					employee = Employee(user = new_user, language = emplo_language, permission_level = emplo_permission, active = '1', company_id = emplo_company, qr_code = emplo_qr_code, start_date = emplo_start, hour_cost = emplo_cost,contact_number = emplo_contact, notes = emplo_notes, manager = emplo_manager, photoEmployee = image)
 					employee.save()																												
 					result['success'] = True
 				except:
@@ -4647,15 +4663,14 @@ def checkAttendanceBreaks(userID):
 @login_required
 def retrieveAttendanceChecklist(request):
  	result = {'success' : False}
- 	print 1
+	if 'single' in request.POST:
+		userId = request.user.id
+	else:
+		userId = request.POST['id']
 	if request.method == 'POST':
-		print 1
 		if request.is_ajax():
-			print 1
 		 	checklist = AttendanceChecklist.objects.all()
-		 	print 2
-		 	attendance = checkAttendanceBreaks(request.POST['id']) #user id
-		 	print 3
+		 	attendance = checkAttendanceBreaks(userId) #user id
 		 	result['problemLunch'] = attendance['problemLunch']
 		 	result['problemBreak'] = attendance['problemBreak']
 		 	result['break'] = attendance['breaks']
@@ -4688,6 +4703,7 @@ def retrieveAttendanceChecklist(request):
 		 			questionArray.append(aux)
 		 	result['checklist'] = questionArray
 		 	result['success'] = True
+			print 'done'
 	 	else:
 			result['code'] = 2 #Use ajax to perform requests
 	else:

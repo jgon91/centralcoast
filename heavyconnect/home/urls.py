@@ -169,7 +169,6 @@ urlpatterns = [
     url(r'^employeeManagerDelete/$', main_views.employeeManagerDelete, name = 'employeeManagerDelete'),
     url(r'^implementFormView/$', main_views.implementFormView, name = 'registerImplement'),
     url(r'^employeeUpdateFormView/$', main_views.employeeUpdateFormView, name = 'updateEmployee'),
-    url(r'^employeeManagerUpdateForm/$', main_views.employeeManagerUpdateForm, name = 'employeeManagerUpdateForm'),
     url(r'^employeeFormadd/$', main_views.employeeFormadd, name = 'registerEmployee'),
     url(r'^employeePassUpdate/$', main_views.employeeUpdatePasswordForm, name = 'employeeUpdatePasswordForm'),
     url(r'^employeeAttendanceFormView/$', main_views.employeeAttendanceFormView, name = 'registerEmployeeAttendance'),
