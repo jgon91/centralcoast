@@ -3349,7 +3349,9 @@ def getAllEmployees(request):
 				for each in all_employee:
 					each_result['first_name'] = each.user.first_name
 					each_result['last_name'] = each.user.last_name
-					each_result['user_id'] = each.user.id
+					employee = Employee.objects.get(user_id = each.user.id)
+					each_result['user_id'] = employee.qr_code
+
 					each_result['photo'] = each.photoEmployee.name																			
 					employees.append(each_result)
 					each_result = {}
