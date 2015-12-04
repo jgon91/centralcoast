@@ -44,6 +44,8 @@ INSTALLED_APPS = (
     'home',
 )
 
+ADMINS = [('Jessica', 'jessica@heavyconnect.com')]
+
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -83,10 +85,10 @@ WSGI_APPLICATION = 'heavyconnect.wsgi.application'
 DATABASES = {
    'default': {
        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-       'NAME': 'd3ghphbaaf2alv',                      # Or path to database file if using sqlite3.
-       'USER': 'lhiebmankdbyyt',                      # Not used with sqlite3.
-       'PASSWORD': 'Anko1tlUH6zuxLbAhsSlPmuLP1',                  # Not used with sqlite3.
-       'HOST': 'ec2-54-197-247-170.compute-1.amazonaws.com',                      # Set to empty string for localhost. Not used with sqlite3.
+       'NAME': 'd5j0r9l1p6hbs1',                      # Or path to database file if using sqlite3.
+       'USER': 'lvmlaczuulaeir',                      # Not used with sqlite3.
+       'PASSWORD': 'uLbuWqcYB2GCNFAZMatjN9uTip',                  # Not used with sqlite3.
+       'HOST': 'ec2-107-21-219-109.compute-1.amazonaws.com',                      # Set to empty string for localhost. Not used with sqlite3.
       'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
 
    }
