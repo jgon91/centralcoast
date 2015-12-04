@@ -106,17 +106,7 @@ footer {
 	float: right;
 	margin-top: 10px;
 }
-input[type=text] {
-	padding: 7px;
-	border: 0px solid #333;
-	border-radius: 10px;
-	font-weight: bold;
-	color: black;
-	font-weight: bold;
-	font-size: 110%;
-	box-shadow: 4px 4px 7px -1px black;
-	text-align: center;
-}
+
 input[type=password] {
 	padding: 7px;
 	border: 0px solid #333;
@@ -538,18 +528,7 @@ input[type="button"] {
 /*** Form Page End ***/
 
 /*** Manage Forms Page Begin ***/
-#contentManageForm {
-	width: 80%;
-	margin: auto;
-	margin-top: 10px;
-	margin-bottom: 10px;
-	border: 1px solid gray;
-	box-shadow: 2px 2px 8px 0px gray;
-	border-radius: 10px;
-	font-size: 20px;
-	font-weight: 700;
-	padding-bottom: 20px;
-}
+
 .btnManageForm {
 	background: url('../imgSmall/buttons/btnGreen.png') no-repeat top left;
 	background-size: 100% 100%;
