@@ -4484,7 +4484,7 @@ def employeeManagerUpdateForm(request):
 	else:
 		try:
 			user_id = request.GET.get('user_id')
-			emplo = Employee.objects.get(user__id = user_id)
+			emplo = Employee.objects.get(qr_code = user_id)
 			userform = UserFormUpdate(initial = {'first_name' : emplo.user.first_name, 'last_name' : emplo.user.last_name})
 			employform = employeeUpdateForm(initial = {'user' : user_id,'notes' : emplo.notes, 'photoEmployee' : emplo.photoEmployee, 'permission_level' : emplo.permission_level ,'contact_number' : emplo.contact_number ,'hour_cost' : emplo.hour_cost, 'qr_code' : emplo.qr_code ,'language' : emplo.language , 'active' : emplo.active, 'last_task' : emplo.last_task ,'start_date' : emplo.start_date,'company_id' : emplo.company_id, 'manager' : emplo.manager, 'active' : emplo.active})
 			return render(request,'manager/employeeUpdate.html', {'form': userform, 'form1': employform})
