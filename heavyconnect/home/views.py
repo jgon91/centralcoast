@@ -2003,6 +2003,7 @@ def timeLogById(request):
 	if request.method == 'POST':
 		if request.is_ajax():
 			if 'single' in request.POST:
+				print 'REQUEST USER ID' + request.user.id;
 				userId = request.user.id
 			else:
 				userId = request.POST['id']
@@ -3350,7 +3351,7 @@ def getAllEmployees(request):
 					each_result['first_name'] = each.user.first_name
 					each_result['last_name'] = each.user.last_name
 					each_result['user_id'] = each.user.id
-					each_result['photo'] = each.photoEmployee.name																			
+					each_result['photo'] = each.photoEmployee.name
 					employees.append(each_result)
 					each_result = {}
 				result['success'] = True
