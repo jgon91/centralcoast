@@ -2002,10 +2002,14 @@ def timeLogById(request):
 	result = {}
 	if request.method == 'POST':
 		if request.is_ajax():
+			print 'is ajax'
 			if 'single' in request.POST:
-				print 'REQUEST USER ID' + request.user.id;
+
+				print 'REQUEST USER ID'
+				print request.user.id
 				userId = request.user.id
 			else:
+				print 'not single'
 				userId = request.POST['id']
 			if 'id' in request.POST:
 				array_breaks = []
@@ -2020,9 +2024,7 @@ def timeLogById(request):
 				keeper2 =  datetime.timedelta(hours = 23, minutes = 59, seconds = 59) # when the break is on another day
 
 				for item in employeeAttendance:
-					print item.signature
 					if item.signature == '' or item.signature == None:
-						print 'false'
 						result['signature'] = False
 					result['attendanceId'] = item.id
 					breaks = Break.objects.filter(attendance__id = item.id).order_by('start')
@@ -2114,7 +2116,10 @@ def timeLogById(request):
 				minutes, seconds = divmod(remainder, 60)
 				hours = checkHours(hours)
 				minutes = checkMinutes(minutes)
-				result['Attendance_start'] = str(hours) + ':' + str(minutes)			
+				result['Attendance_start'] = str(hours) + ':' + str(minutes)
+				print 'hello'
+				result['user_id'] = request.user.id
+				print 'hi'
 				if(Attendance_end != 'In Progress'):
 					hours, remainder = divmod(Attendance_end.seconds, 3600)
 					minutes, seconds = divmod(remainder, 60)
