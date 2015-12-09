@@ -60,7 +60,7 @@
 					}
 					console.log("Offline 2 = " + offline);
 					if (offline > 0) {
-						$("#messageTimekeeper").html("{% trans 'Synchronizing Data' %}...");
+						$("#messageTimekeeper").html("{% trans 'Updating' %}...");
 						sync();
 					} else {
 						$("#messageTimekeeper").html("{% trans 'Starting shift' %}...");
@@ -115,7 +115,7 @@
 						}
 					}
 					if (offline > 0) {
-						$("#messageTimekeeper").html("{% trans 'Synchronizing Data' %}...");
+						$("#messageTimekeeper").html("{% trans 'Updating' %}...");
 						sync();
 					} else {
 						$("#messageTimekeeper").html("{% trans 'Starting break' %}...");
@@ -132,7 +132,7 @@
 						}
 					}
 					if (offline > 0) {
-						$("#messageTimekeeper").html("{% trans 'Synchronizing Data' %}...");
+						$("#messageTimekeeper").html("{% trans 'Updating' %}...");
 						sync();
 					} else {
 						$("#messageTimekeeper").html("{% trans 'Ending break' %}...");
@@ -166,7 +166,7 @@
 						}
 					}
 					if (offline > 0) {
-						$("#messageTimekeeper").html("{% trans 'Synchronizing Data' %}...");
+						$("#messageTimekeeper").html("{% trans 'Updating' %}...");
 						sync();
 					} else {
 						$("#messageTimekeeper").html("{% trans 'Starting lunch' %}...");
@@ -183,7 +183,7 @@
 						}
 					}
 					if (offline > 0) {
-						$("#messageTimekeeper").html("{% trans 'Synchronizing Data' %}...");
+						$("#messageTimekeeper").html("{% trans 'Updating' %}...");
 						sync();
 					} else {
 						$("#messageTimekeeper").html("{% trans 'Ending lunch' %}...");
@@ -570,7 +570,7 @@
 		function editStopShift(editId, currentEnd) {
 			$(".editIcon").attr('disabled', true);
 			shift_id = editId;
-			$("#trStopShift").html("<td colspan='2'>End Shift: <input id='newTimeEnd' type='time'/></td><td><input type='button' class='editedIcon' style='background: url(\"/static/imgSmall/editedIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='callEditStopShift(shift_id)'/></td>");
+			$("#trStopShift").html("<td colspan='2'>End Shift: <input id='newTimeEnd' type='time'/></td><td><input type='button' class='editedIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='callEditStopShift(shift_id)'/></td>");
 			$("#newTimeEnd").val(currentEnd);
 		}
 		function callEditStopShift(shift_id) {
@@ -638,7 +638,7 @@
 		        }
 		    }
 		    //
-		    $("#messageTimekeeper").html("{% trans 'Synchronization done' %}.");
+		    $("#messageTimekeeper").html("{% trans 'Updated' %}.");
 		}
 		</script>
 	</head>
