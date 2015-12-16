@@ -15,7 +15,16 @@
 		var breakStarted = 0;
 		var lunchStarted = 0;
 		var lunch = 0;	//	0 = break ... 1 = lunch
-		var urlTest = "{% url 'stopBreak' %}";
+		var workTime = 0;
+		var totalWorked = 0;
+		var totalHour = 0;
+		var totalMin = 0;
+		var breaks = 0;
+		var lunchs = 0;
+		var editOffline = {};
+		var breaksId = [];
+		var currentPosition = -1;
+		var attendanceId = 418;
 		$(document).ready(function() {
 			$("#foot").load("{%url 'footer'%}");
 			$("#head").load("{%url 'headerDriver'%}");
@@ -30,9 +39,14 @@
 				var attendanceId = $("#attendanceId").val();
 				saveSignature("{{ csrf_token }}", "{% url 'saveSignature' %}", datapair[1], attendanceId);
 			});
+			$("#btnSignature").click(function(){
+				$("#messageTimekeeper").css("color", "#1F3801");
+				$("#messageTimekeeper").html("{% trans 'Checking shift' %}...");
+				callChecklist("{{ csrf_token }}", "{% url 'retrieveAttendanceChecklist' %}", attendanceId);
+			});
 
-			getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
-			saveData(1);
+			getEmployeeShiftsOffline();
+			getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");			
 
 			$("#shift").click(function() {
 				$('#showTimekeeperModal').modal();
@@ -49,29 +63,24 @@
 				emptyDivs();
 				if (shiftStarted == 0) {
 					$('#confirmShift').hide();
+					$("#messageTimekeeper").html("{% trans 'Starting shift' %}...");
 					saveData(1);
-					console.log("Offline 1 = " + offline);
-					console.log("Length = " + dataTimeKeeper.length);
 					for (var i = 0; i < dataTimeKeeper.length; i++) {
-						console.log("Pendent = " + dataTimeKeeper[i].pendent);
 						if (dataTimeKeeper[i].pendent == true) {
 							offline++;
 						}
 					}
-					console.log("Offline 2 = " + offline);
 					if (offline > 0) {
-						$("#messageTimekeeper").html("{% trans 'Updating' %}...");
+						//$("#messageTimekeeper").html("{% trans 'Updating' %}...");
 						sync();
 					} else {
-						$("#messageTimekeeper").html("{% trans 'Starting shift' %}...");
 						var position = dataTimeKeeper.length - 1;
-						console.log("Position = " + position);
-						console.log("Time = " + dataTimeKeeper[position].timeLocal);
 						startShift("{{ csrf_token }}", "{% url 'startShiftGroup' %}", dataTimeKeeper[position].timeLocal, position);
 					}
 				} else {
-					$('#confirmShift').hide();
 					dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
+					$('#confirmShift').hide();
+					$("#messageTimekeeper").html("{% trans 'Stopping shift' %}...");
 					saveData(6);
 					for (var i = 0; i < dataTimeKeeper.length; i++) {
 						if (dataTimeKeeper[i].pendent == true) {
@@ -79,15 +88,14 @@
 						}
 					}
 					if (offline > 0) {
-						$("#messageTimekeeper").html("{% trans 'Synchronizing Data' %}...");
+						//$("#messageTimekeeper").html("{% trans 'Updating' %}...");
 						sync();
 					} else {
-						$("#messageTimekeeper").html("{% trans 'Stopping shift' %}...");
 						var position = dataTimeKeeper.length - 1;
 						stopShift("{{ csrf_token }}", "{% url 'stopShiftGroup' %}", dataTimeKeeper[position].timeLocal, position);
 					}
 				}
-			});			
+			});
 
 			$("#break").click(function() {
 				$('#showTimekeeperModal').modal();
@@ -106,8 +114,8 @@
 					hideModal();
 				} else if (breakStarted == 0) {
 					lunch = 0;
-					//JUNIOR COLOCOU AQUI -- USAR LOCALSTORAGE, NAO VARIAVEL DO JS
 					dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
+					$("#messageTimekeeper").html("{% trans 'Starting break' %}...");
 					saveData(2);
 					for (var i = 0; i < dataTimeKeeper.length; i++) {
 						if (dataTimeKeeper[i].pendent == true) {
@@ -115,16 +123,16 @@
 						}
 					}
 					if (offline > 0) {
-						$("#messageTimekeeper").html("{% trans 'Updating' %}...");
+						//$("#messageTimekeeper").html("{% trans 'Updating' %}...");
 						sync();
 					} else {
-						$("#messageTimekeeper").html("{% trans 'Starting break' %}...");
 						var position = dataTimeKeeper.length - 1;
 						startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
 					}
 				} else {
 					lunch = 0;
 					dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
+					$("#messageTimekeeper").html("{% trans 'Ending break' %}...");
 					saveData(3);
 					for (var i = 0; i < dataTimeKeeper.length; i++) {
 						if (dataTimeKeeper[i].pendent == true) {
@@ -132,10 +140,9 @@
 						}
 					}
 					if (offline > 0) {
-						$("#messageTimekeeper").html("{% trans 'Updating' %}...");
+						//$("#messageTimekeeper").html("{% trans 'Updating' %}...");
 						sync();
 					} else {
-						$("#messageTimekeeper").html("{% trans 'Ending break' %}...");
 						var position = dataTimeKeeper.length - 1;
 						sync();
 						stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
@@ -159,6 +166,7 @@
 				} else if (lunchStarted == 0) {
 					lunch = 1;
 					dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
+					$("#messageTimekeeper").html("{% trans 'Starting lunch' %}...");
 					saveData(4);
 					for (var i = 0; i < dataTimeKeeper.length; i++) {
 						if (dataTimeKeeper[i].pendent == true) {
@@ -166,16 +174,16 @@
 						}
 					}
 					if (offline > 0) {
-						$("#messageTimekeeper").html("{% trans 'Updating' %}...");
+						//$("#messageTimekeeper").html("{% trans 'Updating' %}...");
 						sync();
 					} else {
-						$("#messageTimekeeper").html("{% trans 'Starting lunch' %}...");
 						var position = dataTimeKeeper.length - 1;
 						startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
 					}
 				} else {
 					lunch = 1;
 					dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
+					$("#messageTimekeeper").html("{% trans 'Ending lunch' %}...");
 					saveData(5);
 					for (var i = 0; i < dataTimeKeeper.length; i++) {
 						if (dataTimeKeeper[i].pendent == true) {
@@ -183,10 +191,9 @@
 						}
 					}
 					if (offline > 0) {
-						$("#messageTimekeeper").html("{% trans 'Updating' %}...");
+						//$("#messageTimekeeper").html("{% trans 'Updating' %}...");
 						sync();
 					} else {
-						$("#messageTimekeeper").html("{% trans 'Ending lunch' %}...");
 						var position = dataTimeKeeper.length - 1;
 						sync();
 						stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
@@ -194,69 +201,281 @@
 				}
 			});
 			$("#timelog").click(function() {
+				dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
 				$('#showTimekeeperModal').modal();
 				emptyDivs();
-				$("#messageTimekeeper").html("TIMELOG");
-				timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
-			});
-
-			$("#btnSignature").click(function(){
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				$("#messageTimekeeper").html("{% trans 'Checking shift' %}...");
-				callChecklist("{{ csrf_token }}", "{% url 'retrieveAttendanceChecklist' %}", idTimelog);
+				$("#messageTimekeeper").html("TIMELOG");
+				printTimelog();
+				//timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
 			});
 		});
-
-		function callBtnSign() {
-			$('#showTimekeeperModal').modal('hide');
-			$('#signModal').modal();
+		function getTimeWorked (currentTime, initialW) {
+			var hour = 0;
+			var min = 0;
+			var newHour = 0;
+			var newMin = 0;
+			var finalW = 0;
+			var partialW = 0;
+			var workTime = 0;
+			hour = currentTime.substring(0,2);
+			min = currentTime.substring(3,5);
+			finalW = new Date(1, 1, 1, hour, min);
+			partialW = (finalW - initialW) / 1000;
+			partialW = partialW / 60;
+			newMin = partialW % 60;
+			newHour = (partialW - newMin) / 60;
+			workTime = newHour.toString() + ":" + (newMin < 10 ? "0" : "") + newMin.toString();
+			totalHour = totalHour + parseInt(newHour);
+			totalMin = totalMin + parseInt(newMin);
+			totalWorked = totalHour.toString() + ":" + (totalMin < 10 ? "0" : "") + totalMin.toString();
+			return workTime;
 		}
+		function printTimelog() {
+			var dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
+			breaks = 1;
+			lunchs = 1;
+			breaksN = [];
+			worksN = []
+			var hour = 0;
+			var min = 0;
+			var initialW = 0;
+			var currentStart = 0;
+			var currentW = 0;
+			totalWorked = 0;
+			totalHour = 0;
+			totalMin = 0;
+			var happening = true;
+			for (var i = 0; i < dataTimeKeeper.length; i++) {
+				if (dataTimeKeeper[i].actionLocal == 6) {
+					happening = false;
+				}
+			}
+			if (happening == true) {
+						$("#divTimelog").append("<table id='tableTimelog' ><tr><td colspan='2'>Start Shift: " + dataTimeKeeper[0].timeLocal.substring(0, 5) + "</td></tr>");
+						for (var i = 1; i < dataTimeKeeper.length; i++) {
+							currentW = dataTimeKeeper[i-1].timeLocal;
+							hour = currentW.substring(0,2);
+							min = currentW.substring(3,5);
+							initialW = new Date(1, 1, 1, hour, min);
 
-		function callChecklist(token, url, user_id) {
-			$.ajax({
-				method: "POST",
-				url: url,
-				data: {"csrfmiddlewaretoken": token, "id": user_id, "single": "true"},
-				datatype: "json",
-				success: function(data, status, xhr){
-					if (data.success) {
-						var attendanceId = $("#attendanceId").val();
-						emptyDivs();
-						$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + attendanceId + "'>");
-    					$("#messageTimekeeper").css("color", "#1F3801");	//green
-    					$("#messageTimekeeper").html("{% trans 'Check before sign' %}:");
-    					$("#questions").css("text-align", "left");
-    					$("#questions").css("font-size", "20px");
-    					$("#questions").append("<table>");
-    					for (i = 0; i < data.checklist.length; i++) {
-    						$("#questions").append("<tr><td><label><input type='checkbox' onClick='allChecked(" + data.checklist.length + ")' class='checkQuestions'/>&nbsp;&nbsp;" + data.checklist[i].description + "</label></td></td>");
-    					}
-    					$("#questions").append("</table>");
-    					$("#divSignNow").append("<input type='button' id='btnSignNow' onClick='callBtnSign()' value='{% trans 'SIGN NOW' %}'/>");
-    					<!--$("#btnSignNow").attr("disabled", true);-->
+							if (dataTimeKeeper[i].actionLocal == 2) {
+								if (dataTimeKeeper.length > i+1) {
+									if (dataTimeKeeper[i+1].actionLocal == 3) {
+										workTime = getTimeWorked(dataTimeKeeper[i].timeLocal, initialW);
+										$("#tableTimelog").append("<tr><td class='colBorderTimelog'>" + workTime + "</td><td>#" + breaks + " Break " + dataTimeKeeper[i].timeLocal.substring(0, 5) + " - " + dataTimeKeeper[i+1].timeLocal.substring(0, 5) + "</td></tr>");
+									}
+								}  else {
+									workTime = getTimeWorked(dataTimeKeeper[i].timeLocal, initialW);
+									$("#tableTimelog").append("<tr><td class='colBorderTimelog'>" + workTime + "</td><td>#" + breaks + " Break " + dataTimeKeeper[i].timeLocal.substring(0, 5) + " - In Progress... </td></tr>");
+								}
+								breaks++;
+							}
+							if (dataTimeKeeper[i].actionLocal == 4) {
+								if (dataTimeKeeper.length > i+1) {
+									if (dataTimeKeeper[i+1].actionLocal == 5) {
+										workTime = getTimeWorked(dataTimeKeeper[i].timeLocal, initialW);
+										$("#tableTimelog").append("<tr><td class='colBorderTimelog'>" + workTime + "</td><td>#" + lunchs + " Lunch " + dataTimeKeeper[i].timeLocal.substring(0, 5) + " - " + dataTimeKeeper[i+1].timeLocal.substring(0, 5) + "</td></tr>");
+									}
+								} else {
+									workTime = getTimeWorked(dataTimeKeeper[i].timeLocal, initialW);
+									$("#tableTimelog").append("<tr><td class='colBorderTimelog'>" + workTime + "</td><td>#" + lunchs + " Lunch " + dataTimeKeeper[i].timeLocal.substring(0, 5) + " - In Progress...</td></tr>");
+								}
+								lunchs++;
+							}
+							i++;
+						}
+					$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: In Progress...</td></tr>");
+			} else {
+					$("#divTimelog").append("<table id='tableTimelog' ><tr id='trStartShift'><td colspan='2'>Start Shift: " + dataTimeKeeper[0].timeLocal.substring(0, 5) + "</td><td><input type='button' id='" + attendanceId + "' class='editIcon' onclick='editStartShiftOffline(this.id)'/></td></tr>");
+					for (var i = 1; i < dataTimeKeeper.length; i++) {
+							if (i == 1){
+								currentStart = dataTimeKeeper[0].timeLocal;
+								hour = currentStart.substring(0,2);
+								min = currentStart.substring(3,5);
+								initialW = new Date(1, 1, 1, hour, min);
+							} else {
+								currentW = dataTimeKeeper[i-1].timeLocal;
+								hour = currentW.substring(0,2);
+								min = currentW.substring(3,5);
+								initialW = new Date(1, 1, 1, hour, min);
+							}
+							if (dataTimeKeeper[i].actionLocal == 2) {
+								if (dataTimeKeeper.length > i+1) {
+									if (dataTimeKeeper[i+1].actionLocal == 3) {
+										workTime = getTimeWorked(dataTimeKeeper[i].timeLocal, initialW);
+										breaksN[i] = breaks;
+										worksN[i] = workTime;
+										if(dataTimeKeeper[i].pendent == true){
+											$("#tableTimelog").append("<tr id='" + i + "'><td class='colBorderTimelog'>" + workTime + "</td><td>#" + breaks + " Break " + dataTimeKeeper[i].timeLocal.substring(0, 5) + " - " + dataTimeKeeper[i+1].timeLocal.substring(0, 5) + "</td><td><input id='" + i + "' type='button' class='editIcon' onclick='editBreakOffline(-1, this.id, worksN[this.id], breaksN[this.id])'/></td></tr>");
+										} else {
+											$("#tableTimelog").append("<tr id='" + i + "'><td class='colBorderTimelog'>" + workTime + "</td><td>#" + breaks + " Break " + dataTimeKeeper[i].timeLocal.substring(0, 5) + " - " + dataTimeKeeper[i+1].timeLocal.substring(0, 5) + "</td><td><input id='" + i + "' type='button' class='editIcon' onclick='editBreakOffline(breaksId[this.id], this.id, worksN[this.id], breaksN[this.id])'/></td></tr>");
+										}
+									}
+								} else {
+									workTime = getTimeWorked(dataTimeKeeper[i].timeLocal, initialW);
+									breaksN[i] = breaks;
+									worksN[i] = workTime;
+									$("#tableTimelog").append("<tr id='" + i + "'><td class='colBorderTimelog'>" + workTime + "</td><td>#" + breaks + " Break " + dataTimeKeeper[i].timeLocal.substring(0, 5) + " - In Progress...</td><td><input id='" + i + "' type='button' class='editIcon' onclick='editBreakOffline(this.id, worksN[this.id], breaksN[this.id])'/></td></tr>");
+								}
+								breaks++;
+							}
+							if (dataTimeKeeper[i].actionLocal == 4) {
+								if (dataTimeKeeper.length > i+1) {
+									if (dataTimeKeeper[i+1].actionLocal == 5) {
+										workTime = getTimeWorked(dataTimeKeeper[i].timeLocal, initialW);
+										breaksN[i] = lunchs;
+										worksN[i] = workTime;
+										$("#tableTimelog").append("<tr id='" + i + "'><td class='colBorderTimelog'>" + workTime + "</td><td>#" + lunchs + " Lunch " + dataTimeKeeper[i].timeLocal.substring(0, 5) + " - " + dataTimeKeeper[i+1].timeLocal.substring(0, 5) + "</td><td><input id='" + i + "' type='button' class='editIcon' onclick='editBreakOffline(this.id, worksN[this.id], breaksN[this.id])'/></td></tr>");
+									}
+								} else {
+									workTime = getTimeWorked(dataTimeKeeper[i].timeLocal, initialW);
+									breaksN[i] = lunchs;
+									worksN[i] = workTime;
+									$("#tableTimelog").append("<tr id='" + currentPosition + "'><td class='colBorderTimelog'>" + workTime + "</td><td>#" + lunchs + " Lunch " + dataTimeKeeper[i].timeLocal.substring(0, 5) + " - In Progress...</td><td><input id='" + i + "' type='button' class='editIcon' onclick='editBreakOffline(this.id, worksN[this.id], breaksN[this.id])'/></td></tr>");
+								}
+								lunchs++;
+							}
+							i++;
 					}
-				}
-			});
+					endPosition = dataTimeKeeper.length - 1;
+					$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + dataTimeKeeper[endPosition].timeLocal.substring(0, 5) + "</td><td><input type='button' class='editIcon' onclick='editStopShiftOffline(endPosition, attendanceId)'/></td></tr>");
+					$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + attendanceId + "'>");
+							if (JSON.parse(localStorage.getItem('count')).signed == 1) {
+								$("#btnSignature").append("<input type='button' id='btnSign' value='SIGNED'/>");
+								$("#btnSign").css("background", "#799520");
+							} else {
+								$("#btnSignature").append("<input type='button' id='btnSign' value='SIGN'/>");
+								$("#btnSign").css("background", "#E5E5E5");
+							}
+					currentW = dataTimeKeeper[i-3].timeLocal;
+					hour = currentW.substring(0, 2);
+					min = currentW.substring(3, 5);
+					initialW = new Date(1, 1, 1, hour, min);
+					workTime = getTimeWorked(dataTimeKeeper[i-2].timeLocal, initialW);
+					$("#tableTimelog").append("<tr><td colspan='3'>Total: " + totalWorked + " hours</td></tr>");
+			}
 		}
-
-		function saveSignature(token, url, signature, attendanceId){
-			console.log(signature + " - " + attendanceId);
-			$.ajax({
-				method : "POST",
-				url : url,
-				async: false,
-				data : {"csrfmiddlewaretoken" : token, "id": attendanceId, "signature": signature},
-				datatype : "json",
-				success : function(data, status, xhr) {
-					//if (data.success) {
-						var $sigdiv = $("#signature");
-						$sigdiv.jSignature("reset");
-						$('#signModal').modal('hide');
-					//}
-				}
-			});
+		function editStartShiftOffline(id) {
+			currentStart = dataTimeKeeper[0].timeLocal.substring(0, 5);
+			$(".editIcon").attr('disabled', true);
+			$("#trStartShift").html("<td colspan='2'>Start Shift: <input id='newTime' type='time'/></td><td><input type='button' class='editedIcon' id='" + id + "' onclick='callEditStartShiftOffline(this.id)'/></td>");
+			$("#newTime").val(currentStart);
 		}
+		function callEditStartShiftOffline(id) {
+			var aux1 = dataTimeKeeper[0].timeLocal.substring(0, 5);
+			var aux2 = dataTimeKeeper[0].timeLocal;
+			var aux3 = $("#newTime").val();
+			dataTimeKeeper[0].timeLocal = aux2.replace(aux1, aux3);
+			localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
+			if(dataTimeKeeper[0].pendent != true){
+				var newTime = aux2.replace(aux1, aux3);
+				saveEdition(1, true, newTime, id, 0);
+			}
+			$(".editIcon").attr('disabled', false);
+			emptyDivs();
+			$("#messageTimekeeper").css("color", "#1F3801");	//green
+			$("#messageTimekeeper").html("TIMELOG");
+			printTimelog();
+		}
+		function editBreakOffline(position, workTime, breakN) {
+			position++;
+			var pos = position;
+			position--;
+			var aux1 = 0;
+			var aux2 = 0;
+			$(".editIcon").attr('disabled', true);
+			if (dataTimeKeeper[position].actionLocal == 2) {
+				$("#" + position).html("<td class='colBorderTimelog'>" + workTime + "</td><td>#" + breakN + " Break <input id='newBreakBeg" + position + "' type='time'/> - <input id='newBreakEnd" + pos + "' type='time'/></td><td><input id='" + position + "' type='button' class='editedIcon' onclick='callEditBreakOffline(this.id)'/></td>");
+				aux1 = dataTimeKeeper[position].timeLocal.substring(0, 5);
+				$("#newBreakBeg" + position).val(aux1);
+				aux2 = dataTimeKeeper[pos].timeLocal.substring(0, 5);
+				$("#newBreakEnd" + pos).val(aux2);
+			}
+			if (dataTimeKeeper[position].actionLocal == 4) {
+				$("#" + position).html("<td class='colBorderTimelog'>" + workTime + "</td><td>#" + breakN + " Lunch <input id='newBreakBeg" + position + "' type='time'/> - <input id='newBreakEnd" + pos + "' type='time'/></td><td><input id='" + position + "' type='button' class='editedIcon' onclick='callEditBreakOffline(this.id)'/></td>");
+				aux1 = dataTimeKeeper[position].timeLocal.substring(0, 5);
+				$("#newBreakBeg" + position).val(aux1);
+				aux2 = dataTimeKeeper[pos].timeLocal.substring(0, 5);
+				$("#newBreakEnd" + pos).val(aux2);
+			}
+		}
+		function callEditBreakOffline(position) {
+			var actionEdit = dataTimeKeeper[position].actionLocal;
+			var aux1 = dataTimeKeeper[position].timeLocal.substring(0, 5);
+			var aux2 = dataTimeKeeper[position].timeLocal;
+			var aux3 = $("#newBreakBeg" + position).val();
+			dataTimeKeeper[position].timeLocal = aux2.replace(aux1, aux3);
+			localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
+			if(dataTimeKeeper[position].pendent == true){
+				var newTime = aux2.replace(aux1, aux3);
+				saveEdition(2, true, newTime, breaksId[position], position);
+			}
+			position++;
 
+			var actionEdit =dataTimeKeeper[position].actionLocal;
+			var aux1 = dataTimeKeeper[position].timeLocal.substring(0, 5);
+			var aux2 = dataTimeKeeper[position].timeLocal;
+			var aux3 = $("#newBreakEnd" + position).val();
+			dataTimeKeeper[position].timeLocal = aux2.replace(aux1, aux3);
+			localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
+
+			if(dataTimeKeeper[position].pendent == true){
+				var newTime = aux2.replace(aux1, aux3);
+				saveEdition(0, true, newTime, breaksId[position], position);
+			}
+			position--;
+			$(".editIcon").attr('disabled', false);
+			emptyDivs();
+			$("#messageTimekeeper").css("color", "#1F3801");	//green
+			$("#messageTimekeeper").html("TIMELOG");
+			printTimelog();
+		}
+		function editStopShiftOffline(endPosition, id) {
+			currentEnd = dataTimeKeeper[endPosition].timeLocal.substring(0, 5);
+			$(".editIcon").attr('disabled', true);
+			$("#trStopShift").html("<td colspan='2'>End Shift: <input id='newTimeEnd' type='time'/></td><td><input type='button' class='editedIcon' onclick='callEditStopShiftOffline(endPosition, id)'/></td>");
+			$("#newTimeEnd").val(currentEnd);
+		}
+		function callEditStopShiftOffline(position, id) {
+			var aux1 = dataTimeKeeper[position].timeLocal.substring(0, 5);
+			var aux2 = dataTimeKeeper[position].timeLocal;
+			var aux3 = $("#newTimeEnd").val();
+			dataTimeKeeper[position].timeLocal = aux2.replace(aux1, aux3);
+			localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
+			if(dataTimeKeeper[position].pendent != true){
+				var newTime = aux2.replace(aux1, aux3);
+				saveEdition(3, true, newTime, id, position);
+			}
+			$(".editIcon").attr('disabled', false);
+			emptyDivs();
+			$("#messageTimekeeper").css("color", "#1F3801");	//green
+			$("#messageTimekeeper").html("TIMELOG");
+			printTimelog();
+		}
+		function getEmployeeShiftsOffline() {
+			var dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
+			for (var i = 0; i < dataTimeKeeper.length; i++) {
+				if(dataTimeKeeper[i].actionLocal == 1) {
+					shiftStarted = 1;
+				}
+				if(dataTimeKeeper[i].actionLocal == 2) {
+					breakStarted = 1;
+				}
+				if(dataTimeKeeper[i].actionLocal == 3) {
+					breakStarted = 0;
+				}
+				if(dataTimeKeeper[i].actionLocal == 4) {
+					lunchStarted = 1;
+				}
+				if(dataTimeKeeper[i].actionLocal == 5) {
+					lunchStarted = 0;
+				}
+				if(dataTimeKeeper[i].actionLocal == 6) {
+					shiftStarted = 0;
+				}
+			}
+		}
 		function getEmployeeShifts(token, url) {
 			$.ajax({
 				method : "POST",
@@ -265,8 +484,16 @@
 				datatype : "json",
 				success : function(data, status, xhr) {
 					if (data.success) {
+						var dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
+						count = JSON.parse(localStorage.getItem('count'));
+
+						var countOffline = 0;
+						countOffline = count.startShift + count.startBreak + count.stopBreak + count.startLunch + count.stopLunch + count.endShift;
+						var countOnline = 0;
+
 						if (data.hour_started != 'None') {
 							shiftStarted = 1;
+							countOnline++;
 						}
 						for(var i = 0; i < data.breaks.length; i++) {
 							if (data.breaks[i][1] == "None") {
@@ -276,10 +503,62 @@
 									breakStarted = 1
 								}
 							}
+							if (data.breaks[i][2] == 1) {
+								countOnline++;
+							} else {
+								countOnline++;
+							}
+							if (data.breaks[i][1] != "None") {
+								if (data.breaks[i][2] == 1) {
+									countOnline++;
+								} else {
+									countOnline++;
+								}
+							}
+						}
+
+						var aux = data.breaks.length - 1;
+						if(aux >=0 && data.breaks[aux][1] == "None") {
+							countOnline--;
 						}
 						if (data.hour_ended != "None") {
 							shiftStarted = 0;
+							countOnline++;
 						}
+						if (countOnline < countOffline) {
+							sync();
+						} else {
+							cleanStorage();
+							initializeCounter();
+							if(data.hour_started != "None"){
+								saveAction(1, data.hour_started, false);
+								count.startShift = 1;
+							}
+							for(var i = 0; i < data.breaks.length; i++) {
+								if (data.breaks[i][2] == 1) {
+									saveAction(4, data.breaks[i][0], false);
+									count.startLunch++;
+								} else {
+									saveAction(2, data.breaks[i][0], false);
+									count.startBreak++;
+								}
+								if (data.breaks[i][1] != "None") {
+									if (data.breaks[i][2] == 1) {
+										saveAction(5, data.breaks[i][1], false);
+										count.stopLunch++;
+									} else {
+										saveAction(3, data.breaks[i][1], false);
+										count.stopBreak++;
+									}
+								}
+							}
+							if (data.hour_ended != "None") {
+								saveAction(6, data.hour_ended, false);
+								count.endShift = 1;
+							}
+						}
+						localStorage.setItem('count', JSON.stringify(count));
+
 					} else if (data.code == 1) {
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("{% trans 'There is no shift records for this employee' %}.");
@@ -303,10 +582,11 @@
 				success : function(data, status, xhr) {
 					if (data.success) {
 						if (offline > 0) {
-							offilne--;
+							offline--;
 						} else {
 							$("#messageTimekeeper").html("{% trans 'Clock-in successful' %}");
 						}
+						attendanceId = data.id;
 						shiftStarted = 1;
 						dataTimeKeeper[position].pendent = false;
 						localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
@@ -332,7 +612,7 @@
 				success : function(data, status, xhr) {
 					if (data.success) {
 						if (offline > 0) {
-							offilne--;
+							offline--;
 							if (lunch == 0) {
 								breakStarted = 1;
 							}
@@ -349,6 +629,7 @@
 								lunchStarted = 1;
 							}
 						}
+						breaksId.push(data.id);
 						dataTimeKeeper[position].pendent = false;
 						localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
 					} else if (data.code == 1) {
@@ -373,9 +654,7 @@
 				data: {"csrfmiddlewaretoken": token, "lunch": lunch, "time" : timeLocal},
 				datatype: "json",
 				success: function(data, status, xhr){
-					//Pu this inside the if
-					dataTimeKeeper[position].pendent = false;
-					localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
+					//Pu this inside the if //did
 					if(data.success){
 						if (offline > 0) {
 							offilne--;
@@ -395,6 +674,9 @@
 								lunchStarted = 0;
 							}
 						}
+						breaksId.push(data.id);
+						dataTimeKeeper[position].pendent = false;
+						localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
 					} else if(data.code == 1){
 						$("#messageTimekeeper").html("{% trans 'You need to start a break first' %}.");
 					} else if(data.code == 2){
@@ -419,7 +701,7 @@
 				success: function(data, status, xhr){
 					if(data.success){
 						if (offline > 0) {
-							offilne--;
+							offline--;
 						} else {
 							$("#messageTimekeeper").html("{% trans 'Shift ended' %}");
 						}
@@ -442,11 +724,68 @@
 				}
 			});
 		}
+		function callChecklist(token, url, user_id) {
+			$.ajax({
+				method: "POST",
+				url: url,
+				data: {"csrfmiddlewaretoken": token, "id": user_id, "single":"true"},
+				datatype: "json",
+				success: function(data, status, xhr){
+					if (data.success) {
+						var attendanceId = $("#attendanceId").val();
+						emptyDivs();
+						$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + attendanceId + "'>");
+    					$("#messageTimekeeper").css("color", "#1F3801");	//green
+    					$("#messageTimekeeper").html("{% trans 'Check before sign' %}:");
+    					$("#questions").css("text-align", "left");
+    					$("#questions").css("font-size", "20px");
+    					$("#questions").append("<table>");
+    					for (i = 0; i < data.checklist.length; i++) {
+    						$("#questions").append("<tr><td><label><input type='checkbox' onClick='allChecked(" + data.checklist.length + ")' class='checkQuestions'/>&nbsp;&nbsp;" + data.checklist[i].description + "</label></td></td>");
+    					}
+    					$("#questions").append("</table>");
+    					$("#divSignNow").append("<input type='button' id='btnSignNow' onClick='callBtnSign()' value='{% trans 'SIGN NOW' %}'/>");
+    					$("#btnSignNow").attr("disabled", true);
+					}
+				}
+			});
+		}
+		function allChecked(questionsN) {
+			var countQuestions = $('input:checkbox[class=checkQuestions]:checked');
+			if (questionsN == countQuestions.length) {
+				 $("#btnSignNow").attr("disabled", false);
+			} else {
+				$("#btnSignNow").attr("disabled", true);
+			}
+		}
+		function callBtnSign() {
+			$('#showTimekeeperModal').modal('hide');
+			$('#signModal').modal();
+		}
+		function saveSignature(token, url, signature, attendanceId){
+			$.ajax({
+				method : "POST",
+				url : url,
+				async: false,
+				data : {"csrfmiddlewaretoken" : token, "id": attendanceId, "signature": signature},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					//if (data.success) {
+						var $sigdiv = $("#signature");
+						$sigdiv.jSignature("reset");
+						$('#signModal').modal('hide');
+						count = JSON.parse(localStorage.getItem('count'));
+						count.signed = 1;				// HOW UPDATE???
+						localStorage.setItem('count', JSON.stringify(count));
+					//}
+				}
+			});
+		}
 		function timelog(token, url) {
 			$.ajax({
 				method : "POST",
 				url : url,
-				data : {"csrfmiddlewaretoken" : token, "id": idTimelog, "single": "true"},
+				data : {"csrfmiddlewaretoken" : token, "id": idTimelog},
 				datatype : "json",
 				success : function(data, status, xhr) {
 					var i = 0;
@@ -463,16 +802,16 @@
 						$("#divTimelog").append("<table id='tableTimelog' ><tr><td colspan='2'>Start Shift: " + data.Attendance_start + "</td></tr>");
 						for (i = 0; i < data.breaks.length; i++) {
 							if (data.breaks[i].lunch == 0){
-								$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + breaks + " Break " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
+								$("#tableTimelog").append("<tr><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + breaks + " Break " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
 								breaks++;
 							} else {
-								$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + lunchs + " Lunch " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
+								$("#tableTimelog").append("<tr><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + lunchs + " Lunch " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
 								lunchs++;
 							}
 						}
 						$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + data.Attendance_end + "</td></tr>");
 					} else {
-						$("#divTimelog").append("<table id='tableTimelog' ><tr id='trStartShift'><td colspan='2'>Start Shift: " + data.Attendance_start + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editStartShift(this.id, currentStart)'/></td></tr>");
+						$("#divTimelog").append("<table id='tableTimelog' ><tr id='trStartShift'><td colspan='2'>Start Shift: " + data.Attendance_start + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' onclick='editStartShift(this.id, currentStart)'/></td></tr>");
 							for (i = 0; i < data.breaks.length; i++) {
 								workBreak[data.breaks[i].breakId] = data.breaks[i].workBreak;
 								breakN[data.breaks[i].breakId] = breaks;
@@ -480,16 +819,17 @@
 								breakEnd[data.breaks[i].breakId] = data.breaks[i].breakStop;
 								if (data.breaks[i].lunch == 0){
 									lun[data.breaks[i].breakId] = 0
-									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + breaks + " Break " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + breaks + " Break " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
 									breaks++;
 								} else {
 									lun[data.breaks[i].breakId] = 1;
-									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + lunchs + " Lunch " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;'onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + lunchs + " Lunch " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
 									lunchs++;
 								}
 							}
-							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + data.Attendance_end + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editStopShift(this.id, currentEnd)'/></td></tr>");
+							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + data.Attendance_end + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' onclick='editStopShift(this.id, currentEnd)'/></td></tr>");
 							$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + data.attendanceId + "'>");
+							console.log(data.signature);
 							if (data.signature == true) {
 								$("#btnSignature").append("<input type='button' id='btnSign' value='SIGNED'/>");
 								$("#btnSign").css("background", "#799520");
@@ -505,7 +845,7 @@
 		function editStartShift(editId, currentStart) {
 			$(".editIcon").attr('disabled', true);
 			shift_id = editId;
-			$("#trStartShift").html("<td colspan='2'>Start Shift: <input id='newTime' type='time'/></td><td><input type='button' class='editedIcon' style='background: url(\"/static/imgSmall/editedIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='callEditStartShift(shift_id)'/></td>");
+			$("#trStartShift").html("<td colspan='2'>Start Shift: <input id='newTime' type='time'/></td><td><input type='button' class='editedIcon' onclick='callEditStartShift(shift_id)'/></td>");
 			$("#newTime").val(currentStart);
 		}
 		function callEditStartShift(shift_id) {
@@ -534,12 +874,12 @@
 			$(".editIcon").attr('disabled', true);
 			breakId = editId;
 			if (lun == 0) {
-				$("#" + breakId).html("<td class='colBorderTimelog'>" + workBreak + "</td><td>#" + breakN + " Break <input id='newBreakBeg" + breakId + "' type='time'/> - <input id='newBreakEnd" + breakId + "' type='time'/></td><td><input type='button' class='editedIcon' style='background: url(\"/static/imgSmall/editedIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='callEditBreak(breakId)'/></td>");
+				$("#" + breakId).html("<td class='colBorderTimelog'>" + workBreak + "</td><td>#" + breakN + " Break <input id='newBreakBeg" + breakId + "' type='time'/> - <input id='newBreakEnd" + breakId + "' type='time'/></td><td><input type='button' class='editedIcon' onclick='callEditBreak(breakId)'/></td>");
 				$("#newBreakBeg" + breakId).val(breakBeg);
 				$("#newBreakEnd" + breakId).val(breakEnd);
 			}
 			if (lun == 1) {
-				$("#" + breakId).html("<td class='colBorderTimelog'>" + workBreak + "</td><td>#" + breakN + " Lunch <input id='newBreakBeg" + breakId + "' type='time'/> - <input id='newBreakEnd" + breakId + "' type='time'/></td><td><input type='button' class='editedIcon' style='background: url(\"/static/imgSmall/editedIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='callEditBreak(breakId)'/></td>");
+				$("#" + breakId).html("<td class='colBorderTimelog'>" + workBreak + "</td><td>#" + breakN + " Lunch <input id='newBreakBeg" + breakId + "' type='time'/> - <input id='newBreakEnd" + breakId + "' type='time'/></td><td><input type='button' class='editedIcon' onclick='callEditBreak(breakId)'/></td>");
 				$("#newBreakBeg" + breakId).val(breakBeg);
 				$("#newBreakEnd" + breakId).val(breakEnd);
 			}
@@ -570,7 +910,7 @@
 		function editStopShift(editId, currentEnd) {
 			$(".editIcon").attr('disabled', true);
 			shift_id = editId;
-			$("#trStopShift").html("<td colspan='2'>End Shift: <input id='newTimeEnd' type='time'/></td><td><input type='button' class='editedIcon' style='background: url(\"/static/imgSmall/editedIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='callEditStopShift(shift_id)'/></td>");
+			$("#trStopShift").html("<td colspan='2'>End Shift: <input id='newTimeEnd' type='time'/></td><td><input type='button' class='editedIcon' onclick='callEditStopShift(shift_id)'/></td>");
 			$("#newTimeEnd").val(currentEnd);
 		}
 		function callEditStopShift(shift_id) {
@@ -601,23 +941,28 @@
 				$("#confirmLunch").empty();
 				$("#divTimelog").empty();
 				$("#btnSignature").empty();
+				$("#questions").empty();
 				$("#divSignNow").empty();
 				$("#btnSignNow").empty();
 		}
-
+		function cleanStorage() {
+			dataTimeKeeper = [];
+			savedEditions = [];
+			initializeCounter();
+			localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
+			localStorage.setItem('savedEditions', JSON.stringify(savedEditions));
+		}
 		//sync function
 		function sync() {
 			dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
-			console.log(dataTimeKeeper + " - " + dataTimeKeeper.length);
+			savedEditions = JSON.parse(localStorage.getItem('savedEditions'));
 		    for (var i = 0; i < dataTimeKeeper.length; i++) {
 		        if (dataTimeKeeper[i].pendent == true) {
 		            if (dataTimeKeeper[i].actionLocal == 1) {
-		            	console.log("Call startShift");
 		                startShift("{{ csrf_token }}", "{% url 'startShiftGroup' %}", dataTimeKeeper[i].timeLocal, i);
 		            }
 		            if (dataTimeKeeper[i].actionLocal == 2) {
 		                lunch = 0;
-		                console.log("Call startBreak");
 		                startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
 		            }
 		            if (dataTimeKeeper[i].actionLocal == 3) {
@@ -637,10 +982,26 @@
 		            }
 		        }
 		    }
-		    //
-		    $("#messageTimekeeper").html("{% trans 'Updated' %}.");
+		    if(savedEditions != null){
+		    	for (var i = 0; i < savedEditions.length; i++) {
+		        if (savedEditions[i].pendent == true) {
+		            if (savedEditions[i].action == 1) {
+		                updateStopShift("{{ csrf_token }}", "{% url 'updateStopShift' %}", savedEditions[i].id, savedEditions[i].newTime);
+		            }
+		            if (savedEditions[i].actionLocal == 2) {
+		                updateBreak("{{ csrf_token }}", "{% url 'updateBreak' %}", savedEditions[i].id, savedEditions[i].newTime, savedEditions[i+1].newTime);
+		            }
+		            if (savedEditions[i].actionLocal == 3) {
+		                updateStopShift("{{ csrf_token }}", "{% url 'updateStopShift' %}", savedEditions[i].id, savedEditions[i].newTime);
+		            }
+		        }
+		    }
+		    }
+
+		    //$("#messageTimekeeper").html("{% trans 'Updated' %}.");
 		}
 		</script>
+
 	</head>
 	<body>
 		<header id="head"></header>
@@ -669,11 +1030,11 @@
 					<div class="col-xs-12 col-md-12">
 						<input type="button" id="timelog" value="{% trans 'TIMELOG' %}" class="btnsTimekeeper"/>
 					</div>
-				</div>
+				</div>				
 			</div>
 		</div>
 		<footer>
-			&copy;2015 HeavyConnect, Inc.
+			&copy;2015 Heavy Connect, Inc.
 		</footer>
 		<div id="clearBoth"></div>
 		<!-- MODAL OF ALERT - TIMEKEEPER -->
@@ -689,6 +1050,7 @@
 						<div id="confirmLunch"></div>
 						<div id="divTimelog"></div>
 						<div id="btnSignature"></div>
+						<div id="questions"></div>
 						<div id="divSignNow"></div>
 						<br>
 						<div class="both"></div>
@@ -706,12 +1068,12 @@
 					<div class="modal-title" id="titleSign">{% trans 'Sign Here' %}</div>
 					<div class="modal-body" id="signatureContent">
 
-					<div id="signField" >
-						<div id="signature" ></div>
+					<div id="signField" style="margin-top: 100px;">
+						<div id="signature"></div>
 						<button type="button" id="clearSignature" class="btn btn-default">{% trans 'Clear' %}</button>
 						<button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Close' %}</button>
 						<a href="">
-							<button type="button" id="stopShiftConfirm" class="btn btn-success">
+							<button type="button" id="saveSignature" class="btn btn-success">
 								{% trans 'Confirm' %}
 							</button>
 						</a>

@@ -127,6 +127,15 @@ input[type=password] {
 #loginTable {
 	margin: auto;
 }
+#clock {
+	left: 35%;
+    top: 0%;
+    right: 30%;
+    font-size: 24px;
+    margin-top: 2%;
+    color: white;
+    font-weight: 600;
+}
 .input_login {
 	width: 350px;
 	box-shadow: 2px 3px 2px -1px black;

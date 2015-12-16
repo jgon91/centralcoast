@@ -60,11 +60,13 @@
 		<div id="top" >
 			<div id="menuTop">
 				<img src="{% static 'img/logoNegative.png' %}" id="logoHome"/>
-				<div id="clock"></div>
+				<span id="clock"></span>
 				<a href="{% url 'logout' %}"><input type="button" value="{% trans 'EXIT' %}" id="logOff"/>
 				<a><input type="button" id="userImg"/>
 			</div>
 		</div>
+
+
 	</body>
 	<script>
 		function getProfileImage(token, url){

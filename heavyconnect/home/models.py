@@ -4,6 +4,8 @@ import base64
 
 class Manufacturer(models.Model):
 	name = models.CharField(max_length = 20)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Manafacturer: " + self.name
@@ -11,6 +13,8 @@ class Manufacturer(models.Model):
 class ManufacturerModel(models.Model):
 	manufacturer = models.ForeignKey(Manufacturer)
 	model = models.CharField(max_length = 30)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return str(self.manufacturer) + ", Model: " + str(self.model)
@@ -19,6 +23,8 @@ class RepairShop(models.Model):
 	name = models.CharField(max_length = 20)
 	number =  models.CharField(max_length=14)
 	address = models.CharField(max_length = 150)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Contact: " + str(self.name) + ", Address: " + str(self.address) + ", Phone Number: " + str(self.number)
@@ -27,6 +33,8 @@ class Shop(models.Model):
 	name = models.CharField(max_length = 20)
 	number = models.CharField(max_length = 14)
 	address = models.CharField(max_length = 150)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Contact: " + str(self.name) + ", Address: " + str(self.address) + ", Phone Number: " + str(self.number)
@@ -34,6 +42,8 @@ class Shop(models.Model):
 
 class EquipmentCategory(models.Model):
 	name = models.CharField(max_length = 25)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "name: " + str(self.name)
@@ -41,6 +51,8 @@ class EquipmentCategory(models.Model):
 class EquipmentType(models.Model):
 	category = models.ForeignKey(EquipmentCategory)
 	name = models.CharField(max_length = 25)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Name: " + str(self.name) + ", Category: " + str(self.category.name)
@@ -48,6 +60,8 @@ class EquipmentType(models.Model):
 class GPS(models.Model):
 	latitude = models.FloatField()
 	longitude = models.FloatField()
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Latitude: " +str(self.latitude) + " " +  "Longitude: " +str(self.longitude)
@@ -61,6 +75,8 @@ class Beacon(models.Model):
 
 	beacon_serial = models.CharField(max_length=10, null = True)
 	refers = models.IntegerField(choices = REFERS_CHOICES)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		if self.refers == 1:
@@ -74,6 +90,8 @@ class BeaconGPS(models.Model):
 	beacon = models.ForeignKey(Beacon)
 	gps = models.ForeignKey(GPS)
 	timestamp = models.DateTimeField()
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return str(self.beacon) + ' ' +  str (self.gps) + ' Timestamp:' + str(self.timestamp)
@@ -151,6 +169,8 @@ class Machine(models.Model):
 	photo2 = models.URLField(max_length = 200, blank = True, null = True)
 	note = models.CharField(max_length = 250, blank = True, null = True)
 	beacon = models.ForeignKey(Beacon, blank = True, null = True) #DEMO
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Manufacturer: " + str(self.manufacturer_model.manufacturer.name) + ", Model: " + str(self.manufacturer_model.model) + ", QRcode: " + str(self.qr_code)
@@ -181,6 +201,8 @@ class Implement(models.Model):
 	photo2 = models.URLField(max_length = 200, null = True, blank = True)
 	note = models.CharField(max_length = 250, null = True, blank = True)
 	beacon = models.ForeignKey(Beacon, blank = True, null = True) #DEMO
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Manufacturer: " + str(self.manufacturer_model.manufacturer.name) + ", Model: " + str(self.manufacturer_model.model) + ", QRcode: " + str(self.qr_code)
@@ -189,12 +211,16 @@ class Field(models.Model):
 	name = models.CharField(max_length = 50)
 	organic = models.BooleanField()
 	size =  models.FloatField()
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Name: " + str(self.name) + ", Organic: " +  str(self.organic) + ", Size: " +  str(self.size)
 
 class TaskCategory(models.Model):
 	description = models.CharField(max_length = 30)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "ID: " + str(self.id) + ", Category: " + str(self.description)
@@ -202,6 +228,8 @@ class TaskCategory(models.Model):
 class TaskCode(models.Model):
 	name = models.CharField(max_length = 100)
 	category = models.ForeignKey(TaskCategory)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "ID: " + str(self.id) + ", Name: " + str(self.name) + ", Category" + str(self.category)
@@ -232,6 +260,8 @@ class Task(models.Model):
 	pause_end = models.DateTimeField(null = True, blank = True)
 	pause_total = models.FloatField(null = True, blank = True)
 	status = models.IntegerField(null = True, choices = STATUS_CHOICES, default = 1)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Field Name: " + str(self.field) + " Code: " + str(self.code) + ", Hour Cost: " +  str(self.rate_cost) + ", Description: " +  str(self.description)
@@ -256,6 +286,8 @@ class Employee(models.Model):
 	manager = models.ForeignKey('self', null = True, blank = True)
 	teamManager = models.BooleanField(default = False)
 	photoEmployee = models.ImageField(upload_to='employee', default='employee/no.jpg')
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return  "First Name: " + str(self.user.first_name) + ", Last Name: " + str(self.user.last_name) + ", User ID: " + str(self.user.id) + ", ID: " + str(self.id) + " Team Manager :" + str(self.teamManager)
@@ -263,6 +295,8 @@ class Employee(models.Model):
 class EmployeeWithdrawn(models.Model):
 	employee = models.ForeignKey(Employee)
 	date = models.DateField()
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Date: " + str(self.date) + ", Name: " + str(self.employee.user.last_name)
@@ -272,6 +306,8 @@ class Group(models.Model):
 	creator = models.ForeignKey(Employee)
 	date = models.DateField()
 	permanent = models.BooleanField(default = False)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Creator: " + str(self.creator) + ", DateField: " + str(self.date) + ", Name: " + str(self.name) + ", ID Group: " + str(self.id)
@@ -279,6 +315,8 @@ class Group(models.Model):
 class GroupParticipant(models.Model):
 	group = models.ForeignKey(Group)
 	participant = models.ForeignKey(Employee)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Group: " + str(self.group) + ", participant: " + str(self.participant)
@@ -291,6 +329,8 @@ class EmployeeAttendance(models.Model):
 	signature = models.CharField(max_length = 5000, null = True, blank = True)
 	group = models.ForeignKey(Group, null = True, blank = True) 
 	edited = models.BooleanField(default = False)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 
 	def __unicode__(self):
@@ -304,12 +344,16 @@ class Break(models.Model):
 	edited = models.BooleanField(default = False)
 	start = models.TimeField()
 	end = models.TimeField(null = True, blank = True)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Employee: " + str(self.attendance.employee.user.last_name) + ", start: " + str(self.start) + ", end: " + str(self.end)
 
 class Qualification(models.Model):
 	description = models.CharField(max_length = 50)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Description: " + str(self.description)
@@ -317,6 +361,8 @@ class Qualification(models.Model):
 class Certification(models.Model):
 	description = models.CharField(max_length = 50)
 	year = models.IntegerField(null = True, blank = True)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return  "Description: " + str(self.description)
@@ -330,6 +376,8 @@ class EmployeeQualifications(models.Model):
 	employee = models.ForeignKey(Employee)
 	qualification = models.ForeignKey(Qualification)
 	level = models.IntegerField(choices = LEVEL_CHOICES)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return str(self.employee) +  ", Qualification: " + str(self.qualification.id) + ", Level: "+ str(self.level)
@@ -337,6 +385,8 @@ class EmployeeQualifications(models.Model):
 class EmployeeCertifications(models.Model):
 	employee = models.ForeignKey(Employee)
 	certification = models.ForeignKey(Certification)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Employee ID: " + str(self.employee.id) + ", Last Name: " + str(self.employee.user.last_name) + ", Certification ID: " + str(self.certification.id)
@@ -345,6 +395,8 @@ class MachineQualification(models.Model):
 	machine = models.ForeignKey(Machine)
 	qualification = models.ForeignKey(Qualification)
 	qualification_required = models.IntegerField(choices = EmployeeQualifications.LEVEL_CHOICES)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Machine ID: " + str(self.machine.id) + ", Qualification ID: " + str(self.qualification) + ", Qualification level required: " +  str(self.qualification_required) + ", Machine QRcode: " + str(self.machine.qr_code)
@@ -352,6 +404,8 @@ class MachineQualification(models.Model):
 class MachineCertification(models.Model):
 	machine =  models.ForeignKey(Machine)
 	certification = models.ForeignKey(Certification)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Machine ID: " + str(self.machine.id) + ", Certification ID:" +  str(self.certification.id) + ", Machine QRcode: " + str(self.machine.qr_code)
@@ -360,6 +414,8 @@ class ImplementQualification(models.Model):
 	implement = models.ForeignKey(Implement)
 	qualification = models.ForeignKey(Qualification)
 	qualification_required = models.IntegerField(choices = EmployeeQualifications.LEVEL_CHOICES)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Implement ID: " + str(self.implement.id) + ", Qualification ID: " + str(self.qualification.id) + ", Qualification Required: " + str(self.qualification_required) + ", Implement QRcode: " + str(self.implement.qr_code)
@@ -367,6 +423,8 @@ class ImplementQualification(models.Model):
 class ImplementCertification(models.Model):
 	implement = models.ForeignKey(Implement)
 	certification =  models.ForeignKey(Certification)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return str(self.implement) + " " +  str(self.certification)
@@ -374,6 +432,8 @@ class ImplementCertification(models.Model):
 class FieldLocalization(models.Model):
 	field = models.ForeignKey(Field)
 	gps = models.ForeignKey(GPS)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 
@@ -384,6 +444,8 @@ class EmployeeLocalization(models.Model):
 	latitude = models.FloatField()
 	longitude = models.FloatField()
 	e_time = models.DateTimeField()
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Employee: " + str(self.employee.user.last_name) + ", Latitude: " +  str(self.latitude) + ", Longitude: " +  str(self.longitude) + ", Date: " + str(self.e_time)
@@ -394,6 +456,8 @@ class EmployeeTask(models.Model):
 	start_time = models.DateTimeField(null = True, blank = True)
 	end_time = models.DateTimeField(null = True, blank = True)
 	hours_spent = models.FloatField(default = 0)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Employee ID: " + str(self.employee.id) + ", Task Begin: " +  str(self.start_time) + " Hours Spent: " +  str(self.hours_spent)
@@ -402,6 +466,8 @@ class MachineTask(models.Model):
 	task = models.ForeignKey(Task)
 	machine = models.ForeignKey(Machine)
 	employee_task = models.ForeignKey(EmployeeTask)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Task ID: " + str(self.task.id) + ", Machine ID: " +  str(self.machine.id) + ", Employee Task ID:" +  str(self.employee_task.id)
@@ -410,12 +476,16 @@ class ImplementTask(models.Model):
 	task = models.ForeignKey(Task)
 	machine_task = models.ForeignKey(MachineTask)
 	implement = models.ForeignKey(Implement)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Task ID: " + str(self.task.id) + ", Machine ID: " +  str(self.machine_task.id) + ", Implement:" +  str(self.implement.id)
 
 class Appendix(models.Model):
 	a_type =  models.CharField(max_length = 20)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Appendix: " + str(self.id) + ", Category: " + str(self.a_type)
@@ -425,12 +495,16 @@ class AppendixTask(models.Model):
 	task = models.ForeignKey(Task)
 	quantity = models.IntegerField()
 	brand = models.CharField(max_length = 20)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Category: " + str(self.appendix.a_type) + ", Brand: " + str(self.brand)
 
 class ServiceCategory(models.Model):
 	service_category = models.CharField(max_length = 30)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Service Category: " + str(self.service_category)
@@ -443,6 +517,8 @@ class MachineService(models.Model):
 	expected_date = models.DateTimeField()
 	accomplished_date = models.DateTimeField(null = True, blank = True)
 	price = models.FloatField()
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Description " + str(self.description) + ", Expected Date: " +  str(self.expected_date) + ", Price:  " +  str(self.price)
@@ -455,6 +531,8 @@ class ImplementService(models.Model):
 	expected_date = models.DateTimeField()
 	accomplished_date = models.DateTimeField(null = True, blank = True)
 	price = models.FloatField()
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Description: " + str(self.description) + ", Expected Date: " + str(self.expected_date) + ", Price: " + str(self.price)
@@ -480,6 +558,8 @@ class Question(models.Model):
 	description = models.CharField(max_length = 250)
 	category = models.IntegerField(choices = QUESTION_CHOICES)
 	refers = models.IntegerField(choices = REFERS_CHOICES)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Description: " + str(self.description)
@@ -497,6 +577,8 @@ class TranslatedQuestion(models.Model):
 	question = models.ForeignKey(Question)
 	description = models.CharField(max_length = 250)
 	idiom = models.IntegerField(choices = IDIOMS, default = SPANISH)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 
 	def __unicode__(self):
@@ -510,6 +592,8 @@ class MachineChecklist(models.Model):
 	note = models.CharField(max_length = 200,blank = True)
 	date = models.DateTimeField()
 	photo = models.TextField(max_length = 550000,blank = True)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def set_data(self, data):
 		self.photo = base64.encodestring(data)
@@ -529,6 +613,8 @@ class ImplementChecklist(models.Model):
 	note = models.CharField(max_length = 200, blank = True)
 	date = models.DateTimeField()
 	photo = models.TextField(blank = True)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def set_data(self, data):
 		self.photo = base64.encodestring(data)
@@ -544,6 +630,8 @@ class TimeKeeperRules(models.Model):
 	breaks = models.IntegerField() 
 	lunchs = models.IntegerField()
 	lunchBool = models.BooleanField() #if ti is required to ask about the lunch
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "ID: " + str(self.id) + ", Hours: " + str(self.hour) + ", Breaks: " + str(self.breaks) + ", Lunch: " +  str(self.lunchs) + ", LunchBool: " + str(self.lunchBool)
@@ -558,6 +646,8 @@ class AttendanceChecklist(models.Model):
 	)
 	category = models.IntegerField(choices = QUESTION_CHOICES)
 	description = models.CharField(max_length = 250)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Id: " + str(self.id) + ", category: " + str(self.category) + ", description: " + str(self.description)
@@ -567,6 +657,8 @@ class ConfirmationCheck(models.Model):
 	attendance = models.ForeignKey(EmployeeAttendance) #It has date, employee
 	answer = models.BooleanField()
 	note = models.CharField(max_length = 200, blank = True)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 	def __unicode__(self):
 		return "Id: " + str(self.id) + ", question: " + str(self.question)
