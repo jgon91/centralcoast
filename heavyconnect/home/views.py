@@ -259,6 +259,7 @@ def startShift(request, idUser):
 		if attendance is not None:
 			#If more than 16 hours was passed since the last shift was started we can consider that now we are creating a new shift
 			time_delta = (datetime.datetime.now() - datetime.datetime.combine(attendance.date,attendance.hour_started))
+			new_time = datetime.datetime.now()
 			# !!!!!!! Joao verifica essas linhas de codigo abaixo  !!!!!!!!!!
 			new_hour_started = None
 			if 'time' in request.POST:
@@ -269,6 +270,7 @@ def startShift(request, idUser):
 			else:
 				#In case 16 hours haven't passed yet we need to check if the shift we get was finished or not
 				if attendance.hour_ended is not None: #The last shift was finished already, so we can start a new one
+					print 'other shift ended'
 					result = createShift(new_time, employee, result)
 				else: #The last shift wasn't finished yet.
 					result['code'] = 1 #You need to finish the shift you started already before create a new one
