@@ -277,6 +277,8 @@ def startShift(request, idUser):
 			new_hour_started = None
 			if 'time' in request.POST:
 				new_time = datetime.datetime.strptime(request.POST['time'], '%H:%M:%S %Y-%m-%d')
+			else:
+				new_time = datetime.datetime.now()
 			result = createShift(new_time, employee, result)
 
 	except (Employee.DoesNotExist, EmployeeAttendance.DoesNotExist) as e:
@@ -408,6 +410,8 @@ def startBreak(request, idUser, paramenterlunch):
 					time = datetime.datetime.now()
 					if 'time' in request.POST:
 						new_time = datetime.datetime.strptime(request.POST['time'], '%H:%M:%S %Y-%m-%d')
+					else:
+						new_time = datetime.datetime.now()
 					t2_break = Break(attendance = attendance, lunch = lunch, start = new_time)
 					t2_break.save()
 					break_id = t2_break.id;
@@ -470,6 +474,8 @@ def stopBreak(request, idUser, paramenterlunch):
 					time = datetime.datetime.now()
 					if 'time' in request.POST:
 						new_time = datetime.datetime.strptime(request.POST['time'], '%H:%M:%S %Y-%m-%d')
+					else:
+						new_time = datetime.datetime.now()
 					t_break.end = new_time
 					t_break.save()
 					result['success'] = True
@@ -1951,7 +1957,10 @@ def timeLogById(request):
 		if request.is_ajax():
 			userId = request.user.id
 			if 'id' in request.POST:
-				userId = request.POST['id']
+				if 'single' in request.POST:
+					userId = request.user.id
+				else:
+					userId = request.POST['id']
 				array_breaks = []
 				result['signature'] = True
 				date = datetime.datetime.now() #today date
@@ -2018,7 +2027,7 @@ def timeLogById(request):
 								minutes = checkMinutes(minutes)
 								aux['breakDuration'] = str(hours) + ':' + str(minutes)
 						else:
-							aux['breakStop'] = 'Happening'
+							aux['breakStop'] = 'In Progress'
 							time_now = datetime.datetime.now() #variable used to get the current time
 							time_aux = datetime.timedelta(hours = time_now.hour, minutes = time_now.minute, seconds = time_now.second)
 							breakTime = docStart
@@ -2038,7 +2047,7 @@ def timeLogById(request):
 						else:
 							count += (keeper2 - breakTime) + endTurn
 					else:
-						Attendance_end = 'Happening'
+						Attendance_end = 'In Progress'
 						time_now = datetime.datetime.now()
 						time_aux = datetime.timedelta(hours = time_now.hour, minutes = time_now.minute, seconds = time_now.second)
 						if time_aux >= breakTime:
@@ -2055,7 +2064,7 @@ def timeLogById(request):
 				hours = checkHours(hours)
 				minutes = checkMinutes(minutes)
 				result['Attendance_start'] = str(hours) + ':' + str(minutes)
-				if(Attendance_end != 'Happening'):
+				if(Attendance_end != 'In Progress'):
 					hours, remainder = divmod(Attendance_end.seconds, 3600)
 					minutes, seconds = divmod(remainder, 60)
 					minutes = checkMinutes(minutes)
@@ -4710,6 +4719,7 @@ def checkAttendanceBreaks(userID):
 				result['problemLunch'] = False
 	result['hours'] = hours
 	return result
+
 
 ### View to retrieve AttendanceChecklist
 @login_required

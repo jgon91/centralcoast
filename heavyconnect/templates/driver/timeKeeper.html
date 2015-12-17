@@ -64,35 +64,22 @@
 				if (shiftStarted == 0) {
 					$('#confirmShift').hide();
 					$("#messageTimekeeper").html("{% trans 'Starting shift' %}...");
-					saveData(1);
-					for (var i = 0; i < dataTimeKeeper.length; i++) {
-						if (dataTimeKeeper[i].pendent == true) {
-							offline++;
-						}
-					}
+
 					if (offline > 0) {
 						//$("#messageTimekeeper").html("{% trans 'Updating' %}...");
-						sync();
+						<!--sync();-->
 					} else {
-						var position = dataTimeKeeper.length - 1;
-						startShift("{{ csrf_token }}", "{% url 'startShiftGroup' %}", dataTimeKeeper[position].timeLocal, position);
+						startShift("{{ csrf_token }}", "{% url 'startShiftGroup' %}");
 					}
 				} else {
-					dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
 					$('#confirmShift').hide();
 					$("#messageTimekeeper").html("{% trans 'Stopping shift' %}...");
-					saveData(6);
-					for (var i = 0; i < dataTimeKeeper.length; i++) {
-						if (dataTimeKeeper[i].pendent == true) {
-							offline++;
-						}
-					}
+
 					if (offline > 0) {
 						//$("#messageTimekeeper").html("{% trans 'Updating' %}...");
-						sync();
+						<!--sync();-->
 					} else {
-						var position = dataTimeKeeper.length - 1;
-						stopShift("{{ csrf_token }}", "{% url 'stopShiftGroup' %}", dataTimeKeeper[position].timeLocal, position);
+						stopShift("{{ csrf_token }}", "{% url 'stopShiftGroup' %}");
 					}
 				}
 			});
@@ -114,38 +101,22 @@
 					hideModal();
 				} else if (breakStarted == 0) {
 					lunch = 0;
-					dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
 					$("#messageTimekeeper").html("{% trans 'Starting break' %}...");
-					saveData(2);
-					for (var i = 0; i < dataTimeKeeper.length; i++) {
-						if (dataTimeKeeper[i].pendent == true) {
-							offline++;
-						}
-					}
+
 					if (offline > 0) {
 						//$("#messageTimekeeper").html("{% trans 'Updating' %}...");
-						sync();
+						<!--sync();-->
 					} else {
-						var position = dataTimeKeeper.length - 1;
-						startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
+						startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch);
 					}
 				} else {
 					lunch = 0;
-					dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
 					$("#messageTimekeeper").html("{% trans 'Ending break' %}...");
-					saveData(3);
-					for (var i = 0; i < dataTimeKeeper.length; i++) {
-						if (dataTimeKeeper[i].pendent == true) {
-							offline++;
-						}
-					}
+
 					if (offline > 0) {
 						//$("#messageTimekeeper").html("{% trans 'Updating' %}...");
-						sync();
 					} else {
-						var position = dataTimeKeeper.length - 1;
-						sync();
-						stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
+						stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch);
 					}
 				}
 			});
@@ -165,49 +136,30 @@
 					$("#messageTimekeeper").html("{% trans 'You cannot start 2 breaks at the same time' %}.");
 				} else if (lunchStarted == 0) {
 					lunch = 1;
-					dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
 					$("#messageTimekeeper").html("{% trans 'Starting lunch' %}...");
-					saveData(4);
-					for (var i = 0; i < dataTimeKeeper.length; i++) {
-						if (dataTimeKeeper[i].pendent == true) {
-							offline++;
-						}
-					}
+
 					if (offline > 0) {
 						//$("#messageTimekeeper").html("{% trans 'Updating' %}...");
-						sync();
 					} else {
-						var position = dataTimeKeeper.length - 1;
-						startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
+						startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch);
 					}
 				} else {
 					lunch = 1;
-					dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
 					$("#messageTimekeeper").html("{% trans 'Ending lunch' %}...");
-					saveData(5);
-					for (var i = 0; i < dataTimeKeeper.length; i++) {
-						if (dataTimeKeeper[i].pendent == true) {
-							offline++;
-						}
-					}
+
 					if (offline > 0) {
 						//$("#messageTimekeeper").html("{% trans 'Updating' %}...");
-						sync();
+						<!--sync();-->
 					} else {
-						var position = dataTimeKeeper.length - 1;
-						sync();
-						stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch, dataTimeKeeper[position].timeLocal, position);
+						stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch);
 					}
 				}
 			});
 			$("#timelog").click(function() {
-				dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
 				$('#showTimekeeperModal').modal();
 				emptyDivs();
-				$("#messageTimekeeper").css("color", "#1F3801");	//green
 				$("#messageTimekeeper").html("TIMELOG");
-				printTimelog();
-				//timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+				timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
 			});
 		});
 		function getTimeWorked (currentTime, initialW) {
@@ -231,131 +183,7 @@
 			totalWorked = totalHour.toString() + ":" + (totalMin < 10 ? "0" : "") + totalMin.toString();
 			return workTime;
 		}
-		function printTimelog() {
-			var dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
-			breaks = 1;
-			lunchs = 1;
-			breaksN = [];
-			worksN = []
-			var hour = 0;
-			var min = 0;
-			var initialW = 0;
-			var currentStart = 0;
-			var currentW = 0;
-			totalWorked = 0;
-			totalHour = 0;
-			totalMin = 0;
-			var happening = true;
-			for (var i = 0; i < dataTimeKeeper.length; i++) {
-				if (dataTimeKeeper[i].actionLocal == 6) {
-					happening = false;
-				}
-			}
-			if (happening == true) {
-						$("#divTimelog").append("<table id='tableTimelog' ><tr><td colspan='2'>Start Shift: " + dataTimeKeeper[0].timeLocal.substring(0, 5) + "</td></tr>");
-						for (var i = 1; i < dataTimeKeeper.length; i++) {
-							currentW = dataTimeKeeper[i-1].timeLocal;
-							hour = currentW.substring(0,2);
-							min = currentW.substring(3,5);
-							initialW = new Date(1, 1, 1, hour, min);
 
-							if (dataTimeKeeper[i].actionLocal == 2) {
-								if (dataTimeKeeper.length > i+1) {
-									if (dataTimeKeeper[i+1].actionLocal == 3) {
-										workTime = getTimeWorked(dataTimeKeeper[i].timeLocal, initialW);
-										$("#tableTimelog").append("<tr><td class='colBorderTimelog'>" + workTime + "</td><td>#" + breaks + " Break " + dataTimeKeeper[i].timeLocal.substring(0, 5) + " - " + dataTimeKeeper[i+1].timeLocal.substring(0, 5) + "</td></tr>");
-									}
-								}  else {
-									workTime = getTimeWorked(dataTimeKeeper[i].timeLocal, initialW);
-									$("#tableTimelog").append("<tr><td class='colBorderTimelog'>" + workTime + "</td><td>#" + breaks + " Break " + dataTimeKeeper[i].timeLocal.substring(0, 5) + " - In Progress... </td></tr>");
-								}
-								breaks++;
-							}
-							if (dataTimeKeeper[i].actionLocal == 4) {
-								if (dataTimeKeeper.length > i+1) {
-									if (dataTimeKeeper[i+1].actionLocal == 5) {
-										workTime = getTimeWorked(dataTimeKeeper[i].timeLocal, initialW);
-										$("#tableTimelog").append("<tr><td class='colBorderTimelog'>" + workTime + "</td><td>#" + lunchs + " Lunch " + dataTimeKeeper[i].timeLocal.substring(0, 5) + " - " + dataTimeKeeper[i+1].timeLocal.substring(0, 5) + "</td></tr>");
-									}
-								} else {
-									workTime = getTimeWorked(dataTimeKeeper[i].timeLocal, initialW);
-									$("#tableTimelog").append("<tr><td class='colBorderTimelog'>" + workTime + "</td><td>#" + lunchs + " Lunch " + dataTimeKeeper[i].timeLocal.substring(0, 5) + " - In Progress...</td></tr>");
-								}
-								lunchs++;
-							}
-							i++;
-						}
-					$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: In Progress...</td></tr>");
-			} else {
-					$("#divTimelog").append("<table id='tableTimelog' ><tr id='trStartShift'><td colspan='2'>Start Shift: " + dataTimeKeeper[0].timeLocal.substring(0, 5) + "</td><td><input type='button' id='" + attendanceId + "' class='editIcon' onclick='editStartShiftOffline(this.id)'/></td></tr>");
-					for (var i = 1; i < dataTimeKeeper.length; i++) {
-							if (i == 1){
-								currentStart = dataTimeKeeper[0].timeLocal;
-								hour = currentStart.substring(0,2);
-								min = currentStart.substring(3,5);
-								initialW = new Date(1, 1, 1, hour, min);
-							} else {
-								currentW = dataTimeKeeper[i-1].timeLocal;
-								hour = currentW.substring(0,2);
-								min = currentW.substring(3,5);
-								initialW = new Date(1, 1, 1, hour, min);
-							}
-							if (dataTimeKeeper[i].actionLocal == 2) {
-								if (dataTimeKeeper.length > i+1) {
-									if (dataTimeKeeper[i+1].actionLocal == 3) {
-										workTime = getTimeWorked(dataTimeKeeper[i].timeLocal, initialW);
-										breaksN[i] = breaks;
-										worksN[i] = workTime;
-										if(dataTimeKeeper[i].pendent == true){
-											$("#tableTimelog").append("<tr id='" + i + "'><td class='colBorderTimelog'>" + workTime + "</td><td>#" + breaks + " Break " + dataTimeKeeper[i].timeLocal.substring(0, 5) + " - " + dataTimeKeeper[i+1].timeLocal.substring(0, 5) + "</td><td><input id='" + i + "' type='button' class='editIcon' onclick='editBreakOffline(-1, this.id, worksN[this.id], breaksN[this.id])'/></td></tr>");
-										} else {
-											$("#tableTimelog").append("<tr id='" + i + "'><td class='colBorderTimelog'>" + workTime + "</td><td>#" + breaks + " Break " + dataTimeKeeper[i].timeLocal.substring(0, 5) + " - " + dataTimeKeeper[i+1].timeLocal.substring(0, 5) + "</td><td><input id='" + i + "' type='button' class='editIcon' onclick='editBreakOffline(breaksId[this.id], this.id, worksN[this.id], breaksN[this.id])'/></td></tr>");
-										}
-									}
-								} else {
-									workTime = getTimeWorked(dataTimeKeeper[i].timeLocal, initialW);
-									breaksN[i] = breaks;
-									worksN[i] = workTime;
-									$("#tableTimelog").append("<tr id='" + i + "'><td class='colBorderTimelog'>" + workTime + "</td><td>#" + breaks + " Break " + dataTimeKeeper[i].timeLocal.substring(0, 5) + " - In Progress...</td><td><input id='" + i + "' type='button' class='editIcon' onclick='editBreakOffline(this.id, worksN[this.id], breaksN[this.id])'/></td></tr>");
-								}
-								breaks++;
-							}
-							if (dataTimeKeeper[i].actionLocal == 4) {
-								if (dataTimeKeeper.length > i+1) {
-									if (dataTimeKeeper[i+1].actionLocal == 5) {
-										workTime = getTimeWorked(dataTimeKeeper[i].timeLocal, initialW);
-										breaksN[i] = lunchs;
-										worksN[i] = workTime;
-										$("#tableTimelog").append("<tr id='" + i + "'><td class='colBorderTimelog'>" + workTime + "</td><td>#" + lunchs + " Lunch " + dataTimeKeeper[i].timeLocal.substring(0, 5) + " - " + dataTimeKeeper[i+1].timeLocal.substring(0, 5) + "</td><td><input id='" + i + "' type='button' class='editIcon' onclick='editBreakOffline(this.id, worksN[this.id], breaksN[this.id])'/></td></tr>");
-									}
-								} else {
-									workTime = getTimeWorked(dataTimeKeeper[i].timeLocal, initialW);
-									breaksN[i] = lunchs;
-									worksN[i] = workTime;
-									$("#tableTimelog").append("<tr id='" + currentPosition + "'><td class='colBorderTimelog'>" + workTime + "</td><td>#" + lunchs + " Lunch " + dataTimeKeeper[i].timeLocal.substring(0, 5) + " - In Progress...</td><td><input id='" + i + "' type='button' class='editIcon' onclick='editBreakOffline(this.id, worksN[this.id], breaksN[this.id])'/></td></tr>");
-								}
-								lunchs++;
-							}
-							i++;
-					}
-					endPosition = dataTimeKeeper.length - 1;
-					$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + dataTimeKeeper[endPosition].timeLocal.substring(0, 5) + "</td><td><input type='button' class='editIcon' onclick='editStopShiftOffline(endPosition, attendanceId)'/></td></tr>");
-					$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + attendanceId + "'>");
-							if (JSON.parse(localStorage.getItem('count')).signed == 1) {
-								$("#btnSignature").append("<input type='button' id='btnSign' value='SIGNED'/>");
-								$("#btnSign").css("background", "#799520");
-							} else {
-								$("#btnSignature").append("<input type='button' id='btnSign' value='SIGN'/>");
-								$("#btnSign").css("background", "#E5E5E5");
-							}
-					currentW = dataTimeKeeper[i-3].timeLocal;
-					hour = currentW.substring(0, 2);
-					min = currentW.substring(3, 5);
-					initialW = new Date(1, 1, 1, hour, min);
-					workTime = getTimeWorked(dataTimeKeeper[i-2].timeLocal, initialW);
-					$("#tableTimelog").append("<tr><td colspan='3'>Total: " + totalWorked + " hours</td></tr>");
-			}
-		}
 		function editStartShiftOffline(id) {
 			currentStart = dataTimeKeeper[0].timeLocal.substring(0, 5);
 			$(".editIcon").attr('disabled', true);
@@ -376,7 +204,6 @@
 			emptyDivs();
 			$("#messageTimekeeper").css("color", "#1F3801");	//green
 			$("#messageTimekeeper").html("TIMELOG");
-			printTimelog();
 		}
 		function editBreakOffline(position, workTime, breakN) {
 			position++;
@@ -429,7 +256,6 @@
 			emptyDivs();
 			$("#messageTimekeeper").css("color", "#1F3801");	//green
 			$("#messageTimekeeper").html("TIMELOG");
-			printTimelog();
 		}
 		function editStopShiftOffline(endPosition, id) {
 			currentEnd = dataTimeKeeper[endPosition].timeLocal.substring(0, 5);
@@ -526,9 +352,8 @@
 							countOnline++;
 						}
 						if (countOnline < countOffline) {
-							sync();
+							<!--sync();-->
 						} else {
-							cleanStorage();
 							initializeCounter();
 							if(data.hour_started != "None"){
 								saveAction(1, data.hour_started, false);
@@ -572,11 +397,11 @@
 				}
 			});
 		}
-		function startShift(token, url, timeLocal, position) {
+		function startShift(token, url) {
 			$.ajax({
 				method : "POST",
 				url : url,
-				data : {"csrfmiddlewaretoken" : token, "time" : timeLocal},
+				data : {"csrfmiddlewaretoken" : token},
 				async: false,
 				datatype : "json",
 				success : function(data, status, xhr) {
@@ -588,8 +413,7 @@
 						}
 						attendanceId = data.id;
 						shiftStarted = 1;
-						dataTimeKeeper[position].pendent = false;
-						localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
+
 					} else if (data.code == 1) {
 						$("#messageTimekeeper").html("{ % trans 'You need to finish the shift you started already before create a new one' %}.");
 					} else if (data.code == 2) {
@@ -602,12 +426,12 @@
 				}
 			});
 		}
-		function startBreak(token, url, breaks, lunch, timeLocal, position) {
+		function startBreak(token, url, breaks, lunch) {
 			$.ajax({
 				method : "POST",
 				url : url,
 				async: false,
-				data : {"csrfmiddlewaretoken" : token, "lunch": lunch, "time" : timeLocal},
+				data : {"csrfmiddlewaretoken" : token, "lunch": lunch},
 				datatype : "json",
 				success : function(data, status, xhr) {
 					if (data.success) {
@@ -630,8 +454,7 @@
 							}
 						}
 						breaksId.push(data.id);
-						dataTimeKeeper[position].pendent = false;
-						localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
+
 					} else if (data.code == 1) {
 						$("#messageTimekeeper").html("{% trans 'You cannot start 2 breaks at the same time' %}.");
 					} else if (data.code == 2) {
@@ -646,12 +469,12 @@
 				}
 			});
 		}
-		function stopBreak(token, url, breaks, lunch, timeLocal, position) {
+		function stopBreak(token, url, breaks, lunch) {
 			$.ajax({
 				method: "POST",
 				url: url,
 				async: false,
-				data: {"csrfmiddlewaretoken": token, "lunch": lunch, "time" : timeLocal},
+				data: {"csrfmiddlewaretoken": token, "lunch": lunch},
 				datatype: "json",
 				success: function(data, status, xhr){
 					//Pu this inside the if //did
@@ -675,8 +498,6 @@
 							}
 						}
 						breaksId.push(data.id);
-						dataTimeKeeper[position].pendent = false;
-						localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
 					} else if(data.code == 1){
 						$("#messageTimekeeper").html("{% trans 'You need to start a break first' %}.");
 					} else if(data.code == 2){
@@ -691,12 +512,12 @@
 				}
 			});
 		}
-		function stopShift(token, url, timeLocal, position) {
+		function stopShift(token, url) {
 			$.ajax({
 				method: "POST",
 				url: url,
 				async: false,
-				data: {"csrfmiddlewaretoken": token, "time" : timeLocal},
+				data: {"csrfmiddlewaretoken": token},
 				datatype: "json",
 				success: function(data, status, xhr){
 					if(data.success){
@@ -706,8 +527,7 @@
 							$("#messageTimekeeper").html("{% trans 'Shift ended' %}");
 						}
 						shiftStarted = 0;
-						dataTimeKeeper[position].pendent = false;
-						localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
+
 					} else if(data.code == 1){
 						$("#messageTimekeeper").html("{% trans 'You need to take at least 3 breaks' %}.");
 					} else if(data.code == 2){
@@ -785,7 +605,7 @@
 			$.ajax({
 				method : "POST",
 				url : url,
-				data : {"csrfmiddlewaretoken" : token, "id": idTimelog},
+				data : {"csrfmiddlewaretoken" : token, "id": idTimelog, "single":"true"},
 				datatype : "json",
 				success : function(data, status, xhr) {
 					var i = 0;
@@ -802,10 +622,10 @@
 						$("#divTimelog").append("<table id='tableTimelog' ><tr><td colspan='2'>Start Shift: " + data.Attendance_start + "</td></tr>");
 						for (i = 0; i < data.breaks.length; i++) {
 							if (data.breaks[i].lunch == 0){
-								$("#tableTimelog").append("<tr><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + breaks + " Break " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
+								$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + breaks + " Break " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
 								breaks++;
 							} else {
-								$("#tableTimelog").append("<tr><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + lunchs + " Lunch " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
+								$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + lunchs + " Lunch " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
 								lunchs++;
 							}
 						}
@@ -829,7 +649,6 @@
 							}
 							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + data.Attendance_end + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' onclick='editStopShift(this.id, currentEnd)'/></td></tr>");
 							$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + data.attendanceId + "'>");
-							console.log(data.signature);
 							if (data.signature == true) {
 								$("#btnSignature").append("<input type='button' id='btnSign' value='SIGNED'/>");
 								$("#btnSign").css("background", "#799520");
@@ -945,63 +764,25 @@
 				$("#divSignNow").empty();
 				$("#btnSignNow").empty();
 		}
-		function cleanStorage() {
-			dataTimeKeeper = [];
-			savedEditions = [];
-			initializeCounter();
-			localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
-			localStorage.setItem('savedEditions', JSON.stringify(savedEditions));
-		}
-		//sync function
-		function sync() {
-			dataTimeKeeper = JSON.parse(localStorage.getItem('dataTimeKeeper'));
-			savedEditions = JSON.parse(localStorage.getItem('savedEditions'));
-		    for (var i = 0; i < dataTimeKeeper.length; i++) {
-		        if (dataTimeKeeper[i].pendent == true) {
-		            if (dataTimeKeeper[i].actionLocal == 1) {
-		                startShift("{{ csrf_token }}", "{% url 'startShiftGroup' %}", dataTimeKeeper[i].timeLocal, i);
-		            }
-		            if (dataTimeKeeper[i].actionLocal == 2) {
-		                lunch = 0;
-		                startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
-		            }
-		            if (dataTimeKeeper[i].actionLocal == 3) {
-		                lunch = 0;
-		                stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
-		            }
-		            if (dataTimeKeeper[i].actionLocal == 4) {
-		                lunch = 1;
-		                startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
-		            }
-		            if (dataTimeKeeper[i].actionLocal == 5) {
-		                lunch = 1;
-		                stopBreak("{{ csrf_token }}", "{% url 'stopBreakGroup' %}", item_count, lunch, dataTimeKeeper[i].timeLocal, i);
-		            }
-		            if (dataTimeKeeper[i].actionLocal == 6) {
-		                stopShift("{{ csrf_token }}", "{% url 'stopShiftGroup' %}", dataTimeKeeper[i].timeLocal, i);
-		            }
-		        }
-		    }
-		    if(savedEditions != null){
-		    	for (var i = 0; i < savedEditions.length; i++) {
-		        if (savedEditions[i].pendent == true) {
-		            if (savedEditions[i].action == 1) {
-		                updateStopShift("{{ csrf_token }}", "{% url 'updateStopShift' %}", savedEditions[i].id, savedEditions[i].newTime);
-		            }
-		            if (savedEditions[i].actionLocal == 2) {
-		                updateBreak("{{ csrf_token }}", "{% url 'updateBreak' %}", savedEditions[i].id, savedEditions[i].newTime, savedEditions[i+1].newTime);
-		            }
-		            if (savedEditions[i].actionLocal == 3) {
-		                updateStopShift("{{ csrf_token }}", "{% url 'updateStopShift' %}", savedEditions[i].id, savedEditions[i].newTime);
-		            }
-		        }
-		    }
-		    }
 
-		    //$("#messageTimekeeper").html("{% trans 'Updated' %}.");
-		}
 		</script>
+		<style>
+			.editIcon {
+				background: url('/static/imgSmall/editIcon.png') no-repeat top left !important;
+				background-size: 100% 100% !important;
+				width: 20px !important;
+				height: 20px !important;
+				border: none !important;
+			}
+			.editedIcon {
 
+				background: url('/static/imgSmall/editedIcon.png') no-repeat top left !important;
+				background-size: 100% 100% !important;
+				width: 20px !important;
+				height: 20px !important;
+				border: none !important;
+			}
+		</style>
 	</head>
 	<body>
 		<header id="head"></header>
