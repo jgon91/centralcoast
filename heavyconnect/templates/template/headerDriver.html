@@ -3,47 +3,30 @@
 	<head>
 		{% load staticfiles %}
 		{% load i18n %}
-		<meta charset="utf-8">
-		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
-		Remove this if you use the .htaccess -->
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
-		<title>HeavyConnect</title>
-		<meta name="description" content="">
-		<meta name="viewport" content="width=device-width; initial-scale=1.0">
-		<!--IMPORTS-->
-		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
-		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-		<link rel="stylesheet" type="text/css" href="{% static 'css/styleSmall.css' %}">
-		<link rel="stylesheet" type="text/css" href="{% static 'css/styleMedium.css' %}" media="screen and (min-width: 801px) and (orientation: landscape)">
-
-		<link rel="shortcut icon" href="/favicon.ico">
-		<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-		<link rel="manifest" href="{% static 'manifest.json' %}">
+		<style type="text/css">
+	      .js #flash {display: none;}
+	    </style>
+		<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
 		<script type="text/javascript">
-			function GetClock(){
-			var d=new Date();
-			var nmonth=d.getMonth(),ndate=d.getDate(),nyear=d.getYear();
-			if(nyear<1000) nyear+=1900;
-			var nhour=d.getHours(),nmin=d.getMinutes(),ap;
-			if(nhour==0){ap=" AM";nhour=12;}
-			else if(nhour<12){ap=" AM";}
-			else if(nhour==12){ap=" PM";}
-			else if(nhour>12){ap=" PM";nhour-=12;}
-
-			if(nmin<=9) nmin="0"+nmin;
-
-			document.getElementById('clock').innerHTML=""+(nmonth+1)+"/"+ndate+"/"+nyear+" "+nhour+":"+nmin+ap+"";
-			}
-
+	    	$('html').addClass('js');
 			$(document).ready(function() {
 				GetClock();
 				setInterval(GetClock,1000);
 			});
+
 		</script>
+		<meta charset="utf-8">
+		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+		Remove this if you use the .htaccess -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>HeavyConnect</title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width; initial-scale=1.0">
+		<!--IMPORTS-->
 	</head>
 	
 	<body>
+	<div id="flash">
 		<div id="top">
 			<div id="menuTop">
 				<a href="{% url 'home' %}"><input type="button" class="btnTop" id="btnHomeUp" /></a>
@@ -55,7 +38,31 @@
 				<a href="#"><input type="button" id="userImg"/></a>
 			</div>
 		</div>
-	</body>
+	<link rel="stylesheet" href="{% static 'css/bootstrap/css/bootstrap.min.css' %}">
+	<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
+	<script src="{% static 'css/bootstrap/js/bootstrap.min.js' %}"></script>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/styleSmall.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/styleMedium.css' %}" media="screen and (min-width: 801px) and (orientation: landscape)">
+
+	<link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
+	<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+	<link rel="manifest" href="{% static 'manifest.json' %}">
+	<script type="text/javascript">
+			function GetClock(){
+				var d=new Date();
+				var nmonth=d.getMonth(),ndate=d.getDate(),nyear=d.getYear();
+				if(nyear<1000) nyear+=1900;
+				var nhour=d.getHours(),nmin=d.getMinutes(),ap;
+				if(nhour==0){ap=" AM";nhour=12;}
+				else if(nhour<12){ap=" AM";}
+				else if(nhour==12){ap=" PM";}
+				else if(nhour>12){ap=" PM";nhour-=12;}
+
+				if(nmin<=9) nmin="0"+nmin;
+
+				document.getElementById('clock').innerHTML=""+(nmonth+1)+"/"+ndate+"/"+nyear+" "+nhour+":"+nmin+ap+"";
+			}
+		</script>
 	<script>
 	function getProfileImage(token, url){
 			$.ajax({
@@ -67,11 +74,14 @@
 				success : function(data, status, xhr) {
 					//console.log(data.imageUrl);
 					$("#userImg").css("background", "url({% static 'media/' %}" + data.imageUrl + ")");
-					$("#userImg").css("background-size", "100% 100%");	
-					$("#userImg").css("border-radius", "7px");			
+					$("#userImg").css("background-size", "100% 100%");
+					$("#userImg").css("border-radius", "7px");
 				}
 			});
-		}			
+		}
 		getProfileImage("{{ csrf_token }}", "{% url 'getImageUser' %}");
 	</script>
+	</div>
+	</body>
+
 </html>
