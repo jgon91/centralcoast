@@ -1,11 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Welcome</title>
+	{% load staticfiles %}
+	{% load i18n %}
+	<title>Heavy Connect</title>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/styleSmall.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/styleMedium.css' %}" media="screen and (min-width: 801px) and (orientation: landscape)">
 </head>
 <body>
 <br>
-<h1>500 error. Please contact development@heavyconnect.com.</h1>
+	<div id="wrapper">
+		<div id="content">
+			<img src="{% static 'imgSmall/logo.png' %}" id="logo"/>
+			<h2>
+				We've got a problem.<br>
+				Go to 
+				<a href="{% url 'home'%}">
+					{% trans 'Home Page' %}
+				</a>
+				or contact us. 
+			</h2>
+			<h3>
+				Phone: <i>831-595-2329</i><br>
+				Email: <i>Support@heavyconnect.com</i>
+			</h3>
+			
+		</div>
+	</div>
 <br>
 </body>
 </html>
