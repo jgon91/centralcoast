@@ -45,10 +45,18 @@ INSTALLED_APPS = (
 )
 
 ADMINS = [('Jessica', 'jessica@heavyconnect.com')]
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'jessica@heavyconnect.com'
+EMAIL_HOST_PASSWORD = 'Bender20!'
+SERVER_EMAIL = 'jessica@heavyconnect.com'
+MANAGERS = ADMINS
+EMAIL_USE_TLS = True
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.common.BrokenLinkEmailsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
