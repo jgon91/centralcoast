@@ -1957,7 +1957,6 @@ def timeLogById(request):
 	result = {}
 	if request.method == 'POST':
 		if request.is_ajax():
-			userId = request.user.id
 			if 'id' in request.POST:
 				if 'single' in request.POST:
 					userId = request.user.id
@@ -2066,12 +2065,14 @@ def timeLogById(request):
 				hours = checkHours(hours)
 				minutes = checkMinutes(minutes)
 				result['Attendance_start'] = str(hours) + ':' + str(minutes)
+				print 'hello'
 				if(Attendance_end != 'In Progress'):
 					hours, remainder = divmod(Attendance_end.seconds, 3600)
 					minutes, seconds = divmod(remainder, 60)
 					minutes = checkMinutes(minutes)
 					result['Attendance_end'] = str(hours) + ':' + str(minutes)
 				else:
+					print 'hi'
 					result['Attendance_end'] = Attendance_end
 				result['breaks'] = array_breaks
 		else:
@@ -3482,25 +3483,20 @@ def getCsv(request):
 					writer.writerow(['', '', num_break, item.start, item.end, total])
 					i = i+1
 	return response
+
 def timeKeeperDailyReport(request):
 	result = {'success' : False}
 
-	# result = {'success' : False}
-
-	each_result = {}
-
 	if request.method == 'POST':
 		if request.is_ajax():
-
-			#Creating the data range to filter the attendaces
-			# now = datetime.datetime.now()
-			# start_date = datetime.datetime.combine(now, datetime.time.min)
 
 			attendances = EmployeeAttendance.objects.all().order_by('-date')#filter(date__range = (start_date, now))
 			tasks = EmployeeTask.objects.all()
 			all_attendances = []
 			total_times = []
 			all_names = []
+			group_leader = []
+			qr_code = []
 
 			i = 0
 			for attendance in attendances:
@@ -3517,6 +3513,14 @@ def timeKeeperDailyReport(request):
 				if str(attendance.hour_ended) < str(attendance.hour_started):
 					hours_today = 'N/A'
 				all_names.append(attendance.employee.user.last_name + ", " + attendance.employee.user.first_name)
+				print 'hello'
+				if(attendance.group is None):
+					leader_name = 'N/A'
+				else:
+					leader_name = attendance.group.creator.user.first_name + ", " + attendance.group.creator.user.last_name
+
+				group_leader.append(leader_name)
+				qr_code.append(attendance.employee.qr_code)
 				total_times.append(hours_today)
 				temp["total_hours"] = hours_today
 				all_attendances.append(temp)
@@ -3535,6 +3539,8 @@ def timeKeeperDailyReport(request):
 			result['total_times'] = total_times
 			result['all_names'] = all_names
 			result['tasks'] = tasks_ser
+			result['qr_code'] = qr_code
+			result['group_leader'] = group_leader
 		else:
 			result['code'] = 2  #Use ajax to perform requests
 	else:

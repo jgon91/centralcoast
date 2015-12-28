@@ -147,8 +147,11 @@
 								var demo = "demo" + i;
 
 								$('<tr data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle">').append(
-								$('<td>').text(item.fields.employee),
+								$('<td>').text(data.qr_code[i]),
 								$('<td>').text(data.all_names[i]),
+								$('<td>').text(data.group_leader[i]),
+								<!--$('<td>').text('N/A'),-->
+								<!--$('<td>').text('N/A'),-->
 								$('<td>').text(item.fields.date),
 								$('<td>').text(start_hour),
 								$('<td>').text(end_hour),
@@ -189,6 +192,9 @@
 					<tr>
 						<th>ID</th>
 						<th>Name</th>
+						<th>Team Lead</th>
+						<!--<th>Location</th>-->
+						<!--<th>Job Code</th>-->
 						<th>Date</th>
 						<th>Clock-In</th>
 						<th>Clock-Out</th>
