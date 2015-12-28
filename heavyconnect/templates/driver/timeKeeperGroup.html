@@ -3,6 +3,7 @@
 	<head>
 		{% load staticfiles %}
 		{% load i18n %}
+
 		<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
 		<script src="{% static 'jSignature/jSignature.min.js'%}"></script>
 		<script>
@@ -792,11 +793,12 @@
 							data_scanned.employee = data.employee
 							id_scanned.push(data_scanned);
 							$("#addingList").empty();
-							var addingHtml = '<select><option> -- {% trans 'Employees Added' %} -- </option>';
+							var addingHtml = '<select class="form-control"><option> {% trans 'Employees Added' %} (' + id_scanned.length + ')</option>';
 							for (i = 0; i < id_scanned.length; i++) {
 								addingHtml += '<option disabled>' + id_scanned[i].employee + '</option>';
     						}
     						addingHtml += '</select>';
+
     						$("#addingList").append(addingHtml);
 						} else {
 							feedBackQrCode("show", "red", "{% trans 'This employee does not exist!' %}");
