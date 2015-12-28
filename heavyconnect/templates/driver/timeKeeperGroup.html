@@ -212,6 +212,7 @@
 				callChecklist("{{ csrf_token }}", "{% url 'retrieveAttendanceChecklist' %}", idTimelog);
 			});
 			$("#createTeam").click(function(){
+				id_scanned = [];
     			emptyDivs();
     			$('#showTimekeeperModal').modal();
     			$("#messageTimekeeper").css("color", "#1F3801");	//green
