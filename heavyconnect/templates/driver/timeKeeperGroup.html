@@ -477,7 +477,7 @@
     					}
     					$("#questions").append("</table>");
     					$("#divSignNow").append("<input type='button' id='btnSignNow' onClick='callBtnSign()' value='{% trans 'SIGN NOW' %}'/>");
-    					<!--$("#btnSignNow").attr("disabled", true);-->
+    					$("#btnSignNow").attr("disabled", true);
 					}
 				}
 			});
@@ -485,9 +485,11 @@
 		function allChecked(questionsN) {
 			var countQuestions = $('input:checkbox[class=checkQuestions]:checked');
 			if (questionsN == countQuestions.length) {
-				 <!--$("#btnSignNow").attr("disabled", false);-->
+				 $("#btnSignNow").css("background", "#2fce4a");
+				 $("#btnSignNow").attr("disabled", false);
 			} else {
-				<!--$("#btnSignNow").attr("disabled", true);-->
+				$("#btnSignNow").css("background", "#E5E5E5");
+				$("#btnSignNow").attr("disabled", true);
 			}
 		}
 		function callBtnSign() {
