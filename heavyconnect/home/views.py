@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseRedirect
 from django.shortcuts import render, redirect, render_to_response
 from django.utils.dateformat import DateFormat
 from django.template.loader import render_to_string
@@ -11,6 +11,10 @@ from django.db.models import Count
 from django.template import RequestContext
 from django.core import serializers
 import csv
+
+LANGUAGE_CHOICES = ['pt-br','es', 'en-us']
+
+from django.utils.translation import LANGUAGE_SESSION_KEY
 
 import json
 from datetime import datetime
@@ -270,7 +274,6 @@ def startShift(request, idUser):
 			else:
 				#In case 16 hours haven't passed yet we need to check if the shift we get was finished or not
 				if attendance.hour_ended is not None: #The last shift was finished already, so we can start a new one
-					print 'other shift ended'
 					result = createShift(new_time, employee, result)
 				else: #The last shift wasn't finished yet.
 					result['code'] = 1 #You need to finish the shift you started already before create a new one
@@ -1972,7 +1975,7 @@ def timeLogById(request):
 				keeper = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #this variable will keep the last break. It is useful when the shift is not done
 				keeper2 =  datetime.timedelta(hours = 23, minutes = 59, seconds = 59) # when the break is on another day
 				for item in employeeAttendance:
-					if item.signature == '':
+					if item.signature == ''  or item.signature == None:
 						result['signature'] = False
 					result['attendanceId'] = item.id
 					breaks = Break.objects.filter(attendance__id = item.id).order_by('start')
@@ -2059,20 +2062,19 @@ def timeLogById(request):
 				minutes, seconds = divmod(remainder, 60)
 				hours = checkHours(hours)
 				minutes = checkMinutes(minutes)
+
 				result['Total'] = str(hours) + ':' + str(minutes)
 				hours, remainder = divmod(atten_start.seconds, 3600)
 				minutes, seconds = divmod(remainder, 60)
 				hours = checkHours(hours)
 				minutes = checkMinutes(minutes)
 				result['Attendance_start'] = str(hours) + ':' + str(minutes)
-				print 'hello'
 				if(Attendance_end != 'In Progress'):
 					hours, remainder = divmod(Attendance_end.seconds, 3600)
 					minutes, seconds = divmod(remainder, 60)
 					minutes = checkMinutes(minutes)
 					result['Attendance_end'] = str(hours) + ':' + str(minutes)
 				else:
-					print 'hi'
 					result['Attendance_end'] = Attendance_end
 				result['breaks'] = array_breaks
 		else:
@@ -2811,7 +2813,14 @@ def logout(request):
 
 @login_required
 def driver(request):
-    return render(request, 'driver/home.html')
+	emplo = Employee.objects.get(user = request.user)
+	if request.session.get(LANGUAGE_SESSION_KEY) == None:
+		request.session[LANGUAGE_SESSION_KEY] = LANGUAGE_CHOICES[emplo.language - 1]
+		return redirect('driver')
+	if LANGUAGE_CHOICES[emplo.language - 1] != request.session[LANGUAGE_SESSION_KEY]:
+		request.session[LANGUAGE_SESSION_KEY] = LANGUAGE_CHOICES[emplo.language - 1]
+		return redirect('driver')
+	return render(request, 'driver/home.html')
 
 @login_required
 def profile(request):
@@ -2910,7 +2919,14 @@ def scanQRCode(request):
 
 @login_required
 def indexManager(request):
-    return render(request, 'manager/home.html')
+	emplo = Employee.objects.get(user = request.user)
+	if request.session.get(LANGUAGE_SESSION_KEY) == None:
+		request.session[LANGUAGE_SESSION_KEY] = LANGUAGE_CHOICES[emplo.language - 1]
+		return redirect('driver')
+	if LANGUAGE_CHOICES[emplo.language - 1] != request.session[LANGUAGE_SESSION_KEY]:
+		request.session[LANGUAGE_SESSION_KEY] = LANGUAGE_CHOICES[emplo.language - 1]
+		return redirect('driver')
+	return render(request, 'manager/home.html')
 
 @login_required
 def formSuccess(request):
@@ -3513,7 +3529,6 @@ def timeKeeperDailyReport(request):
 				if str(attendance.hour_ended) < str(attendance.hour_started):
 					hours_today = 'N/A'
 				all_names.append(attendance.employee.user.last_name + ", " + attendance.employee.user.first_name)
-				print 'hello'
 				if(attendance.group is None):
 					leader_name = 'N/A'
 				else:
@@ -4001,7 +4016,6 @@ def updateStartShift(request):
 				shift_id = request.POST['shift_id']
 				attendance = EmployeeAttendance.objects.get(id = shift_id)
 				new_time = request.POST['new_time']
-				print new_time
 				new_time = new_time.split(":")
 				time['hour'] = int(new_time[0])
 				time['minute'] = int(new_time[1])

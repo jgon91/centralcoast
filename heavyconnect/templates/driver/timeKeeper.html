@@ -6,8 +6,8 @@
 		<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
 		<script src="{% static 'jSignature/jSignature.min.js'%}"></script>
 		<script src="{% static 'js/timeKeeper.js'%}"></script>
-		<script>
-		var idTimelog = 48;
+	    <script type="text/javascript">
+	    var idTimelog = 48;
 		var offline = -1;
 		var item_count = 0;
 		var hour_start = 0;
@@ -46,7 +46,7 @@
 			});
 
 			getEmployeeShiftsOffline();
-			getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");			
+			getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
 
 			$("#shift").click(function() {
 				$('#showTimekeeperModal').modal();
@@ -158,10 +158,14 @@
 			$("#timelog").click(function() {
 				$('#showTimekeeperModal').modal();
 				emptyDivs();
-				$("#messageTimekeeper").html("TIMELOG");
+				$("#messageTimekeeper").html("SCHEDULE");
 				timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
 			});
-		});
+		}); 
+	    </script>
+
+		<script>
+
 		function getTimeWorked (currentTime, initialW) {
 			var hour = 0;
 			var min = 0;
@@ -203,7 +207,7 @@
 			$(".editIcon").attr('disabled', false);
 			emptyDivs();
 			$("#messageTimekeeper").css("color", "#1F3801");	//green
-			$("#messageTimekeeper").html("TIMELOG");
+			$("#messageTimekeeper").html("SCHEDULE");
 		}
 		function editBreakOffline(position, workTime, breakN) {
 			position++;
@@ -255,7 +259,7 @@
 			$(".editIcon").attr('disabled', false);
 			emptyDivs();
 			$("#messageTimekeeper").css("color", "#1F3801");	//green
-			$("#messageTimekeeper").html("TIMELOG");
+			$("#messageTimekeeper").html("SCHEDULE");
 		}
 		function editStopShiftOffline(endPosition, id) {
 			currentEnd = dataTimeKeeper[endPosition].timeLocal.substring(0, 5);
@@ -276,7 +280,7 @@
 			$(".editIcon").attr('disabled', false);
 			emptyDivs();
 			$("#messageTimekeeper").css("color", "#1F3801");	//green
-			$("#messageTimekeeper").html("TIMELOG");
+			$("#messageTimekeeper").html("SCHEDULE");
 			printTimelog();
 		}
 		function getEmployeeShiftsOffline() {
@@ -683,7 +687,7 @@
 						emptyDivs();
 						$("#timelogBack2").show();
 						$("#messageTimekeeper").css("color", "#1F3801");	//green
-						$("#messageTimekeeper").html("TIMELOG");
+						$("#messageTimekeeper").html("SCHEDULE");
 						timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
 					}
 				}
@@ -720,7 +724,7 @@
 						emptyDivs();
 						$("#timelogBack2").show();
 						$("#messageTimekeeper").css("color", "#1F3801");	//green
-						$("#messageTimekeeper").html("TIMELOG");
+						$("#messageTimekeeper").html("SCHEDULE");
 						timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
 					}
 				}
@@ -748,7 +752,7 @@
 						emptyDivs();
 						$("#timelogBack2").show();
 						$("#messageTimekeeper").css("color", "#1F3801");	//green
-						$("#messageTimekeeper").html("TIMELOG");
+						$("#messageTimekeeper").html("SCHEDULE");
 						timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
 					}
 				}
@@ -766,24 +770,7 @@
 		}
 
 		</script>
-		<style>
-			.editIcon {
-				background: url('/static/imgSmall/editIcon.png') no-repeat top left !important;
-				background-size: 100% 100% !important;
-				width: 20px !important;
-				height: 20px !important;
-				border: none !important;
-			}
-			.editedIcon {
-
-				background: url('/static/imgSmall/editedIcon.png') no-repeat top left !important;
-				background-size: 100% 100% !important;
-				width: 20px !important;
-				height: 20px !important;
-				border: none !important;
-			}
-		</style>
-	</head>
+	  </head>
 	<body>
 		<header id="head"></header>
 		<div id="wrapper">
@@ -809,13 +796,13 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" id="timelog" value="{% trans 'TIMELOG' %}" class="btnsTimekeeper"/>
+						<input type="button" id="timelog" value="{% trans 'SCHEDULE' %}" class="btnsTimekeeper"/>
 					</div>
 				</div>				
 			</div>
 		</div>
 		<footer>
-			&copy;2015 Heavy Connect, Inc.
+			&copy;2015 HeavyConnect, Inc.
 		</footer>
 		<div id="clearBoth"></div>
 		<!-- MODAL OF ALERT - TIMEKEEPER -->
@@ -859,8 +846,31 @@
 							</button>
 						</a>
 					</div>
+					</div>
 				</div>
 			</div>
 		</div>
+	</div>
+	<style>
+			.editIcon {
+				background: url('/static/imgSmall/editIcon.png') no-repeat top left !important;
+				background-size: 100% 100% !important;
+				width: 20px !important;
+				height: 20px !important;
+				border: none !important;
+			}
+			.editedIcon {
+
+				background: url('/static/imgSmall/editedIcon.png') no-repeat top left !important;
+				background-size: 100% 100% !important;
+				width: 20px !important;
+				height: 20px !important;
+				border: none !important;
+			}
+	</style>
+
+
 	</body>
+
+
 </html>

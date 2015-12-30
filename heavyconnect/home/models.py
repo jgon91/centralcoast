@@ -270,7 +270,7 @@ class Employee(models.Model):
 	LANGUAGE_CHOICES = (
 		(1, 'pt-br'),
 		(2, 'es'),
-		(3, 'en'),
+		(3, 'en-us'),
 	)
 	last_task = models.ForeignKey(Task,null = True, blank = True)
 	user = models.OneToOneField(User)

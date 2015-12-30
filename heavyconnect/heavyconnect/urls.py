@@ -27,11 +27,12 @@ handler500 = 'home.views.server_error'
 
 urlpatterns = patterns('',
     url(r'^$', main_views.empty, name = 'empty'), 
-    url(r'^admin/', include(admin.site.urls), name='admin'),   
+    url(r'^home/', include('home.urls')),
+    url(r'^admin/', include(admin.site.urls), name='admin'),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
-urlpatterns += i18n_patterns('',
-    #home app links
-    url(r'^home/', include('home.urls')),   
-)
+# urlpatterns += i18n_patterns('',
+#     #home app links
+#     url(r'^home/', include('home.urls')),
+# )

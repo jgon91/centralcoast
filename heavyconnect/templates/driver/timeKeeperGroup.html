@@ -6,7 +6,18 @@
 
 		<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
 		<script src="{% static 'jSignature/jSignature.min.js'%}"></script>
+		<!-- <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script> -->
+		<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="{% static 'WebCodeCam/js/main.js' %}"></script>
+		<script type="text/javascript" src="{% static 'WebCodeCam/js/startScanQRCode.js' %}"></script>
+		<script type="text/javascript" src="{% static 'WebCodeCam/js/qrcodelib.js' %}"></script>
+		<script type="text/javascript" src="{% static 'WebCodeCam/js/WebCodeCam.js' %}"></script>
 		<script>
+		$(document).ready(function(){
+			$('[data-toggle="popover"]').popover();
+		});
+		</script>
+		<script type="text/javascript">
 		var action = -1;	//1 = start shift ... 2 = stop shift ... 3 = start break ... 4 = stop break ... 5 = timelog
 		var lunch = 0;		//	0 = break ... 1 = lunch
 		var employeesTimelog = [];
@@ -189,21 +200,21 @@
 				emptyDivs();
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				$("#messageTimekeeper").html("{% trans 'Select the Team to TIMELOG' %}:");
+				$("#messageTimekeeper").html("{% trans 'Select the Team to see SCHEDULE' %}:");
 				teamsBtns();
 			});
 			$("#timelogBack1").click(function() {
 				emptyDivs();
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				$("#messageTimekeeper").html("{% trans 'Select the Team to TIMELOG' %}:");
+				$("#messageTimekeeper").html("{% trans 'Select the Team to see SCHEDULE' %}:");
 				teamsBtns();
 			});
 			$("#timelogBack2").click(function() {
 				emptyDivs();
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				$("#messageTimekeeper").html("{% trans 'Select the Employee to TIMELOG' %}:");
+				$("#messageTimekeeper").html("{% trans 'Select the Employee to see SCHEDULE' %}:");
 				callTeam(idGroup);
 			});
 			$("#btnSignature").click(function(){
@@ -212,7 +223,6 @@
 				callChecklist("{{ csrf_token }}", "{% url 'retrieveAttendanceChecklist' %}", idTimelog);
 			});
 			$("#createTeam").click(function(){
-				id_scanned = [];
     			emptyDivs();
     			$('#showTimekeeperModal').modal();
     			$("#messageTimekeeper").css("color", "#1F3801");	//green
@@ -308,8 +318,8 @@
 						$("#teamsList").css("text-align", "left");
 						$("#teamsList").html('');
 						for (var i = 0; i < data.group.length; i++) {
-							$("#teamsList").append('<input type="radio" name="teamRadio" value="' + data.group[i].id + '"/>  ' + data.group[i].Name + '<br>');
-						}
+							$("#teamsList").append('<input type="checkbox" name="teamRadio" value="' + data.group[i].id + '" id="team' + i +'"/>  ' + data.group[i].Name + '<br>');
+ 						}
 					}
 				}
 			});
@@ -342,7 +352,7 @@
 						}
 						if (action == 5) {
 							$("#timelogBack1").show();
-							$("#messageTimekeeper").html("Select the Employee to TIMELOG:");
+							$("#messageTimekeeper").html("Select the Employee to see their SCHEDULE:");
 							for (var j = 0; j < data.participant.length; j++) {
 								$("#divTimelog").append("<br><input type='button' id='" + id_checked[j] + "' onclick='timelogId(this.id)' value='" + arrayNames[j] + "'/><br>");
 							}
@@ -516,7 +526,7 @@
 			emptyDivs();
 			$("#timelogBack2").show();
 			$("#messageTimekeeper").css("color", "#1F3801");	//green
-			$("#messageTimekeeper").html("TIMELOG");
+			$("#messageTimekeeper").html("SCHEDULE");
 			idTimelog = idShow;
 			timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
 		}
@@ -575,6 +585,7 @@
 							}
 							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>{% trans 'End Shift' %}: " + data.Attendance_end + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editStopShift(this.id, currentEnd)'/></td></tr>");
 							$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + data.attendanceId + "'>");
+
 							if (data.signature == true) {
 								$("#btnSignature").append("<input type='button' id='btnSign' style='border: 1px solid #DDD;padding: 5px;box-sizing: border-box;white-space: nowrap;cursor: pointer;background: #E5E5E5;width: 40%;color: black;font-size: 17px;' value='{% trans 'SIGNED' %}'/>");
 								$("#btnSign").css("background", "#799520");
@@ -620,22 +631,29 @@
 			});
 		}
 		function printResult(data) {
-			if (data.success.length) {
+			var totalTeam = 0;
+			var dataSuccess = data.success.length;
+			var dataError = data.error.length;
+			var successes = 0;
+			var errors = 0;
+			if (dataSuccess > 0) {
+				successes = data.success.length;
 				$("#success").css("color", "#1F3801");	//green
 				$("#success").append("{% trans 'SUCCESS' %}");
 			}
-			if (data.error.length) {
+			if (dataError > 0) {
+				errors = data.error.length;
 				$("#error").css("color", "#BB330C");	//red
 				$("#error").append("{% trans 'ERROR' %}");
 			}
-			var totalTeam = data.success.length + data.error.length;
+			totalTeam = successes + errors;
 			for (var i = 0; i < totalTeam; i++){
-				for (var j = 0; j < data.success.length; j++) {
+				for (var j = 0; j < dataSuccess; j++) {
 					if (data.success[j].id == id_checked[i]) {
 						$("#success").append("<br>" + arrayNames[i]);
 					}
 				}
-				for (var k = 0; k < data.error.length; k++) {
+				for (var k = 0; k < dataError; k++) {
 					if (data.error[k].id == id_checked[i]) {
 						$("#error").append("<br>" + arrayNames[i] + " <a href='#' id='pop" + k + "' class='popError' data-toggle='popover' data-content='" + arrayErrors[data.error[k].code] + "' data-placement='right'><input type='button' onclick='popoverError(this.id)' id='pop" + k + "' class='errorIcon'/></a>");
 					}
@@ -693,7 +711,7 @@
 						emptyDivs();
 						$("#timelogBack2").show();
 						$("#messageTimekeeper").css("color", "#1F3801");	//green
-						$("#messageTimekeeper").html("TIMELOG");
+						$("#messageTimekeeper").html("SCHEDULE");
 						timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
 					}
 				}
@@ -730,7 +748,7 @@
 						emptyDivs();
 						$("#timelogBack2").show();
 						$("#messageTimekeeper").css("color", "#1F3801");	//green
-						$("#messageTimekeeper").html("TIMELOG");
+						$("#messageTimekeeper").html("SCHEDULE");
 						timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
 					}
 				}
@@ -758,7 +776,7 @@
 						emptyDivs();
 						$("#timelogBack2").show();
 						$("#messageTimekeeper").css("color", "#1F3801");	//green
-						$("#messageTimekeeper").html("TIMELOG");
+						$("#messageTimekeeper").html("SCHEDULE");
 						timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
 					}
 				}
@@ -884,7 +902,7 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" id="timelog" value="{% trans 'TIMELOG' %}" class="btnsTimekeeper"/>
+						<input type="button" id="timelog" value="{% trans 'SCHEDULE' %}" class="btnsTimekeeper"/>
 					</div>
 				</div>
 			</div>
@@ -1069,15 +1087,6 @@
 		</div>
 	</br>
 	</body>
-	<!-- <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script> -->
-	<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="{% static 'WebCodeCam/js/main.js' %}"></script>
-	<script type="text/javascript" src="{% static 'WebCodeCam/js/startScanQRCode.js' %}"></script>
-	<script type="text/javascript" src="{% static 'WebCodeCam/js/qrcodelib.js' %}"></script>
-	<script type="text/javascript" src="{% static 'WebCodeCam/js/WebCodeCam.js' %}"></script>
-	<script>
-	$(document).ready(function(){
-    	$('[data-toggle="popover"]').popover();
-	});
+
 </script>
 </html>

@@ -136,7 +136,6 @@ input[type=button]{
 	margin-top: 2.5px;
 }
 #userImg {
-	background: url('../imgSmall/buttons/user.png') no-repeat top left;
 	background-size: 100% 100%;
 	width: 55px;
 	height: 55px;
@@ -158,7 +157,6 @@ input[type=button]{
 }
 
 #needToChange {
-	background: url('../imgSmall/buttons/user.png') no-repeat top left;
 	background-size: 100% 100%;
     width: 70px;
     height: 70px;

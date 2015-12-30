@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-29 13:38-0800\n"
+"POT-Creation-Date: 2015-12-08 10:45-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,53 +20,57 @@ msgstr ""
 
 #: heavyconnect/settings.py:124
 msgid "English"
-msgstr ""
+msgstr "Inglés"
 
 #: heavyconnect/settings.py:125
 msgid "Spanish"
-msgstr ""
+msgstr "Español"
 
 #: heavyconnect/settings.py:126
 msgid "Brazilian Portuguese"
-msgstr ""
+msgstr "Portugués Brasileño"
+
+#: templates/404.html:19 templates/500.html:19
+msgid "Home Page"
+msgstr "Página principal"
 
 #: templates/driver/checklist.html:91
 msgid "Engine hours"
-msgstr ""
+msgstr "Horas del motor"
 
 #: templates/driver/checklist.html:92
 msgid "Save"
-msgstr ""
+msgstr "Guardar"
 
 #: templates/driver/checklist.html:100
 msgid "Checklist Saved"
-msgstr ""
+msgstr "Lista de Verificación Guardado"
 
 #: templates/driver/checklist.html:103
 msgid "Engine hours required"
-msgstr ""
+msgstr "Horas del motor requerido"
 
 #: templates/driver/checklist.html:145
 msgid "HC CHECKLIST"
-msgstr ""
+msgstr "HC CHECKLIST"
 
 #: templates/driver/checklist.html:166
 msgid "YES"
-msgstr ""
+msgstr "SI"
 
 #: templates/driver/checklist.html:170
 msgid "NO"
-msgstr ""
+msgstr "NO"
 
 #: templates/driver/checklist.html:182
 msgid "Take Picture"
-msgstr ""
+msgstr "Tomar Foto"
 
 #: templates/driver/createTask.html:158
 #: templates/manager/createTaskManager.html:167
 #: templates/manager/templateCreateTaskManager.html:162
 msgid "Nickname:"
-msgstr ""
+msgstr "Apodo"
 
 #: templates/driver/createTask.html:158 templates/driver/createTask.html:195
 #: templates/manager/createTaskManager.html:167
@@ -79,7 +83,7 @@ msgstr ""
 #: templates/driver/createTask.html:324
 #: templates/manager/createTaskManager.html:355
 msgid "CREATE TASK"
-msgstr ""
+msgstr "CREAR TAREA"
 
 #: templates/driver/createTask.html:328 templates/driver/startTask.html:202
 #: templates/driver/startTask.html:215
@@ -88,19 +92,19 @@ msgstr ""
 #: templates/manager/templateCreateTaskManager.html:306
 #: templates/manager/templateCreateTaskManager.html:333
 msgid "Task"
-msgstr ""
+msgstr "TAREA"
 
 #: templates/driver/createTask.html:329 templates/driver/startTask.html:203
 #: templates/manager/createTaskManager.html:361
 #: templates/manager/templateCreateTaskManager.html:312
 msgid "Machine"
-msgstr ""
+msgstr "Mácina"
 
 #: templates/driver/createTask.html:330 templates/driver/startTask.html:204
 #: templates/manager/createTaskManager.html:362
 #: templates/manager/templateCreateTaskManager.html:315
 msgid "Implement"
-msgstr ""
+msgstr "Implemento"
 
 #: templates/driver/createTask.html:331 templates/driver/createTask.html:446
 #: templates/driver/startTask.html:205 templates/driver/startTask.html:319
@@ -111,23 +115,23 @@ msgstr ""
 #: templates/manager/templateCreateTaskManager.html:318
 #: templates/manager/templateCreateTaskManager.html:468
 msgid "Field"
-msgstr ""
+msgstr "Campo"
 
 #: templates/driver/createTask.html:332
 #: templates/manager/createTaskManager.html:364
 #: templates/manager/templateCreateTaskManager.html:321
 msgid "Time"
-msgstr ""
+msgstr "Tiempo"
 
 #: templates/driver/createTask.html:333
 #: templates/manager/createTaskManager.html:365
 #: templates/manager/templateCreateTaskManager.html:324
 msgid "Add Info"
-msgstr ""
+msgstr "Añadir Información"
 
 #: templates/driver/createTask.html:341
 msgid "Task:"
-msgstr ""
+msgstr "Tarea"
 
 #: templates/driver/createTask.html:358 templates/driver/createTask.html:388
 #: templates/driver/createTask.html:437 templates/driver/createTask.html:463
@@ -146,12 +150,12 @@ msgstr ""
 #: templates/manager/templateCreateTaskManager.html:485
 #: templates/manager/templateCreateTaskManager.html:525
 msgid "NEXT"
-msgstr ""
+msgstr "Siguiente"
 
 #: templates/driver/createTask.html:366 templates/driver/schedule.html:78
 #: templates/manager/scheduleManager.html:263
 msgid "MACHINE:"
-msgstr ""
+msgstr "MAQUINA"
 
 #: templates/driver/createTask.html:371 templates/driver/createTask.html:403
 #: templates/driver/createTask.html:420
@@ -162,7 +166,7 @@ msgstr ""
 #: templates/manager/templateCreateTaskManager.html:423
 #: templates/manager/templateCreateTaskManager.html:441
 msgid "Search"
-msgstr ""
+msgstr "Buscar"
 
 #: templates/driver/createTask.html:372 templates/driver/createTask.html:404
 #: templates/driver/createTask.html:421 templates/driver/startTask.html:247
@@ -174,7 +178,7 @@ msgstr ""
 #: templates/manager/templateCreateTaskManager.html:424
 #: templates/manager/templateCreateTaskManager.html:442
 msgid "Scan"
-msgstr ""
+msgstr "Escanear"
 
 #: templates/driver/createTask.html:382 templates/driver/createTask.html:431
 #: templates/driver/createTask.html:457 templates/driver/createTask.html:497
@@ -192,7 +196,7 @@ msgstr ""
 #: templates/manager/templateCreateTaskManager.html:519
 #: templates/manager/templateCreateTaskManager.html:552
 msgid "RETURN"
-msgstr ""
+msgstr "Regresar"
 
 #: templates/driver/createTask.html:397 templates/driver/createTask.html:414
 #: templates/driver/pastTasks.html:154 templates/driver/pastTasks.html:163
@@ -203,11 +207,11 @@ msgstr ""
 #: templates/manager/templateCreateTaskManager.html:417
 #: templates/manager/templateCreateTaskManager.html:435
 msgid "IMPLEMENT"
-msgstr ""
+msgstr "IMPLEMENTO"
 
 #: templates/driver/createTask.html:472
 msgid "Date:"
-msgstr ""
+msgstr "Fecha"
 
 #: templates/driver/createTask.html:480
 msgid "Start Time:"
@@ -215,27 +219,27 @@ msgstr ""
 
 #: templates/driver/createTask.html:488
 msgid "Hours Prediction:"
-msgstr ""
+msgstr "Horas Predicción:"
 
 #: templates/driver/createTask.html:512
 msgid "Passes:"
-msgstr ""
+msgstr "Pases"
 
 #: templates/driver/createTask.html:521
 msgid "Description:"
-msgstr ""
+msgstr "Descripción"
 
 #: templates/driver/createTask.html:536
 #: templates/manager/createTaskManager.html:593
 #: templates/manager/templateCreateTaskManager.html:558
 msgid "SUBMIT"
-msgstr ""
+msgstr "ENVIAR"
 
 #: templates/driver/createTask.html:553
 #: templates/manager/createTaskManager.html:610
 #: templates/manager/templateCreateTaskManager.html:572
 msgid "Find a Machine"
-msgstr ""
+msgstr "Encontrar Máquina"
 
 #: templates/driver/createTask.html:557 templates/driver/createTask.html:605
 #: templates/manager/createTaskManager.html:614
@@ -243,7 +247,7 @@ msgstr ""
 #: templates/manager/templateCreateTaskManager.html:575
 #: templates/manager/templateCreateTaskManager.html:624
 msgid "Filters"
-msgstr ""
+msgstr "Filtros"
 
 #: templates/driver/createTask.html:558 templates/driver/createTask.html:606
 #: templates/manager/createTaskManager.html:615
@@ -251,7 +255,7 @@ msgstr ""
 #: templates/manager/templateCreateTaskManager.html:576
 #: templates/manager/templateCreateTaskManager.html:625
 msgid "Manufacturers:"
-msgstr ""
+msgstr "Fabricantes"
 
 #: templates/driver/createTask.html:560 templates/driver/createTask.html:565
 #: templates/driver/createTask.html:573 templates/driver/createTask.html:608
@@ -269,13 +273,13 @@ msgstr ""
 #: templates/manager/templateCreateTaskManager.html:635
 #: templates/manager/templateCreateTaskManager.html:645
 msgid "All"
-msgstr ""
+msgstr "Todo"
 
 #: templates/driver/createTask.html:563
 #: templates/manager/createTaskManager.html:620
 #: templates/manager/templateCreateTaskManager.html:582
 msgid "HP:"
-msgstr ""
+msgstr "HP:"
 
 #: templates/driver/createTask.html:566 templates/driver/createTask.html:614
 #: templates/manager/createTaskManager.html:623
@@ -283,7 +287,7 @@ msgstr ""
 #: templates/manager/templateCreateTaskManager.html:586
 #: templates/manager/templateCreateTaskManager.html:636
 msgid "175 HP Or Greater"
-msgstr ""
+msgstr "175 HP o Más"
 
 #: templates/driver/createTask.html:567 templates/driver/createTask.html:615
 #: templates/manager/createTaskManager.html:624
@@ -291,7 +295,7 @@ msgstr ""
 #: templates/manager/templateCreateTaskManager.html:587
 #: templates/manager/templateCreateTaskManager.html:637
 msgid "100 HP Or Greater"
-msgstr ""
+msgstr "100 HP o Más"
 
 #: templates/driver/createTask.html:568 templates/driver/createTask.html:616
 #: templates/manager/createTaskManager.html:625
@@ -299,13 +303,13 @@ msgstr ""
 #: templates/manager/templateCreateTaskManager.html:588
 #: templates/manager/templateCreateTaskManager.html:638
 msgid "40 HP Or Greater"
-msgstr ""
+msgstr "40 HP o Más"
 
 #: templates/driver/createTask.html:571
 #: templates/manager/createTaskManager.html:628
 #: templates/manager/templateCreateTaskManager.html:591
 msgid "Hitch Capacity:"
-msgstr ""
+msgstr "Capacidad Hitch"
 
 #: templates/driver/createTask.html:574 templates/driver/createTask.html:622
 #: templates/manager/createTaskManager.html:631
@@ -313,7 +317,7 @@ msgstr ""
 #: templates/manager/templateCreateTaskManager.html:595
 #: templates/manager/templateCreateTaskManager.html:646
 msgid "20 000 lbs or Greater"
-msgstr ""
+msgstr "20 000 lbs o más"
 
 #: templates/driver/createTask.html:575 templates/driver/createTask.html:623
 #: templates/manager/createTaskManager.html:632
@@ -321,7 +325,7 @@ msgstr ""
 #: templates/manager/templateCreateTaskManager.html:596
 #: templates/manager/templateCreateTaskManager.html:647
 msgid "15 000 lbs or Greater"
-msgstr ""
+msgstr "15 000 lbs o más"
 
 #: templates/driver/createTask.html:576 templates/driver/createTask.html:624
 #: templates/manager/createTaskManager.html:633
@@ -329,7 +333,7 @@ msgstr ""
 #: templates/manager/templateCreateTaskManager.html:597
 #: templates/manager/templateCreateTaskManager.html:648
 msgid "10 000 lbs or Greater"
-msgstr ""
+msgstr "10 000 lbs o más"
 
 #: templates/driver/createTask.html:577 templates/driver/createTask.html:625
 #: templates/manager/createTaskManager.html:634
@@ -337,129 +341,130 @@ msgstr ""
 #: templates/manager/templateCreateTaskManager.html:598
 #: templates/manager/templateCreateTaskManager.html:649
 msgid "5 000 lbs or Greater"
-msgstr ""
+msgstr "5 000 lbs o más"
 
 #: templates/driver/createTask.html:587 templates/driver/createTask.html:635
 #: templates/driver/createTask.html:703 templates/driver/startTask.html:380
+#: templates/driver/timeKeeper.html:1027
 #: templates/manager/createTaskManager.html:644
 #: templates/manager/createTaskManager.html:692
 #: templates/manager/templateCreateTaskManager.html:695
 msgid "Close"
-msgstr ""
+msgstr "Cerrar"
 
 #: templates/driver/createTask.html:601
 #: templates/manager/createTaskManager.html:658
 #: templates/manager/templateCreateTaskManager.html:621
 msgid "Find a implement"
-msgstr ""
+msgstr "Buscar implemento"
 
 #: templates/driver/createTask.html:611
 #: templates/manager/createTaskManager.html:668
 #: templates/manager/templateCreateTaskManager.html:632
 msgid "HP required"
-msgstr ""
+msgstr "HP requerido"
 
 #: templates/driver/createTask.html:619
 #: templates/manager/createTaskManager.html:676
 #: templates/manager/templateCreateTaskManager.html:642
 msgid "Hitch Capacity required:"
-msgstr ""
+msgstr "Capacidad Hitch requerido"
 
 #: templates/driver/createTask.html:647 templates/driver/scanQRCode.html:151
 #: templates/manager/createTaskManager.html:704
 msgid "Add New Equipment"
-msgstr ""
+msgstr "Agregar nuevo Equipamento"
 
 #: templates/driver/createTask.html:663 templates/driver/scanQRCode.html:133
 #: templates/manager/createTaskManager.html:720
 msgid "Equipment not Found"
-msgstr ""
+msgstr "Equipamento no encontrado"
 
 #: templates/driver/createTask.html:667 templates/driver/scanQRCode.html:139
-#: templates/driver/timeKeeperGroup.html:1001
+#: templates/driver/timeKeeperGroup.html:1025
 #: templates/manager/createTaskManager.html:724
 msgid "Yes"
-msgstr ""
+msgstr "Si"
 
 #: templates/driver/createTask.html:668 templates/driver/scanQRCode.html:140
-#: templates/driver/timeKeeperGroup.html:1002
+#: templates/driver/timeKeeperGroup.html:1026
 #: templates/manager/createTaskManager.html:725
 msgid "No"
-msgstr ""
+msgstr "No"
 
 #: templates/driver/createTask.html:685 templates/driver/scanQRCode.html:99
 #: templates/driver/startTask.html:353
-#: templates/driver/timeKeeperGroup.html:956
+#: templates/driver/timeKeeperGroup.html:980
 #: templates/manager/createTaskManager.html:744
 #: templates/manager/templateCreateTaskManager.html:676
 msgid "Scan QR-Code"
-msgstr ""
+msgstr "Escanear código"
 
 #: templates/driver/equipment.html:281 templates/driver/equipment.html:347
 #: templates/driver/taskFlow.html:185
 msgid "TRACTOR"
-msgstr ""
+msgstr "TRACTOR"
 
 #: templates/driver/equipment.html:284 templates/driver/equipment.html:355
 #: templates/manager/map.html:127
 msgid "Status"
-msgstr ""
+msgstr "Estatus"
 
 #: templates/driver/equipment.html:286
 msgid "OK - Ready to work"
-msgstr ""
+msgstr "OK"
 
 #: templates/driver/equipment.html:290
 msgid "SERVICE Needed"
-msgstr ""
+msgstr "SERVICIO Necesario"
 
 #: templates/driver/equipment.html:294
 msgid "BROKEN! Do not use"
-msgstr ""
+msgstr "ROTO! No usar"
 
 #: templates/driver/equipment.html:299
 msgid "Notes"
-msgstr ""
+msgstr "Notas"
 
 #: templates/driver/equipment.html:304 templates/driver/equipment.html:348
 msgid "QR Sticker"
-msgstr ""
+msgstr "Código"
 
 #: templates/driver/equipment.html:306 templates/driver/equipment.html:349
 msgid "Reiter Asset"
-msgstr ""
+msgstr "Asset"
 
 #: templates/driver/equipment.html:308 templates/driver/equipment.html:350
 msgid "Manufacturer"
-msgstr ""
+msgstr "Fabricante"
 
 #: templates/driver/equipment.html:310 templates/driver/equipment.html:351
 msgid "Model"
-msgstr ""
+msgstr "Modelo"
 
 #: templates/driver/equipment.html:312 templates/driver/equipment.html:353
 msgid "Hours"
-msgstr ""
+msgstr "Horas"
 
 #: templates/driver/equipment.html:314 templates/driver/equipment.html:354
 msgid "Horse Power"
-msgstr ""
+msgstr "Horse Power"
 
 #: templates/driver/equipment.html:323
 msgid "SPEC"
-msgstr ""
+msgstr "SPEC"
 
 #: templates/driver/equipment.html:352
 msgid "Serial Number"
-msgstr ""
+msgstr "Número de serie"
 
 #: templates/driver/equipment.html:356
 msgid "Hitch Capacity"
-msgstr ""
+msgstr "Categoría Hitch"
 
 #: templates/driver/equipment.html:357
 msgid "Hitch Category"
-msgstr ""
+msgstr "Categoría Drawn"
 
 #: templates/driver/equipment.html:358
 msgid "Drawn Category"
@@ -467,79 +472,79 @@ msgstr ""
 
 #: templates/driver/equipment.html:359
 msgid "Acquired"
-msgstr ""
+msgstr "Adquirido"
 
 #: templates/driver/equipment.html:360
 msgid "Speed Range Min"
-msgstr ""
+msgstr "Rango de velocidad mínima"
 
 #: templates/driver/equipment.html:361
 msgid "Speed Range Max"
-msgstr ""
+msgstr "Rango de velocidad máximo"
 
 #: templates/driver/equipment.html:362
 msgid "Engine Hours"
-msgstr ""
+msgstr "Horas de Motor"
 
 #: templates/driver/equipment.html:363
 msgid "Base Cost"
-msgstr ""
+msgstr "Costo Base"
 
 #: templates/driver/equipment.html:364
 msgid "Machine Type"
-msgstr ""
+msgstr "Tipo de Máquina"
 
 #: templates/driver/equipment.html:365
 msgid "Front Tires"
-msgstr ""
+msgstr "Llantas Delanteras"
 
 #: templates/driver/equipment.html:366
 msgid "Rear Tires"
-msgstr ""
+msgstr "Llantas Traseras"
 
 #: templates/driver/equipment.html:367
 msgid "Steering"
-msgstr ""
+msgstr "Steering"
 
 #: templates/driver/equipment.html:368
 msgid "Operation Station"
-msgstr ""
+msgstr "Estación de Operación"
 
 #: templates/driver/equipment.html:400
 msgid "Previous"
-msgstr ""
+msgstr "Anterior"
 
 #: templates/driver/equipment.html:401
 msgid "Next"
-msgstr ""
+msgstr "Siguiente"
 
 #: templates/driver/home.html:33
 msgid "EQUIPMENT"
-msgstr ""
+msgstr "EQUIPMAMENTO"
 
 #: templates/driver/home.html:38
 msgid "TASKFLOW"
-msgstr ""
+msgstr "TASKFLOW"
 
 #: templates/driver/home.html:43
 msgid "SCHEDULE"
-msgstr ""
+msgstr "HORARIO"
 
 #: templates/driver/home.html:48
 msgid "TIMEKEEPER"
-msgstr ""
+msgstr "TIMEKEEPER"
 
 #: templates/driver/home.html:53
 msgid "CHECKLIST"
-msgstr ""
+msgstr "CHECKLIST"
 
 #: templates/driver/pastTasks.html:23
 msgid "There is no past task to be displayed"
-msgstr ""
+msgstr "No hay tarea pasado"
 
 #: templates/driver/pastTasks.html:131
 msgid "HC PAST TASKS"
-msgstr ""
+msgstr "HC TAREA ANTERIOR"
 
 #: templates/driver/pastTasks.html:153 templates/driver/pastTasks.html:162
 #: templates/driver/startTask.html:241
@@ -547,213 +552,517 @@ msgstr ""
 #: templates/manager/manageForms.html:44
 #: templates/manager/templateCreateTaskManager.html:384
 msgid "MACHINE"
-msgstr ""
+msgstr "MAQUINA"
 
 #: templates/driver/pastTasks.html:155 templates/driver/pastTasks.html:164
 #: templates/driver/taskFlow.html:183
 msgid "FIELD"
-msgstr ""
+msgstr "CAMPO"
 
 #: templates/driver/pastTasks.html:156 templates/driver/pastTasks.html:165
 msgid "TASK"
-msgstr ""
+msgstr "TAREA"
 
 #: templates/driver/pastTasks.html:157 templates/driver/pastTasks.html:166
 msgid "CATEGORY"
-msgstr ""
+msgstr "CATEGORIA"
 
 #: templates/driver/pastTasks.html:158 templates/driver/pastTasks.html:167
 msgid "DURATION"
-msgstr ""
+msgstr "DURACION"
 
 #: templates/driver/scanQRCode.html:114 templates/driver/startTask.html:368
-#: templates/driver/timeKeeperGroup.html:971
+#: templates/driver/timeKeeperGroup.html:995
 msgid "Type QR-Code"
-msgstr ""
+msgstr "Teclar Código"
 
 #: templates/driver/schedule.html:24
 msgid "There was an error while fetching events!"
-msgstr ""
+msgstr "Hubo error al recuperar eventos"
 
 #: templates/driver/schedule.html:47 templates/driver/startTask.html:335
 #: templates/driver/taskFlow.html:197
 #: templates/manager/scheduleManager.html:125
 msgid "Start"
-msgstr ""
+msgstr "Empezar"
 
 #: templates/driver/schedule.html:65
 #: templates/manager/scheduleManager.html:211
 msgid "HC Scheduler"
-msgstr ""
+msgstr "HC Scheduler"
 
 #: templates/driver/schedule.html:73
 #: templates/manager/scheduleManager.html:255
 msgid "TASK INFORMATION"
-msgstr ""
+msgstr "INFORMATION DE TAREA"
 
 #: templates/driver/schedule.html:75
 #: templates/manager/scheduleManager.html:257
 msgid "TASK:"
-msgstr ""
+msgstr "TAREA"
 
 #: templates/driver/schedule.html:76
 #: templates/manager/scheduleManager.html:259
 msgid "DESCRIPTION:"
-msgstr ""
+msgstr "DESCRIPCION"
 
 #: templates/driver/schedule.html:77
 #: templates/manager/scheduleManager.html:261
 msgid "FIELD:"
-msgstr ""
+msgstr "CAMPO"
 
 #: templates/driver/schedule.html:79
 #: templates/manager/scheduleManager.html:265
 msgid "IMPLEMENT:"
-msgstr ""
+msgstr "IMPLEMENTO:"
 
 #: templates/driver/startTask.html:197
 msgid "Start Task"
-msgstr ""
+msgstr "Empezar Tarea"
 
 #: templates/driver/startTask.html:217
 #: templates/manager/createTaskManager.html:578
 #: templates/manager/templateCreateTaskManager.html:543
 msgid "Description"
-msgstr ""
+msgstr "Descripción"
 
 #: templates/driver/startTask.html:288 templates/driver/taskFlow.html:191
 msgid "IMPLEMENT 2"
-msgstr ""
+msgstr "IMPLEMENTO 2"
 
 #: templates/driver/taskFlow.html:128
 msgid "HC TASKFLOW"
-msgstr ""
+msgstr "HC TASKFLOW"
 
 #: templates/driver/taskFlow.html:140 templates/driver/taskFlow.html.py:149
 #: templates/driver/taskFlow.html:158
 msgid "More Info"
+msgstr "Mas Informacíon"
+
+#: templates/driver/timeKeeper.html:45
+#: templates/driver/timeKeeperGroup.html:234
+msgid "Checking shift"
 msgstr ""
 
-#: templates/driver/timeKeeper.html:37 templates/driver/timeKeeper.html:89
-#: templates/driver/timeKeeper.html:138
+#: templates/driver/timeKeeper.html:61 templates/driver/timeKeeper.html:109
+#: templates/driver/timeKeeper.html:162
 msgid "CONFIRM"
+msgstr "CONFIRMAR"
+
+#: templates/driver/timeKeeper.html:74 templates/driver/timeKeeper.html:91
+#: templates/driver/timeKeeper.html:127 templates/driver/timeKeeper.html:144
+#: templates/driver/timeKeeper.html:178 templates/driver/timeKeeper.html:195
+msgid "Synchronizing Data"
+msgstr "Sincronizando Data"
+
+#: templates/driver/timeKeeper.html:77
+msgid "Starting shift"
+msgstr "Empezando periodo"
+
+#: templates/driver/timeKeeper.html:94
+msgid "Stopping shift"
+msgstr "Terminando periodo"
+
+#: templates/driver/timeKeeper.html:104
+msgid "Start break"
+msgstr "Empezar descanzo"
+
+#: templates/driver/timeKeeper.html:106
+msgid "End break"
+msgstr "Terminar descanzo"
+
+#: templates/driver/timeKeeper.html:114 templates/driver/timeKeeper.html:167
+#: templates/driver/timeKeeper.html:609
+msgid "You cannot start 2 breaks at the same time"
+msgstr "No puedes empezar 2 descansos al mismo tiempo"
+
+#: templates/driver/timeKeeper.html:130
+msgid "Starting break"
+msgstr "Empezando descanzo"
+
+#: templates/driver/timeKeeper.html:147
+msgid "Ending break"
+msgstr "Terminando descanzo"
+
+#: templates/driver/timeKeeper.html:157
+msgid "Start lunch"
+msgstr "Empezar almuerzo"
+
+#: templates/driver/timeKeeper.html:159
+msgid "End lunch"
+msgstr "Terminar almuerzo"
+
+#: templates/driver/timeKeeper.html:181
+msgid "Starting lunch"
+msgstr "Empezando almuerzo"
+
+#: templates/driver/timeKeeper.html:198
+msgid "Ending lunch"
+msgstr "Terminando almuerzo"
+
+#: templates/driver/timeKeeper.html:539
+#: templates/driver/timeKeeperGroup.html:303
+msgid "There is no shift records for this employee"
+msgstr "No hay record para este empleado"
+
+#: templates/driver/timeKeeper.html:542 templates/driver/timeKeeper.html:545
+#: templates/driver/timeKeeper.html:572 templates/driver/timeKeeper.html:574
+#: templates/driver/timeKeeper.html:615 templates/driver/timeKeeper.html:617
+#: templates/driver/timeKeeper.html:659 templates/driver/timeKeeper.html:661
+#: templates/driver/timeKeeper.html:692 templates/driver/timeKeeper.html:694
+#: templates/driver/timeKeeperGroup.html:308
+#: templates/driver/timeKeeperGroup.html:313
+#: templates/driver/timeKeeperGroup.html:386
+#: templates/driver/timeKeeperGroup.html:387
+#: templates/driver/timeKeeperGroup.html:408
+#: templates/driver/timeKeeperGroup.html:409
+#: templates/driver/timeKeeperGroup.html:434
+#: templates/driver/timeKeeperGroup.html:435
+#: templates/driver/timeKeeperGroup.html:460
+#: templates/driver/timeKeeperGroup.html:461
+msgid "Error. Contact Suport"
+msgstr "Error. Contactar HeavyConnect."
+
+#: templates/driver/timeKeeper.html:562
+msgid "Clock-in successful"
+msgstr "Entrada"
+
+#: templates/driver/timeKeeper.html:570
+msgid "There is no users associated whit this id"
+msgstr "No hay usuarios asociado con este ID"
+
+#: templates/driver/timeKeeper.html:598
+msgid "Break started"
+msgstr "Descanzo empezado"
+
+#: templates/driver/timeKeeper.html:602
+msgid "Lunch started"
+msgstr "Almuerzo empezado"
+
+#: templates/driver/timeKeeper.html:611 templates/driver/timeKeeper.html:655
+#: templates/driver/timeKeeper.html:686
+#: templates/driver/timeKeeperGroup.html:406
+#: templates/driver/timeKeeperGroup.html:432
+#: templates/driver/timeKeeperGroup.html:457
+msgid "The shift for today was already finished"
+msgstr "El periodo de hoy fue terminado"
+
+#: templates/driver/timeKeeper.html:613 templates/driver/timeKeeper.html:657
+#: templates/driver/timeKeeperGroup.html:407
+#: templates/driver/timeKeeperGroup.html:433
+msgid "You need to start a shift first"
+msgstr "Necesitas empezar tu periodo primero"
+
+#: templates/driver/timeKeeper.html:644
+msgid "Break ended"
+msgstr "Descanzo terminado"
+
+#: templates/driver/timeKeeper.html:648
+msgid "Lunch ended"
+msgstr "Almuerzo terminado"
+
+#: templates/driver/timeKeeper.html:653
+#: templates/driver/timeKeeperGroup.html:431
+msgid "You need to start a break first"
+msgstr "Empieza un descanzo"
+
+#: templates/driver/timeKeeper.html:678
+msgid "Shift ended"
+msgstr "Periodo terminado"
+
+#: templates/driver/timeKeeper.html:684
+msgid "You need to take at least 3 breaks"
+msgstr "Toma 3 descanzos"
+
+#: templates/driver/timeKeeper.html:688
+msgid "You have not started your shift yet"
+msgstr "Nos has empezado tu periodo"
+
+#: templates/driver/timeKeeper.html:690
+#: templates/driver/timeKeeperGroup.html:459
+msgid "This user is not authorized to use the system"
+msgstr "Este usuario no es autorizado"
+
+#: templates/driver/timeKeeper.html:711
+#: templates/driver/timeKeeperGroup.html:482
+msgid "Check before sign"
 msgstr ""
 
-#: templates/driver/timeKeeper.html:532
-#: templates/driver/timeKeeperGroup.html:850
-msgid "HC TIMEKEEPER"
+#: templates/driver/timeKeeper.html:719
+#: templates/driver/timeKeeperGroup.html:490
+msgid "SIGN NOW"
 msgstr ""
 
-#: templates/driver/timeKeeper.html:536
-#: templates/driver/timeKeeperGroup.html:859
-msgid "SHIFT"
-msgstr ""
+#: templates/driver/timeKeeper.html:955
+msgid "Synchronization done"
+msgstr "Sincronización"
 
-#: templates/driver/timeKeeper.html:541
-#: templates/driver/timeKeeperGroup.html:864
-msgid "BREAK"
-msgstr ""
-
-#: templates/driver/timeKeeper.html:546
-#: templates/driver/timeKeeperGroup.html:869
-msgid "LUNCH"
-msgstr ""
-
-#: templates/driver/timeKeeper.html:551
+#: templates/driver/timeKeeper.html:965
 #: templates/driver/timeKeeperGroup.html:874
-msgid "TIMELOG"
-msgstr ""
+msgid "HC TIMEKEEPER"
+msgstr "HC TIMEKEEPER"
 
-#: templates/driver/timeKeeper.html:587
-#: templates/driver/timeKeeperGroup.html:890
-msgid "Sign Here"
-msgstr ""
+#: templates/driver/timeKeeper.html:969
+#: templates/driver/timeKeeperGroup.html:883
+msgid "SHIFT"
+msgstr "PERIODO"
 
-#: templates/driver/timeKeeper.html:592
-msgid "Limpiar"
-msgstr ""
+#: templates/driver/timeKeeper.html:974
+#: templates/driver/timeKeeperGroup.html:888
+msgid "BREAK"
+msgstr "DESCANZO"
 
-#: templates/driver/timeKeeper.html:593
-#: templates/driver/timeKeeperGroup.html:895
-msgid "Cerrar"
-msgstr ""
+#: templates/driver/timeKeeper.html:979
+#: templates/driver/timeKeeperGroup.html:893
+msgid "LUNCH"
+msgstr "ALMUERZO"
 
-#: templates/driver/timeKeeper.html:596
+#: templates/driver/timeKeeper.html:984
 #: templates/driver/timeKeeperGroup.html:898
+msgid "TIMELOG"
+msgstr "TIMELOG"
+
+#: templates/driver/timeKeeper.html:1021
+#: templates/driver/timeKeeperGroup.html:914
+msgid "Sign Here"
+msgstr "Firma aquí"
+
+#: templates/driver/timeKeeper.html:1026
+#: templates/driver/timeKeeperGroup.html:918
+msgid "Clear"
+msgstr "Limpio"
+
+#: templates/driver/timeKeeper.html:1030
+#: templates/driver/timeKeeperGroup.html:922
 msgid "Confirm"
-msgstr ""
+msgstr "Confirmar"
+
+#: templates/driver/timeKeeperGroup.html:81
+msgid "Select the team for this action"
+msgstr "Eliga un equipo"
 
 #: templates/driver/timeKeeperGroup.html:83
 msgid "CLOCK-IN"
-msgstr ""
+msgstr "CLOCK-IN"
 
 #: templates/driver/timeKeeperGroup.html:84
 msgid "CLOCK-OUT"
-msgstr ""
+msgstr "CLOCK-OUT"
 
-#: templates/driver/timeKeeperGroup.html:118
+#: templates/driver/timeKeeperGroup.html:93
+msgid "Starting Team shift"
+msgstr "Empezando periodo para el equipo"
+
+#: templates/driver/timeKeeperGroup.html:100
+#: templates/driver/timeKeeperGroup.html:117
+#: templates/driver/timeKeeperGroup.html:144
+#: templates/driver/timeKeeperGroup.html:162
+#: templates/driver/timeKeeperGroup.html:189
+#: templates/driver/timeKeeperGroup.html:207
+msgid "Select 1 Team to this action"
+msgstr "Eliga 1 equipo"
+
+#: templates/driver/timeKeeperGroup.html:110
+msgid "Stopping Team shift"
+msgstr "Terminando periodo para el equipo"
+
+#: templates/driver/timeKeeperGroup.html:124
+msgid "Select the Team for this action"
+msgstr "Eliga un equipo"
+
+#: templates/driver/timeKeeperGroup.html:126
 msgid "START BREAK"
-msgstr ""
+msgstr "EMPEZAR DESCANZO"
 
-#: templates/driver/timeKeeperGroup.html:119
+#: templates/driver/timeKeeperGroup.html:127
 msgid "STOP BREAK"
-msgstr ""
+msgstr "TERMINAR DESCANZO"
 
-#: templates/driver/timeKeeperGroup.html:155
+#: templates/driver/timeKeeperGroup.html:136
+#: templates/driver/timeKeeperGroup.html:199
+msgid "Starting Team break"
+msgstr "Empezando descanzo"
+
+#: templates/driver/timeKeeperGroup.html:154
+msgid "Stopping Team break"
+msgstr "Terminando descanzo"
+
+#: templates/driver/timeKeeperGroup.html:169
+msgid "Select the employees for this action"
+msgstr "Eliga empleados"
+
+#: templates/driver/timeKeeperGroup.html:171
 msgid "START LUNCH"
-msgstr ""
+msgstr "EMPIEZA ALMUERZO"
 
-#: templates/driver/timeKeeperGroup.html:156
+#: templates/driver/timeKeeperGroup.html:172
 msgid "STOP LUNCH"
-msgstr ""
+msgstr "TERMINA ALMUERZO"
 
-#: templates/driver/timeKeeperGroup.html:218
-msgid "Team Name..."
-msgstr ""
+#: templates/driver/timeKeeperGroup.html:181
+msgid "Starting Team lunch"
+msgstr "Empezando Almuerzo"
 
-#: templates/driver/timeKeeperGroup.html:220
+#: templates/driver/timeKeeperGroup.html:215
+#: templates/driver/timeKeeperGroup.html:222
+msgid "Select the Team to TIMELOG"
+msgstr "Eliga equipo para TIMELOG"
+
+#: templates/driver/timeKeeperGroup.html:229
+msgid "Select the Employee to TIMELOG"
+msgstr "Eliga empleado para TIMELOG"
+
+#: templates/driver/timeKeeperGroup.html:241
+msgid "Create New Team"
+msgstr "Crear Nuevo Equipo"
+
+#: templates/driver/timeKeeperGroup.html:242
+msgid "Team Name"
+msgstr "Nombre del Equipo"
+
+#: templates/driver/timeKeeperGroup.html:243
+msgid "Save Team"
+msgstr "Guardar Equipo"
+
+#: templates/driver/timeKeeperGroup.html:244
 msgid "Add Employees"
-msgstr ""
+msgstr "Agregar Empleados"
 
-#: templates/driver/timeKeeperGroup.html:790
+#: templates/driver/timeKeeperGroup.html:260
+msgid "Creating team"
+msgstr "Creando equipo"
+
+#: templates/driver/timeKeeperGroup.html:272
+msgid "Team Created"
+msgstr "Equipo Creado"
+
+#: templates/driver/timeKeeperGroup.html:384
+msgid "You need to finish the current shift before create a new one"
+msgstr "Termina el periodo para empezar un nuevo periodo"
+
+#: templates/driver/timeKeeperGroup.html:385
+msgid "There is no users associated with this id"
+msgstr "No hay usuario con este ID"
+
+#: templates/driver/timeKeeperGroup.html:391
+msgid "Clock-in"
+msgstr "Clock-in"
+
+#: templates/driver/timeKeeperGroup.html:405
+msgid "You cannot start two breaks at the same time"
+msgstr "No puedes empezar 2 descanzos"
+
+#: templates/driver/timeKeeperGroup.html:414
+msgid "Break Started"
+msgstr "Descanzo Empezado"
+
+#: templates/driver/timeKeeperGroup.html:417
+msgid "Lunch Started"
+msgstr "lmuerzo Empezado"
+
+#: templates/driver/timeKeeperGroup.html:440
+msgid "Break Ended"
+msgstr "Descanzo Terminado"
+
+#: templates/driver/timeKeeperGroup.html:443
+msgid "Lunch Ended"
+msgstr "Almuerzo Terminado"
+
+#: templates/driver/timeKeeperGroup.html:458
+msgid "You have not started a shift yet"
+msgstr "No has empezado periodo"
+
+#: templates/driver/timeKeeperGroup.html:564
+#: templates/driver/timeKeeperGroup.html:582
+#: templates/driver/timeKeeperGroup.html:699
+msgid "Start Shift"
+msgstr "Empieza Periodo"
+
+#: templates/driver/timeKeeperGroup.html:572
+#: templates/driver/timeKeeperGroup.html:590
+#: templates/driver/timeKeeperGroup.html:728
+msgid "Break"
+msgstr "Descanzo"
+
+#: templates/driver/timeKeeperGroup.html:576
+#: templates/driver/timeKeeperGroup.html:594
+#: templates/driver/timeKeeperGroup.html:733
+msgid "Lunch"
+msgstr "Almuerzo"
+
+#: templates/driver/timeKeeperGroup.html:580
+#: templates/driver/timeKeeperGroup.html:598
+#: templates/driver/timeKeeperGroup.html:764
+msgid "End Shift"
+msgstr "Termina Periodo"
+
+#: templates/driver/timeKeeperGroup.html:601
+msgid "SIGNED"
+msgstr "FIRMADO"
+
+#: templates/driver/timeKeeperGroup.html:608
+msgid "Total"
+msgstr "Total"
+
+#: templates/driver/timeKeeperGroup.html:608
+msgid "hours"
+msgstr "horas"
+
+#: templates/driver/timeKeeperGroup.html:628
+msgid "Select All"
+msgstr "Eliga Todos"
+
+#: templates/driver/timeKeeperGroup.html:647
+msgid "SUCCESS"
+msgstr "EXITO"
+
+#: templates/driver/timeKeeperGroup.html:651
+msgid "ERROR"
+msgstr "ERROR"
+
+#: templates/driver/timeKeeperGroup.html:814
 msgid "Employee added to the group!"
-msgstr ""
+msgstr "Empleado agregado al equipo!"
 
-#: templates/driver/timeKeeperGroup.html:802
+#: templates/driver/timeKeeperGroup.html:819
+msgid "Employees Added"
+msgstr "Empleados Agregado"
+
+#: templates/driver/timeKeeperGroup.html:826
 msgid "This employee does not exist!"
-msgstr ""
+msgstr "Este empleado no existe"
 
-#: templates/driver/timeKeeperGroup.html:807
+#: templates/driver/timeKeeperGroup.html:831
 msgid "Employee already added to the group!"
-msgstr ""
+msgstr "Empleado ya esta agregado al equipo!"
 
-#: templates/driver/timeKeeperGroup.html:854
+#: templates/driver/timeKeeperGroup.html:878
 msgid "CREATE TEAM"
-msgstr ""
+msgstr "CREAR EQUIPO"
 
-#: templates/driver/timeKeeperGroup.html:894
-msgid "Clear"
-msgstr ""
+#: templates/driver/timeKeeperGroup.html:919
+msgid "Cerrar"
+msgstr "Cerrar"
 
-#: templates/driver/timeKeeperGroup.html:992
+#: templates/driver/timeKeeperGroup.html:1016
 msgid "Scan QR-Code says:"
-msgstr ""
+msgstr "Escanear Código:"
 
-#: templates/driver/timeKeeperGroup.html:998
+#: templates/driver/timeKeeperGroup.html:1022
 msgid "Would you like to add another employee to the Group?"
-msgstr ""
+msgstr "Quiere agregar otro empleado?"
 
 #: templates/manager/createTaskManager.html:360
 #: templates/manager/createTaskManager.html:399
 #: templates/manager/templateCreateTaskManager.html:309
 #: templates/manager/templateCreateTaskManager.html:359
 msgid "Employee"
-msgstr ""
+msgstr "Empleado"
 
 #: templates/manager/createTaskManager.html:529
 #: templates/manager/templateCreateTaskManager.html:494
 msgid "Date"
-msgstr ""
+msgstr "Fecha"
 
 #: templates/manager/createTaskManager.html:537
 #: templates/manager/templateCreateTaskManager.html:502
@@ -763,27 +1072,27 @@ msgstr ""
 #: templates/manager/createTaskManager.html:545
 #: templates/manager/templateCreateTaskManager.html:510
 msgid "Hours Prediction"
-msgstr ""
+msgstr "Horas Predicion"
 
 #: templates/manager/createTaskManager.html:569
 #: templates/manager/templateCreateTaskManager.html:534
 msgid "Passes"
-msgstr ""
+msgstr "Pases"
 
-#: templates/manager/employeeUpdate.html:80
-#: templates/manager/formEmployee.html:67
+#: templates/manager/employeeUpdate.html:81
+#: templates/manager/formEmployee.html:80
 #: templates/manager/formImplement.html:65
 #: templates/manager/formMachine.html:64
 #: templates/manager/formRepairShop.html:63 templates/manager/formShop.html:65
 #: templates/manager/templateAddEquipment.html:81
 msgid "SAVE"
-msgstr ""
+msgstr "GUARDAR"
 
 #: templates/manager/formImplement.html:64
 #: templates/manager/formMachine.html:65
 #: templates/manager/formRepairShop.html:64 templates/manager/formShop.html:66
 msgid "DELETE"
-msgstr ""
+msgstr "BORRAR"
 
 #: templates/manager/listEmployee.html:30
 #: templates/manager/listEmployee.html:32
@@ -794,12 +1103,12 @@ msgstr ""
 #: templates/manager/listRepairShop.html:32 templates/manager/listShop.html:30
 #: templates/manager/listShop.html.py:32
 msgid "EDIT"
-msgstr ""
+msgstr "EDITAR"
 
 #: templates/manager/listEmployee.html:30
 #: templates/manager/listEmployee.html:32
 msgid "SEE"
-msgstr ""
+msgstr "MIRAR"
 
 #: templates/manager/listImplement.html:30
 #: templates/manager/listImplement.html:32
@@ -808,37 +1117,37 @@ msgstr ""
 #: templates/manager/listRepairShop.html:32 templates/manager/listShop.html:30
 #: templates/manager/listShop.html.py:32
 msgid "INFO"
-msgstr ""
+msgstr "INFORMACION"
 
 #: templates/manager/manageForms.html:31
 msgid "EMPLOYEE"
-msgstr ""
+msgstr "EMPLEADO"
 
 #: templates/manager/manageForms.html:34 templates/manager/manageForms.html:47
 #: templates/manager/manageForms.html:59 templates/manager/manageForms.html:71
 #: templates/manager/manageForms.html:83
 msgid "ADD"
-msgstr ""
+msgstr "AGREGAR"
 
 #: templates/manager/manageForms.html:39 templates/manager/manageForms.html:52
 #: templates/manager/manageForms.html:64 templates/manager/manageForms.html:76
 #: templates/manager/manageForms.html:88
 msgid "LIST"
-msgstr ""
+msgstr "LISTA"
 
 #: templates/manager/manageForms.html:56
 msgid "SHOP"
-msgstr ""
+msgstr "TALLER"
 
 #: templates/manager/manageForms.html:68
 msgid "REPAIR SHOP"
-msgstr ""
+msgstr "TALLER DE REPARACIONES"
 
 #: templates/manager/scheduleManager.html:241
 msgid "New Task"
-msgstr ""
+msgstr "Nueva Tarea"
 
 #: templates/template/headerDriver.html:35
-#: templates/template/headerHome.html:39
+#: templates/template/headerHome.html:40
 msgid "EXIT"
-msgstr ""
+msgstr "SALIR"
