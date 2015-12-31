@@ -17,6 +17,15 @@
 			$('[data-toggle="popover"]').popover();
 		});
 		</script>
+		<style>
+			.errorIcon {
+				background: url('/static/imgSmall/errorIcon.png') no-repeat top left !important;
+				background-size: 100% 100% !important;
+				width: 20px !important;
+				height: 20px !important;
+				border: none !important;
+			}
+		</style>
 		<script type="text/javascript">
 		var action = -1;	//1 = start shift ... 2 = stop shift ... 3 = start break ... 4 = stop break ... 5 = timelog
 		var lunch = 0;		//	0 = break ... 1 = lunch
@@ -97,29 +106,37 @@
 				$("#teamsList").show();
 			});
 			$("#clock-in").click(function() {
-				teamChecked = $('input[name=teamRadio]:checked').val();
-				if (teamChecked == -1 || teamChecked == undefined) {
-					$("#messageTimekeeper").css("color", "#BB330C");	//red
-					$("#messageTimekeeper").html("{% trans 'Select 1 Team to this action' %}:");
-				} else {
-					$("#messageTimekeeper").css("color", "#1F3801");	//green
-					$("#messageTimekeeper").html("{% trans 'Starting Team shift' %}...");
-					emptyDivs();
-					action = 1;
-					retrieveParticipant("{{ csrf_token }}", "{% url 'retrieveParticipant' %}", teamChecked);
+				for (var i = 0; i < arrayTeams.length; i++) {
+					if ($("input[name='teamRadio']").is(":checked")) {
+						if ($("#team" + i).is(":checked")) {
+							var teamChecked = $("#team" + i).val();
+							$("#messageTimekeeper").css("color", "#1F3801");	//green
+							$("#messageTimekeeper").html("{% trans 'Starting Team shift' %}...");
+							emptyDivs();
+							action = 1;
+							retrieveParticipant("{{ csrf_token }}", "{% url 'retrieveParticipant' %}", teamChecked);
+						}
+					} else {
+						$("#messageTimekeeper").css("color", "#BB330C");	//red
+						$("#messageTimekeeper").html("{% trans 'Select 1 Team to this action' %}:");
+					}
 				}
 			});
 			$("#clock-out").click(function() {
-				teamChecked = $('input[name=teamRadio]:checked').val();
-				if (teamChecked == -1 || teamChecked == undefined) {
-					$("#messageTimekeeper").css("color", "#BB330C");	//red
-					$("#messageTimekeeper").html("{% trans 'Select 1 Team to this action' %}:");
-				} else {
-					$("#messageTimekeeper").css("color", "#1F3801");	//green
-					$("#messageTimekeeper").html("{% trans 'Stopping Team shift' %}...");
-					emptyDivs();
-					action = 2;
-					retrieveParticipant("{{ csrf_token }}", "{% url 'retrieveParticipant' %}", teamChecked);
+				for (var i = 0; i < arrayTeams.length; i++) {
+					if ($("input[name='teamRadio']").is(":checked")) {
+						if ($("#team" + i).is(":checked")) {
+							var teamChecked = $("#team" + i).val();
+							$("#messageTimekeeper").css("color", "#1F3801");	//green
+							$("#messageTimekeeper").html("{% trans 'Stopping Team shift' %}...");
+							emptyDivs();
+							action = 2;
+							retrieveParticipant("{{ csrf_token }}", "{% url 'retrieveParticipant' %}", teamChecked);
+						}
+					} else {
+						$("#messageTimekeeper").css("color", "#BB330C");	//red
+						$("#messageTimekeeper").html("{% trans 'Select 1 Team to this action' %}:");
+					}
 				}
 			});
 			$("#break").click(function() {
@@ -132,31 +149,39 @@
 				$("#teamsList").show();
 			});
 			$("#startBreak").click(function() {
-				teamChecked = $('input[name=teamRadio]:checked').val();
-				if (teamChecked == -1 || teamChecked == undefined) {
-					$("#messageTimekeeper").css("color", "#BB330C");	//red
-					$("#messageTimekeeper").html("{% trans 'Select 1 Team to this action' %}:");
-				} else {
-					$("#messageTimekeeper").css("color", "#1F3801");	//green
-					$("#messageTimekeeper").html("{% trans 'Starting Team break' %}...");
-					emptyDivs();
-					action = 3;
-					lunch = 0;
-					retrieveParticipant("{{ csrf_token }}", "{% url 'retrieveParticipant' %}", teamChecked);
+				for (var i = 0; i < arrayTeams.length; i++) {
+					if ($("input[name='teamRadio']").is(":checked")) {
+						if ($("#team" + i).is(":checked")) {
+							var teamChecked = $("#team" + i).val();
+							$("#messageTimekeeper").css("color", "#1F3801");	//green
+							$("#messageTimekeeper").html("{% trans 'Starting Team break' %}...");
+							emptyDivs();
+							action = 3;
+							lunch = 0;
+							retrieveParticipant("{{ csrf_token }}", "{% url 'retrieveParticipant' %}", teamChecked);
+						}
+					} else {
+						$("#messageTimekeeper").css("color", "#BB330C");	//red
+						$("#messageTimekeeper").html("{% trans 'Select 1 Team to this action' %}:");
+					}
 				}
 			});
 			$("#stopBreak").click(function() {
-				teamChecked = $('input[name=teamRadio]:checked').val();
-				if (teamChecked == -1 || teamChecked == undefined) {
-					$("#messageTimekeeper").css("color", "#BB330C");	//red
-					$("#messageTimekeeper").html("{% trans 'Select 1 Team to this action' %}:");
-				} else {
-					$("#messageTimekeeper").css("color", "#1F3801");	//green
-					$("#messageTimekeeper").html("{% trans 'Stopping Team break' %}...");
-					emptyDivs();
-					action = 4;
-					lunch = 0;
-					retrieveParticipant("{{ csrf_token }}", "{% url 'retrieveParticipant' %}", teamChecked);
+				for (var i = 0; i < arrayTeams.length; i++) {
+					if ($("input[name='teamRadio']").is(":checked")) {
+						if ($("#team" + i).is(":checked")) {
+							var teamChecked = $("#team" + i).val();
+							$("#messageTimekeeper").css("color", "#1F3801");	//green
+							$("#messageTimekeeper").html("{% trans 'Stopping Team break' %}...");
+							emptyDivs();
+							action = 4;
+							lunch = 0;
+							retrieveParticipant("{{ csrf_token }}", "{% url 'retrieveParticipant' %}", teamChecked);
+						}
+					} else {
+						$("#messageTimekeeper").css("color", "#BB330C");	//red
+						$("#messageTimekeeper").html("{% trans 'Select 1 Team to this action' %}:");
+					}
 				}
 			});
 			$("#lunch").click(function() {
@@ -169,31 +194,39 @@
 				$("#teamsList").show();
 			});
 			$("#startLunch").click(function() {
-				teamChecked = $('input[name=teamRadio]:checked').val();
-				if (teamChecked == -1 || teamChecked == undefined) {
-					$("#messageTimekeeper").css("color", "#BB330C");	//red
-					$("#messageTimekeeper").html("{% trans 'Select 1 Team to this action' %}:");
-				} else {
-					$("#messageTimekeeper").css("color", "#1F3801");	//green
-					$("#messageTimekeeper").html("{% trans 'Starting Team lunch' %}...");
-					emptyDivs();
-					action = 3;
-					lunch = 1;
-					retrieveParticipant("{{ csrf_token }}", "{% url 'retrieveParticipant' %}", teamChecked);
+				for (var i = 0; i < arrayTeams.length; i++) {
+					if ($("input[name='teamRadio']").is(":checked")) {
+						if ($("#team" + i).is(":checked")) {
+							var teamChecked = $("#team" + i).val();
+							$("#messageTimekeeper").css("color", "#1F3801");	//green
+							$("#messageTimekeeper").html("{% trans 'Starting Team lunch' %}...");
+							emptyDivs();
+							action = 3;
+							lunch = 1;
+							retrieveParticipant("{{ csrf_token }}", "{% url 'retrieveParticipant' %}", teamChecked);
+						}
+					} else {
+						$("#messageTimekeeper").css("color", "#BB330C");	//red
+						$("#messageTimekeeper").html("{% trans 'Select 1 Team to this action' %}:");
+					}
 				}
 			});
 			$("#stopLunch").click(function() {
-				teamChecked = $('input[name=teamRadio]:checked').val();
-				if (teamChecked == -1 || teamChecked == undefined) {
-					$("#messageTimekeeper").css("color", "#BB330C");	//red
-					$("#messageTimekeeper").html("{% trans 'Select 1 Team to this action' %}:");
-				} else {
-					$("#messageTimekeeper").css("color", "#1F3801");	//green
-					$("#messageTimekeeper").html("{% trans 'Stopping Team lunch' %}...");
-					emptyDivs();
-					action = 4;
-					lunch = 1;
-					retrieveParticipant("{{ csrf_token }}", "{% url 'retrieveParticipant' %}", teamChecked);
+				for (var i = 0; i < arrayTeams.length; i++) {
+					if ($("input[name='teamRadio']").is(":checked")) {
+						if ($("#team" + i).is(":checked")) {
+							var teamChecked = $("#team" + i).val();
+							$("#messageTimekeeper").css("color", "#1F3801");	//green
+							$("#messageTimekeeper").html("{% trans 'Starting Team break' %}...");
+							emptyDivs();
+							action = 4;
+							lunch = 1;
+							retrieveParticipant("{{ csrf_token }}", "{% url 'retrieveParticipant' %}", teamChecked);
+						}
+					} else {
+						$("#messageTimekeeper").css("color", "#BB330C");	//red
+						$("#messageTimekeeper").html("{% trans 'Select 1 Team to this action' %}:");
+					}
 				}
 			});
 			$("#timelog").click(function() {
@@ -559,11 +592,13 @@
 								breakEnd[data.breaks[i].breakId] = data.breaks[i].breakStop;
 								if (data.breaks[i].lunch == 0){
 									lun[data.breaks[i].breakId] = 0
-									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + breaks + " {% trans 'Break' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
+									$("#tableTimelog").append("<tr ><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td> {% trans 'Job' %} #" + breaks + " N/A </td><td><input id='" + data.breaks[i].breakId  +" /></td></tr>");
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + breaks + " {% trans 'Break' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
 									breaks++;
 								} else {
 									lun[data.breaks[i].breakId] = 1;
-									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + lunchs + " {% trans 'Lunch' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
+									$("#tableTimelog").append("<tr ><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td> {% trans 'Job' %} #" + breaks + " N/A </td><td><input id='" + data.breaks[i].breakId  +" /></td></tr>");
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + lunchs + " {% trans 'Lunch' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
 									lunchs++;
 								}
 							}
@@ -577,11 +612,13 @@
 								breakEnd[data.breaks[i].breakId] = data.breaks[i].breakStop;
 								if (data.breaks[i].lunch == 0){
 									lun[data.breaks[i].breakId] = 0
-									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + breaks + " {% trans 'Break' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
+									$("#tableTimelog").append("<tr><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td> {% trans 'Job' %} #" + breaks + " N/A </td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;'/></td></tr>");
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + breaks + " {% trans 'Break' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
 									breaks++;
 								} else {
 									lun[data.breaks[i].breakId] = 1;
-									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + lunchs + " {% trans 'Lunch' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\" ) no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
+									$("#tableTimelog").append("<tr ><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td> {% trans 'Job' %} #" + breaks + " N/A </td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;'/></td></tr>");
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + lunchs + " {% trans 'Lunch' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\" ) no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
 									lunchs++;
 								}
 							}

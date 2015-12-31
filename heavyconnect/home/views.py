@@ -296,9 +296,11 @@ def startShiftGroup(request):
 	result = {}
 	if request.method == "POST":
 		if request.is_ajax():
-			if 'ids[]' not in request.GET:
+			if 'ids[]' not in request.POST:
 				result = startShift(request, request.user.id)
+				print 'hi'
 				return HttpResponse(json.dumps(result),content_type='application/json')
+
 			else:
 				ids = request.POST.getlist('ids[]')
 				auxSuccess = []
@@ -310,6 +312,9 @@ def startShiftGroup(request):
 						auxSuccess.append(aux)
 					else:
 						auxError.append(aux)
+				print 'hello'
+				print auxSuccess
+				print auxError
 				result['success'] = auxSuccess
 				result['error'] = auxError
 		else:
