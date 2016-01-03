@@ -767,7 +767,6 @@
 		}
 
 		function editJob(editId) {
-			alert('hi');
 			breakId = editId
 			$(".editIcon").attr('disabled', true);
 			$("#" + breakId).html("<td class='colBorderTimelog'>" + workBreak + "</td><td>#" + breakN + " {% trans 'Break' %} <input id='newBreakBeg" + breakId + "' type='time'/> - <input id='newBreakEnd" + breakId + "' type='time'/></td><td><input type='button' class='editedIcon' style='background: url(\"/static/imgSmall/editedIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='callEditJob(breakId)'/></td>");
