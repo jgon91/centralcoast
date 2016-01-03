@@ -32,6 +32,7 @@ urlpatterns = [
     url(r'^checklist/$', main_views.checklist, name='checklist'),
     url(r'^fleet/$', main_views.fleet, name='fleet'),
     url(r'^headerManager/$', main_views.headerManager, name='headerManager'),
+    url(r'^editJob/$', main_views.editJob, name = 'editJob'),
     url(r'^pastTasks/$', main_views.pastTasks, name='pastTasks'),
     url(r'^createTask/$', main_views.createTask, name='createTask'),
     url(r'^createTaskManager/$', main_views.createTaskManager, name='createTaskManager'),

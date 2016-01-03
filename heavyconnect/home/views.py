@@ -1976,112 +1976,120 @@ def timeLogById(request):
 				start_date = datetime.datetime.combine(date, datetime.time.min) #today date at 0:00 AM
 				end_date = datetime.datetime.combine(date, datetime.time.max) # date at 11:59 PM
 				employeeAttendance = EmployeeAttendance.objects.filter(employee__user__id = userId, date__range = (start_date,end_date)).order_by('-hour_started')[:1]
+				print employeeAttendance
 				count = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #counter to keep all the worked hours
 				keeper = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #this variable will keep the last break. It is useful when the shift is not done
 				keeper2 =  datetime.timedelta(hours = 23, minutes = 59, seconds = 59) # when the break is on another day
-				for item in employeeAttendance:
-					if item.signature == ''  or item.signature == None:
-						result['signature'] = False
-					result['attendanceId'] = item.id
-					breaks = Break.objects.filter(attendance__id = item.id).order_by('start')
-					breakDuration = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #variable used to decrease time from the total when one break still going on
-					breakTime = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) #help to calculate work time between breaks
-					time_aux = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) #variable used to remove second of the date
-					atten_start = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute,seconds = item.hour_started.second)
-					for doc in breaks:
-						aux = {} #puts breakStart, breakDuration and workBreak together
-						docStart = datetime.timedelta(hours = doc.start.hour, minutes = doc.start.minute, seconds = doc.start.second)
-						hours, remainder = divmod(docStart.seconds, 3600)
-						minutes, seconds = divmod(remainder, 60)
-						hours = checkHours(hours)
-						minutes = checkMinutes(minutes)
-						aux['breakId'] = doc.id
-						aux['breakStart'] = str(hours) + ':' + str(minutes) #time that the break started
-						if breakTime <= docStart:
-							time_aux = docStart - breakTime
-							hours, remainder = divmod(time_aux.seconds, 3600)
-							minutes, seconds = divmod(remainder, 60)
-							hours = checkHours(hours)
-							minutes = checkMinutes(minutes)
-							aux['workBreak'] = str(hours) + ':' + str(minutes)
-							count += docStart - breakTime
-						else: #Midnight is between these times
-							time_aux = (keeper2 - breakTime) + docStart
-							hours, remainder = divmod(time_aux.seconds, 3600)
-							minutes, seconds = divmod(remainder, 60)
-							hours = checkHours(hours)
-							minutes = checkMinutes(minutes)
-							aux['workBreak'] = str(hours) + ':' + str(minutes)
-							count += (keeper2 - breakTime) + docStart
-						if (doc.end != None):
-							docEnd = datetime.timedelta(hours = doc.end.hour, minutes = doc.end.minute, seconds = doc.end.second)
-							hours, remainder = divmod(docEnd.seconds, 3600)
-							minutes, seconds = divmod(remainder, 60)
-							hours = checkHours(hours)
-							minutes = checkMinutes(minutes)
-							aux['breakStop'] = str(hours) + ':' + str(minutes)
-							breakTime = docEnd
-							if docEnd >= docStart:
-								time_aux = docEnd - docStart
-								hours, remainder = divmod(time_aux.seconds, 3600)
-								minutes, seconds = divmod(remainder, 60)
-								hours = checkHours(hours)
-								minutes = checkMinutes(minutes)
-								aux['breakDuration'] = str(hours) + ':' + str(minutes)
-							else: #in case of start and end are in different days, passing by midnight
-								time_aux = (keeper2 - docStart) + docEnd
-								hours, remainder = divmod(time_aux.seconds, 3600)
-								minutes, seconds = divmod(remainder, 60)
-								hours = checkHours(hours)
-								minutes = checkMinutes(minutes)
-								aux['breakDuration'] = str(hours) + ':' + str(minutes)
-						else:
-							aux['breakStop'] = 'In Progress'
-							time_now = datetime.datetime.now() #variable used to get the current time
-							time_aux = datetime.timedelta(hours = time_now.hour, minutes = time_now.minute, seconds = time_now.second)
-							breakTime = docStart
-							if time_aux >= docStart:
-								breakDuration = time_aux - docStart
-								aux['breakDuration'] = str(breakDuration)
-							else:
-								breakDuration = (keeper2 - docStart) + time_aux
-								aux['breakDuration'] = str(breakDuration)
-						aux['lunch'] = doc.lunch
-						array_breaks.append(aux)
-					if item.hour_ended != None:
-						endTurn = datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second)
-						Attendance_end =  datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second)
-						if endTurn >= breakTime:
-							count += endTurn - breakTime
-						else:
-							count += (keeper2 - breakTime) + endTurn
-					else:
-						Attendance_end = 'In Progress'
-						time_now = datetime.datetime.now()
-						time_aux = datetime.timedelta(hours = time_now.hour, minutes = time_now.minute, seconds = time_now.second)
-						if time_aux >= breakTime:
-							count += (time_aux - breakTime) - breakDuration
-						else:
-							count += ((keeper2 - breakTime) + time_aux) - breakDuration
-				hours, remainder = divmod(count.seconds, 3600)
-				minutes, seconds = divmod(remainder, 60)
-				hours = checkHours(hours)
-				minutes = checkMinutes(minutes)
 
-				result['Total'] = str(hours) + ':' + str(minutes)
-				hours, remainder = divmod(atten_start.seconds, 3600)
-				minutes, seconds = divmod(remainder, 60)
-				hours = checkHours(hours)
-				minutes = checkMinutes(minutes)
-				result['Attendance_start'] = str(hours) + ':' + str(minutes)
-				if(Attendance_end != 'In Progress'):
-					hours, remainder = divmod(Attendance_end.seconds, 3600)
-					minutes, seconds = divmod(remainder, 60)
-					minutes = checkMinutes(minutes)
-					result['Attendance_end'] = str(hours) + ':' + str(minutes)
+				if len(employeeAttendance) > 0:
+					result['no_attendance'] = 'false'
+					for item in employeeAttendance:
+						if item.signature == ''  or item.signature == None:
+							result['signature'] = False
+						result['attendanceId'] = item.id
+						breaks = Break.objects.filter(attendance__id = item.id).order_by('start')
+						breakDuration = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #variable used to decrease time from the total when one break still going on
+						breakTime = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) #help to calculate work time between breaks
+						time_aux = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) #variable used to remove second of the date
+						atten_start = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute,seconds = item.hour_started.second)
+						for doc in breaks:
+							aux = {} #puts breakStart, breakDuration and workBreak together
+							docStart = datetime.timedelta(hours = doc.start.hour, minutes = doc.start.minute, seconds = doc.start.second)
+							hours, remainder = divmod(docStart.seconds, 3600)
+							minutes, seconds = divmod(remainder, 60)
+							hours = checkHours(hours)
+							minutes = checkMinutes(minutes)
+							aux['breakId'] = doc.id
+							aux['breakStart'] = str(hours) + ':' + str(minutes) #time that the break started
+							if breakTime <= docStart:
+								time_aux = docStart - breakTime
+								hours, remainder = divmod(time_aux.seconds, 3600)
+								minutes, seconds = divmod(remainder, 60)
+								hours = checkHours(hours)
+								minutes = checkMinutes(minutes)
+								aux['workBreak'] = str(hours) + ':' + str(minutes)
+								count += docStart - breakTime
+							else: #Midnight is between these times
+								time_aux = (keeper2 - breakTime) + docStart
+								hours, remainder = divmod(time_aux.seconds, 3600)
+								minutes, seconds = divmod(remainder, 60)
+								hours = checkHours(hours)
+								minutes = checkMinutes(minutes)
+								aux['workBreak'] = str(hours) + ':' + str(minutes)
+								count += (keeper2 - breakTime) + docStart
+							if (doc.end != None):
+								docEnd = datetime.timedelta(hours = doc.end.hour, minutes = doc.end.minute, seconds = doc.end.second)
+								hours, remainder = divmod(docEnd.seconds, 3600)
+								minutes, seconds = divmod(remainder, 60)
+								hours = checkHours(hours)
+								minutes = checkMinutes(minutes)
+								aux['breakStop'] = str(hours) + ':' + str(minutes)
+								breakTime = docEnd
+								if docEnd >= docStart:
+									time_aux = docEnd - docStart
+									hours, remainder = divmod(time_aux.seconds, 3600)
+									minutes, seconds = divmod(remainder, 60)
+									hours = checkHours(hours)
+									minutes = checkMinutes(minutes)
+									aux['breakDuration'] = str(hours) + ':' + str(minutes)
+								else: #in case of start and end are in different days, passing by midnight
+									time_aux = (keeper2 - docStart) + docEnd
+									hours, remainder = divmod(time_aux.seconds, 3600)
+									minutes, seconds = divmod(remainder, 60)
+									hours = checkHours(hours)
+									minutes = checkMinutes(minutes)
+									aux['breakDuration'] = str(hours) + ':' + str(minutes)
+							else:
+								aux['breakStop'] = 'In Progress'
+								time_now = datetime.datetime.now() #variable used to get the current time
+								time_aux = datetime.timedelta(hours = time_now.hour, minutes = time_now.minute, seconds = time_now.second)
+								breakTime = docStart
+								if time_aux >= docStart:
+									breakDuration = time_aux - docStart
+									aux['breakDuration'] = str(breakDuration)
+								else:
+									breakDuration = (keeper2 - docStart) + time_aux
+									aux['breakDuration'] = str(breakDuration)
+							aux['lunch'] = doc.lunch
+							array_breaks.append(aux)
+
+						if item.hour_ended != None:
+							endTurn = datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second)
+							Attendance_end =  datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second)
+							if endTurn >= breakTime:
+								count += endTurn - breakTime
+							else:
+								count += (keeper2 - breakTime) + endTurn
+						else:
+							Attendance_end = 'In Progress'
+							time_now = datetime.datetime.now()
+							time_aux = datetime.timedelta(hours = time_now.hour, minutes = time_now.minute, seconds = time_now.second)
+							if time_aux >= breakTime:
+								count += (time_aux - breakTime) - breakDuration
+							else:
+								count += ((keeper2 - breakTime) + time_aux) - breakDuration
 				else:
-					result['Attendance_end'] = Attendance_end
-				result['breaks'] = array_breaks
+					result['no_attendance'] = 'true'
+				if(result['no_attendance'] == 'false'):
+					hours, remainder = divmod(count.seconds, 3600)
+					minutes, seconds = divmod(remainder, 60)
+					hours = checkHours(hours)
+					minutes = checkMinutes(minutes)
+					result['Total'] = str(hours) + ':' + str(minutes)
+					hours, remainder = divmod(atten_start.seconds, 3600)
+					minutes, seconds = divmod(remainder, 60)
+					hours = checkHours(hours)
+
+					minutes = checkMinutes(minutes)
+					result['Attendance_start'] = str(hours) + ':' + str(minutes)
+					if(Attendance_end != 'In Progress'):
+						hours, remainder = divmod(Attendance_end.seconds, 3600)
+						minutes, seconds = divmod(remainder, 60)
+						minutes = checkMinutes(minutes)
+						result['Attendance_end'] = str(hours) + ':' + str(minutes)
+					else:
+						result['Attendance_end'] = Attendance_end
+					result['breaks'] = array_breaks
 		else:
 			result['Code'] = {'Code' : 1} #request is not ajax
 	else:
@@ -3739,6 +3747,33 @@ def getAllManagerEmployees(request):
 
 	return HttpResponse(json.dumps(result), content_type='application/json')
 
+def editJob(request):
+	result = {'success' : True}
+	if request.method == "POST":
+		if 'employeeId' not in request.POST:
+			employee = Employee.objects.get(user_id = request.user.id)
+		else:
+			employee = Employee.objects.get(user_id = request.POST['employeeId'])
+		field = "testfield"
+		category = "testcategory"
+		hours_prediction = 1.0
+		description = request.POST['description']
+		status = 1
+		passes = 3
+		time = datetime.datetime.now().time()
+		date = datetime.datetime.now()
+		#Creating Task
+		date = date + datetime.timedelta(hours = time.hour, minutes = time.minute)
+		task, created = Task.objects.get_or_create(description = description, passes = passes, date_assigned = date, status = status)
+		if created:
+		#Creating association between Employee and Task
+			empTask = EmployeeTask(employee = employee, task = task)
+			empTask.save()
+		else:
+			result['code'] = 1 #This task was already created
+
+	return HttpResponse(json.dumps(result), content_type='application/json')
+
 
 def updateBreak(request):
 	result = {'success' : False}
@@ -3801,7 +3836,6 @@ def updateBreak(request):
 							else:
 								result['code'] =  3 # Try to update break before start shift or inside other break
 								return HttpResponse(json.dumps(result), content_type='application/json')
-
 						else: # There is no break after
 							if new_hour_started > start_shift:
 								if break_before is not None:
@@ -3851,117 +3885,7 @@ def updateBreak(request):
 		return HttpResponse(json.dumps(result), content_type='application/json')
 		
 	return HttpResponse(json.dumps(result), content_type='application/json')
-def updateBreak(request):
-	result = {'success' : False}
-	time_start = {'hour': 0, 'minute' : 0, 'second' : 0}
-	time_end = {'hour': 0, 'minute' : 0, 'second' : 0}
-	if request.method == "POST":
-		if request.is_ajax():
-			try:
-				break_id = request.POST['break_id']
-				break_item = Break.objects.get(id = break_id)	
 
-				new_time_start = request.POST['new_time_start']
-				new_time_start = new_time_start.split(":")		
-				new_time_end = request.POST['new_time_end']
-				new_time_end = new_time_end.split(":")	
-
-				time_start['hour'] = int(new_time_start[0])
-				time_start['minute'] = int(new_time_start[1])
-				time_end['hour'] = int(new_time_end[0])
-				time_end['minute'] = int(new_time_end[1])
-			
-				new_hour_started = datetime.timedelta(hours = time_start['hour'], minutes = time_start['minute'], seconds = time_start['second'])
-				new_hour_stopped = datetime.timedelta(hours = time_end['hour'], minutes = time_end['minute'], seconds = time_end['second'])
-				
-				attendance = EmployeeAttendance.objects.get(id = break_item.attendance.id)
-				break_after = Break.objects.filter(attendance = break_item.attendance.id, start__range = (break_item.end, attendance.hour_ended)).first() #First break after
-				break_before = Break.objects.filter(attendance = break_item.attendance.id, start__range = (attendance.hour_started, break_item.start)).order_by('-end').exclude(id = break_id).first() # First break before				
-				if break_item is not None:
-					if new_hour_started < new_hour_stopped:
-						start_shift = datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
-						if break_after is not None:
-							start_break_after = datetime.timedelta(hours = break_after.start.hour, minutes = break_after.start.minute, seconds = break_after.start.second)
-							if new_hour_started > start_shift and new_hour_stopped < start_break_after:
-								if break_before is not None:
-									stop_break_before = datetime.timedelta(hours = break_before.end.hour, minutes = break_before.end.minute, seconds = break_before.end.second)
-									start_break_after = datetime.timedelta(hours = break_before.end.hour, minutes = break_before.end.minute, seconds = break_before.end.second)
-									if new_hour_started > stop_break_before and new_hour_stopped < start_break_after:
-										break_item.start = str(new_hour_started)
-										break_item.end = str(new_hour_stopped)
-										#break_item.edited = True
-										break_item.save()
-										result['success'] = True
-									else:
-										result['code'] = 1 # Try to update break inside other breaks
-										return HttpResponse(json.dumps(result), content_type='application/json')
-								else: # There is no break before
-									if attendance.hour_ended is not None:
-										end_shift = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)										
-									else: # The shift was not ended yet
-										end_shift = datetime.datetime.now()
-									if new_hour_stopped < end_shift:
-										break_item.start = str(new_hour_started)
-										break_item.end = str(new_hour_stopped)
-										#break_item.edited = True
-										break_item.save()
-										result['success'] = True
-									else:
-										result['code'] =  2 # Try to update break inside other breaks
-										return HttpResponse(json.dumps(result), content_type='application/json')
-							else:
-								result['code'] =  3 # Try to update break before start shift or inside other break
-								return HttpResponse(json.dumps(result), content_type='application/json')
-
-						else: # There is no break after							
-							if new_hour_started > start_shift:
-								if break_before is not None:
-									stop_break_before = datetime.timedelta(hours = break_before.end.hour, minutes = break_before.end.minute, seconds = break_before.end.second)									
-									if attendance.hour_ended is not None:
-										end_shift = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)										
-									else: # The shift was not ended yet
-										end_shift = datetime.datetime.now()
-									if new_hour_started > stop_break_before and new_hour_stopped < end_shift:
-										break_item.start = str(new_hour_started)
-										break_item.end = str(new_hour_stopped)
-										#break_item.edited = True
-										break_item.save()
-										result['success'] = True
-									else:
-										result['code'] =  4 # Try to start break inside the break before or stop break after end shift
-										return HttpResponse(json.dumps(result), content_type='application/json')
-								else: # There is just 1 break
-									if attendance.hour_ended is not None:
-										end_shift = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
-									else: # The shift was not ended yet
-										end_shift = datetime.datetime.now()
-									if new_hour_stopped < end_shift:
-										break_item.start = str(new_hour_started)
-										break_item.end = str(new_hour_stopped)
-										break_item.edited = True
-										break_item.save()
-										result['success'] = True
-									else:
-										result['code'] =  5 # Try to update after end shift
-										return HttpResponse(json.dumps(result), content_type='application/json')	
-							else:
-								result['code'] =  3 # Try to update break before start shift or inside other break
-								return HttpResponse(json.dumps(result), content_type='application/json')						
-					else:
-						result['code'] =  6 # Hour to started is greater than Hour stopped
-						return HttpResponse(json.dumps(result), content_type='application/json')
-						
-			except (EmployeeAttendance.DoesNotExist) as e:
-				result['code'] =  7 # Break does not exist
-				return HttpResponse(json.dumps(result), content_type='application/json')
-		else:
-			result['code'] = 8 # Request is not ajax
-			return HttpResponse(json.dumps(result), content_type='application/json')
-	else:
-		result['code'] = 9 # Request method is not POST
-		return HttpResponse(json.dumps(result), content_type='application/json')
-		
-	return HttpResponse(json.dumps(result), content_type='application/json')
 
 def updateStopShift(request):
 	result = {'success' : False}
