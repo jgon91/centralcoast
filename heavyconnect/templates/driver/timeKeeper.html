@@ -47,7 +47,6 @@
 
 			getEmployeeShiftsOffline();
 			getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
-			saveData(1);
 
 			$("#shift").click(function() {
 				$('#showTimekeeperModal').modal();
