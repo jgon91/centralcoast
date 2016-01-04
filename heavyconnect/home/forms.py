@@ -318,7 +318,7 @@ class employeeForm(forms.Form):
 	notes = forms.CharField(max_length = 250, required = False)
 	teamManager = forms.BooleanField(required = False)
 	manager = forms.ModelChoiceField(queryset = Employee.objects.filter(permission_level = '2'))
-	image = forms.ImageField(required = False)
+	image = forms.ImageField(required = False)	
 ### End ###
 
 

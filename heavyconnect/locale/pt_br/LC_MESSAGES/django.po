@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-29 13:38-0800\n"
+"POT-Creation-Date: 2015-12-08 10:45-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,6 +28,10 @@ msgstr ""
 
 #: heavyconnect/settings.py:126
 msgid "Brazilian Portuguese"
+msgstr ""
+
+#: templates/404.html:19 templates/500.html:19
+msgid "Home Page"
 msgstr ""
 
 #: templates/driver/checklist.html:91
@@ -343,6 +347,7 @@ msgstr ""
 
 #: templates/driver/createTask.html:587 templates/driver/createTask.html:635
 #: templates/driver/createTask.html:703 templates/driver/startTask.html:380
+#: templates/driver/timeKeeper.html:1027
 #: templates/manager/createTaskManager.html:644
 #: templates/manager/createTaskManager.html:692
 #: templates/manager/templateCreateTaskManager.html:695
@@ -378,20 +383,20 @@ msgid "Equipment not Found"
 msgstr ""
 
 #: templates/driver/createTask.html:667 templates/driver/scanQRCode.html:139
-#: templates/driver/timeKeeperGroup.html:1001
+#: templates/driver/timeKeeperGroup.html:1025
 #: templates/manager/createTaskManager.html:724
 msgid "Yes"
 msgstr ""
 
 #: templates/driver/createTask.html:668 templates/driver/scanQRCode.html:140
-#: templates/driver/timeKeeperGroup.html:1002
+#: templates/driver/timeKeeperGroup.html:1026
 #: templates/manager/createTaskManager.html:725
 msgid "No"
 msgstr ""
 
 #: templates/driver/createTask.html:685 templates/driver/scanQRCode.html:99
 #: templates/driver/startTask.html:353
-#: templates/driver/timeKeeperGroup.html:956
+#: templates/driver/timeKeeperGroup.html:980
 #: templates/manager/createTaskManager.html:744
 #: templates/manager/templateCreateTaskManager.html:676
 msgid "Scan QR-Code"
@@ -569,7 +574,7 @@ msgid "DURATION"
 msgstr ""
 
 #: templates/driver/scanQRCode.html:114 templates/driver/startTask.html:368
-#: templates/driver/timeKeeperGroup.html:971
+#: templates/driver/timeKeeperGroup.html:995
 msgid "Type QR-Code"
 msgstr ""
 
@@ -636,53 +641,210 @@ msgstr ""
 msgid "More Info"
 msgstr ""
 
-#: templates/driver/timeKeeper.html:37 templates/driver/timeKeeper.html:89
-#: templates/driver/timeKeeper.html:138
+#: templates/driver/timeKeeper.html:45
+#: templates/driver/timeKeeperGroup.html:234
+msgid "Checking shift"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:61 templates/driver/timeKeeper.html:109
+#: templates/driver/timeKeeper.html:162
 msgid "CONFIRM"
 msgstr "Confirmar"
 
-#: templates/driver/timeKeeper.html:532
-#: templates/driver/timeKeeperGroup.html:850
+#: templates/driver/timeKeeper.html:74 templates/driver/timeKeeper.html:91
+#: templates/driver/timeKeeper.html:127 templates/driver/timeKeeper.html:144
+#: templates/driver/timeKeeper.html:178 templates/driver/timeKeeper.html:195
+msgid "Synchronizing Data"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:77
+msgid "Starting shift"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:94
+msgid "Stopping shift"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:104
+#, fuzzy
+#| msgid "Start Task"
+msgid "Start break"
+msgstr "Começar Tarefa"
+
+#: templates/driver/timeKeeper.html:106
+msgid "End break"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:114 templates/driver/timeKeeper.html:167
+#: templates/driver/timeKeeper.html:609
+msgid "You cannot start 2 breaks at the same time"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:130
+#, fuzzy
+#| msgid "Start Task"
+msgid "Starting break"
+msgstr "Começar Tarefa"
+
+#: templates/driver/timeKeeper.html:147
+msgid "Ending break"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:157
+msgid "Start lunch"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:159
+msgid "End lunch"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:181
+msgid "Starting lunch"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:198
+msgid "Ending lunch"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:539
+#: templates/driver/timeKeeperGroup.html:303
+msgid "There is no shift records for this employee"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:542 templates/driver/timeKeeper.html:545
+#: templates/driver/timeKeeper.html:572 templates/driver/timeKeeper.html:574
+#: templates/driver/timeKeeper.html:615 templates/driver/timeKeeper.html:617
+#: templates/driver/timeKeeper.html:659 templates/driver/timeKeeper.html:661
+#: templates/driver/timeKeeper.html:692 templates/driver/timeKeeper.html:694
+#: templates/driver/timeKeeperGroup.html:308
+#: templates/driver/timeKeeperGroup.html:313
+#: templates/driver/timeKeeperGroup.html:386
+#: templates/driver/timeKeeperGroup.html:387
+#: templates/driver/timeKeeperGroup.html:408
+#: templates/driver/timeKeeperGroup.html:409
+#: templates/driver/timeKeeperGroup.html:434
+#: templates/driver/timeKeeperGroup.html:435
+#: templates/driver/timeKeeperGroup.html:460
+#: templates/driver/timeKeeperGroup.html:461
+msgid "Error. Contact Suport"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:562
+msgid "Clock-in successful"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:570
+msgid "There is no users associated whit this id"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:598
+msgid "Break started"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:602
+msgid "Lunch started"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:611 templates/driver/timeKeeper.html:655
+#: templates/driver/timeKeeper.html:686
+#: templates/driver/timeKeeperGroup.html:406
+#: templates/driver/timeKeeperGroup.html:432
+#: templates/driver/timeKeeperGroup.html:457
+msgid "The shift for today was already finished"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:613 templates/driver/timeKeeper.html:657
+#: templates/driver/timeKeeperGroup.html:407
+#: templates/driver/timeKeeperGroup.html:433
+msgid "You need to start a shift first"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:644
+msgid "Break ended"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:648
+msgid "Lunch ended"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:653
+#: templates/driver/timeKeeperGroup.html:431
+msgid "You need to start a break first"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:678
+msgid "Shift ended"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:684
+msgid "You need to take at least 3 breaks"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:688
+msgid "You have not started your shift yet"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:690
+#: templates/driver/timeKeeperGroup.html:459
+msgid "This user is not authorized to use the system"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:711
+#: templates/driver/timeKeeperGroup.html:482
+msgid "Check before sign"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:719
+#: templates/driver/timeKeeperGroup.html:490
+msgid "SIGN NOW"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:955
+msgid "Synchronization done"
+msgstr ""
+
+#: templates/driver/timeKeeper.html:965
+#: templates/driver/timeKeeperGroup.html:874
 msgid "HC TIMEKEEPER"
 msgstr ""
 
-#: templates/driver/timeKeeper.html:536
-#: templates/driver/timeKeeperGroup.html:859
+#: templates/driver/timeKeeper.html:969
+#: templates/driver/timeKeeperGroup.html:883
 msgid "SHIFT"
 msgstr "Jornada"
 
-#: templates/driver/timeKeeper.html:541
-#: templates/driver/timeKeeperGroup.html:864
+#: templates/driver/timeKeeper.html:974
+#: templates/driver/timeKeeperGroup.html:888
 msgid "BREAK"
 msgstr "Intervalo"
 
-#: templates/driver/timeKeeper.html:546
-#: templates/driver/timeKeeperGroup.html:869
+#: templates/driver/timeKeeper.html:979
+#: templates/driver/timeKeeperGroup.html:893
 msgid "LUNCH"
 msgstr "Almoço"
 
-#: templates/driver/timeKeeper.html:551
-#: templates/driver/timeKeeperGroup.html:874
+#: templates/driver/timeKeeper.html:984
+#: templates/driver/timeKeeperGroup.html:898
 msgid "TIMELOG"
 msgstr ""
 
-#: templates/driver/timeKeeper.html:587
-#: templates/driver/timeKeeperGroup.html:890
+#: templates/driver/timeKeeper.html:1021
+#: templates/driver/timeKeeperGroup.html:914
 msgid "Sign Here"
 msgstr "Assine aqui"
 
-#: templates/driver/timeKeeper.html:592
-msgid "Limpiar"
+#: templates/driver/timeKeeper.html:1026
+#: templates/driver/timeKeeperGroup.html:918
+msgid "Clear"
 msgstr ""
 
-#: templates/driver/timeKeeper.html:593
-#: templates/driver/timeKeeperGroup.html:895
-msgid "Cerrar"
-msgstr ""
-
-#: templates/driver/timeKeeper.html:596
-#: templates/driver/timeKeeperGroup.html:898
+#: templates/driver/timeKeeper.html:1030
+#: templates/driver/timeKeeperGroup.html:922
 msgid "Confirm"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:81
+msgid "Select the team for this action"
 msgstr ""
 
 #: templates/driver/timeKeeperGroup.html:83
@@ -693,55 +855,212 @@ msgstr ""
 msgid "CLOCK-OUT"
 msgstr ""
 
-#: templates/driver/timeKeeperGroup.html:118
+#: templates/driver/timeKeeperGroup.html:93
+#, fuzzy
+#| msgid "Start Task"
+msgid "Starting Team shift"
+msgstr "Começar Tarefa"
+
+#: templates/driver/timeKeeperGroup.html:100
+#: templates/driver/timeKeeperGroup.html:117
+#: templates/driver/timeKeeperGroup.html:144
+#: templates/driver/timeKeeperGroup.html:162
+#: templates/driver/timeKeeperGroup.html:189
+#: templates/driver/timeKeeperGroup.html:207
+msgid "Select 1 Team to this action"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:110
+msgid "Stopping Team shift"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:124
+msgid "Select the Team for this action"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:126
 msgid "START BREAK"
 msgstr ""
 
-#: templates/driver/timeKeeperGroup.html:119
+#: templates/driver/timeKeeperGroup.html:127
 msgid "STOP BREAK"
 msgstr ""
 
-#: templates/driver/timeKeeperGroup.html:155
+#: templates/driver/timeKeeperGroup.html:136
+#: templates/driver/timeKeeperGroup.html:199
+#, fuzzy
+#| msgid "Start Task"
+msgid "Starting Team break"
+msgstr "Começar Tarefa"
+
+#: templates/driver/timeKeeperGroup.html:154
+msgid "Stopping Team break"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:169
+msgid "Select the employees for this action"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:171
 msgid "START LUNCH"
 msgstr ""
 
-#: templates/driver/timeKeeperGroup.html:156
+#: templates/driver/timeKeeperGroup.html:172
 msgid "STOP LUNCH"
 msgstr ""
 
-#: templates/driver/timeKeeperGroup.html:218
-msgid "Team Name..."
+#: templates/driver/timeKeeperGroup.html:181
+msgid "Starting Team lunch"
 msgstr ""
 
-#: templates/driver/timeKeeperGroup.html:220
+#: templates/driver/timeKeeperGroup.html:215
+#: templates/driver/timeKeeperGroup.html:222
+msgid "Select the Team to TIMELOG"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:229
+msgid "Select the Employee to TIMELOG"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:241
+msgid "Create New Team"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:242
+msgid "Team Name"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:243
+#, fuzzy
+#| msgid "Save"
+msgid "Save Team"
+msgstr "Salvar"
+
+#: templates/driver/timeKeeperGroup.html:244
 msgid "Add Employees"
 msgstr ""
 
-#: templates/driver/timeKeeperGroup.html:790
+#: templates/driver/timeKeeperGroup.html:260
+msgid "Creating team"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:272
+msgid "Team Created"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:384
+msgid "You need to finish the current shift before create a new one"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:385
+msgid "There is no users associated with this id"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:391
+msgid "Clock-in"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:405
+msgid "You cannot start two breaks at the same time"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:414
+msgid "Break Started"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:417
+msgid "Lunch Started"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:440
+msgid "Break Ended"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:443
+msgid "Lunch Ended"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:458
+msgid "You have not started a shift yet"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:564
+#: templates/driver/timeKeeperGroup.html:582
+#: templates/driver/timeKeeperGroup.html:699
+msgid "Start Shift"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:572
+#: templates/driver/timeKeeperGroup.html:590
+#: templates/driver/timeKeeperGroup.html:728
+msgid "Break"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:576
+#: templates/driver/timeKeeperGroup.html:594
+#: templates/driver/timeKeeperGroup.html:733
+msgid "Lunch"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:580
+#: templates/driver/timeKeeperGroup.html:598
+#: templates/driver/timeKeeperGroup.html:764
+msgid "End Shift"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:601
+msgid "SIGNED"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:608
+msgid "Total"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:608
+msgid "hours"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:628
+msgid "Select All"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:647
+msgid "SUCCESS"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:651
+msgid "ERROR"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:814
 msgid "Employee added to the group!"
 msgstr ""
 
-#: templates/driver/timeKeeperGroup.html:802
+#: templates/driver/timeKeeperGroup.html:819
+msgid "Employees Added"
+msgstr ""
+
+#: templates/driver/timeKeeperGroup.html:826
 msgid "This employee does not exist!"
 msgstr ""
 
-#: templates/driver/timeKeeperGroup.html:807
+#: templates/driver/timeKeeperGroup.html:831
 msgid "Employee already added to the group!"
 msgstr ""
 
-#: templates/driver/timeKeeperGroup.html:854
+#: templates/driver/timeKeeperGroup.html:878
 msgid "CREATE TEAM"
 msgstr ""
 
-#: templates/driver/timeKeeperGroup.html:894
-msgid "Clear"
+#: templates/driver/timeKeeperGroup.html:919
+msgid "Cerrar"
 msgstr ""
 
-#: templates/driver/timeKeeperGroup.html:992
+#: templates/driver/timeKeeperGroup.html:1016
 msgid "Scan QR-Code says:"
 msgstr ""
 
-#: templates/driver/timeKeeperGroup.html:998
+#: templates/driver/timeKeeperGroup.html:1022
 msgid "Would you like to add another employee to the Group?"
 msgstr ""
 
@@ -772,8 +1091,8 @@ msgstr ""
 msgid "Passes"
 msgstr ""
 
-#: templates/manager/employeeUpdate.html:80
-#: templates/manager/formEmployee.html:67
+#: templates/manager/employeeUpdate.html:81
+#: templates/manager/formEmployee.html:80
 #: templates/manager/formImplement.html:65
 #: templates/manager/formMachine.html:64
 #: templates/manager/formRepairShop.html:63 templates/manager/formShop.html:65
@@ -841,6 +1160,6 @@ msgid "New Task"
 msgstr ""
 
 #: templates/template/headerDriver.html:35
-#: templates/template/headerHome.html:39
+#: templates/template/headerHome.html:40
 msgid "EXIT"
 msgstr ""

@@ -26,12 +26,20 @@ from home.forms import *
 from home.models import *
 
 
+LANGUAGE_CHOICES = ['pt-br','es', 'en-us']
+
+
 
 def empty(request):
 	return redirect('home')
 
 
 def home(request):
+	# lang = request.GET['lang']
+	# if lang != None:
+	# 	request.session[LANGUAGE_SESSION_KEY] = lang
+	# 	if(str(request.LANGUAGE_CODE) != request.session[LANGUAGE_SESSION_KEY]):
+	# 		return redirect('home')
 	if request.user.is_authenticated():
 		employee = Employee.objects.get(user = request.user)
 		if employee.permission_level == 1: #Driver
@@ -73,6 +81,7 @@ def updatedDate(request):
 def taskflow(request):
 	return render(request, 'taskflow.html')
 
+@login_required
 def createNewTask(request):
 	form = taskForm(request.POST)
 	result = {'success' : False}
@@ -137,7 +146,7 @@ def createNewTask(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 
-
+@login_required
 def startNewTask(request):
  	result = {'success' : False}
  	if request.method == 'POST':
@@ -165,8 +174,7 @@ def startNewTask(request):
 		result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-
-
+@login_required
 def endTask(request):
 	result = {'success' : False}
 	if request.method == 'POST':
@@ -242,12 +250,16 @@ def retrieveMachine(request):
 
 
 def createShift(new_time, employee, result):
+	
 	now = datetime.datetime.now()
+	
 	if new_time is not None:
 		now = new_time
-	eAttendance = EmployeeAttendance(employee = employee, date = now, hour_started = now)
-	eAttendance.save()
-	shift_id = eAttendance.id
+
+	eAttendance = EmployeeAttendance(employee = employee, date = now, hour_started = now)	
+	eAttendance.save()	
+	shift_id = eAttendance.id		
+	
 	result['success'] = True
 	result['id'] = shift_id
 	# result['hour_started'] = str(eAttendance.hour_started)
@@ -260,7 +272,7 @@ def startShift(request, idUser):
 		employee = Employee.objects.get(user_id = idUser)
 		attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
 		result['Employee'] = employee.id
-		if attendance is not None:
+		if attendance is not None:			
 			#If more than 16 hours was passed since the last shift was started we can consider that now we are creating a new shift
 			time_delta = (datetime.datetime.now() - datetime.datetime.combine(attendance.date,attendance.hour_started))
 			new_time = datetime.datetime.now()
@@ -298,23 +310,19 @@ def startShiftGroup(request):
 		if request.is_ajax():
 			if 'ids[]' not in request.POST:
 				result = startShift(request, request.user.id)
-				print 'hi'
 				return HttpResponse(json.dumps(result),content_type='application/json')
 
 			else:
 				ids = request.POST.getlist('ids[]')
 				auxSuccess = []
 				auxError = []
-				for item in ids:
-					aux = startShift(request, item)
-					aux['id'] = item
+				for item in ids:					
+					aux = startShift(request, item)										
+					aux['user'] = item					
 					if aux['success'] == True:
 						auxSuccess.append(aux)
 					else:
 						auxError.append(aux)
-				print 'hello'
-				print auxSuccess
-				print auxError
 				result['success'] = auxSuccess
 				result['error'] = auxError
 		else:
@@ -326,13 +334,21 @@ def startShiftGroup(request):
 
 
 
+### This function will receive one attendance 
+## and add the hours worked on it in the field hours_worked
+def attendanceHoursWorked(attendance):
+	aux = str(attendance.date) + ' ' + str(attendance.hour_started)
+	aux2 = aux.split('.') #split the date taking of milliseconds
+	hours_worked = getHoursToday(attendance.employee.id, aux2[0])
+	return hours_worked;
+
 def stopShift(request, idUser):
 	result = {}
 	try:
 		employee = Employee.objects.get(user_id = idUser)
 		attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
 
-		if attendance is not None:
+		if attendance is not None:	
 
 			result['attendance-date'] = str(attendance.date)
 			result['attendance-time'] = str(attendance.hour_started)
@@ -362,6 +378,8 @@ def stopShift(request, idUser):
 					else:
 						attendance.hour_ended = datetime.datetime.now()
 					# attendance.signature = signature
+					attendance.save() #in order to deal with time zone problem for now
+					attendance.hours_worked = attendanceHoursWorked(attendance)
 					attendance.save()
 					result['success'] = True
 					result['hour_ended'] = str(attendance.hour_ended)
@@ -552,23 +570,23 @@ def createGroup(request):
 					result['code'] = 6 # there is one group with the same name in the same day by the same creator
 					return HttpResponse(json.dumps(result),content_type='application/json')
 				except:			
-					group, created = Group.objects.get_or_create(creator = creator, date = date, permanent = permanent, name = name) #if the group is already created just add members, it could be just a instance to save after.
+					group, created = Group.objects.get_or_create(creator = creator, date = date, permanent = permanent, name = name) #if the group is already created just add members, it could be just a instance to save after.					
 					emploGroup = GroupParticipant.objects.filter(group__id = group.id).values_list('participant__qr_code')
 					aux1 = []
 					for item2 in emploGroup:
 					 	aux1.append(str(''.join(item2))) # convert tuple type which is deliveried by the query
 					for item in qr_codes:
 				 		if item in aux1: #check is the qr_code is already in the group
-				 			invalid.append(item)
+				 			invalid.append(item)				 			
 				 		else:
 
 							employee = Employee.objects.filter(qr_code = item['qr_code'])
 							for item3 in employee:
 								if item3 != None:							
 									aux = GroupParticipant(group = group, participant = item3)
-									aux.save()
+									aux.save()									
 								else:
-									invalid.append(item)
+									invalid.append(item)									
 								break
 					if len(invalid) > 0: # if there is one invalid the create was not totally sucessful
 						result['invalid'] = invalid
@@ -1934,7 +1952,7 @@ def getHoursToday(employee_id, date_entry):
 		addition = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #addition works to add the time of the last break on the count. It is because the lastbreak should not be counted on if the attendance has the end value none
 		for doc in breaks:
 			docStart = datetime.timedelta(hours = doc.start.hour, minutes = doc.start.minute, seconds = doc.start.second)
-			if docStart > keeper: #keeps the bigger break start
+			if docStart > keeper: #keeps the bigger break start, bigger because the time of the next break is always after the last one
 				keeper = docStart
 			elif docStart < itemStart and docStart > keeper2: # if the bigger break is on another day
 				keeper2 = docStart
@@ -1947,16 +1965,42 @@ def getHoursToday(employee_id, date_entry):
 				if count2 == lenght-1:
 					addition = datetime.timedelta(hours = doc.end.hour, minutes = doc.end.minute, seconds = doc.end.second) - docStart
 		itemStart = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second)
-		if item.hour_ended != None: #this if will treat if the attendance does not have the end field proprely filled
-			if item.hour_ended >= item.hour_started:
-				count += (datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second) - itemStart) - aux
-			else:  #if the end time is in another day
-				count += (datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second) + (midnight - itemStart)) - aux
-		elif keeper2 > datetime.timedelta(hours = 0, minutes = 0, seconds = 0): # if the keeper2 is changed means that the shift crossed midnight
-			count += keeper2 - datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) - aux + addition
+		if lenght == 0: #if the shift has no breaks
+			if item.hour_ended != None:
+				if item.hour_ended < item.hour_started:
+					aux = datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second)
+					aux2 = datetime.timedelta(hours = hour_started.hour, minutes = hour_started.minute, seconds = hour_started.second)
+					count += (midnight - aux2) + aux
+				else: # did not pass midnight
+					aux = datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second)
+					aux2 = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second)
+					count += aux - aux2
+			else: 
+				time_now = datetime.datetime.now().time()
+				print 'Time_now: ' + str(time_now)
+				print 'item.hour_started: ' + str(item.hour_started)
+				if time_now < item.hour_started:
+					aux = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second)
+					aux2 = datetime.timedelta(hours = time_now.hour, minutes = time_now.minute, seconds = time_now.second)
+					count += (midnight - aux) + aux2
+				else:
+					aux = datetime.timedelta(hours = time_now.hour, minutes = time_now.minute, seconds = time_now.second)
+					aux2 = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second)
+					print str(aux)
+					print str(aux2)
+					count += aux - aux2
+					print 'Count: ' + str(count)
 		else:
-			count += keeper - datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) - aux + addition
-			count2 += 1
+			if item.hour_ended != None: #this if will treat if the attendance does not have the end field proprely filled
+				if item.hour_ended >= item.hour_started:
+					count += (datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second) - itemStart) - aux
+				else:  #if the end time is in another day
+					count += (datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second) + (midnight - itemStart)) - aux
+			elif keeper2 > datetime.timedelta(hours = 0, minutes = 0, seconds = 0): # if the keeper2 is changed means that the shift crossed midnight
+				count += keeper2 - datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) - aux + addition
+			else:
+				count += keeper - datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) - aux + addition
+				count2 += 1
 
 	return str(count)
 
@@ -1976,10 +2020,11 @@ def timeLogById(request):
 				start_date = datetime.datetime.combine(date, datetime.time.min) #today date at 0:00 AM
 				end_date = datetime.datetime.combine(date, datetime.time.max) # date at 11:59 PM
 				employeeAttendance = EmployeeAttendance.objects.filter(employee__user__id = userId, date__range = (start_date,end_date)).order_by('-hour_started')[:1]
-				print employeeAttendance
 				count = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #counter to keep all the worked hours
 				keeper = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #this variable will keep the last break. It is useful when the shift is not done
 				keeper2 =  datetime.timedelta(hours = 23, minutes = 59, seconds = 59) # when the break is on another day
+
+				print Task.objects.filter(attendance = employeeAttendance)
 
 				if len(employeeAttendance) > 0:
 					result['no_attendance'] = 'false'
@@ -2837,7 +2882,7 @@ def driver(request):
 
 @login_required
 def profile(request):
-    return render(request, 'driver/profile.html')
+	return render(request, 'driver/profile.html')
 
 def test1(request):
     return render(request, 'manager/test.html')
@@ -3750,7 +3795,6 @@ def getAllManagerEmployees(request):
 def editJob(request):
 	result = {'success' : True}
 	if request.method == "POST":
-		print 'hello'
 		break_id = request.POST['break_id']
 		break_id = int(break_id[3:])
 		break_item = Break.objects.get(id = break_id)
@@ -4468,7 +4512,16 @@ def employeeManagerUpdateForm(request):
 				emplo.user.last_name = userform.cleaned_data['last_name']
 				emplo.company_id = employform.cleaned_data['company_id']
 				emplo.start_date = employform.cleaned_data['start_date']
-				emplo.active = employform.cleaned_data['active']
+				if emplo.active == False and employform.cleaned_data['active'] == True:
+					number = Employee.objects.filter(active = True).count()
+					comp_status = CompanyStatus.objects.filter().first()
+					if number >= comp_status.employ_limit:
+						result['code'] = 5 #number of active employee reached
+						return render(request,'manager/formErrorEmployNumb.html')
+					else:		
+						emplo.active = employform.cleaned_data['active']
+				else:
+					emplo.active = employform.cleaned_data['active']
 				emplo.language = employform.cleaned_data['language']
 				emplo.qr_code = employform.cleaned_data['qr_code']
 				emplo.hour_cost = employform.cleaned_data['hour_cost']
@@ -4487,12 +4540,12 @@ def employeeManagerUpdateForm(request):
 
 				except:
 					image = "employee/no.jpg"
-
-				emplo.photoEmployee = image
+								
+				emplo.photoEmployee = image				
 				emplo.user.save()
 				emplo.save()
 				return render(request, 'manager/formSuccess.html')
-			except:
+			except:				
 				result['code'] = 2 #Employee does not exist
 				return HttpResponse(json.dumps(result),content_type='application/json')
 		else:
@@ -4502,7 +4555,7 @@ def employeeManagerUpdateForm(request):
 			user_id = request.GET.get('user_id')
 			emplo = Employee.objects.get(user__id = user_id)
 			userform = UserFormUpdate(initial = {'first_name' : emplo.user.first_name, 'last_name' : emplo.user.last_name})
-			employform = employeeUpdateForm(initial = {'user' : user_id,'notes' : emplo.notes, 'photoEmployee' : emplo.photoEmployee, 'permission_level' : emplo.permission_level ,'contact_number' : emplo.contact_number ,'hour_cost' : emplo.hour_cost, 'qr_code' : emplo.qr_code ,'language' : emplo.language , 'active' : emplo.active, 'last_task' : emplo.last_task ,'start_date' : emplo.start_date,'company_id' : emplo.company_id, 'manager' : emplo.manager, 'active' : emplo.active})
+			employform = employeeUpdateForm(initial = {'user' : user_id,'notes' : emplo.notes, 'photoEmployee' : emplo.photoEmployee, 'permission_level' : emplo.permission_level ,'contact_number' : emplo.contact_number ,'hour_cost' : emplo.hour_cost, 'qr_code' : emplo.qr_code ,'language' : emplo.language , 'active' : emplo.active, 'last_task' : emplo.last_task ,'start_date' : emplo.start_date,'company_id' : emplo.company_id, 'teamManager': emplo.teamManager, 'manager' : emplo.manager, 'active' : emplo.active})
 			return render(request,'manager/employeeUpdate.html', {'form': userform, 'form1': employform})
 		except:
 			result['code'] = 2 #Employee does not exist
@@ -4510,13 +4563,25 @@ def employeeManagerUpdateForm(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 ### End ###
 
+### Function to check maximum number of employees ###
+def numEmployeeCheck(request):
+	result = {'success' : False}
+	number = Employee.objects.filter(active = True).count()
+	comp_status = CompanyStatus.objects.filter().first()
+	if number >= comp_status.employ_limit:
+		return HttpResponse(json.dumps(result),content_type='application/json')
+	result['success'] = True
+	return  HttpResponse(json.dumps(result),content_type='application/json')
+
+
+
 ### Form to add employee ###
 def employeeFormadd(request):
 	result = {'success' : False}
 	if request.method == "POST":
 		userform = UserForm(request.POST)
 		employform = employeeForm(request.POST, request.FILES)
-		if userform.is_valid() and employform.is_valid():			
+		if userform.is_valid() and employform.is_valid():	
 			new_user_username = userform.cleaned_data['username']
 			new_user_password = userform.cleaned_data['password']
 			new_user_first_name = userform.cleaned_data['first_name']
@@ -4534,7 +4599,7 @@ def employeeFormadd(request):
 				emplo_permission = employform.cleaned_data['permission_level']				
 				emplo_notes = employform.cleaned_data['notes']
 				emplo_teamManager = employform.cleaned_data['teamManager']
-				emplo_manager = employform.cleaned_data['manager']											
+				emplo_manager = employform.cleaned_data['manager']									
 				try:
 					image = request.FILES['image']
 					image.name = new_user_username + ".jpg"
@@ -4609,7 +4674,7 @@ def employeeUpdateFormView(request):
 			emplo.language = employform.cleaned_data['language']
 			emplo.contact_number = employform.cleaned_data['contact_number']		
 			emplo.notes = employform.cleaned_data['notes']
-			emplo.active = employform.cleaned_data['active']
+			# emplo.active = employform.cleaned_data['active']
 			emplo.user.save()
 			emplo.save()
 			result['success'] = True
@@ -4644,25 +4709,35 @@ def checkAttendanceBreaks(userID):
 	result['problemBreak'] = True
 	result['optionalLunch'] = False
 	attendance = EmployeeAttendance.objects.filter(employee__user__id = userID).order_by('-date', '-hour_started').first()
+	if attendance is None:
+		return -1
 	breaks = Break.objects.filter(attendance__id = attendance.id)
 	hour =  str(attendance.hour_started.hour) + ':' + str(attendance.hour_started.minute) + ':' + str(attendance.hour_started.second)
 	date = str(attendance.date) + ' ' + hour # creating format date plus time
+	print 'Horas'
 	hours = getHoursToday(attendance.employee.id, date)
-	rules = TimeKeeperRules.objects.filter(hour__lte = hours).order_by('-hour')[:1]
-	for item in rules:
-		breakLimit = item.breaks #Number of breaks according by rule
-		lunchLimit = item.lunchs #Number of lunch according by rule
-		lunchEnforced = item.lunchBool #If one of the lunch is opcional
-	for item in breaks:
-		if item.lunch is True:
-			lunchCount = lunchCount + 1
-		else:
-			breakCount = breakCount + 1
+	print 'Horas: ' + str(hours)
+	rules = TimeKeeperRules.objects.filter(hour__lte = hours).order_by('-hour').first()
+	print 'Nao e'
+	breakLimit = rules.breaks #Number of breaks according by rule
+	lunchLimit = rules.lunchs #Number of lunch according by rule
+	lunchEnforced = rules.lunchBool #If one of the lunch is opcional
+	if breaks is not None:
+		for item in breaks:
+			if item.lunch is True:
+				lunchCount = lunchCount + 1
+			else:
+				breakCount = breakCount + 1
 
-	result['breaks'] = breakCount
-	result['breakLimit'] = breakLimit
-	result['lunch'] = lunchCount
-	result['LunchLimit'] = lunchLimit
+		result['breaks'] = breakCount
+		result['breakLimit'] = breakLimit
+		result['lunch'] = lunchCount
+		result['LunchLimit'] = lunchLimit
+	else:
+		result['breaks'] = 0
+		result['breakLimit'] = breakLimit
+		result['lunch'] = 0
+		result['LunchLimit'] = lunchLimit
 	if breakLimit == breakCount: # if the number of breaks is correct
 			result['problemBreak'] = False
 	if lunchLimit >= lunchCount:
@@ -4677,7 +4752,6 @@ def checkAttendanceBreaks(userID):
 	result['hours'] = hours
 	return result
 
-
 ### View to retrieve AttendanceChecklist
 @login_required
 def retrieveAttendanceChecklist(request):
@@ -4690,6 +4764,16 @@ def retrieveAttendanceChecklist(request):
 			else:
 		 		userId = request.POST['id']
 		 	attendance = checkAttendanceBreaks(userId) #user id
+		 	if 'id' in request.POST:
+		 		attendance = checkAttendanceBreaks(request.POST['id'])
+		 	else:
+				attendance = checkAttendanceBreaks(request.user.id)  #user id
+		 	print 'depois'
+		 	if attendance == -1:
+		 		result['checklist'] = []
+		 		result['code'] = 4 #User id does not exist
+		 		return HttpResponse(json.dumps(result),content_type='application/json')
+		 	print 'Passou'
 		 	result['problemLunch'] = attendance['problemLunch']
 		 	result['problemBreak'] = attendance['problemBreak']
 		 	result['break'] = attendance['breaks']
@@ -4946,3 +5030,19 @@ def employeeWeekReportGroupBy(request):
 	else:
 	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

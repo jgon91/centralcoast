@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js">
+<html lang="en">
 	<head>
-		<script>(function(H){H.className=H.className.replace(/\bno-js\b/,'js')})(document.documentElement)</script>
 		{% load staticfiles %}
 		{% load i18n %}
 		<meta charset="utf-8">
@@ -12,60 +11,27 @@
 		<title>HeavyConnect</title>
 		<meta name="description" content="">
 		<meta name="viewport" content="width=device-width; initial-scale=1.0">
-		<link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
-
 		<!--IMPORTS-->
-		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
-	</head>
-	<body>
-		<div id="top" >
-			<div id="menuTop">
-				<img src="{% static 'img/logoNegative.png' %}" id="logoHome"/>
-				<span id="clock"></span>
-				<a href="{% url 'logout' %}"><input type="button" value="{% trans 'EXIT' %}" id="logOff"/>
-				<a><input type="button" id="userImg"/>
-			</div>
-		</div>
-
-
-	</body>
-		<link rel="manifest" href="{% static 'manifest.json' %}">
-		<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-		<link rel="stylesheet" href="{% static 'css/bootstrap/css/bootstrap.min.css' %}">
-		<script src="{% static 'css/bootstrap/js/bootstrap.min.js' %}"></script>
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 		<link rel="stylesheet" type="text/css" href="{% static 'css/styleSmall.css' %}">
 		<link rel="stylesheet" type="text/css" href="{% static 'css/styleMedium.css' %}" media="screen and (min-width: 801px) and (orientation: landscape)">
-			<!-- <link rel="stylesheet" type="text/css" href="{% static 'css/styleSmall.css' %}" media="screen and (max-width: 800px) and (orientation: landscape)">
+		<!-- <link rel="stylesheet" type="text/css" href="{% static 'css/styleSmall.css' %}" media="screen and (max-width: 800px) and (orientation: landscape)">
 		<link rel="stylesheet" type="text/css" href="{% static 'css/styleMedium.css' %}" media="screen and (min-width: 801px)"> -->
-		<!--<link rel="stylesheet" type="text/css" href="{% static 'css/styleManager.css' %}">-->
+		<link rel="stylesheet" type="text/css" href="{% static 'css/styleManager.css' %}">
 		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
-
-	<script>
-		function getProfileImage(token, url){
-			$.ajax({
-				method : "POST",
-				url : url,
-				data : {"csrfmiddlewaretoken" : token},
-				async: true,
-				datatype : "json",
-				success : function(data, status, xhr) {
-					//console.log(data.imageUrl);
-					$("#userImg").css("background", "url({% static 'media/' %}" + data.imageUrl + ")");
-					$("#userImg").css("background-size", "100% 100%");	
-					$("#userImg").css("border-radius", "7px");						
-				}
-			});
-		}			
-		getProfileImage("{{ csrf_token }}", "{% url 'getImageUser' %}");
-	</script>
-	<script>
+		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+		<link rel="shortcut icon" href="/favicon.ico">
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+	</head>
+	<script>		
 		function detectPage(){
 			if($("#page").val() == 1)
 				$("a:odd").attr("href", "{% url 'profileManager' %}");
 			else
-				$("a:odd").attr("href", "{% url 'profile' %}");
-		}
-
+				$("a:odd").attr("href", "#");
+		}		
+		
 		function GetClock(){
 			var d=new Date();
 			var nmonth=d.getMonth(),ndate=d.getDate(),nyear=d.getYear();
@@ -87,5 +53,33 @@
 
 
 		});
+	</script>
+	<body>
+		<div id="top">
+			<div id="menuTop">
+				<img src="{% static 'img/logoNegative.png' %}" id="logoHome"/>
+				<span id="clock"></span>
+				<a href="{% url 'logout' %}"><input type="button" value="{% trans 'EXIT' %}" id="logOff"/>
+				<a><input type="button" id="userImg"/>
+			</div>
+		</div>
+	</body>
+	<script>
+		function getProfileImage(token, url){
+			$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token},
+				async: true,
+				datatype : "json",
+				success : function(data, status, xhr) {
+					//console.log(data.imageUrl);
+					$("#userImg").css("background", "url({% static 'media/' %}" + data.imageUrl + ")");
+					$("#userImg").css("background-size", "100% 100%");	
+					$("#userImg").css("border-radius", "7px");						
+				}
+			});
+		}			
+		getProfileImage("{{ csrf_token }}", "{% url 'getImageUser' %}");
 	</script>
 </html>

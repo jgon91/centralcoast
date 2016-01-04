@@ -6,8 +6,8 @@
 		<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
 		<script src="{% static 'jSignature/jSignature.min.js'%}"></script>
 		<script src="{% static 'js/timeKeeper.js'%}"></script>
-	    <script type="text/javascript">
-	    var idTimelog = 48;
+		<script>
+		var idTimelog = 48;
 		var offline = -1;
 		var item_count = 0;
 		var hour_start = 0;
@@ -47,6 +47,7 @@
 
 			getEmployeeShiftsOffline();
 			getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
+			saveData(1);
 
 			$("#shift").click(function() {
 				$('#showTimekeeperModal').modal();
@@ -501,7 +502,6 @@
 								lunchStarted = 0;
 							}
 						}
-						breaksId.push(data.id);
 					} else if(data.code == 1){
 						$("#messageTimekeeper").html("{% trans 'You need to start a break first' %}.");
 					} else if(data.code == 2){
@@ -875,6 +875,4 @@
 
 
 	</body>
-
-
 </html>

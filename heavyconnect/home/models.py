@@ -279,12 +279,13 @@ class EmployeeAttendance(models.Model):
 	signature = models.CharField(max_length = 5000, null = True, blank = True)
 	group = models.ForeignKey(Group, null = True, blank = True)
 	edited = models.BooleanField(default = False)
+	hours_worked = models.TimeField(null = True, blank = True)
 	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 
 	def __unicode__(self):
-		return "Employee: " + str(self.employee) + ", Date: " + str(self.date) + ", AttendanceID: " + str(self.id)
+		return "Employee: " + str(self.employee) + ", Date: " + str(self.date) + ", AttendanceID: " + str(self.id) + ", Worked: " + str(self.hours_worked)
 
 class Task(models.Model):
 	STATUS_CHOICES = (
@@ -664,3 +665,10 @@ class ConfirmationCheck(models.Model):
 
 	def __unicode__(self):
 		return "Id: " + str(self.id) + ", question: " + str(self.question)
+
+class CompanyStatus(models.Model):
+	active = models.BooleanField(default = True)
+	employ_limit = models.IntegerField(default = 10)
+
+	def __unicode__(self):
+		return "Active: " + str(self.active) + ", Limit: " + str(self.employ_limit)

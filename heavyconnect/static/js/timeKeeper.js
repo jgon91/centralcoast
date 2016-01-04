@@ -2,15 +2,21 @@
 //This event call the function syncronaze always when the connection is on
 window.addEventListener('load', function() {
   function updateOnlineStatus(event) {
+  	alert("Off line OK");
     sync();
   }
 
   window.addEventListener('online',  updateOnlineStatus);
 });
-//Constructor
+//Constructors data local storage
 if(localStorage.getItem('dataTimeKeeper') == null){
     var	dataTimeKeeper = [];
     localStorage.setItem('dataTimeKeeper', JSON.stringify(dataTimeKeeper));
+}
+
+if(localStorage.getItem('user_id') == null){
+    var	user_id = -1;
+    localStorage.setItem('user_id', JSON.stringify(user_id));
 }
 //Object to count actions
 var count = {};
@@ -86,13 +92,13 @@ function checkStartBreakLunch(actionLocal, datetime, tmp_break, tmp_lunch){
 				}
 				return true;
 			}else{
-				console.log("Lunch In Progress");
+				console.log("Lunch Happening");
 
 				return false;
 			}
 
 		}else{
-			console.log("Break In Progress");
+			console.log("Break Happening");
 
 			return false;
 		}
@@ -125,13 +131,13 @@ function checkStopBreakLunch(actionLocal, datetime, tmp_break, tmp_lunch){
 				}
 				return true;
 			} else{
-				console.log("Lunch in Progress");
+				console.log("Lunch Happening");
 
 				return false;
 			}
 
 		} else{
-			console.log("Break in Progress");
+			console.log("Break is Happening");
 
 			return false;
 		}
@@ -244,7 +250,7 @@ function getValueStorage(){
 //action: 1 = edit start shift, 2 = edit break, 3 = edit stop shift
 function saveEdition(action, pendent, newTime, id, position)  {
     savedEditions = [];
-    var savedEditions = localStorage.getItem('savedEditions');
+    var savedEditions = JSON.parse(localStorage.getItem('savedEditions'));
     var aux = {};
     aux.action = action;
     aux.newTime = newTime;

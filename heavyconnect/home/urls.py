@@ -132,6 +132,7 @@ urlpatterns = [
     url(r'^retrieveAllEquipmentInfoGPS/$', main_views.retrieveAllEquipmentInfoGPS, name = 'retrieveAllEquipmentInfoGPS'),
     url(r'^retrieveAllMachineInfoGPS/$', main_views.retrieveAllMachineInfoGPS, name = 'retrieveAllMachineInfoGPS'),
     url(r'^getImageUser/$', main_views.getImageUser, name = 'getImageUser'),
+    url(r'^numEmployeeCheck/$', main_views.numEmployeeCheck, name = 'numEmployeeCheck'),
     #url(r'^checkAttendanceBreaks/$', main_views.checkAttendanceBreaks, name = 'retrieveAttendanceChecklist'),
    ### End ###
 
