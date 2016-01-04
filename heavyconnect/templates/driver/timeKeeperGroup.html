@@ -578,12 +578,13 @@
 				success : function(data, status, xhr) {
 					//if (data.success) {
 						var i = 0;
-						var breaks = 1;
-						var lunchs = 1;
+						breaks = 1;
+						lunchs = 1;
 						workBreak = [];
 						breakN = [];
 						breakBeg = [];
 						breakEnd = [];
+						breakDuration = "";
 						lun = [];
 						currentStart = data.Attendance_start;
 						currentEnd = data.Attendance_end;
@@ -615,7 +616,9 @@
 								breakN[data.breaks[i].breakId] = breaks;
 								breakBeg[data.breaks[i].breakId] = data.breaks[i].breakStart;
 								breakEnd[data.breaks[i].breakId] = data.breaks[i].breakStop;
-								$("#tableTimelog").append("<tr class='job'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td> {% trans 'Job' %} #" + breaks + " N/A </td><td><input type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editJob(this.id)'/></td></tr>");
+								var jobid = data.breaks[i].breakId;
+								breakDuration = data.breaks[i].workBreak;
+								$("#tableTimelog").append("<tr id='job" + jobid+ "' class='job'><td class='colBorderTimelog'>" + breakDuration + "</td><td> {% trans 'Job' %} #" + breaks + " N/A </td><td><input id='job" + jobid + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editJob(this.id, `${breakDuration}`, `${breaks}`, `${breakDuration}`)'/></td></tr>");
 								if (data.breaks[i].lunch == 0){
 									lun[data.breaks[i].breakId] = 0
 									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + breaks + " {% trans 'Break' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
@@ -625,7 +628,8 @@
 									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + lunchs + " {% trans 'Lunch' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\" ) no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
 									lunchs++;
 								}
-								$("#tableTimelog").append("<tr class='job'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td> {% trans 'Job' %} #" + breaks + " N/A </td><td><input type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editJob(this.id)'/></td></tr>");
+								<!--jobid = jobid +1-->
+								<!--$("#tableTimelog").append("<tr id='job" + jobid + "' class='job'><td class='colBorderTimelog'>" + breakDuration + "</td><td> {% trans 'Job' %} #" + breaks + " N/A </td><td><input id='job" + jobid + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editJob(this.id, `${breakDuration}`, `${breaks}`, `${breakDuration}`)'/></td></tr>");-->
 
 							}
 							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>{% trans 'End Shift' %}: " + data.Attendance_end + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editStopShift(this.id, currentEnd)'/></td></tr>");
@@ -766,32 +770,32 @@
 			});
 		}
 
-		function editJob(editId) {
+		function editJob(editId, workBreak, breakN, breakDuration) {
 			breakId = editId
+			hours = workBreak
 			$(".editIcon").attr('disabled', true);
-			$("#" + breakId).html("<td class='colBorderTimelog'>" + workBreak + "</td><td>#" + breakN + " {% trans 'Break' %} <input id='newBreakBeg" + breakId + "' type='time'/> - <input id='newBreakEnd" + breakId + "' type='time'/></td><td><input type='button' class='editedIcon' style='background: url(\"/static/imgSmall/editedIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='callEditJob(breakId)'/></td>");
-			$("#newBreakBeg" + breakId).val(breakBeg);
-			$("#newBreakEnd" + breakId).val(breakEnd);
+			var newJob = '#new'+breakId;
+			$("#" + breakId).html("<td class='colBorderTimelog'>" + workBreak + "</td><td>#" + breakN + " {% trans 'Job' %} <input id='new" + breakId + "' type='text'/></td><td><input type='button' class='editedIcon' style='background: url(\"/static/imgSmall/editedIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='callEditJob(breakId, hours)'/></td>");
 		}
 
-		function callEditJob(editId) {
-			createJob(editId, "{{csrf_token}}", "{% url 'editJob' %}");
+		function callEditJob(editId, breakDuration) {
+			createJob(editId, "{{csrf_token}}", "{% url 'editJob' %}", $('#new'+editId).val(), breakDuration);
 		}
 
-		function createJob(editId, token, url) {
+		function createJob(editId, token, url, description, hours) {
 			$.ajax({
 				method : "POST",
 				url : url,
-				data : {"csrfmiddlewaretoken" : token, "description": "N/A"},
+				data : {"csrfmiddlewaretoken" : token, "description": description, "break_id":editId, "hours_spent" : hours},
 				datatype : "json",
 				success : function(data, status, xhr) {
 					if (data.success) {
 						$(".editIcon").attr('disabled', false);
-						<!--emptyDivs();-->
-						<!--$("#timelogBack2").show();-->
-						<!--$("#messageTimekeeper").css("color", "#1F3801");	//green-->
-						<!--$("#messageTimekeeper").html("SCHEDULE");-->
-						<!--timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");-->
+						emptyDivs();
+						$("#timelogBack2").show();
+						$("#messageTimekeeper").css("color", "#1F3801");	//green
+						$("#messageTimekeeper").html("SCHEDULE");
+						timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
 					}
 				}
 			});

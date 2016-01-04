@@ -234,6 +234,57 @@ class TaskCode(models.Model):
 	def __unicode__(self):
 		return "ID: " + str(self.id) + ", Name: " + str(self.name) + ", Category" + str(self.category)
 
+class Employee(models.Model):
+	LANGUAGE_CHOICES = (
+		(1, 'pt-br'),
+		(2, 'es'),
+		(3, 'en-us'),
+	)
+	user = models.OneToOneField(User)
+	active = models.BooleanField(default = True)
+	company_id = models.CharField(max_length = 10, blank = True, null = True)
+	language = models.IntegerField(choices = LANGUAGE_CHOICES, default = 3)
+	qr_code = models.CharField(max_length = 10, blank  = True, null = True)
+	start_date = models.DateField(blank = True, null = True)
+	hour_cost = models.FloatField(blank = True, null = True)
+	contact_number = models.CharField(max_length = 14, blank = True)
+	permission_level = models.IntegerField(choices = ((1, 'Driver'), (2, 'Manager')), default = 1)
+	notes = models.CharField(max_length = 250, null = True, blank = True)
+	manager = models.ForeignKey('self', null = True, blank = True)
+	teamManager = models.BooleanField(default = False)
+	photoEmployee = models.ImageField(upload_to='employee', default='employee/no.jpg')
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+	def __unicode__(self):
+		return  "First Name: " + str(self.user.first_name) + ", Last Name: " + str(self.user.last_name) + ", User ID: " + str(self.user.id) + ", ID: " + str(self.id) + " Team Manager :" + str(self.teamManager)
+
+class Group(models.Model):
+	name = models.CharField(max_length = 20)
+	creator = models.ForeignKey(Employee)
+	date = models.DateField()
+	permanent = models.BooleanField(default = False)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+	def __unicode__(self):
+		return "Creator: " + str(self.creator) + ", DateField: " + str(self.date) + ", Name: " + str(self.name) + ", ID Group: " + str(self.id)
+
+
+class EmployeeAttendance(models.Model):
+	employee = models.ForeignKey(Employee)
+	date = models.DateField()
+	hour_started = models.TimeField()
+	hour_ended = models.TimeField(null = True, blank = True)
+	signature = models.CharField(max_length = 5000, null = True, blank = True)
+	group = models.ForeignKey(Group, null = True, blank = True)
+	edited = models.BooleanField(default = False)
+	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+
+	def __unicode__(self):
+		return "Employee: " + str(self.employee) + ", Date: " + str(self.date) + ", AttendanceID: " + str(self.id)
 
 class Task(models.Model):
 	STATUS_CHOICES = (
@@ -244,6 +295,7 @@ class Task(models.Model):
 		(5, 'Paused'),
 		(6, 'Finished'),
 	)
+	attendance = models.ForeignKey(EmployeeAttendance, null=True)
 	# field = models.ForeignKey(Field)
 	field = models.CharField(null = True, max_length = 100, default = 0)
 	# code = models.ForeignKey(TaskCode)
@@ -266,31 +318,6 @@ class Task(models.Model):
 	def __unicode__(self):
 		return "Field Name: " + str(self.field) + " Code: " + str(self.code) + ", Hour Cost: " +  str(self.rate_cost) + ", Description: " +  str(self.description)
 
-class Employee(models.Model):
-	LANGUAGE_CHOICES = (
-		(1, 'pt-br'),
-		(2, 'es'),
-		(3, 'en-us'),
-	)
-	last_task = models.ForeignKey(Task,null = True, blank = True)
-	user = models.OneToOneField(User)
-	active = models.BooleanField(default = True)
-	company_id = models.CharField(max_length = 10, blank = True, null = True)
-	language = models.IntegerField(choices = LANGUAGE_CHOICES, default = 3)
-	qr_code = models.CharField(max_length = 10, blank  = True, null = True)
-	start_date = models.DateField(blank = True, null = True)
-	hour_cost = models.FloatField(blank = True, null = True)
-	contact_number = models.CharField(max_length = 14, blank = True)
-	permission_level = models.IntegerField(choices = ((1, 'Driver'), (2, 'Manager')), default = 1)
-	notes = models.CharField(max_length = 250, null = True, blank = True)
-	manager = models.ForeignKey('self', null = True, blank = True)
-	teamManager = models.BooleanField(default = False)
-	photoEmployee = models.ImageField(upload_to='employee', default='employee/no.jpg')
-	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
-
-	def __unicode__(self):
-		return  "First Name: " + str(self.user.first_name) + ", Last Name: " + str(self.user.last_name) + ", User ID: " + str(self.user.id) + ", ID: " + str(self.id) + " Team Manager :" + str(self.teamManager)
 
 class EmployeeWithdrawn(models.Model):
 	employee = models.ForeignKey(Employee)
@@ -301,16 +328,6 @@ class EmployeeWithdrawn(models.Model):
 	def __unicode__(self):
 		return "Date: " + str(self.date) + ", Name: " + str(self.employee.user.last_name)
 
-class Group(models.Model):
-	name = models.CharField(max_length = 20)
-	creator = models.ForeignKey(Employee)
-	date = models.DateField()
-	permanent = models.BooleanField(default = False)
-	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
-
-	def __unicode__(self):
-		return "Creator: " + str(self.creator) + ", DateField: " + str(self.date) + ", Name: " + str(self.name) + ", ID Group: " + str(self.id)
 
 class GroupParticipant(models.Model):
 	group = models.ForeignKey(Group)
@@ -320,21 +337,6 @@ class GroupParticipant(models.Model):
 
 	def __unicode__(self):
 		return "Group: " + str(self.group) + ", participant: " + str(self.participant)
-
-class EmployeeAttendance(models.Model):
-	employee = models.ForeignKey(Employee)
-	date = models.DateField()
-	hour_started = models.TimeField()
-	hour_ended = models.TimeField(null = True, blank = True)
-	signature = models.CharField(max_length = 5000, null = True, blank = True)
-	group = models.ForeignKey(Group, null = True, blank = True) 
-	edited = models.BooleanField(default = False)
-	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
-
-
-	def __unicode__(self):
-		return "Employee: " + str(self.employee) + ", Date: " + str(self.date) + ", AttendanceID: " + str(self.id)
 
 
 

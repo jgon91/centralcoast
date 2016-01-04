@@ -3750,13 +3750,19 @@ def getAllManagerEmployees(request):
 def editJob(request):
 	result = {'success' : True}
 	if request.method == "POST":
+		print 'hello'
+		break_id = request.POST['break_id']
+		break_id = int(break_id[3:])
+		break_item = Break.objects.get(id = break_id)
+		hours_spent = request.POST['hours_spent']
+		hours = float(hours_spent[:2])
+		minutes = float(hours_spent[3:])
+		hours_float = hours + minutes/60
 		if 'employeeId' not in request.POST:
 			employee = Employee.objects.get(user_id = request.user.id)
 		else:
 			employee = Employee.objects.get(user_id = request.POST['employeeId'])
-		field = "testfield"
-		category = "testcategory"
-		hours_prediction = 1.0
+
 		description = request.POST['description']
 		status = 1
 		passes = 3
@@ -3764,7 +3770,7 @@ def editJob(request):
 		date = datetime.datetime.now()
 		#Creating Task
 		date = date + datetime.timedelta(hours = time.hour, minutes = time.minute)
-		task, created = Task.objects.get_or_create(description = description, passes = passes, date_assigned = date, status = status)
+		task, created = Task.objects.get_or_create(description = description, passes = passes, date_assigned = date, status = status, attendance = break_item.attendance, hours_spent = hours_float)
 		if created:
 		#Creating association between Employee and Task
 			empTask = EmployeeTask(employee = employee, task = task)
