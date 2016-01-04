@@ -4505,7 +4505,9 @@ def employeeManagerUpdateForm(request):
 		userform = UserFormUpdate(request.POST)
 		employform = employeeUpdateForm(request.POST, request.FILES)
 		user_id = request.POST['user']
+		print 'hello'
 		if userform.is_valid() and employform.is_valid():
+			print 'hello'
 			try:
 				emplo = Employee.objects.get(user_id = user_id)
 				emplo.user.first_name = userform.cleaned_data['first_name']
@@ -4555,7 +4557,8 @@ def employeeManagerUpdateForm(request):
 			user_id = request.GET.get('user_id')
 			emplo = Employee.objects.get(user__id = user_id)
 			userform = UserFormUpdate(initial = {'first_name' : emplo.user.first_name, 'last_name' : emplo.user.last_name})
-			employform = employeeUpdateForm(initial = {'user' : user_id,'notes' : emplo.notes, 'photoEmployee' : emplo.photoEmployee, 'permission_level' : emplo.permission_level ,'contact_number' : emplo.contact_number ,'hour_cost' : emplo.hour_cost, 'qr_code' : emplo.qr_code ,'language' : emplo.language , 'active' : emplo.active, 'last_task' : emplo.last_task ,'start_date' : emplo.start_date,'company_id' : emplo.company_id, 'teamManager': emplo.teamManager, 'manager' : emplo.manager, 'active' : emplo.active})
+
+			employform = employeeUpdateForm(initial = {'user' : user_id,'notes' : emplo.notes, 'photoEmployee' : emplo.photoEmployee, 'permission_level' : emplo.permission_level ,'contact_number' : emplo.contact_number ,'hour_cost' : emplo.hour_cost, 'qr_code' : emplo.qr_code ,'language' : emplo.language , 'active' : emplo.active,'start_date' : emplo.start_date,'company_id' : emplo.company_id, 'teamManager': emplo.teamManager, 'manager' : emplo.manager, 'active' : emplo.active})
 			return render(request,'manager/employeeUpdate.html', {'form': userform, 'form1': employform})
 		except:
 			result['code'] = 2 #Employee does not exist
@@ -4662,8 +4665,10 @@ def employeeUpdatePasswordForm(request):
 ### View to update employee ###
 @login_required
 def employeeUpdateFormView(request):
+	print 'asdf'
 	result = {'success' : False}
 	if request.method == "POST":
+		print 'hello'
 		userform = UserFormUpdate(request.POST)
 		employform = employeeForm(request.POST)
 		emplo = Employee.objects.get(user_id = request.user.id)
@@ -4683,7 +4688,6 @@ def employeeUpdateFormView(request):
 		try:
 			emplo = Employee.objects.get(user_id = request.user.id)
 			userform = UserFormUpdate(initial = {'first_name' : emplo.user.first_name, 'last_name' : emplo.user.last_name})
-			# employform = employeeForm(initial = {'notes' : emplo.notes, 'photo' : emplo.photo, 'permission_level' : emplo.permission_level ,'contact_number' : emplo.contact_number ,'hour_cost' : emplo.hour_cost, 'qr_code' : emplo.qr_code ,'language' : emplo.language , 'active' : emplo.active, 'last_task' : emplo.last_task ,'start_date' : emplo.start_date,'company_id' : emplo.company_id})
 			employform = employeeForm(initial = {'notes' : emplo.notes, 'photo' : emplo.photo, 'contact_number' : emplo.contact_number,'language' : emplo.language, 'manager' : emplo.manager, 'active' : emplo.active})
 			result['success'] = True
 		except:

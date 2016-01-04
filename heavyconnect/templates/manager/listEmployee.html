@@ -57,9 +57,9 @@
 							for(var i = 0; i < data.employees.length; i++){
 								$(".tableListForm").append("<tr><td>" + data.employees[i].first_name + " " + data.employees[i].last_name + "</td><td>" + data.employees[i].user_id + "</td><td><a href='{% url 'employeeManagerUpdateForm' %}?user_id="+ data.employees[i].user_id +"' ><p data-placement='top' data-toggle='tooltip' title='Edit'><button class='btn btn-primary btn-xl' data-title='Edit' data-toggle='modal' data-target='#edit' ><span class='glyphicon glyphicon-pencil'></span></button></p></a></td></tr>");
 							}
-							//$(".editEmployee").click( function(){
-							//	editEmployee(token, this.id);
-							//});
+							$(".editEmployee").click( function(){
+								editEmployee(token, this.id);
+							});
 							
 						}
 					});			

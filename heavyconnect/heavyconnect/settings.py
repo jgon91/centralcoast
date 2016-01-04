@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'dgaaxm0o4)7max48$chs1im)av623&qw^t*e4evk8m*@48al3^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 
 ALLOWED_HOSTS = [
@@ -93,10 +93,10 @@ WSGI_APPLICATION = 'heavyconnect.wsgi.application'
 DATABASES = {
          'default': {
              'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-             'NAME': 'dev',                      # Or path to database file if using sqlite3.
-             'USER': '',                      # Not used with sqlite3.
-             'PASSWORD': '',                  # Not used with sqlite3.
-             'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
+             'NAME': 'd395pa1l0s6i0g',                      # Or path to database file if using sqlite3.
+             'USER': 'dntkrypwpilsae',                      # Not used with sqlite3.
+             'PASSWORD': 'QAUjydqmetOvNSew_L1c309zd6',                  # Not used with sqlite3.
+             'HOST': 'ec2-54-204-12-25.compute-1.amazonaws.com',                      # Set to empty string for localhost. Not used with sqlite3.
              'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
 
          }
