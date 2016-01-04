@@ -3517,15 +3517,20 @@ def getCsv(request):
 	response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
 
 	writer = csv.writer(response)
-	writer.writerow(['ID', 'Name', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked'])
+	writer.writerow(['ID', 'Name', 'Team Lead', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked'])
 	attendances = EmployeeAttendance.objects.all().order_by('-date')#filter(date__range = (start_date, now))
 
 	if attendances.count > 0:
 		for attendance in attendances:
-			employee_id = attendance.employee.id
+			employee_id = attendance.employee.qr_code
 			date = attendance.date
 			hour_started = attendance.hour_started
 			hour_ended = attendance.hour_ended
+			if(attendance.group is None):
+				leader_name = 'N/A'
+			else:
+				leader_name = attendance.group.creator.user.first_name + ", " + attendance.group.creator.user.last_name
+
 			if hour_ended == None:
 				hour_ended = 'N/A'
 			if hour_started == None:
@@ -3538,7 +3543,7 @@ def getCsv(request):
 			else:
 				hours_today = 'N/A'
 			employee_name = attendance.employee.user.last_name + ", " + attendance.employee.user.first_name
-			writer.writerow([employee_id, employee_name, date, hour_started, hour_ended, hours_today])
+			writer.writerow([employee_id, employee_name, leader_name, date, hour_started, hour_ended, hours_today])
 			breaks = Break.objects.filter(attendance__id = attendance.id)#.order_by('start')
 			i = 1
 			if breaks.count() > 0:
