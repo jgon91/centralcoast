@@ -622,6 +622,7 @@
 					lun = [];
 					currentStart = data.Attendance_start;
 					currentEnd = data.Attendance_end;
+					if(data.no_attendance == 'false'){
 					if (data.Attendance_end == 'In Progress') {
 						$("#divTimelog").append("<table id='tableTimelog' ><tr><td colspan='2'>Start Shift: " + data.Attendance_start + "</td></tr>");
 						for (i = 0; i < data.breaks.length; i++) {
@@ -660,6 +661,9 @@
 								$("#btnSignature").append("<input type='button' id='btnSign' value='SIGN'/>");
 								$("#btnSign").css("background", "#E5E5E5");
 							}
+					}
+					} else {
+						$("#divTimelog").append("No Attendances Today <p>Please start a shift to see your schedule.</p>");
 					}
 					$("#tableTimelog").append("<tr><td colspan='3'>Total: " + data.Total + " hours</td></tr>");
 				}
