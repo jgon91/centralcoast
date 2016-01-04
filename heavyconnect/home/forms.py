@@ -305,7 +305,7 @@ class employeeForm(forms.Form):
 		(2, 'es'),
 		(1, 'pt-br'),
 	)
-	last_task = forms.ModelChoiceField(queryset = Task.objects.all(), required = False)
+
 	user = forms.ModelChoiceField(queryset = User.objects.all(), required = False)
 	active = forms.BooleanField(required = False)
 	company_id = forms.CharField(required = False)
@@ -333,7 +333,7 @@ class employeeUpdateForm(forms.Form):
 		(2, 'es'),
 		(1, 'pt-br'),
 	)
-	last_task = forms.ModelChoiceField(queryset = Task.objects.all(), required = False)
+
 	user = forms.IntegerField(required = False)
 	company_id = forms.CharField(required = False)
 	language = forms.ChoiceField(choices = LANGUAGE_CHOICES)
