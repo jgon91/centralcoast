@@ -1950,6 +1950,8 @@ def getHoursToday(employee_id, date_entry):
 		lenght = len(breaks)
 		count2 = 0
 		addition = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #addition works to add the time of the last break on the count. It is because the lastbreak should not be counted on if the attendance has the end value none
+		itemStart = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second)
+
 		for doc in breaks:
 			docStart = datetime.timedelta(hours = doc.start.hour, minutes = doc.start.minute, seconds = doc.start.second)
 			if docStart > keeper: #keeps the bigger break start, bigger because the time of the next break is always after the last one
