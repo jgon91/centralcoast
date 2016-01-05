@@ -3,12 +3,8 @@
 	<head>
 		{% load staticfiles %}
 		{% load i18n %}
-		<style type="text/css">
-	      .js #flash {display: none;}
-	    </style>
 		<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
 		<script type="text/javascript">
-	    	$('html').addClass('js');
 			$(document).ready(function() {
 				GetClock();
 				setInterval(GetClock,1000);
@@ -28,7 +24,6 @@
 	</head>
 	
 	<body>
-	<div id="flash">
 		<div id="top">
 			<div id="menuTop">
 				<a href="{% url 'home' %}"><input type="button" class="btnTop" id="btnHomeUp" /></a>
@@ -83,7 +78,6 @@
 		}
 		getProfileImage("{{ csrf_token }}", "{% url 'getImageUser' %}");
 	</script>
-	</div>
 	</body>
 
 </html>
