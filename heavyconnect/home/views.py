@@ -3519,11 +3519,13 @@ def getCsv(request):
 	response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
 
 	writer = csv.writer(response)
-	writer.writerow(['ID', 'Name', 'Team Lead', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked'])
+	# writer.writerow(['ID', 'Name', 'Team Lead', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked'])
 	attendances = EmployeeAttendance.objects.all().order_by('-date')#filter(date__range = (start_date, now))
 
 	if attendances.count > 0:
 		for attendance in attendances:
+			data_row = []
+			header = []
 			employee_id = attendance.employee.qr_code
 			date = attendance.date
 			hour_started = attendance.hour_started
@@ -3545,11 +3547,14 @@ def getCsv(request):
 			else:
 				hours_today = 'N/A'
 			employee_name = attendance.employee.user.last_name + ", " + attendance.employee.user.first_name
-			writer.writerow([employee_id, employee_name, leader_name, date, hour_started, hour_ended, hours_today])
+			# writer.writerow([employee_id, employee_name, leader_name, date, hour_started, hour_ended, hours_today])
+			data_row.extend((employee_id, employee_name, leader_name, date, hour_started, hour_ended, hours_today))
 			breaks = Break.objects.filter(attendance__id = attendance.id)#.order_by('start')
 			i = 1
-			if breaks.count() > 0:
-				writer.writerow(['', '', 'Break', 'Hour Started', 'Hour Ended', 'Total Time'])
+			break_num = breaks.count()
+			header.extend(('ID', 'Name', 'Team Lead', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked'))
+			if break_num > 0:
+				# writer.writerow(['', '', 'Break', 'Hour Started', 'Hour Ended', 'Total Time'])
 				for item in breaks:
 					num_break = i
 					if item.start != None and item.end != None:
@@ -3561,8 +3566,15 @@ def getCsv(request):
 							total = 'N/A'
 					else:
 						total = 'N/A'
-					writer.writerow(['', '', num_break, item.start, item.end, total])
+					# writer.writerow(['', '', num_break, item.start, item.end, total])
+					header.extend(('Break', 'Hour Started', 'Hour Ended', 'Break Time'))
+					data_row.extend((num_break, item.start, item.end, total))
 					i = i+1
+			print header
+			print data_row
+			writer.writerow(header)
+			writer.writerow(data_row)
+
 	return response
 
 def timeKeeperDailyReport(request):
@@ -4720,6 +4732,7 @@ def checkAttendanceBreaks(userID):
 	result['problemBreak'] = True
 	result['optionalLunch'] = False
 	attendance = EmployeeAttendance.objects.filter(employee__user__id = userID).order_by('-date', '-hour_started').first()
+	print attendance
 	if attendance is None:
 		return -1
 	breaks = Break.objects.filter(attendance__id = attendance.id)
@@ -4730,36 +4743,35 @@ def checkAttendanceBreaks(userID):
 	print 'Horas: ' + str(hours)
 	rules = TimeKeeperRules.objects.filter(hour__lte = hours).order_by('-hour').first()
 	print 'Nao e'
-	breakLimit = rules.breaks #Number of breaks according by rule
-	lunchLimit = rules.lunchs #Number of lunch according by rule
-	lunchEnforced = rules.lunchBool #If one of the lunch is opcional
+	# breakLimit = rules.breaks #Number of breaks according by rule
+	# lunchLimit = rules.lunchs #Number of lunch according by rule
+	# lunchEnforced = rules.lunchBool #If one of the lunch is opcional
 	if breaks is not None:
 		for item in breaks:
 			if item.lunch is True:
 				lunchCount = lunchCount + 1
 			else:
 				breakCount = breakCount + 1
-
 		result['breaks'] = breakCount
-		result['breakLimit'] = breakLimit
+		# result['breakLimit'] = breakLimit
 		result['lunch'] = lunchCount
-		result['LunchLimit'] = lunchLimit
+		# result['LunchLimit'] = lunchLimit
 	else:
 		result['breaks'] = 0
-		result['breakLimit'] = breakLimit
+		# result['breakLimit'] = breakLimit
 		result['lunch'] = 0
-		result['LunchLimit'] = lunchLimit
-	if breakLimit == breakCount: # if the number of breaks is correct
-			result['problemBreak'] = False
-	if lunchLimit >= lunchCount:
-		count = lunchLimit - lunchCount
-		if count == 1: #If difference is 1 lunch
-			if lunchEnforced == True:
-				result['optionalLunch'] = True
-				result['problemLunch'] = False
-		else:
-			if count == 0:
-				result['problemLunch'] = False
+		# result['LunchLimit'] = lunchLimit
+	# if breakLimit == breakCount: # if the number of breaks is correct
+	# 		result['problemBreak'] = False
+	# if lunchLimit >= lunchCount:
+	# 	count = lunchLimit - lunchCount
+	# 	if count == 1: #If difference is 1 lunch
+	# 		if lunchEnforced == True:
+	# 			result['optionalLunch'] = True
+	# 			result['problemLunch'] = False
+	# 	else:
+	# 		if count == 0:
+	# 			result['problemLunch'] = False
 	result['hours'] = hours
 	return result
 
@@ -4774,12 +4786,17 @@ def retrieveAttendanceChecklist(request):
 				userId = request.user.id
 			else:
 		 		userId = request.POST['id']
+			print 'userid'
+			print userId
 		 	attendance = checkAttendanceBreaks(userId) #user id
-		 	if 'id' in request.POST:
-		 		attendance = checkAttendanceBreaks(request.POST['id'])
-		 	else:
-				attendance = checkAttendanceBreaks(request.user.id)  #user id
+		 	# if 'id' in request.POST:
+				# print 'aaaaa'
+		 	# 	attendance = checkAttendanceBreaks(request.POST['id'])
+		 	# else:
+				# print 'bbbb'
+				# attendance = checkAttendanceBreaks(request.user.id)  #user id
 		 	print 'depois'
+			print attendance
 		 	if attendance == -1:
 		 		result['checklist'] = []
 		 		result['code'] = 4 #User id does not exist
@@ -5026,7 +5043,7 @@ def employeeWeekReportGroupBy(request):
 
 			start_date = datetime.datetime.strptime("2015-11-01 00:00:00", '%Y-%m-%d %H:%M:%S')
 			end_date = datetime.datetime.now()
-			employeeAttendance = EmployeeAttendance.objects.filter(employee_id = 44, date__range = (start_date, end_date)).order_by('date')
+			employeeAttendance = EmployeeAttendance.objects.filter(date__range = (start_date, end_date)).order_by('date')
 			#result.append(['Day', 'Edited'])
 			for item in employeeAttendance:
 				row = {}
