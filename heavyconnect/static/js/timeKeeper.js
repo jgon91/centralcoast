@@ -1,12 +1,8 @@
 //Script Time Keeper Off-line
 //This event call the function syncronaze always when the connection is on
 window.addEventListener('load', function() {
-  function updateOnlineStatus(event) {
-  	alert("Off line OK");
-    sync();
-  }
 
-  window.addEventListener('online',  updateOnlineStatus);
+
 });
 //Constructors data local storage
 if(localStorage.getItem('dataTimeKeeper') == null){
