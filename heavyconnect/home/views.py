@@ -11,6 +11,8 @@ from django.db.models import Count
 from django.template import RequestContext
 from django.core import serializers
 import csv
+from django.views.decorators.cache import cache_page
+from django.views.decorators.cache import cache_control
 
 LANGUAGE_CHOICES = ['pt-br','es', 'en-us']
 
@@ -33,7 +35,7 @@ LANGUAGE_CHOICES = ['pt-br','es', 'en-us']
 def empty(request):
 	return redirect('home')
 
-
+# @cache_control(must_revalidate=True, max_age=60*60*24*30)
 def home(request):
 	# lang = request.GET['lang']
 	# if lang != None:
@@ -51,6 +53,7 @@ def home(request):
 
 
 ## 404 Error ##
+# @cache_control(must_revalidate=True, max_age=60*60*24*30)
 def page_not_found(request):
 	response = render_to_response(
 	'404.html',
@@ -62,6 +65,7 @@ def page_not_found(request):
 
 
 ## 500 Error ##
+# @cache_control(must_revalidate=True, max_age=60*60*24*30)
 def server_error(request):
 	response = render_to_response(
 	'500.html',
@@ -660,6 +664,7 @@ def getEmployeeLocation(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+# @cache_control(must_revalidate=True, max_age=60*60*24*15)
 def login(request):
 	#validating the received form
 	form = loginForm(request.POST)
@@ -3522,10 +3527,20 @@ def getCsv(request):
 	# writer.writerow(['ID', 'Name', 'Team Lead', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked'])
 	attendances = EmployeeAttendance.objects.all().order_by('-date')#filter(date__range = (start_date, now))
 
+	header = []
+	header.extend(('ID', 'Name', 'Team Lead', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked'))
+	header.extend(('Break 1', 'Hour Started', 'Hour Ended', 'Break Time'))
+	header.extend(('Break 2', 'Hour Started', 'Hour Ended', 'Break Time'))
+	header.extend(('Break 3', 'Hour Started', 'Hour Ended', 'Break Time'))
+	header.extend(('Break 4', 'Hour Started', 'Hour Ended', 'Break Time'))
+	header.extend(('Break 5', 'Hour Started', 'Hour Ended', 'Break Time'))
+	header.extend(('Break 6', 'Hour Started', 'Hour Ended', 'Break Time'))
+	header.extend(('Break 7', 'Hour Started', 'Hour Ended', 'Break Time'))
+	writer.writerow(header)
 	if attendances.count > 0:
 		for attendance in attendances:
 			data_row = []
-			header = []
+
 			employee_id = attendance.employee.qr_code
 			date = attendance.date
 			hour_started = attendance.hour_started
@@ -3552,7 +3567,6 @@ def getCsv(request):
 			breaks = Break.objects.filter(attendance__id = attendance.id)#.order_by('start')
 			i = 1
 			break_num = breaks.count()
-			header.extend(('ID', 'Name', 'Team Lead', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked'))
 			if break_num > 0:
 				# writer.writerow(['', '', 'Break', 'Hour Started', 'Hour Ended', 'Total Time'])
 				for item in breaks:
@@ -3567,12 +3581,8 @@ def getCsv(request):
 					else:
 						total = 'N/A'
 					# writer.writerow(['', '', num_break, item.start, item.end, total])
-					header.extend(('Break', 'Hour Started', 'Hour Ended', 'Break Time'))
 					data_row.extend((num_break, item.start, item.end, total))
 					i = i+1
-			print header
-			print data_row
-			writer.writerow(header)
 			writer.writerow(data_row)
 
 	return response
