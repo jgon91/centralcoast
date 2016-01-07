@@ -1,0 +1,68 @@
+{% extends "easy_pdf/base.html" %}
+{% block content %}
+
+<div id="content">
+    <h1>Timecard</h1>
+</div>
+<table>
+<tr>
+    <th>Attendance Id</th>
+    <th>Employee Id</th>
+  <th>First Name, Last Name</th>
+  <th>Team Lead</th>
+  <th>Date</th>
+  <th>Clock-in</th>
+  <th>Clock-out</th>
+  <th>Hours Worked(w/out breaks)</th>
+  <th>Break 1</th>
+  <th>Hour Started</th>
+   <th>Hour Ended</th>
+   <th>Total Break Time</th>
+    <th>Lunch 1</th>
+  <th>Hour Started</th>
+   <th>Hour Ended</th>
+   <th>Total Break Time</th>
+    <th>Break 2</th>
+  <th>Hour Started</th>
+   <th>Hour Ended</th>
+   <th>Total Break Time</th>
+    <th>Lunch 2</th>
+  <th>Hour Started</th>
+   <th>Hour Ended</th>
+   <th>Total Break Time</th>
+    <th>Break 3</th>
+  <th>Hour Started</th>
+   <th>Hour Ended</th>
+   <th>Total Break Time</th>
+    <th>Lunch 3</th>
+  <th>Hour Started</th>
+   <th>Hour Ended</th>
+   <th>Total Break Time</th>
+    <th>Break 4</th>
+  <th>Hour Started</th>
+   <th>Hour Ended</th>
+   <th>Total Break Time</th>
+
+</tr>
+{%for attendance in attendance_results%}
+<tr>
+<td>{{attendance.id}}</td>
+    <td>{{attendance.employee.qr_code}}</td>
+  <td>{{attendance.employee.first_name}}</td>
+  <td>{{attendance.employee.first_name}}</td>
+  <td>{{attendance.date}}</td>
+  <td>{{attendance.hour_started}}</td>
+  <td>{{attendance.hour_ended}}</td>
+  <td>N/A</td>
+    {%for break in break_results%}
+        {%if break.attendance.id == attendance.id%}
+        <td></td>
+        <td>{{break.start}}</td>
+        <td>{{break.end}}</td>
+        <td>0</td>
+        {%endif%}
+    {%endfor%}
+  </tr>
+{%endfor%}
+</table>
+{% endblock %}

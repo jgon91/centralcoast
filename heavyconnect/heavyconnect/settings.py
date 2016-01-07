@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home',
+    'easy_pdf',
 )
 
 ADMINS = [('Jessica', 'jgon91@gmail.com')]
@@ -64,6 +65,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
 ROOT_URLCONF = 'heavyconnect.urls'
@@ -89,6 +93,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'heavyconnect.wsgi.application'
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'TIMEOUT': 1209600,
+    }
+}
 
 DATABASES = {
          'default': {
@@ -136,6 +146,8 @@ STATIC_ROOT = 'importStatic/'
 STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
+
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.CachedStaticFilesStorage'
 
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, '../static').replace('\\','/'),

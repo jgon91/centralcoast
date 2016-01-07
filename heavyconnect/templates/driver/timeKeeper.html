@@ -161,6 +161,12 @@
 				$("#messageTimekeeper").html("SCHEDULE");
 				timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
 			});
+			$("#scheduleButton").click(function() {
+				$('#showTimekeeperModal').modal();
+				emptyDivs();
+				$("#messageTimekeeper").html("SCHEDULE");
+				timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+			});
 		}); 
 	    </script>
 
@@ -528,6 +534,7 @@
 							offline--;
 						} else {
 							$("#messageTimekeeper").html("{% trans 'Shift ended' %}");
+							$("#scheduleButton").append("<input type='button' id='timelog2' value='SCHEDULE' class='btnsTimekeeper'/>");
 						}
 						shiftStarted = 0;
 
@@ -763,6 +770,7 @@
 		}
 		function emptyDivs() {
 				$("#confirmShift").empty();
+				$("#scheduleButton").empty();
 				$("#confirmBreak").empty();
 				$("#confirmLunch").empty();
 				$("#divTimelog").empty();
@@ -775,7 +783,7 @@
 		</script>
 	  </head>
 	<body>
-		<header id="head"></header>
+	<header id="head"></header>
 		<div id="wrapper">
 			<div id="content">
 				<div class="namePage">
@@ -807,13 +815,12 @@
 		<footer>
 			&copy;2015 HeavyConnect, Inc.
 		</footer>
-		<div id="clearBoth"></div>
 		<!-- MODAL OF ALERT - TIMEKEEPER -->
 		<div class="modal fade" id="showTimekeeperModal" role="dialog">
-			<div class="modal-dialog">
+			<div class="modal-dialog full-size">
 				<!-- Modal content-->
-				<div class="modal-content modalTimekeeper">
-					<div class="modal-body">
+				<div class="modal-content modalTimekeeper full-size">
+					<div class="modal-body full-size">
 						<button type="button" class="closeTimekeeper" data-dismiss="modal"></button>
 						<span id="messageTimekeeper"></span>
 						<div id="confirmShift"></div>
@@ -823,6 +830,7 @@
 						<div id="btnSignature"></div>
 						<div id="questions"></div>
 						<div id="divSignNow"></div>
+						<div id="scheduleButton"></div>
 						<br>
 						<div class="both"></div>
 					</div>
@@ -832,12 +840,12 @@
 		<div id="clearBoth"></div>
 		<!-- MODAL SIGNATURE - TIMEKEEPER -->
 		<div class="modal fade" id="signModal" role="dialog">
-			<div class="modal-dialog">
+			<div class="modal-dialog full-size">
 				<!-- Modal content-->
-				<div class="modal-content signModalDialog">
+				<div class="modal-content signModalDialog full-size">
 					<button type="button" class="closeSignature" data-dismiss="modal"></button>
 					<div class="modal-title" id="titleSign">{% trans 'Sign Here' %}</div>
-					<div class="modal-body" id="signatureContent">
+					<div class="modal-body full-size" id="signatureContent">
 
 					<div id="signField">
 						<div id="signature"></div>
@@ -858,17 +866,21 @@
 			.editIcon {
 				background: url('/static/imgSmall/editIcon.png') no-repeat top left !important;
 				background-size: 100% 100% !important;
-				width: 20px !important;
-				height: 20px !important;
+				width: 30px !important;
+				height: 30px !important;
 				border: none !important;
 			}
 			.editedIcon {
 
 				background: url('/static/imgSmall/editedIcon.png') no-repeat top left !important;
 				background-size: 100% 100% !important;
-				width: 20px !important;
-				height: 20px !important;
+				width: 30px !important;
+				height: 30px !important;
 				border: none !important;
+			}
+			.full-size{
+				width: 95%;
+    			height: 92%;
 			}
 	</style>
 

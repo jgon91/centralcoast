@@ -19,8 +19,10 @@
 		  ga('send', 'pageview');
 
 		</script>
+
 	</head>
 	<body>
+		<div id="fouc">
 		<input type="hidden" id="page" value="1">
 		<header id="headHome"></header>
 		<div class="row" id="driverMenu">
@@ -36,6 +38,10 @@
 			</div>
 
 		</div>
+			</div>
+		<script type="text/javascript">
+			document.getElementById("fouc").style.display="block";
+		</script>
 	</body>
 	<div style="height: 180px; ">
 		<img src="{% static 'img/backgroundFooter.png' %}" style=" bottom : 0; margin-top : 20px;  background-size: 100% 210px; height: 25%;

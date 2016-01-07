@@ -12,6 +12,24 @@
 		<script type="text/javascript" src="{% static 'WebCodeCam/js/startScanQRCode.js' %}"></script>
 		<script type="text/javascript" src="{% static 'WebCodeCam/js/qrcodelib.js' %}"></script>
 		<script type="text/javascript" src="{% static 'WebCodeCam/js/WebCodeCam.js' %}"></script>
+		<style>
+			.full-size{
+			width: 95%;
+    			height: 92%;
+			}
+			.btnCreateTeam {
+			background: #1F3801 !important;
+    background-size: 100% 100%;
+    border-radius: 7px;
+    border: 1px solid #1F3801 !important;
+    box-shadow: 2px 2px 5px gray;
+    height: 65px;
+    width: 250px;
+    color: white;
+    margin-bottom: 25px;
+    font-size: 25px;
+    font-weight: 700;}
+		</style>
 		<script>
 		$(document).ready(function(){
 			$('[data-toggle="popover"]').popover();
@@ -240,6 +258,13 @@
 				$("#messageTimekeeper").html("{% trans 'Select the Team to see SCHEDULE' %}:");
 				teamsBtns();
 			});
+			$("#scheduleButton").click(function() {
+				emptyDivs();
+				$('#showTimekeeperModal').modal();
+				$("#messageTimekeeper").css("color", "#1F3801");	//green
+				$("#messageTimekeeper").html("{% trans 'Select the Team to see SCHEDULE' %}:");
+				teamsBtns();
+			});
 			$("#timelogBack1").click(function() {
 				emptyDivs();
 				$('#showTimekeeperModal').modal();
@@ -326,17 +351,17 @@
 					} else if (data.code == 1) {
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").css("color", "#BB330C");	//red
-						$("#messageTimekeeper").html("{% trans 'There is no shift records for this employee' %}.");
+						$("#messageTimekeeper").html("{% trans 'There are no shift records for this employee' %}.");
 						//hideModal();
 					} else if (data.code == 2) {
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").css("color", "#BB330C");	//red
-						$("#messageTimekeeper").html("{% trans 'Error. Contact Suport' %}.");
+						$("#messageTimekeeper").html("{% trans 'Error. Contact Support' %}.");
 						//hideModal();
 					} else if (data.code == 3) {
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").css("color", "#BB330C");	//red
-						$("#messageTimekeeper").html("{% trans 'Error. Contact Suport' %}.");
+						$("#messageTimekeeper").html("{% trans 'Error. Contact Support' %}.");
 						//hideModal();
 					}
 				}
@@ -352,6 +377,7 @@
 					if (data.success) {
 						//arrayTeams = [];
 						arrayTeams = data.group;
+
 						$("#teamsList").css("text-align", "left");
 						$("#teamsList").html('');
 						for (var i = 0; i < data.group.length; i++) {
@@ -489,6 +515,7 @@
 					if (data.success) {
 						$("#messageTimekeeper").css("color", "#1F3801");	//green
 						$("#messageTimekeeper").html("Clock-out:");
+						$("#scheduleButton").append("<input type='button' id='timelog2' value='SCHEDULE' class='btnsTimekeeper'/>");
 					}
 				}
 			});
@@ -597,7 +624,7 @@
 								breakN[data.breaks[i].breakId] = breaks;
 								breakBeg[data.breaks[i].breakId] = data.breaks[i].breakStart;
 								breakEnd[data.breaks[i].breakId] = data.breaks[i].breakStop;
-								$("#tableTimelog").append("<tr class='job' ><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td> {% trans 'Job' %} #" + breaks + " N/A </td><td></td></tr>");
+								$("#tableTimelog").append("<tr class='job' ><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td> {% trans 'Job' %} #" + breaks +" N/A </td><td></td></tr>");
 								if (data.breaks[i].lunch == 0){
 									lun[data.breaks[i].breakId] = 0
 									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + breaks + " {% trans 'Break' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
@@ -607,7 +634,6 @@
 									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + lunchs + " {% trans 'Lunch' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
 									lunchs++;
 								}
-								$("#tableTimelog").append("<tr class='job' ><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td> {% trans 'Job' %} #" + breaks + " N/A </td><td></td></tr>");
 							}
 							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>{% trans 'End Shift' %}: " + data.Attendance_end + "</td></tr>");
 						} else {
@@ -619,7 +645,7 @@
 								breakEnd[data.breaks[i].breakId] = data.breaks[i].breakStop;
 								var jobid = data.breaks[i].breakId;
 								breakDuration = data.breaks[i].workBreak;
-								$("#tableTimelog").append("<tr id='job" + jobid+ "' class='job'><td class='colBorderTimelog'>" + breakDuration + "</td><td> {% trans 'Job' %} #" + breaks + " N/A </td><td><input id='job" + jobid + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editJob(this.id, `${breakDuration}`, `${breaks}`, `${breakDuration}`, `${idTimelog}`)'/></td></tr>");
+								$("#tableTimelog").append("<tr id='job" + jobid+ "' class='job'><td class='colBorderTimelog'>" + breakDuration + "</td><td> {% trans 'Job' %} #" + breaks +"  "+ data.tasks[i].description + " </td><td><input id='job" + jobid + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editJob(this.id, `${breakDuration}`, `${breaks}`, `${breakDuration}`, `${idTimelog}`)'/></td></tr>");
 								if (data.breaks[i].lunch == 0){
 									lun[data.breaks[i].breakId] = 0
 									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + breaks + " {% trans 'Break' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
@@ -691,6 +717,7 @@
 				successes = data.success.length;
 				$("#success").css("color", "#1F3801");	//green
 				$("#success").append("{% trans 'SUCCESS' %}");
+
 			}
 			if (dataError > 0) {
 				errors = data.error.length;
@@ -725,6 +752,7 @@
 			$("#teamsList").hide();
 			$("#success").empty();
 			$("#error").empty();
+			$("#scheduleButton").empty();
 			$("#team").empty();
 			$("#clock-in").empty();
 			$("#clock-out").empty();
@@ -956,17 +984,7 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" id="createTeam" style = "background: #1F3801 !important;
-    background-size: 100% 100%;
-    border-radius: 7px;
-    border: 1px solid #1F3801 !important;
-    box-shadow: 2px 2px 5px gray;
-    height: 50px;
-    width: 200px;
-    color: white;
-    margin-bottom: 10px;
-    font-size: 25px;
-    font-weight: 700;" value="{% trans 'CREATE TEAM' %}" class="btnCreateTeam"/>
+						<input type="button" id="createTeam"  value="{% trans 'CREATE TEAM' %}" class="btnCreateTeam"/>
 					</div>
 				</div>
 				<div class="row">
@@ -1023,7 +1041,7 @@
 		<div id="clearBoth"></div>
 		<!-- MODAL OF ALERT - TIMEKEEPER -->
 		<div class="modal fade" id="showTimekeeperModal" role="dialog">
-			<div class="modal-dialog">
+			<div class="modal-dialog full-size" >
 				<!-- Modal content-->
 				<div class="modal-content modalTimekeeper">
 					<div class="modal-body">
@@ -1055,6 +1073,10 @@
 							<tr>
 								<td><div id="success"></div></td>
 								<td><div id="error"></div></td>
+
+							</tr>
+							<tr>
+								<td><div id="scheduleButton"></div></td>
 							</tr>
 						</table>
 						<div id="team"></div>

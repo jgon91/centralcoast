@@ -17,13 +17,20 @@
 		<link rel="stylesheet" type="text/css" href="{% static 'css/styleMedium.css' %}" media="screen and (min-width: 801px) and (orientation: landscape)">
 
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+		<!-- Replace hc-logo.png & apple-touch-icon.png in the root of your domain and delete these references -->
 		<link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 		<link rel="manifest" href="{% static 'manifest.json' %}">
+		<style type="text/css">
+			.js #fouc {display: none;}
+		</style>
+		<script type="text/javascript">
+			document.documentElement.className = 'js';
+		</script>
 	</head>
 	
 	<body>
+		<div id="fouc">
 		<div id="top">
 			<div id="menuTop">
 				<a href="{% url 'indexManager' %}"><input type="button" class="btnTop" id="btnHomeUp" /></a>
@@ -34,6 +41,10 @@
 				<a href="#"><input type="button" id="userImg"/>
 			</div>
 		</div>
+			</div>
+		<script type="text/javascript">
+			document.getElementById("fouc").style.display="block";
+		</script>
 	</body>
 	<script>
 	function getProfileImage(token, url){

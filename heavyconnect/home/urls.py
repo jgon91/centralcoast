@@ -13,7 +13,9 @@ from . import viewsCRUD as CRUD
 
 urlpatterns = [
     url(r'^$', main_views.home, name='home'),
+    url(r"^timecard.pdf$", main_views.HelloPDFView.as_view()),
     url(r'^login/$', main_views.login, name='login'),
+    url(r'^timecard_pdf/$', main_views.timecard_pdf, name='timecard_pdf'),
     url(r'^logout/$', main_views.logout, name='logout'),
     url(r'^profile/$', main_views.profile, name='profile'),
     url(r'^driver/$', main_views.driver, name='driver'),

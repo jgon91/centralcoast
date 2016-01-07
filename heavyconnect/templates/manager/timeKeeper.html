@@ -67,15 +67,11 @@
 			});
 
 			$("#exportPdf").click(function (e){
-				getPdf("{{ csrf_token }}", "{% url 'getPdf' %}");
+				getPdf("{{ csrf_token }}", "{% url 'timecard_pdf' %}");
 
 			});
 			});
-			<!--$("#btnExport").click(function (e) {-->
-				<!--var stripped = stripTags($('#report_table').html())-->
-				<!--window.open('data:application/vnd.ms-excel,' + stripped);-->
-				<!--e.preventDefault();-->
-			<!--});-->
+
 
 			function getCsv(token, url){
 				$.ajax({
@@ -88,7 +84,9 @@
 					var blob = new Blob(["\ufeff", data]);
 					var url = URL.createObjectURL(blob);
 					downloadLink.href = url;
-					downloadLink.download = "data.csv";
+					var currentTime = new Date();
+					downloadLink.download = "Timecards-"+currentTime+".csv";
+
 
 					document.body.appendChild(downloadLink);
 					downloadLink.click();
@@ -113,15 +111,11 @@
 					var blob = new Blob(["\ufeff", data]);
 					var url = URL.createObjectURL(blob);
 					downloadLink.href = url;
-					downloadLink.download = "data.csv";
+					downloadLink.download = "timecard.pdf";
 
 					document.body.appendChild(downloadLink);
 					downloadLink.click();
 					document.body.removeChild(downloadLink);
-					<!--$(function (e) {-->
-						<!--window.open("data:text/csv;charset=utf-8," + data);-->
-						<!--e.preventDefault();-->
-					<!--});-->
 
 				}
 				});

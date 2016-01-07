@@ -10,10 +10,9 @@ from django.core.files import File
 from django.db.models import Count
 from django.template import RequestContext
 from django.core import serializers
+from easy_pdf.views import PDFTemplateView
 from reportlab.pdfgen import canvas
 import csv
-from django.views.decorators.cache import cache_page
-from django.views.decorators.cache import cache_control
 
 LANGUAGE_CHOICES = ['pt-br','es', 'en-us']
 
@@ -32,11 +31,32 @@ from home.models import *
 LANGUAGE_CHOICES = ['pt-br','es', 'en-us']
 
 
+class HelloPDFView(PDFTemplateView):
+	template_name = "template/timecard.html"
+	attendance_results = EmployeeAttendance.objects.all()
+	break_results = Break.objects.all()
+	print
+	def get_context_data(self, **kwargs):
+		return super(HelloPDFView, self).get_context_data(orientation="landscape",title="Timecard",**kwargs)
+
+	def get(self,request, *args, **kwargs):
+		context = self.get_context_data(**kwargs)
+		template_name = 'template/timecard.html'
+		context["attendance_results"] = self.attendance_results
+		context["break_results"] = self.break_results
+
+		return self.render_to_response(context)
+
+
+def timecard_pdf(request):
+	print 'hello'
+	return redirect('/home/timecard.pdf')
 
 def empty(request):
 	return redirect('home')
 
-# @cache_control(must_revalidate=True, max_age=60*60*24*30)
+
+
 def home(request):
 	# lang = request.GET['lang']
 	# if lang != None:
@@ -54,7 +74,6 @@ def home(request):
 
 
 ## 404 Error ##
-# @cache_control(must_revalidate=True, max_age=60*60*24*30)
 def page_not_found(request):
 	response = render_to_response(
 	'404.html',
@@ -66,7 +85,6 @@ def page_not_found(request):
 
 
 ## 500 Error ##
-# @cache_control(must_revalidate=True, max_age=60*60*24*30)
 def server_error(request):
 	response = render_to_response(
 	'500.html',
@@ -85,6 +103,7 @@ def updatedDate(request):
 @login_required
 def taskflow(request):
 	return render(request, 'taskflow.html')
+
 
 @login_required
 def createNewTask(request):
@@ -665,7 +684,6 @@ def getEmployeeLocation(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-# @cache_control(must_revalidate=True, max_age=60*60*24*15)
 def login(request):
 	#validating the received form
 	form = loginForm(request.POST)
@@ -2023,16 +2041,19 @@ def timeLogById(request):
 				else:
 					userId = request.POST['id']
 				array_breaks = []
+				array_tasks = []
 				result['signature'] = True
 				date = datetime.datetime.now() #today date
 				start_date = datetime.datetime.combine(date, datetime.time.min) #today date at 0:00 AM
 				end_date = datetime.datetime.combine(date, datetime.time.max) # date at 11:59 PM
 				employeeAttendance = EmployeeAttendance.objects.filter(employee__user__id = userId, date__range = (start_date,end_date)).order_by('-hour_started')[:1]
+				employee = Employee.objects.filter(user__id = userId)
 				count = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #counter to keep all the worked hours
 				keeper = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #this variable will keep the last break. It is useful when the shift is not done
 				keeper2 =  datetime.timedelta(hours = 23, minutes = 59, seconds = 59) # when the break is on another day
 
-				print Task.objects.filter(attendance = employeeAttendance)
+				# tasks = Task.objects.filter(attendance = employeeAttendance)
+				# print tasks
 
 				if len(employeeAttendance) > 0:
 					result['no_attendance'] = 'false'
@@ -2041,6 +2062,35 @@ def timeLogById(request):
 							result['signature'] = False
 						result['attendanceId'] = item.id
 						breaks = Break.objects.filter(attendance__id = item.id).order_by('start')
+						tasks = Task.objects.filter(attendance__id = item.id)
+						print len(breaks)
+						if len(breaks) > 0:
+							if len(tasks) == 0:
+								i=0
+								while i<len(breaks):
+									print 'hi'
+									job = Task(description = "N/A", hours_spent = 0, attendance = item)
+									job.save()
+									print job
+									empTask = EmployeeTask(employee = employee, task = job)
+									empTask.save()
+									print empTask
+									i += 1
+						tasks = Task.objects.filter(attendance = item)
+						print 'tasks'
+						print tasks
+						for task in tasks:
+							aux = {}
+							print task.description
+							print task.hours_spent
+							print task.attendance
+							aux['description'] = task.description
+							aux['duration'] = task.hours_spent
+							aux['attendanceId'] = task.attendance.id
+
+							array_tasks.append(aux)
+						print array_tasks
+
 						breakDuration = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #variable used to decrease time from the total when one break still going on
 						breakTime = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) #help to calculate work time between breaks
 						time_aux = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) #variable used to remove second of the date
@@ -2143,6 +2193,7 @@ def timeLogById(request):
 					else:
 						result['Attendance_end'] = Attendance_end
 					result['breaks'] = array_breaks
+					result['tasks'] = array_tasks
 		else:
 			result['Code'] = {'Code' : 1} #request is not ajax
 	else:
@@ -2882,9 +2933,11 @@ def driver(request):
 	emplo = Employee.objects.get(user = request.user)
 	if request.session.get(LANGUAGE_SESSION_KEY) == None:
 		request.session[LANGUAGE_SESSION_KEY] = LANGUAGE_CHOICES[emplo.language - 1]
+		print 'driver home'
 		return redirect('driver')
 	if LANGUAGE_CHOICES[emplo.language - 1] != request.session[LANGUAGE_SESSION_KEY]:
 		request.session[LANGUAGE_SESSION_KEY] = LANGUAGE_CHOICES[emplo.language - 1]
+		print 'driver home'
 		return redirect('driver')
 	return render(request, 'driver/home.html')
 
@@ -3515,6 +3568,7 @@ def getAllMachines(request):
 
 	return HttpResponse(json.dumps(result), content_type='application/json')	
 
+@login_required
 def getPdf(request):
     # Create the HttpResponse object with the appropriate PDF headers.
     response = HttpResponse(content_type='application/pdf')
@@ -3532,6 +3586,7 @@ def getPdf(request):
     p.save()
     return response
 
+
 @login_required
 def getCsv(request):
 	result = {}
@@ -3545,7 +3600,7 @@ def getCsv(request):
 	attendances = EmployeeAttendance.objects.all().order_by('-date')#filter(date__range = (start_date, now))
 
 	header = []
-	header.extend(('ID', 'Name', 'Team Lead', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked'))
+	header.extend(('Attendance ID', 'ID', 'Name', 'Team Lead', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked(w/out breaks)'))
 	header.extend(('Break 1', 'Hour Started', 'Hour Ended', 'Break Time'))
 	header.extend(('Lunch 1', 'Hour Started', 'Hour Ended', 'Break Time'))
 	header.extend(('Break 2', 'Hour Started', 'Hour Ended', 'Break Time'))
@@ -3559,6 +3614,7 @@ def getCsv(request):
 			data_row = []
 
 			employee_id = attendance.employee.qr_code
+			attendance_id = attendance.id
 			date = attendance.date
 			hour_started = attendance.hour_started
 			hour_ended = attendance.hour_ended
@@ -3580,26 +3636,54 @@ def getCsv(request):
 				hours_today = 'N/A'
 			employee_name = attendance.employee.user.last_name + ", " + attendance.employee.user.first_name
 			# writer.writerow([employee_id, employee_name, leader_name, date, hour_started, hour_ended, hours_today])
-			data_row.extend((employee_id, employee_name, leader_name, date, hour_started, hour_ended, hours_today))
+			data_row.extend((attendance_id, employee_id, employee_name, leader_name, date, hour_started, hour_ended, hours_today))
 			breaks = Break.objects.filter(attendance__id = attendance.id)#.order_by('start')
 			i = 1
 			break_num = breaks.count()
+
+			lunch_breaks = []
+			reg_breaks = []
+			combined_breaks = []
 			if break_num > 0:
 				# writer.writerow(['', '', 'Break', 'Hour Started', 'Hour Ended', 'Total Time'])
 				for item in breaks:
+					if item.lunch == True:
+
+						lunch_breaks.append(item)
+					else:
+						reg_breaks.append(item)
+				most_breaks = max(len(lunch_breaks), len(reg_breaks))
+				i=0
+				while most_breaks > i:
+					if(len(reg_breaks) > i):
+						combined_breaks.append(reg_breaks[i])
+					else:
+						combined_breaks.append("")
+					if(len(lunch_breaks) > i):
+						combined_breaks.append(lunch_breaks[i])
+					else:
+						combined_breaks.append("")
+					i += 1
+				i=1
+				for item in combined_breaks:
 					num_break = i
-					if item.start != None and item.end != None:
-						if item.end >= item.start:
-							start = datetime.timedelta(hours = item.start.hour, minutes = item.start.minute, seconds = item.start.second)
-							end = datetime.timedelta(hours = item.end.hour, minutes = item.end.minute, seconds = item.end.second)
-							total = end - start
+					if(item != ""):
+						print num_break
+						if item.start != None and item.end != None:
+							if item.end >= item.start:
+								start = datetime.timedelta(hours = item.start.hour, minutes = item.start.minute, seconds = item.start.second)
+								end = datetime.timedelta(hours = item.end.hour, minutes = item.end.minute, seconds = item.end.second)
+								total = end - start
+							else:
+								total = 'N/A'
 						else:
 							total = 'N/A'
+						# writer.writerow(['', '', num_break, item.start, item.end, total])
+						data_row.extend((num_break, item.start, item.end, total))
+						print data_row
 					else:
-						total = 'N/A'
-					# writer.writerow(['', '', num_break, item.start, item.end, total])
-					data_row.extend((num_break, item.start, item.end, total))
-					i = i+1
+						data_row.extend(('', '', '', ''))
+					i += 1
 			writer.writerow(data_row)
 
 	return response

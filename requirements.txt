@@ -4,6 +4,9 @@ Django==1.8.2
 django-nose==1.4.1
 django-toolbelt==0.0.1
 extras==0.0.3
+django-easy-pdf
+xhtml2pdf>=0.0.6
+reportlab>=2.7,<3
 fuzzywuzzy==0.6.0
 gunicorn==19.3.0
 linecache2==1.0.0

@@ -88,10 +88,10 @@
     border-radius: 7px;
     border: 1px solid #1F3801 !important;
     box-shadow: 2px 2px 5px gray;
-    height: 50px;
-    width: 200px;
+    height: 65px;
+    width: 250px;
     color: white;
-    margin-bottom: 10px;
+    margin-bottom: 25px;
     font-size: 25px;
     font-weight: 700;
 }
@@ -126,7 +126,7 @@
 }
 #divTimelog {
 	color: black;
-	font-size: 17px;
+	font-size: 30px;
 	text-align: center;
 }
 #divTimelog input[type=button] {
@@ -167,20 +167,8 @@
 	height: 20px;
 	margin-bottom: 0px;
 }
-#divTimelog {
-	color: black;
-	font-size: 17px;
-	text-align: center;
-}
-#divTimelog input[type=button] {
-	border: 1px solid #DDD;
-	padding: 5px;
-	box-sizing: border-box;
-	white-space: nowrap;
-	cursor: pointer;
-	background: #E5E5E5;
-	width: 100%;
-}
+
+
 #timelogBack {
 	background: url('../imgSmall/buttons/backPastTasks.png') no-repeat top left;
 	background-size: 100% 100%;
