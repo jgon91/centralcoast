@@ -65,6 +65,11 @@
 				getCsv("{{ csrf_token }}", "{% url 'getCsv' %}");
 
 			});
+
+			$("#exportPdf").click(function (e){
+				getPdf("{{ csrf_token }}", "{% url 'getPdf' %}");
+
+			});
 			});
 			<!--$("#btnExport").click(function (e) {-->
 				<!--var stripped = stripTags($('#report_table').html())-->
@@ -97,6 +102,30 @@
 				});
 			}
 
+			function getPdf(token, url){
+				$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					var downloadLink = document.createElement("a");
+					var blob = new Blob(["\ufeff", data]);
+					var url = URL.createObjectURL(blob);
+					downloadLink.href = url;
+					downloadLink.download = "data.csv";
+
+					document.body.appendChild(downloadLink);
+					downloadLink.click();
+					document.body.removeChild(downloadLink);
+					<!--$(function (e) {-->
+						<!--window.open("data:text/csv;charset=utf-8," + data);-->
+						<!--e.preventDefault();-->
+					<!--});-->
+
+				}
+				});
+			}
 			function getReport(token, url) {
 			$.ajax({
 				method : "POST",
@@ -213,6 +242,7 @@
 						</div>
 
 				</div>
+				<button style="float: right;margin-right: 15px;" type="button" class="btn btn-default" id="exportPdf" ><span class="glyphicon glyphicon-download"></span>Download .pdf</button>
 				<button style="float: right;margin-right: 15px;" type="button" class="btn btn-default" id="btnExport" ><span class="glyphicon glyphicon-download"></span>Download .csv</button>
 
 

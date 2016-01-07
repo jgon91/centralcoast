@@ -10,6 +10,7 @@ from django.core.files import File
 from django.db.models import Count
 from django.template import RequestContext
 from django.core import serializers
+from reportlab.pdfgen import canvas
 import csv
 from django.views.decorators.cache import cache_page
 from django.views.decorators.cache import cache_control
@@ -3514,6 +3515,22 @@ def getAllMachines(request):
 
 	return HttpResponse(json.dumps(result), content_type='application/json')	
 
+def getPdf(request):
+    # Create the HttpResponse object with the appropriate PDF headers.
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
+
+    # Create the PDF object, using the response object as its "file."
+    p = canvas.Canvas(response)
+
+    # Draw things on the PDF. Here's where the PDF generation happens.
+    # See the ReportLab documentation for the full list of functionality.
+    p.drawString(100, 100, "Hello world.")
+
+    # Close the PDF object cleanly, and we're done.
+    p.showPage()
+    p.save()
+    return response
 
 @login_required
 def getCsv(request):
@@ -3530,12 +3547,12 @@ def getCsv(request):
 	header = []
 	header.extend(('ID', 'Name', 'Team Lead', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked'))
 	header.extend(('Break 1', 'Hour Started', 'Hour Ended', 'Break Time'))
+	header.extend(('Lunch 1', 'Hour Started', 'Hour Ended', 'Break Time'))
 	header.extend(('Break 2', 'Hour Started', 'Hour Ended', 'Break Time'))
+	header.extend(('Lunch 2', 'Hour Started', 'Hour Ended', 'Break Time'))
 	header.extend(('Break 3', 'Hour Started', 'Hour Ended', 'Break Time'))
+	header.extend(('Lunch 3', 'Hour Started', 'Hour Ended', 'Break Time'))
 	header.extend(('Break 4', 'Hour Started', 'Hour Ended', 'Break Time'))
-	header.extend(('Break 5', 'Hour Started', 'Hour Ended', 'Break Time'))
-	header.extend(('Break 6', 'Hour Started', 'Hour Ended', 'Break Time'))
-	header.extend(('Break 7', 'Hour Started', 'Hour Ended', 'Break Time'))
 	writer.writerow(header)
 	if attendances.count > 0:
 		for attendance in attendances:

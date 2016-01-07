@@ -96,6 +96,7 @@ urlpatterns = [
 	url(r'^getQRCodeStatusForEquipment/$', main_views.getQRCodeStatusForEquipment, name = 'getQRCodeStatusForEquipment'),
     url(r'^getChecklistEquipment/$', main_views.getChecklistEquipment, name = 'equipmentQuestionsChecklist'),
     url(r'^getCsv/$', main_views.getCsv, name = 'getCsv'),
+    url(r'^getPdf/$', main_views.getPdf, name = 'getPdf'),
 	url(r'^getFilteredMachineWithGPS/$', main_views.getFilteredMachineWithGPS, name = 'getFilteredMachineWithGPS'),
 	url(r'^getFilteredImplementWithGPS/$', main_views.getFilteredImplementWithGPS, name = 'getFilteredImplementWithGPS'),
 	url(r'^beaconUpdate/$', main_views.beaconUpdate, name = 'beaconUpdate'),
