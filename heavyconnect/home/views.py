@@ -35,7 +35,6 @@ class HelloPDFView(PDFTemplateView):
 	template_name = "template/timecard.html"
 	attendance_results = EmployeeAttendance.objects.all()
 	break_results = Break.objects.all()
-	print
 	def get_context_data(self, **kwargs):
 		return super(HelloPDFView, self).get_context_data(orientation="landscape",title="Timecard",**kwargs)
 
@@ -49,7 +48,6 @@ class HelloPDFView(PDFTemplateView):
 
 
 def timecard_pdf(request):
-	print 'hello'
 	return redirect('/home/timecard.pdf')
 
 def empty(request):
@@ -2003,8 +2001,6 @@ def getHoursToday(employee_id, date_entry):
 					count += aux - aux2
 			else: 
 				time_now = datetime.datetime.now().time()
-				print 'Time_now: ' + str(time_now)
-				print 'item.hour_started: ' + str(item.hour_started)
 				if time_now < item.hour_started:
 					aux = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second)
 					aux2 = datetime.timedelta(hours = time_now.hour, minutes = time_now.minute, seconds = time_now.second)
@@ -2012,10 +2008,7 @@ def getHoursToday(employee_id, date_entry):
 				else:
 					aux = datetime.timedelta(hours = time_now.hour, minutes = time_now.minute, seconds = time_now.second)
 					aux2 = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second)
-					print str(aux)
-					print str(aux2)
 					count += aux - aux2
-					print 'Count: ' + str(count)
 		else:
 			if item.hour_ended != None: #this if will treat if the attendance does not have the end field proprely filled
 				if item.hour_ended >= item.hour_started:
@@ -2063,33 +2056,23 @@ def timeLogById(request):
 						result['attendanceId'] = item.id
 						breaks = Break.objects.filter(attendance__id = item.id).order_by('start')
 						tasks = Task.objects.filter(attendance__id = item.id)
-						print len(breaks)
 						if len(breaks) > 0:
 							if len(tasks) == 0:
 								i=0
 								while i<len(breaks):
-									print 'hi'
 									job = Task(description = "N/A", hours_spent = 0, attendance = item)
 									job.save()
-									print job
 									empTask = EmployeeTask(employee = employee, task = job)
 									empTask.save()
-									print empTask
 									i += 1
 						tasks = Task.objects.filter(attendance = item)
-						print 'tasks'
-						print tasks
 						for task in tasks:
 							aux = {}
-							print task.description
-							print task.hours_spent
-							print task.attendance
 							aux['description'] = task.description
 							aux['duration'] = task.hours_spent
 							aux['attendanceId'] = task.attendance.id
 
 							array_tasks.append(aux)
-						print array_tasks
 
 						breakDuration = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #variable used to decrease time from the total when one break still going on
 						breakTime = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) #help to calculate work time between breaks
@@ -2933,11 +2916,9 @@ def driver(request):
 	emplo = Employee.objects.get(user = request.user)
 	if request.session.get(LANGUAGE_SESSION_KEY) == None:
 		request.session[LANGUAGE_SESSION_KEY] = LANGUAGE_CHOICES[emplo.language - 1]
-		print 'driver home'
 		return redirect('driver')
 	if LANGUAGE_CHOICES[emplo.language - 1] != request.session[LANGUAGE_SESSION_KEY]:
 		request.session[LANGUAGE_SESSION_KEY] = LANGUAGE_CHOICES[emplo.language - 1]
-		print 'driver home'
 		return redirect('driver')
 	return render(request, 'driver/home.html')
 
@@ -3597,7 +3578,11 @@ def getCsv(request):
 
 	writer = csv.writer(response)
 	# writer.writerow(['ID', 'Name', 'Team Lead', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked'])
-	attendances = EmployeeAttendance.objects.all().order_by('-date')#filter(date__range = (start_date, now))
+	start = time.strptime(request.POST['start'], "%m/%d/%Y")
+	end = time.strptime(request.POST['end'], "%m/%d/%Y")
+	start = str(start.tm_year) +"-"+str(start.tm_mon)+"-"+str(start.tm_mday)
+	end = str(end.tm_year) +"-"+str(end.tm_mon)+"-"+str(end.tm_mday)
+	attendances = EmployeeAttendance.objects.all().order_by('-date').filter(date__range = (start, end))
 
 	header = []
 	header.extend(('Attendance ID', 'ID', 'Name', 'Team Lead', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked(w/out breaks)'))
@@ -3668,7 +3653,6 @@ def getCsv(request):
 				for item in combined_breaks:
 					num_break = i
 					if(item != ""):
-						print num_break
 						if item.start != None and item.end != None:
 							if item.end >= item.start:
 								start = datetime.timedelta(hours = item.start.hour, minutes = item.start.minute, seconds = item.start.second)
@@ -3680,7 +3664,6 @@ def getCsv(request):
 							total = 'N/A'
 						# writer.writerow(['', '', num_break, item.start, item.end, total])
 						data_row.extend((num_break, item.start, item.end, total))
-						print data_row
 					else:
 						data_row.extend(('', '', '', ''))
 					i += 1
@@ -3693,8 +3676,11 @@ def timeKeeperDailyReport(request):
 
 	if request.method == 'POST':
 		if request.is_ajax():
-
-			attendances = EmployeeAttendance.objects.all().order_by('-date')#filter(date__range = (start_date, now))
+			start = time.strptime(request.POST['start'], "%m/%d/%Y")
+			end = time.strptime(request.POST['end'], "%m/%d/%Y")
+			start = str(start.tm_year) +"-"+str(start.tm_mon)+"-"+str(start.tm_mday)
+			end = str(end.tm_year) +"-"+str(end.tm_mon)+"-"+str(end.tm_mday)
+			attendances = EmployeeAttendance.objects.all().order_by('-date').filter(date__range = (start, end))
 			tasks = EmployeeTask.objects.all()
 			all_attendances = []
 			total_times = []
@@ -4635,9 +4621,7 @@ def employeeManagerUpdateForm(request):
 		userform = UserFormUpdate(request.POST)
 		employform = employeeUpdateForm(request.POST, request.FILES)
 		user_id = request.POST['user']
-		print 'hello'
 		if userform.is_valid() and employform.is_valid():
-			print 'hello'
 			try:
 				emplo = Employee.objects.get(user_id = user_id)
 				emplo.user.first_name = userform.cleaned_data['first_name']
@@ -4795,10 +4779,8 @@ def employeeUpdatePasswordForm(request):
 ### View to update employee ###
 @login_required
 def employeeUpdateFormView(request):
-	print 'asdf'
 	result = {'success' : False}
 	if request.method == "POST":
-		print 'hello'
 		userform = UserFormUpdate(request.POST)
 		employform = employeeForm(request.POST)
 		emplo = Employee.objects.get(user_id = request.user.id)
@@ -4843,17 +4825,13 @@ def checkAttendanceBreaks(userID):
 	result['problemBreak'] = True
 	result['optionalLunch'] = False
 	attendance = EmployeeAttendance.objects.filter(employee__user__id = userID).order_by('-date', '-hour_started').first()
-	print attendance
 	if attendance is None:
 		return -1
 	breaks = Break.objects.filter(attendance__id = attendance.id)
 	hour =  str(attendance.hour_started.hour) + ':' + str(attendance.hour_started.minute) + ':' + str(attendance.hour_started.second)
 	date = str(attendance.date) + ' ' + hour # creating format date plus time
-	print 'Horas'
 	hours = getHoursToday(attendance.employee.id, date)
-	print 'Horas: ' + str(hours)
 	rules = TimeKeeperRules.objects.filter(hour__lte = hours).order_by('-hour').first()
-	print 'Nao e'
 	# breakLimit = rules.breaks #Number of breaks according by rule
 	# lunchLimit = rules.lunchs #Number of lunch according by rule
 	# lunchEnforced = rules.lunchBool #If one of the lunch is opcional
@@ -4897,8 +4875,6 @@ def retrieveAttendanceChecklist(request):
 				userId = request.user.id
 			else:
 		 		userId = request.POST['id']
-			print 'userid'
-			print userId
 		 	attendance = checkAttendanceBreaks(userId) #user id
 		 	# if 'id' in request.POST:
 				# print 'aaaaa'
@@ -4906,13 +4882,10 @@ def retrieveAttendanceChecklist(request):
 		 	# else:
 				# print 'bbbb'
 				# attendance = checkAttendanceBreaks(request.user.id)  #user id
-		 	print 'depois'
-			print attendance
 		 	if attendance == -1:
 		 		result['checklist'] = []
 		 		result['code'] = 4 #User id does not exist
 		 		return HttpResponse(json.dumps(result),content_type='application/json')
-		 	print 'Passou'
 		 	result['problemLunch'] = attendance['problemLunch']
 		 	result['problemBreak'] = attendance['problemBreak']
 		 	result['break'] = attendance['breaks']
