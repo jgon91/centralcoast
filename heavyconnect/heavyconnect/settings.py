@@ -147,7 +147,7 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.CachedStaticFilesStorage'
+# STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.CachedStaticFilesStorage'
 
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, '../static').replace('\\','/'),
