@@ -2045,8 +2045,7 @@ def timeLogById(request):
 				keeper = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #this variable will keep the last break. It is useful when the shift is not done
 				keeper2 =  datetime.timedelta(hours = 23, minutes = 59, seconds = 59) # when the break is on another day
 
-				# tasks = Task.objects.filter(attendance = employeeAttendance)
-				# print tasks
+				tasks = Task.objects.filter(attendance = employeeAttendance)
 
 				if len(employeeAttendance) > 0:
 					result['no_attendance'] = 'false'
@@ -2056,21 +2055,26 @@ def timeLogById(request):
 						result['attendanceId'] = item.id
 						breaks = Break.objects.filter(attendance__id = item.id).order_by('start')
 						tasks = Task.objects.filter(attendance__id = item.id)
+						print tasks
+						print len(tasks)
 						if len(breaks) > 0:
-							if len(tasks) == 0:
-								i=0
-								while i<len(breaks):
+							req_num_tasks = len(breaks) + 1
+							if len(tasks) < req_num_tasks:
+								i=len(tasks)
+								while i < req_num_tasks:
 									job = Task(description = "N/A", hours_spent = 0, attendance = item)
 									job.save()
-									empTask = EmployeeTask(employee = employee, task = job)
-									empTask.save()
 									i += 1
-						tasks = Task.objects.filter(attendance = item)
+						tasks = Task.objects.filter(attendance = item).order_by('-id')
+						print tasks
+						i = 0
 						for task in tasks:
 							aux = {}
+							aux['jobId'] = task.id
 							aux['description'] = task.description
 							aux['duration'] = task.hours_spent
 							aux['attendanceId'] = task.attendance.id
+							i += 1
 
 							array_tasks.append(aux)
 
@@ -3676,8 +3680,10 @@ def timeKeeperDailyReport(request):
 
 	if request.method == 'POST':
 		if request.is_ajax():
+
 			start = time.strptime(request.POST['start'], "%m/%d/%Y")
 			end = time.strptime(request.POST['end'], "%m/%d/%Y")
+
 			start = str(start.tm_year) +"-"+str(start.tm_mon)+"-"+str(start.tm_mday)
 			end = str(end.tm_year) +"-"+str(end.tm_mon)+"-"+str(end.tm_mday)
 			attendances = EmployeeAttendance.objects.all().order_by('-date').filter(date__range = (start, end))
@@ -3911,32 +3917,30 @@ def getAllManagerEmployees(request):
 def editJob(request):
 	result = {'success' : True}
 	if request.method == "POST":
-		break_id = request.POST['break_id']
-		break_id = int(break_id[3:])
-		break_item = Break.objects.get(id = break_id)
-		hours_spent = request.POST['hours_spent']
-		hours = float(hours_spent[:2])
-		minutes = float(hours_spent[3:])
-		hours_float = hours + minutes/60
+		jobId = request.POST['jobId']
+		print jobId[3:]
+		print int(jobId[3:])
+		# hours_spent = request.POST['hours_spent']
+		# hours_spent = float(hours_spent)
 		if 'employeeId' not in request.POST:
 			employee = Employee.objects.get(user_id = request.user.id)
 		else:
 			employee = Employee.objects.get(user_id = request.POST['employeeId'])
-
+		attendance = EmployeeAttendance.objects.filter(employee = employee).order_by('-date', '-hour_started').first()
 		description = request.POST['description']
-		status = 1
-		passes = 3
+
 		time = datetime.datetime.now().time()
 		date = datetime.datetime.now()
 		#Creating Task
 		date = date + datetime.timedelta(hours = time.hour, minutes = time.minute)
-		task, created = Task.objects.get_or_create(description = description, passes = passes, date_assigned = date, status = status, attendance = break_item.attendance, hours_spent = hours_float)
-		if created:
-		#Creating association between Employee and Task
-			empTask = EmployeeTask(employee = employee, task = task)
-			empTask.save()
-		else:
-			result['code'] = 1 #This task was already created
+		print 'hello'
+		task = Task.objects.get(id = int(jobId[3:]))
+		print task
+		task.description = description
+		task.date_assigned = date
+			#description = description,  date_assigned = date, attendance = attendance, hours_spent = hours_spent)
+		print task
+		task.save()
 
 	return HttpResponse(json.dumps(result), content_type='application/json')
 

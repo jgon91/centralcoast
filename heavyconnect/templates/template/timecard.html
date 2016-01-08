@@ -1,10 +1,38 @@
 {% extends "easy_pdf/base.html" %}
 {% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/styleSmall.css' %}"type="text/css" media="screen" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/styleMedium.css' %}" media="screen and (min-width: 801px) and (orientation: landscape)">
+<style>
+    @page {
+        size: letter landscape;
+        margin: 2cm;
+        font-size: 6px;
+    }
 
+    th {
+    text-align: left;
+    }
+
+
+    th, td {
+    border-bottom: 1px solid #ddd;
+    font-size: 12px;
+    }
+
+    table{
+    width: 100%;
+    border-collapse:collapse;
+    font-size: 6px;
+    }
+
+
+</style>
 <div id="content">
     <h1>Timecard</h1>
 </div>
-<table>
+<table class="table">
+<th>
 <tr>
     <th>Attendance Id</th>
     <th>Employee Id</th>
@@ -44,6 +72,8 @@
    <th>Total Break Time</th>
 
 </tr>
+    </th>
+    <tbody>
 {%for attendance in attendance_results%}
 <tr>
 <td>{{attendance.id}}</td>
@@ -64,5 +94,6 @@
     {%endfor%}
   </tr>
 {%endfor%}
+    </tbody>
 </table>
 {% endblock %}
