@@ -648,10 +648,10 @@
 						for (i = 0; i < data.breaks.length; i++) {
 							n=n+1;
 							if (data.breaks[i].lunch == 0){
-								$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + breaks + " Break " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
+								$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + breaks + " Break " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
 								breaks++;
 							} else {
-								$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + lunchs + " Lunch " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
+								$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + lunchs + " Lunch " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
 								lunchs++;
 							}
 							breakDuration = "";
@@ -676,11 +676,11 @@
 								breakDuration = "";
 								if (data.breaks[i].lunch == 0){
 									lun[data.breaks[i].breakId] = 0
-									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + breaks + " Break " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + breaks + " Break " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
 									breaks++;
 								} else {
 									lun[data.breaks[i].breakId] = 1;
-									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].workBreak + "</td><td>#" + lunchs + " Lunch " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + lunchs + " Lunch " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
 									lunchs++;
 								}
 								$("#tableTimelog").append("<tr id='job" + data.tasks[n-1].jobId + "' class='job'><td class='colBorderTimelog'>" + breakDuration + "</td><td> {% trans 'Job' %} #" + n +"  "+ data.tasks[n-1].description + " </td><td><input id='job" + data.tasks[n-1].jobId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 30px !important;height: 30px !important;border: none !important;' onclick='editJob(this.id, `${breakDuration}`, `${breaks}`, `${idTimelog}`)'/></td></tr>");

@@ -2064,8 +2064,6 @@ def timeLogById(request):
 				keeper = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #this variable will keep the last break. It is useful when the shift is not done
 				keeper2 =  datetime.timedelta(hours = 23, minutes = 59, seconds = 59) # when the break is on another day
 
-				tasks = Task.objects.filter(attendance = employeeAttendance)
-
 				if len(employeeAttendance) > 0:
 					result['no_attendance'] = 'false'
 					for item in employeeAttendance:
