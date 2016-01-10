@@ -31,20 +31,20 @@ from home.models import Client
 
 LANGUAGE_CHOICES = ['pt-br','es', 'en-us']
 
-# create your public tenant
-tenant = Client(domain_url='demo.heavyconnect.com', # don't add your port or www here! on a local server you'll want to use localhost here
-                schema_name='public',
-                name='Schemas Inc.',
-                paid_until='2016-12-05',
-                on_trial=False)
-tenant.save()
-
-tenant = Client(domain_url='test.heavyconnect.com', # don't add your port or www here!
-                schema_name='test1',
-                name='Fonzy Tenant',
-                paid_until='2014-12-05',
-                on_trial=True)
-tenant.save() # migrate_schemas automatically called, your tenant is ready to be used!
+# # create your public tenant
+# tenant = Client(domain_url='demo.heavyconnect.com', # don't add your port or www here! on a local server you'll want to use localhost here
+#                 schema_name='public',
+#                 name='Schemas Inc.',
+#                 paid_until='2016-12-05',
+#                 on_trial=False)
+# tenant.save()
+#
+# tenant = Client(domain_url='test.heavyconnect.com', # don't add your port or www here!
+#                 schema_name='test1',
+#                 name='Fonzy Tenant',
+#                 paid_until='2014-12-05',
+#                 on_trial=True)
+# tenant.save() # migrate_schemas automatically called, your tenant is ready to be used!
 
 class HelloPDFView(PDFTemplateView):
 	template_name = "template/timecard.html"
@@ -396,10 +396,8 @@ def stopShift(request, idUser):
 			if 'time' in request.POST:
 				new_time = datetime.datetime.strptime(request.POST['time'], '%H:%M:%S %Y-%m-%d')
 				time_delta = (new_time - datetime.datetime.combine(attendance.date,attendance.hour_started))
-
 			if ((time_delta.seconds / 3600.0) < 16.17) or (time_delta.days == 0):
 				t_break = Break.objects.filter(attendance_id = attendance).order_by('-start')
-				amount = t_break.count()
 
 				if attendance.hour_ended is None:
 					for item in t_break:
@@ -414,10 +412,12 @@ def stopShift(request, idUser):
 						attendance.hour_ended = new_time
 					else:
 						attendance.hour_ended = datetime.datetime.now()
+
 					# attendance.signature = signature
 					attendance.save() #in order to deal with time zone problem for now
-					attendance.hours_worked = attendanceHoursWorked(attendance)
-					attendance.save()
+					#Doesn't calculate correctly
+					# attendance.hours_worked = attendanceHoursWorked(attendance)
+					# attendance.save()
 					result['success'] = True
 					result['hour_ended'] = str(attendance.hour_ended)
 				else:
@@ -477,7 +477,11 @@ def startBreak(request, idUser, paramenterlunch):
 						new_time = datetime.datetime.strptime(request.POST['time'], '%H:%M:%S %Y-%m-%d')
 					else:
 						new_time = datetime.datetime.now()
-					t2_break = Break(attendance = attendance, lunch = lunch, start = new_time)
+					if lunch == 1:
+						end_time = new_time + datetime.timedelta(hours = 0, minutes = 30)
+					else:
+						end_time = new_time + datetime.timedelta(hours = 0, minutes = 15)
+					t2_break = Break(attendance = attendance, lunch = lunch, start = new_time, end = end_time)
 					t2_break.save()
 					break_id = t2_break.id;
 					result['success'] = True
@@ -2070,8 +2074,6 @@ def timeLogById(request):
 						result['attendanceId'] = item.id
 						breaks = Break.objects.filter(attendance__id = item.id).order_by('start')
 						tasks = Task.objects.filter(attendance__id = item.id)
-						print tasks
-						print len(tasks)
 						if len(breaks) > 0:
 							req_num_tasks = len(breaks) + 1
 							if len(tasks) < req_num_tasks:
@@ -2081,7 +2083,6 @@ def timeLogById(request):
 									job.save()
 									i += 1
 						tasks = Task.objects.filter(attendance = item).order_by('-id')
-						print tasks
 						i = 0
 						for task in tasks:
 							aux = {}
@@ -3932,8 +3933,6 @@ def editJob(request):
 	result = {'success' : True}
 	if request.method == "POST":
 		jobId = request.POST['jobId']
-		print jobId[3:]
-		print int(jobId[3:])
 		# hours_spent = request.POST['hours_spent']
 		# hours_spent = float(hours_spent)
 		if 'employeeId' not in request.POST:
@@ -3947,13 +3946,10 @@ def editJob(request):
 		date = datetime.datetime.now()
 		#Creating Task
 		date = date + datetime.timedelta(hours = time.hour, minutes = time.minute)
-		print 'hello'
 		task = Task.objects.get(id = int(jobId[3:]))
-		print task
 		task.description = description
 		task.date_assigned = date
 			#description = description,  date_assigned = date, attendance = attendance, hours_spent = hours_spent)
-		print task
 		task.save()
 
 	return HttpResponse(json.dumps(result), content_type='application/json')
@@ -4839,9 +4835,9 @@ def checkAttendanceBreaks(userID):
 	result['break'] = 0 #number of breaks
 	result['LunchLimit'] = 0 # limit number
 	result['breakLimit'] = 0 # Limit number
-	result['problemLunch'] = True
-	result['problemBreak'] = True
-	result['optionalLunch'] = False
+	# result['problemLunch'] = True
+	# result['problemBreak'] = True
+	# result['optionalLunch'] = False
 	attendance = EmployeeAttendance.objects.filter(employee__user__id = userID).order_by('-date', '-hour_started').first()
 	if attendance is None:
 		return -1
@@ -4849,10 +4845,7 @@ def checkAttendanceBreaks(userID):
 	hour =  str(attendance.hour_started.hour) + ':' + str(attendance.hour_started.minute) + ':' + str(attendance.hour_started.second)
 	date = str(attendance.date) + ' ' + hour # creating format date plus time
 	hours = getHoursToday(attendance.employee.id, date)
-	rules = TimeKeeperRules.objects.filter(hour__lte = hours).order_by('-hour').first()
-	# breakLimit = rules.breaks #Number of breaks according by rule
-	# lunchLimit = rules.lunchs #Number of lunch according by rule
-	# lunchEnforced = rules.lunchBool #If one of the lunch is opcional
+
 	if breaks is not None:
 		for item in breaks:
 			if item.lunch is True:
@@ -4867,18 +4860,6 @@ def checkAttendanceBreaks(userID):
 		result['breaks'] = 0
 		# result['breakLimit'] = breakLimit
 		result['lunch'] = 0
-		# result['LunchLimit'] = lunchLimit
-	# if breakLimit == breakCount: # if the number of breaks is correct
-	# 		result['problemBreak'] = False
-	# if lunchLimit >= lunchCount:
-	# 	count = lunchLimit - lunchCount
-	# 	if count == 1: #If difference is 1 lunch
-	# 		if lunchEnforced == True:
-	# 			result['optionalLunch'] = True
-	# 			result['problemLunch'] = False
-	# 	else:
-	# 		if count == 0:
-	# 			result['problemLunch'] = False
 	result['hours'] = hours
 	return result
 
@@ -4894,46 +4875,21 @@ def retrieveAttendanceChecklist(request):
 			else:
 		 		userId = request.POST['id']
 		 	attendance = checkAttendanceBreaks(userId) #user id
-		 	# if 'id' in request.POST:
-				# print 'aaaaa'
-		 	# 	attendance = checkAttendanceBreaks(request.POST['id'])
-		 	# else:
-				# print 'bbbb'
-				# attendance = checkAttendanceBreaks(request.user.id)  #user id
 		 	if attendance == -1:
 		 		result['checklist'] = []
 		 		result['code'] = 4 #User id does not exist
 		 		return HttpResponse(json.dumps(result),content_type='application/json')
-		 	result['problemLunch'] = attendance['problemLunch']
-		 	result['problemBreak'] = attendance['problemBreak']
+
 		 	result['break'] = attendance['breaks']
-		 	result['lunch'] = attendance['lunch']
-		 	result['breakLimit'] = attendance['breakLimit']
-		 	result['LunchLimit'] = attendance['LunchLimit']
-		 	result['optionalLunch'] = attendance['optionalLunch']
-		 	questionArray = []
-		 	for item in checklist:
-		 		aux = {}
-		 		if item.category == 1:
-			 		aux['id'] = item.id
-			 		aux['description'] = item.description
-			 		aux['category'] = item.category
-		 			questionArray.append(aux)
-		 		if attendance['problemBreak'] == True and item.category == 3:
-		 			aux['id'] = item.id
-			 		aux['description'] = item.description
-			 		aux['category'] = item.category
-		 			questionArray.append(aux)
-		 		if attendance['problemLunch'] == True and item.category == 2:
-		 			aux['id'] = item.id
-			 		aux['description'] = item.description
-			 		aux['category'] = item.category
-		 			questionArray.append(aux)
-		 		if attendance['optionalLunch'] == True and item.category == 4:
-		 			aux['id'] = item.id
-			 		aux['description'] = item.description
-			 		aux['category'] = item.category
-		 			questionArray.append(aux)
+			result['lunch'] = attendance['lunch']
+			questionArray = []
+			for item in checklist:
+				aux = {}
+				aux['id'] = item.id
+				aux['description'] = item.description
+				aux['category'] = item.category
+				questionArray.append(aux)
+
 		 	result['checklist'] = questionArray
 		 	result['success'] = True
 	 	else:
