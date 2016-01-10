@@ -3603,6 +3603,14 @@ def getCsv(request):
 
 	header = []
 	header.extend(('Attendance ID', 'ID', 'Name', 'Team Lead', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked(w/out breaks)'))
+	header.extend(('Job 1', 'Total Time'))
+	header.extend(('Job 2',  'Total Time'))
+	header.extend(('Job 3', 'Total Time'))
+	header.extend(('Job 4', 'Total Time'))
+	header.extend(('Job 5',  'Total Time'))
+	header.extend(('Job 6', 'Total Time'))
+	header.extend(('Job 7', 'Total Time'))
+	header.extend(('Job 8', 'Total Time'))
 	header.extend(('Break 1', 'Hour Started', 'Hour Ended', 'Break Time'))
 	header.extend(('Lunch 1', 'Hour Started', 'Hour Ended', 'Break Time'))
 	header.extend(('Break 2', 'Hour Started', 'Hour Ended', 'Break Time'))
@@ -3610,6 +3618,7 @@ def getCsv(request):
 	header.extend(('Break 3', 'Hour Started', 'Hour Ended', 'Break Time'))
 	header.extend(('Lunch 3', 'Hour Started', 'Hour Ended', 'Break Time'))
 	header.extend(('Break 4', 'Hour Started', 'Hour Ended', 'Break Time'))
+
 	writer.writerow(header)
 	if attendances.count > 0:
 		for attendance in attendances:
@@ -3640,14 +3649,30 @@ def getCsv(request):
 			# writer.writerow([employee_id, employee_name, leader_name, date, hour_started, hour_ended, hours_today])
 			data_row.extend((attendance_id, employee_id, employee_name, leader_name, date, hour_started, hour_ended, hours_today))
 			breaks = Break.objects.filter(attendance__id = attendance.id)#.order_by('start')
+			jobs = Task.objects.filter(attendance_id = attendance.id).order_by('-id')
 			i = 1
 			break_num = breaks.count()
+			m = 1
+			job_num = jobs.count()
 
 			lunch_breaks = []
 			reg_breaks = []
 			combined_breaks = []
+			while m <=8:
+				print m
+				print jobs.count()
+				if m <= jobs.count():
+					job_code = jobs[m-1].description
+					print job_code
+					hours_spent = jobs[m-1].hours_spent
+					print hours_spent
+					data_row.extend((job_code, hours_spent))
+				else:
+					print 'hello'
+					data_row.extend(('', ''))
+				m += 1
+
 			if break_num > 0:
-				# writer.writerow(['', '', 'Break', 'Hour Started', 'Hour Ended', 'Total Time'])
 				for item in breaks:
 					if item.lunch == True:
 
