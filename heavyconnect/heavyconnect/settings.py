@@ -31,19 +31,34 @@ ALLOWED_HOSTS = [
     '*'
     ]
 
+SHARED_APPS = (
+    'tenant_schemas',  # mandatory
+    'home', # you must list the app where your tenant model resides in
 
+    'django.contrib.contenttypes',
+
+)
+
+TENANT_APPS = (
+    # The following Django contrib apps must be in TENANT_APPS
+    'django.contrib.contenttypes',
+    # your tenant-specific apps
+    # 'home',
+)
+
+TENANT_MODEL = "home.Client"
 # Application definition
 
-INSTALLED_APPS = (
+INSTALLED_APPS = list(SHARED_APPS) + [
     'django.contrib.admin',
     'django.contrib.auth',
-    'django.contrib.contenttypes',
+    # 'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'home',
+    # 'home',
     'easy_pdf',
-)
+]
 
 ADMINS = [('Jessica', 'jgon91@gmail.com')]
 EMAIL_HOST = 'smtp.gmail.com'
@@ -55,6 +70,7 @@ MANAGERS = ADMINS
 EMAIL_USE_TLS = True
 
 MIDDLEWARE_CLASSES = (
+    'tenant_schemas.middleware.TenantMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.common.BrokenLinkEmailsMiddleware',
@@ -100,19 +116,38 @@ CACHES = {
     }
 }
 
+# DATABASES = {
+#          'default': {
+#              'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+#              'NAME': 'dev',                      # Or path to database file if using sqlite3.
+#              'USER': '',                      # Not used with sqlite3.
+#              'PASSWORD': '',                  # Not used with sqlite3.
+#              'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
+#              'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
+#
+#          }
+#      }
+
+
 DATABASES = {
-         'default': {
-             'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-             'NAME': 'd3ghphbaaf2alv',                      # Or path to database file if using sqlite3.
-             'USER': 'lhiebmankdbyyt',                      # Not used with sqlite3.
-             'PASSWORD': 'Anko1tlUH6zuxLbAhsSlPmuLP1',                  # Not used with sqlite3.
-             'HOST': 'ec2-54-197-247-170.compute-1.amazonaws.com',                      # Set to empty string for localhost. Not used with sqlite3.
-             'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
+    'default': {
+        'ENGINE': 'tenant_schemas.postgresql_backend',
+        'NAME': 'd3ghphbaaf2alv',                      # Or path to database file if using sqlite3.
+        'USER': 'lhiebmankdbyyt',                      # Not used with sqlite3.
+        'PASSWORD': 'Anko1tlUH6zuxLbAhsSlPmuLP1',                  # Not used with sqlite3.
+        'HOST': 'ec2-54-197-247-170.compute-1.amazonaws.com',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '5432',
+    }
+}
 
-         }
-     }
+DATABASE_ROUTERS = (
+    'tenant_schemas.routers.TenantSyncRouter',
+)
 
-
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.core.context_processors.request',
+    #...
+)
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 

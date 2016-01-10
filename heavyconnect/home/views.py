@@ -26,10 +26,25 @@ import time
 
 from home.forms import *
 from home.models import *
+from home.models import Client
 
 
 LANGUAGE_CHOICES = ['pt-br','es', 'en-us']
 
+# create your public tenant
+tenant = Client(domain_url='demo.heavyconnect.com', # don't add your port or www here! on a local server you'll want to use localhost here
+                schema_name='public',
+                name='Schemas Inc.',
+                paid_until='2016-12-05',
+                on_trial=False)
+tenant.save()
+
+tenant = Client(domain_url='test.heavyconnect.com', # don't add your port or www here!
+                schema_name='test1',
+                name='Fonzy Tenant',
+                paid_until='2014-12-05',
+                on_trial=True)
+tenant.save() # migrate_schemas automatically called, your tenant is ready to be used!
 
 class HelloPDFView(PDFTemplateView):
 	template_name = "template/timecard.html"
@@ -3570,7 +3585,6 @@ def getPdf(request):
     p.showPage()
     p.save()
     return response
-
 
 @login_required
 def getCsv(request):
