@@ -6,8 +6,9 @@
 	margin-left: 5px;
 }
 #logoHome {
-	width: 250px;
-	height: 100px;
+	width: 150px;
+    height: 60px;
+    margin-top: 18.5px;
 }
 
 .closeEquip {
@@ -27,7 +28,7 @@
 	left: 35%;
     top: 0%;
     right: 30%;
-    font-size: 24px;
+    font-size: 25px;
     margin-top: 2%;
     color: white;
     font-weight: 600;
@@ -64,33 +65,12 @@
     border: none;
 }
 
-#edit-icon
-{
-   background:url('../imgSmall/buttons/edit.png') left top;
-   background-size: 30px 30px;
-   width:30px;
-   height:30px;
-   display: block;
-   float: left;
-}
-
 #employee-table td
 {
     font-size: 25px;
     vertical-align: middle;
 }
-#contentManageForm {
-    width: 80%;
-    margin: auto;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    border: 1px solid gray;
-    box-shadow: 2px 2px 8px 0px gray;
-    border-radius: 10px;
-    font-size: 20px;
-    font-weight: 700;
-    padding-bottom: 20px;
-}
+
 
 .tableListForm {
     margin: auto;
@@ -100,6 +80,39 @@
 
 .rowCream {
     color: black;
+}
+
+.btnCreateTeam {
+    background: #1F3801;
+    background-size: 100% 100%;
+    border-radius: 7px;
+    border: 1px solid #1F3801 !important;
+    box-shadow: 2px 2px 5px gray;
+    height: 65px;
+    width: 250px;
+    color: white;
+    margin-bottom: 25px;
+    font-size: 25px;
+    font-weight: 700;
+}
+
+.edit-icon
+{
+   background:url('../imgSmall/buttons/edit.png') left top !important;
+   background-size: 20px 20px;
+   width:20px;
+   height:20px;
+   display: block;
+   float: left;
+}
+
+.editedIcon {
+
+    background: url('../imgSmall/editedIcon.png') no-repeat top left !important;
+    background-size: 100% 100% !important;
+    width: 20px !important;
+    height: 20px !important;
+    border: none !important;
 }
 
 #employeeList {
@@ -113,7 +126,7 @@
 }
 #divTimelog {
 	color: black;
-	font-size: 17px;
+	font-size: 30px;
 	text-align: center;
 }
 #divTimelog input[type=button] {
@@ -125,6 +138,37 @@
 	background: #E5E5E5;
 	width: 100%;
 }
+#timelogBack {
+	background: url('../imgSmall/buttons/backPastTasks.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 50px;
+	height: 50px;
+	float: left;
+	border: none;
+	border-radius: 7px;
+	box-shadow: -1px 1px 7px gray;
+	margin: 0px;
+	padding: 0px;
+}
+
+
+#tableCreateTeam, #team {
+    margin: auto;
+    width: 90%;
+    text-align: center;
+}
+
+#employeeList {
+	text-align: left;
+	font-size: 20px;
+}
+#employeeList input[type=checkbox] {
+	width: 20px;
+	height: 20px;
+	margin-bottom: 0px;
+}
+
+
 #timelogBack {
 	background: url('../imgSmall/buttons/backPastTasks.png') no-repeat top left;
 	background-size: 100% 100%;

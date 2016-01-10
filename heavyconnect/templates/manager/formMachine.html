@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{% load staticfiles %}
+		{% load i18n %}
+		<link rel="stylesheet" type="text/css" href="{% static 'css/equipStyle.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/styleManager.css' %}">
+		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
+		<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+		<script src="{% static 'js/script.js' %}"></script>
+		<script>
+			$(document).ready(function() {
+				$("#foot").load("{% url 'footer' %}");
+				$("#head").load("{% url 'headerManager' %}");
+				$(".errorlist").hide();
+				$( "label:lt(4)" ).append("*");
+				
+				var parameter = getParametersUrl();
+   				$("#deleteForm").hide();
+				if(parameter['machine_id'] != null){
+					$("#deleteForm").show();
+				}
+
+				$("#deleteForm").click( function (){
+					var url = "{% url 'machineManagerDelete' %}";
+					var parameter = getParametersUrl();
+
+					if(confirm("Do you really want to delete this machine?")){
+							$.ajax({
+								method: "POST",
+								url: url,
+								data: {"csrfmiddlewaretoken": '{{csrf_token}}', "machine_id": parameter['machine_id'] },
+								datatype: "json",
+								success: function(data, status, xhr){		
+									alert("Machine deleted.");					
+									window.location="{% url 'listMachine' %}";
+								}
+							});	
+						}
+				});
+
+				var fields = ['select[name=manufacturer_model]', 
+							  'input[name=nickname]', 
+							  'input[name=asset_number]',  
+							  'input[name=serial_number]'
+							];
+
+				$("form").submit(function(){
+					var formOK = checkFields(fields)
+					return formOK
+				});
+			});
+
+
+		</script>
+	</head>
+	<body>
+		<header id="head"></header>
+		<div id="contentForm">
+			<form method="POST" action="." id="formPage">
+				{% csrf_token %}
+				{{ formMachine.as_p }}
+				
+				<input type="submit" id="saveForm" value="{% trans 'SAVE' %}"/>
+				<input type="button" id="deleteForm" value="{% trans 'DELETE' %}"/>
+			</form>
+		</div>
+		<footer id="foot"></footer>
+	</body>
+</html>

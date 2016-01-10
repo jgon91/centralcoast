@@ -4,9 +4,11 @@
 		{% load staticfiles %}
 		{% load i18n %}
 		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
+		<script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
 		<script src="{% static 'js/script.js' %}"></script>
+		<link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.min.css' %}">
 		<!-- Include Required Prerequisites -->
-		<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+		<!--<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>-->
 		<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 		<!--<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css" />-->
 		<!--<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap/css/bootstrap-table.css' %}">-->
@@ -15,75 +17,77 @@
 		<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/bootstrap-table.min.js"></script>
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/bootstrap-table.min.css">
 
-
-		<!-- Include Date Range Picker -->
-		<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
-		<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
 		<script>
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerManager' %}");
+				var today = new Date();
+				var dd = today.getDate();
+				var mm = today.getMonth()+1;
+				var yyyy = today.getFullYear();
 
-				getReport("{{ csrf_token }}", "{% url 'timeKeeperDailyReport' %}");
+				if(dd<10) {
+					dd='0'+dd
+				}
 
-				<!--$('#demo').daterangepicker({-->
-    <!--"showDropdowns": true,-->
-    <!--"autoApply": true,-->
-    <!--"ranges": {-->
-        <!--"Today": [-->
-            <!--"2015-09-26T05:43:16.260Z",-->
-            <!--"2015-09-26T05:43:16.260Z"-->
-        <!--],-->
-        <!--"Yesterday": [-->
-            <!--"2015-09-25T05:43:16.260Z",-->
-            <!--"2015-09-25T05:43:16.260Z"-->
-        <!--],-->
-        <!--"Last 7 Days": [-->
-            <!--"2015-09-20T05:43:16.260Z",-->
-            <!--"2015-09-26T05:43:16.260Z"-->
-        <!--],-->
-        <!--"Last 30 Days": [-->
-            <!--"2015-08-28T05:43:16.260Z",-->
-            <!--"2015-09-26T05:43:16.260Z"-->
-        <!--],-->
-        <!--"This Month": [-->
-            <!--"2015-09-01T07:00:00.000Z",-->
-            <!--"2015-10-01T06:59:59.999Z"-->
-        <!--],-->
-        <!--"Last Month": [-->
-            <!--"2015-08-01T07:00:00.000Z",-->
-            <!--"2015-09-01T06:59:59.999Z"-->
-        <!--]-->
-    <!--},-->
-    <!--"startDate": "09/19/2015",-->
-    <!--"endDate": "09/25/2015"-->
-<!--}, function(start, end, label) {-->
-  <!--console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");-->
-<!--});-->
+				if(mm<10) {
+					mm='0'+mm
+				}
 
-			$("#btnExport").click(function (e){
-				getCsv("{{ csrf_token }}", "{% url 'getCsv' %}");
+				today = mm+'/'+dd+'/'+yyyy;
+				getReport("{{ csrf_token }}", "{% url 'timeKeeperDailyReport' %}", today, today);
+
+			$("#exportPdf").click(function (e){
+				getPdf("{{ csrf_token }}", "{% url 'timecard_pdf' %}");
 
 			});
+			$('.input-daterange').datepicker({
+				autoclose: true,
+				todayHighlight: true
 			});
-			<!--$("#btnExport").click(function (e) {-->
-				<!--var stripped = stripTags($('#report_table').html())-->
-				<!--window.open('data:application/vnd.ms-excel,' + stripped);-->
-				<!--e.preventDefault();-->
-			<!--});-->
+			});
+			function today() {
+				var today = new Date();
+				var dd = today.getDate();
+				var mm = today.getMonth()+1; //January is 0!
+				var yyyy = today.getFullYear();
 
-			function getCsv(token, url){
+				if(dd<10) {
+					dd='0'+dd
+				}
+
+				if(mm<10) {
+					mm='0'+mm
+				}
+
+				today = mm+'/'+dd+'/'+yyyy;
+				return today;
+			}
+			function downloadCsv() {
+
+				var start_date = document.getElementById("start").value;
+				var end_date = document.getElementById("stop").value;
+				if (start_date == "" || end_date == "") {
+					start_date = today();
+					end_date = today();
+				}
+				getCsv("{{ csrf_token }}", "{% url 'getCsv' %}", start_date, end_date);
+			}
+
+			function getCsv(token, url, start, end){
 				$.ajax({
 				method : "POST",
 				url : url,
-				data : {"csrfmiddlewaretoken" : token},
+				data : {"csrfmiddlewaretoken" : token, "start": start, "end":end},
 				datatype : "json",
 				success : function(data, status, xhr) {
 					var downloadLink = document.createElement("a");
 					var blob = new Blob(["\ufeff", data]);
 					var url = URL.createObjectURL(blob);
 					downloadLink.href = url;
-					downloadLink.download = "data.csv";
+					var currentTime = new Date();
+					downloadLink.download = "Timecards-"+currentTime+".csv";
+
 
 					document.body.appendChild(downloadLink);
 					downloadLink.click();
@@ -97,14 +101,40 @@
 				});
 			}
 
-			function getReport(token, url) {
-			$.ajax({
+			function getPdf(token, url){
+				$.ajax({
 				method : "POST",
 				url : url,
 				data : {"csrfmiddlewaretoken" : token},
 				datatype : "json",
 				success : function(data, status, xhr) {
+					var downloadLink = document.createElement("a");
+					var blob = new Blob(["\ufeff", data]);
+					var url = URL.createObjectURL(blob);
+					downloadLink.href = url;
+					downloadLink.download = "timecard.pdf";
+
+					document.body.appendChild(downloadLink);
+					downloadLink.click();
+					document.body.removeChild(downloadLink);
+
+				}
+				});
+			}
+			function updateReport(){
+				var start_date = document.getElementById("start").value;
+				var end_date = document.getElementById("stop").value;
+				getReport("{{ csrf_token }}", "{% url 'timeKeeperDailyReport' %}", start_date, end_date);
+			}
+			function getReport(token, url, start, end) {
+			$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token, "start": start, "end":end},
+				datatype : "json",
+				success : function(data, status, xhr) {
 					if (data) {
+						$('#results').html("");
 						parsed_result = $.parseJSON(data.all_attendances);
 						parsed_tasks = $.parseJSON(data.tasks);
 						<!--$(function () {-->
@@ -146,13 +176,19 @@
 
 								var demo = "demo" + i;
 
-								$('<tr data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle">').append(
-								$('<td>').text(item.fields.employee),
-								$('<td>').text(data.all_names[i]),
-								$('<td>').text(item.fields.date),
-								$('<td>').text(start_hour),
-								$('<td>').text(end_hour),
-								$('<td>').text(total_time)).appendTo('#report_table');
+								<!--$('<tr data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle">').append(-->
+								<!--$('<td>').text(data.qr_code[i]),-->
+								<!--$('<td>').text(data.all_names[i]),-->
+								<!--$('<td>').text(data.group_leader[i]),-->
+								<!--&lt;!&ndash;$('<td>').text('N/A'),&ndash;&gt;-->
+								<!--&lt;!&ndash;$('<td>').text('N/A'),&ndash;&gt;-->
+								<!--$('<td>').text(item.fields.date),-->
+								<!--$('<td>').text(start_hour),-->
+								<!--$('<td>').text(end_hour),-->
+								<!--$('<td>').text(total_time)).html('#results');-->
+								$('#results').append('<tr data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle"> <td>' +
+								data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>' + data.group_leader[i] + '</td><td>' + item.fields.date +'</td><td>' +
+								start_hour + '</td><td>' + end_hour + '</td><td>' + total_time+'</td></tr>');
 								<!--$('<tr>').append(-->
 								<!--$('<td colspan="6" class="hiddenRow">').append(-->
 								<!--$('<div id='+demo+' class="accordian-body collapse">').text('breaks'))-->
@@ -183,20 +219,28 @@
 					<div class="panel-heading"><h3><img src="{% static 'imgSmall/iconTimekeeper.png' %}"/>
 						{% trans 'HC TIMEKEEPER REPORT' %}</h3></div>
 					<div class="panel-body">
+					<div class="input-daterange input-group" id="datepicker">
+						<input type="text" id="start" class="input-sm form-control" name="start" />
+						<span class="input-group-addon">to</span>
+						<input type="text" id="stop" class="input-sm form-control" name="end" />
+					</div>
+						<button style="float: right;margin-top: 15px; margin-bottom:10px;height:50px;font-size:15px;font-weight:600;background-color: #6DA8F5;" type="button" class="btn btn-default" onclick="updateReport()" ><span class="glyphicon glyphicon-refresh"></span>Update Report</button>
 
 			<table class="table table-condensed" id="report_table" style="border-collapse:collapse;">
 				<thead>
 					<tr>
 						<th>ID</th>
 						<th>Name</th>
+						<th>Team Lead</th>
+						<!--<th>Location</th>-->
+						<!--<th>Job Code</th>-->
 						<th>Date</th>
 						<th>Clock-In</th>
 						<th>Clock-Out</th>
 						<th>Hours Worked</th>
 					</tr>
 				</thead>
-				<tbody>
-
+				<tbody id="results">
 				</tbody>
 			</table>
             </div>
@@ -207,42 +251,11 @@
 						</div>
 
 				</div>
-				<button style="float: right;margin-right: 15px;" type="button" class="btn btn-default" id="btnExport" ><span class="glyphicon glyphicon-download"></span>Download .csv</button>
-				<!--<div id="task_report" style="margin: 10px;">-->
-					<!--&lt;!&ndash;<div class="col-lg-6">&ndash;&gt;-->
-					<!--<div class="panel panel-default">-->
-					<!--<div class="panel-heading"><h3><img src="{% static 'imgSmall/iconTimekeeper.png' %}"/>-->
-						<!--{% trans 'HC TASKFLOW REPORT' %}</h3></div>-->
-					<!--<div class="panel-body">-->
-
-			<!--&lt;!&ndash;<table class="table table-condensed" id="task_report_table" style="border-collapse:collapse;">&ndash;&gt;-->
-				<!--&lt;!&ndash;<thead>&ndash;&gt;-->
-					<!--&lt;!&ndash;<tr>&ndash;&gt;-->
-						<!--&lt;!&ndash;<th>ID</th>&ndash;&gt;-->
-						<!--&lt;!&ndash;<th>Name</th>&ndash;&gt;-->
-						<!--&lt;!&ndash;<th>Date</th>&ndash;&gt;-->
-						<!--&lt;!&ndash;<th>Hour Started</th>&ndash;&gt;-->
-						<!--&lt;!&ndash;<th>Hour Ended</th>&ndash;&gt;-->
-						<!--&lt;!&ndash;<th>Total Hours</th>&ndash;&gt;-->
-					<!--&lt;!&ndash;</tr>&ndash;&gt;-->
-				<!--&lt;!&ndash;</thead>&ndash;&gt;-->
-				<!--&lt;!&ndash;<tbody>&ndash;&gt;-->
-
-				<!--&lt;!&ndash;</tbody>&ndash;&gt;-->
-			<!--&lt;!&ndash;</table>&ndash;&gt;-->
-            <!--</div>-->
-
-          <!--</div>-->
-
-      <!--&lt;!&ndash;</div>&ndash;&gt;-->
-						<!--</div>-->
+				<button style="float: right;margin-right: 15px;" type="button" class="btn btn-default" id="exportPdf" ><span class="glyphicon glyphicon-download"></span>Download .pdf</button>
+				<button style="float: right;margin-right: 15px;" type="button" class="btn btn-default" id="btnExport" onclick="downloadCsv()"><span class="glyphicon glyphicon-download"></span>Download .csv</button>
 
 
 			</div>
-
-
-		<!--<img src="data:image/jsignature;base30,6MZ472000Y3i1V1Fjc81Z21Di571Y4flc97_4EZaec7gd75Yt1Dolkc6Z2f6a8553000" />-->
-
 		<footer style="margin-top:60px" id="foot"></footer>
 	</body>
 </html>

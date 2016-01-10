@@ -25,7 +25,7 @@ body {
 	margin-left: 4px;
 }
 #userImg {
-	background: url('../imgSmall/buttons/user.png') no-repeat top left;
+	background: url('../img/userPicture.png') no-repeat top left;
 	background-size: 100% 100%;
 	width: 105px;
 	height: 90px;
@@ -96,10 +96,9 @@ footer {
 	width: 100%;
 	min-width: 800px;
 	font-size: 120%;
-	color: white;
+	color: black;
 	padding: 5px;
 	font-size: 95%;
-	background-color: #434343;
 }
 #logo {
 	width: 180px;
@@ -107,17 +106,7 @@ footer {
 	float: right;
 	margin-top: 10px;
 }
-input[type=text] {
-	padding: 7px;
-	border: 0px solid #333;
-	border-radius: 10px;
-	font-weight: bold;
-	color: black;
-	font-weight: bold;
-	font-size: 110%;
-	box-shadow: 4px 4px 7px -1px black;
-	text-align: center;
-}
+
 input[type=password] {
 	padding: 7px;
 	border: 0px solid #333;
@@ -137,6 +126,15 @@ input[type=password] {
 }
 #loginTable {
 	margin: auto;
+}
+#clock {
+	left: 35%;
+    top: 0%;
+    right: 30%;
+    font-size: 24px;
+    margin-top: 2%;
+    color: white;
+    font-weight: 600;
 }
 .input_login {
 	width: 350px;
@@ -192,7 +190,7 @@ input[type="button"] {
 	background-size: 100% 100%;
 }
 #btnTimerkeeper {
-	background: url('../img/buttons/btnTimekeeperUp.jpg') no-repeat top left;
+	background: url('../imgSmall/buttons/timekeeper.png') no-repeat top left;
 	background-size: 100% 100%;
 }
 #btnEmployee {
@@ -221,14 +219,14 @@ input[type="button"] {
 	background: url('../img/buttons/btnEquipmentUp.jpg') no-repeat top left;
 	background-size: 100% 100%;
 }
-]
+
 #btnTaskflowUp {
 	background: url('../img/buttons/btnTaskflowUp.jpg') no-repeat top left;
 	background-size: 100% 100%;
 }
 
 #btnTimerkeeperUp {
-	background: url('../img/buttons/btnTimekeeperUp.jpg') no-repeat top left;
+	background: url('../imgSmall/buttons/btnTimekeeperTop.png') no-repeat top left;
 	background-size: 100% 100%;
 }
 
@@ -301,9 +299,7 @@ input[type="button"] {
 	height: 40px;
 	color: white;
 }
-#btnService:hover {
-	color: black;
-}
+
 #boxUpInfo {
 	background: #7F9B22;
 	height: 160px;
@@ -393,12 +389,8 @@ input[type="button"] {
 #menu {
 	width: 100%;
 }
-#menu a:hover {
-	color: black;
-}
-#menu > li.active > a:hover {
-	color: black;
-}
+
+
 #menu > li > a {
 	border-radius: 0px;
 	padding-bottom: 5px;
@@ -545,25 +537,16 @@ input[type="button"] {
 /*** Form Page End ***/
 
 /*** Manage Forms Page Begin ***/
-#contentManageForm {
-	width: 80%;
-	margin: auto;
-	margin-top: 10px;
-	margin-bottom: 10px;
-	border: 1px solid gray;
-	box-shadow: 2px 2px 8px 0px gray;
-	border-radius: 10px;
-	font-size: 20px;
-	font-weight: 700;
-	padding-bottom: 20px;
-}
+
 .btnManageForm {
+	background: url('../imgSmall/buttons/btnGreen.png') no-repeat top left;
+	background-size: 100% 100%;
+	border-radius: 7px;
+	border: none;
+	box-shadow: 2px 2px 5px gray;
 	height: 50px;
-    width: 80px;
-    color: #434343;
-    font-size: 35px;
-    background-color: white;
-    border: none;
+	width: 200px;
+	color: white;
 }
 .tableListForm {
 	margin: auto;
@@ -572,8 +555,11 @@ input[type="button"] {
 }
 .tableListForm tr td {
 	padding: 20px;
+	padding-left: 55px;
+	padding-right: 55px;
 }
 .rowCream {
+	background: #E0E0A7;
 	color: black;
 }
 .rowGray {
@@ -807,10 +793,7 @@ input[type="button"] {
 	border: none;
 	color: white;
 }
-#delImplement:hover {
-	background: url('../imgSmall/buttons/startNow.png') no-repeat top left;
-	background-size: 100% 100%;
-}
+
 .findEquipment {
 	background: url('../imgSmall/buttons/search.png') no-repeat top left;
 	background-size: 100% 100%;
@@ -952,3 +935,59 @@ input[type="button"] {
 .clear {
 	clear: both;
 }
+
+/**** Begin MAPS ****/
+.imgEquipmentMap{
+	width: 150px;
+	height: 150px;
+	margin: auto;
+}
+#map-canvas {
+    width: 550px;
+    height: 400px;
+    margin: auto;
+    margin-top: 15px;
+ }
+/**** End MAPS ****/
+
+/**** Begin REPORTS PAGES ****/
+.reportTable{
+	font-size: 22px;
+	margin: auto;
+	border: black solid 3px;
+	text-align: center;
+}
+.reportTable tr{
+	border: black solid 2px;
+}
+.reportTable th{
+	padding: 10px;
+}
+.reportTable td{
+	padding: 10px;
+	border: white solid 2px;
+}
+.tdStatus1{
+	background-color: green;
+}
+.tdStatus3{
+	background-color: red;
+}
+.tdStatus2{
+	background-color: yellow;
+}
+/**** End REPORTS PAGES ****/
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  	<meta charset="utf-8">
+
+	<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame 
+    Remove this if you use the .htaccess -->
+  	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  	{% load staticfiles %}
+	{% load i18n %}
+		
+	<link rel="stylesheet" type="text/css" href="{% static 'css/equipStyle.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/styleManager.css' %}">
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<script>
+			$(document).ready(function() {
+				$("#foot").load("{% url 'footer' %}");
+				$("#head").load("{% url 'headerManager' %}");
+
+			});
+		
+			
+	</script>  
+</head>
+<body>
+	<header id="head"></header>
+	<div id="wrapper">
+		<div id="content">
+			<h2>Reports</h2>
+			<table class='reportTable'>
+				<tr>
+					<th>Report type</th>
+					<th>See report</th>
+				</tr>
+				<tr class='rowCream'>
+					<td>Equipment List</td>
+					<td><a href="{% url 'listEquipmentReport' %}">See report</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+    <footer id="foot"></footer>
+</body>
+</html>

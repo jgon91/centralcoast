@@ -9,8 +9,14 @@
 		<link href='{% static "fullcalendar/fullcalendar.css" %}' rel='stylesheet' />
 		<!-- Don't required <link href='../fullcalendar.min.css' rel='stylesheet' media='print' />-->
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui-1.8.4.custom.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/ui.dropdownchecklist.themeroller.css' %}">
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+		<script src="{% static 'js/jquery-ui-1.8.13.custom.min.js' %}"></script>
+		<script src="{% static 'js/ui.dropdownchecklist-1.4-min.js' %}"></script>
 		<script>
+			var optionsSearch_id = [];
+			// Stores id's of the optionsSearch
 			//var source = 'cal.json'; We can use a variable in events, to fill the calendar
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
@@ -20,9 +26,32 @@
 					$('#cal').fullCalendar('refetchEvents');
 				});
 
+				getAllFields("{{ csrf_token}}", "{% url 'getAllFields' %}");
+				getAllManagerEmployees("{{ csrf_token}}", "{% url 'getAllManagerEmployees' %}");
+				
+				$("#optionsSearchEmployee").hide();
+				$("#optionsSearchField").hide();
+				
+				$("#filter").change(function() {
+					if ($("#filter").val() == 1) {
+						$("#optionsSearchEmployee").dropdownchecklist("destroy");
+						$("#optionsSearchField").dropdownchecklist("destroy");
+						//$("#optionsSearch").hide();
+					} else if ($("#filter").val() == 3) {
+						getOptionsSearchValues("#optionsSearchField");
+						$("#optionsSearchField").dropdownchecklist("refresh");
+						$("#optionsSearchEmployee").dropdownchecklist("destroy");
+					} else if ($("#filter").val() == 4) {						
+						getOptionsSearchValues("#optionsSearchEmployee");
+						$("#optionsSearchEmployee").dropdownchecklist("refresh");
+						$("#optionsSearchField").dropdownchecklist("destroy");
+					}
+				});
+				
 				$('#cal').fullCalendar({
 					eventSources : [{
 						events : function(start, end, timezone, callback) {
+							console.log(optionsSearch_id)
 							$.ajax({
 								url : "{% url 'switchTaskManager'%}",
 								dataType : 'json',
@@ -30,7 +59,8 @@
 									start : start.format(),
 									end : end.format(),
 									search : $("#filter").val(),
-									condition : $("#filterStatus").val()
+									condition : $("#filterStatus").val(),
+									optionsSearch : optionsSearch_id
 								},
 								success : function(doc) {
 									callback(doc);
@@ -46,7 +76,7 @@
 						//Set duration
 						$('#hours_prediction').val(moment.duration(end.diff(start)).asHours());
 						$('#timeTab').addClass("tabSucess");
-						
+
 						$('#createTaskModal').modal();
 						if (0) {
 							$('#cal').fullCalendar('renderEvent', {
@@ -104,6 +134,73 @@
 
 				$("#createTaskModalBody").load("{% url 'templateCreateTaskManager' %}");
 			});
+
+			// Get All fields to put in the dropdown
+			function getAllFields(token, url) {
+				$.ajax({
+					method : "POST",
+					url : url,
+					async : false,
+					data : {
+						"csrfmiddlewaretoken" : token,
+					},
+					datatype : "json",
+					success : function(data, status, xhr) {
+						$("#optionsSearchField").html(" ");
+						if (data.success) {
+							for (var i = 0; i < data.fields.length; i++) {
+								$("#optionsSearchField").append("<option value='" + data.fields[i].id + "'>" + data.fields[i].name + "</option>");
+							}
+						}
+
+					}
+				});
+			}
+			// Get All employees to put in the dropdown
+			function getAllManagerEmployees(token, url) {
+				$.ajax({
+					method : "POST",
+					url : url,
+					async : false,
+					data : {
+						"csrfmiddlewaretoken" : token,
+					},
+					datatype : "json",
+					success : function(data, status, xhr) {
+						$("#optionsSearchEmployee").html(" ");
+						if (data.success) {
+							for (var i = 0; i < data.employees.length; i++) {
+								$("#optionsSearchEmployee").append("<option value='" + data.employees[i].user_id + "'>" + data.employees[i].first_name + " " + data.employees[i].last_name + "</option>");
+							}
+						}
+
+					}
+				});
+			}
+
+			// Get ids of the fields
+			function getOptionsSearchValues(id) {
+				$(id).dropdownchecklist({
+					maxDropHeight : 150,
+					forceMultiple : true,
+					onComplete : function(selector) {
+						optionsSearch_id = [];
+						var values = [];
+						var count = 0;
+						for ( i = 0; i < selector.options.length; i++) {
+							if (selector.options[i].selected && (selector.options[i].value != "")) {
+								if (values[i] == undefined) {
+									values[i] = selector.options[i].value;
+									optionsSearch_id[count] = values[i];
+									count++;
+								}
+							}
+						}
+						//console.log(optionsSearch_id);
+					}
+				});
+			}
+
 		</script>
 	</head>
 	<body>
@@ -115,8 +212,9 @@
 				</div>
 				<div id="scheduleFilters">
 					<select id="filter">
-						<option value="1">Task status</option>
-						<option value="2">Field</option>
+						<option value="1">Task Status</option>
+						<option value="3">Field</option>
+						<option value="4">Employee</option>
 					</select>
 
 					<select id="filterStatus">
@@ -129,7 +227,10 @@
 						<option value="6">Finished</option>
 					</select>
 
-					<input type="button" value="Search" id="btnFilter" />
+					<input type="button" value="Search" id="btnFilter" class="search"/>
+
+					<select id="optionsSearchEmployee" multiple="multiple" placeholder="Text"></select>
+					<select id="optionsSearchField" multiple="multiple" placeholder="Text"></select>
 				</div>
 				<div id="cal"></div>
 

@@ -157,7 +157,7 @@ input[type=password] {
 	border-radius: 3px;
 }
 #btnScanOther:hover {
-	background: #1C3700;	
+	background: #1C3700;
 }
 /*BUTTONS*/
 input[type="button"] {
@@ -214,7 +214,7 @@ input[type="button"] {
 .btnMain {
 	width: 200px;
 	height: 190px;
-	
+
 }
 #btnEquipment {
 	background: url('../img/buttons/equipment.jpg') no-repeat top left;
@@ -305,7 +305,7 @@ input[type="button"] {
 	background-size: 100% 100%;
 }
 #btnTimerkeeperUp {
-	background: url('../img/buttons/btnTimekeeperUp.jpg') no-repeat top left;
+	background: url('../imgSmall/buttons/timekeeper.png') no-repeat top left;
 	background-size: 100% 100%;
 }
 #btnTimerkeeperUp:hover {
@@ -625,7 +625,7 @@ div.notes {
 	margin-left: -6px;
 	margin-bottom: 10px;
 	border: none;
-	border-radius: 10px; 
+	border-radius: 10px;
 	text-align: center;
 }
 .btnCreateTask{
@@ -697,12 +697,12 @@ div.notes {
 .findTractor{
 	width: 90%;
 	min-width: 850px;
-	overflow-y: scroll; 
+	overflow-y: scroll;
 	max-height: 85%;
 }
 #filterDiv{
 	width: 20%;
-	border-right: 2px solid grey;
+	border-right: 2px solid gray;
 	float: left;
 	min-height: 400px;
 }
@@ -778,7 +778,7 @@ div.notes {
 }
 #past3 {
 	float: right;
-	
+
 }
 #btnSchedulePast {
 	background: url('../img/buttons/btnSchedulePastTasks.png') no-repeat top left;
@@ -787,7 +787,7 @@ div.notes {
 	height: 80px;
 }
 #btnSchedulePast:hover {
-	
+
 }
 /* End PAST TASKS page */
 #cal {
@@ -937,7 +937,7 @@ div.notes {
 }
 
 .numButton:hover {
-	background: #44670F;	
+	background: #44670F;
 }
 #hoursButton {
 	width: 108px;
@@ -947,7 +947,7 @@ div.notes {
 	font-size: 22px;
 }
 #hoursButton:hover {
-	background: #44670F;	
+	background: #44670F;
 }
 .radioBtn {
 	margin: auto;
@@ -1006,30 +1006,35 @@ div.notes {
 	height: 122px;
 	padding-left: 10px;
 }
+#contentProfile {
+    text-align: center;
+    margin: auto;
+    margin-top: 60px;
+    margin-bottom: 60px;
+}
 #userPicture {
 	width: 131px;
 	height: 122px;
 }
-#userInfo {
-	padding-top: 0px;
-	padding-left: 10px;
-	font-size: 16px;
-	width: 350px;
-	font-size: 20px;
+.userInfo1 {
+    text-align: left;
+    font-size: 20px;
 }
-#userInfo ul {
-	padding-left: 20px;
+.userInfo2 {
+    text-align: left;
+    font-size: 20px;
+    border-top: 1px solid black;
+    margin-left: 35px;
+    margin-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 0px !important;
 }
 #rowUser {
-	margin-top: 60px;
+    margin: auto;
 	padding-bottom: 10px;
 	border-bottom: solid 1px black;
 	border-right: solid 1px black;
-}
-#rowInfo {
-	padding-top: 10px;
-	margin-left: 0px;
-	border-right: solid 1px black;
+	text-align: center;
 }
 #addInfo {
 	padding-top: 0px;
@@ -1037,21 +1042,17 @@ div.notes {
 	padding-bottom: 10px;
 	width: 230px;
 }
-#userAllInfo {
-	width: 470px;
-	margin-left: 2%;
-	padding-bottom: 10px;
-	font-size: 20px;
-}
 #notes {
 	border-radius: 10px;
 	color: black;
 	padding: 5px;
 }
-#containerProfile {
-	width: 80%;
-	text-align: left;
-	margin: auto;
+
+#userAllInfo {
+    margin: auto !important;
+    padding-bottom: 10px;
+    font-size: 20px;
+    text-align: center;
 }
 #taskProfile {
 	text-align: left;

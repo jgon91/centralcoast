@@ -34,7 +34,7 @@
 
 		</script>
 		<style>
-		#contentForm input[name=active]{
+		#contentForm input[name=active], #contentForm input[name=teamManager] {
 			width: 10px;
 			height: 10px;
 			position: relative;
@@ -50,7 +50,7 @@
 	<body>
 		<header id="head"></header>
 		<div id="contentForm">
-			<form method="POST" action="." id="formPage">
+			<form method="POST" action="." id="formPage" enctype="multipart/form-data">
 				{% csrf_token %}
 				Manager: * {{ form1.manager }}
 				<br>
@@ -70,9 +70,10 @@
 				<br>
 				Permission Level: {{ form1.permission_level }}
 				<br>
-				<!--Photo: {{ form1.photo }}-->
-				<!--<br>-->
+				Photo: {{ form1.image }}				
 				Active: {{ form1.active }}
+				<br>
+				Team Leader: {{ form1.teamManager }}
 				<br>
 				{{ form1.user.as_hidden }}
 				<br>				

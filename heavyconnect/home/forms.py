@@ -11,7 +11,6 @@ from django import forms
 from django.contrib.auth.models import User
 from django.forms.extras.widgets import SelectDateWidget
 
-
 import datetime
 import json
 
@@ -20,54 +19,6 @@ from home.models import *
 class loginForm(forms.Form):
 	username = forms.CharField()
 	password = forms.CharField(widget = forms.PasswordInput)
-
-class UserForm(forms.Form):
-	username = forms.CharField()
-	password = forms.CharField(widget = forms.PasswordInput)
-	first_name = forms.CharField()
-	last_name = forms.CharField()
-
-### Structor for user password update ###
-class UserFormUpdate(forms.Form):
-	first_name = forms.CharField()
-	last_name = forms.CharField()
-### End ###
-
-### Structor for employee ###
-class employeePasswordForm(forms.Form):
-	# password = forms.CharField(widget = forms.PasswordInput)
-	password1 = forms.CharField(widget = forms.PasswordInput)
-	password2 = forms.CharField(widget = forms.PasswordInput)
-### End ###
-
-
-### Structor for employee Update###
-class employeeUpdateForm(forms.Form):
-	PERMISSION_LEVEL_CHOICES = (
-		(1, 'Driver'),
-		(2, 'Manager'),
-	)
-	LANGUAGE_CHOICES = (
-		(3, 'en'),
-		(2, 'es'),
-		(1, 'pt-br'),
-	)
-	last_task = forms.ModelChoiceField(queryset = Task.objects.all(), required = False)
-	user = forms.IntegerField(required = False)
-	company_id = forms.CharField(required = False)
-	language = forms.ChoiceField(choices = LANGUAGE_CHOICES)
-	qr_code = forms.CharField(required = False)
-	start_date = forms.DateField(widget=SelectDateWidget(empty_label=("Choose Year", "Choose Month", "Choose Day")), required = False)
-	hour_cost = forms.FloatField(required = False)
-	contact_number = forms.CharField(required = False)
-	permission_level = forms.ChoiceField(choices = PERMISSION_LEVEL_CHOICES)
-	photo = forms.URLField(required = False)
-	notes = forms.CharField(max_length = 250, required = False)
-	active = forms.BooleanField(required = False)
-	manager = forms.ModelChoiceField(queryset = Employee.objects.filter(permission_level = '2'))
-### End ###
-
-
 
 ### Structure for manufacturerForm ###
 class manufacturerForm(forms.Form):
@@ -87,12 +38,29 @@ class repairShopForm(forms.Form):
 	address = forms.CharField(max_length = 150)
 ### End ###
 
+## Structure for repairShopUpdateForm ###
+class repairShopUpdateForm(forms.Form):
+	repair_shop_id = forms.IntegerField(widget = forms.HiddenInput())
+	name = forms.CharField(max_length = 20)
+	number = forms.CharField(max_length = 14)
+	address = forms.CharField(max_length = 150)
+### End ###
+
 ### Structure for shopForm ###
 class shopForm(forms.Form):
-	name = forms.CharField()
-	number = forms.CharField()
-	address = forms.CharField()
+	name = forms.CharField(max_length = 20)
+	number = forms.CharField(max_length = 14)
+	address = forms.CharField(max_length = 150)
 ### End ###
+
+## Structure for shopUpdateForm ###
+class shopUpdateForm(forms.Form):
+	shop_id = forms.IntegerField(widget = forms.HiddenInput())
+	name = forms.CharField(max_length = 20)
+	number = forms.CharField(max_length = 14)
+	address = forms.CharField(max_length = 150)
+### End ###
+
 
 ### Structure for EquipmentCategoryForm ###
 class equipmentCategoryForm(forms.Form):
@@ -103,6 +71,77 @@ class equipmentCategoryForm(forms.Form):
 class equipmentTypeForm(forms.Form):
 	category = forms.ModelChoiceField(queryset = EquipmentCategory.objects.all())
 	name = forms.CharField(max_length = 25)
+### End ###
+
+
+### Structure for MachineUpdateForm ###
+class machineUpdateForm(forms.Form):
+	HITCH_CHOICES = (
+		(1, u'1'),
+		(2, u'2'),
+		(3, u'3'),
+		(4, u'4N'),
+		(5, u'4'),
+		(6, u'5'),
+	)
+	DRAWBAR_CHOICES = (
+		(1, '1'),
+		(2, '2'),
+		(3, '3'),
+		(4, '4'),
+		(5, '4WS'),
+		(6, '5'),
+		(7, '5WS'),
+	)
+	MTYPE_CHOICES = (
+		('T', 'Track'),
+		('W', 'Wheels'),
+	)
+	STEERING_CHOICES = (
+		('M', 'Manual'),
+		('G', 'GPS')
+	)
+	OPERATORSTATION_CHOICES = (
+		('C', 'Cab'),
+		('O', 'Open'),
+	)
+	STATUS_CHOICES = (
+		(1, 'Ok'),
+		(2, 'Attention'),
+		(3, 'Broken'),
+		(4, 'Quarantine'),
+	)
+	machine_id = forms.IntegerField(widget = forms.HiddenInput())
+	manufacturer_model = forms.ModelChoiceField(queryset = ManufacturerModel.objects.all())
+	nickname = forms.CharField(max_length = 20)
+	asset_number = forms.CharField(max_length = 15)
+	serial_number = forms.CharField(max_length = 25)
+	repair_shop = forms.ModelChoiceField(queryset = RepairShop.objects.all(), required = False)
+	shop = forms.ModelChoiceField(queryset = Shop.objects.all(), required = False)
+	#equipment_type = forms.ModelChoiceField(queryset = EquipmentType.objects.all(), required = False)
+	qr_code = forms.CharField(max_length = 10, required = False)
+	horsepower = forms.IntegerField(required = False)
+	hitch_capacity = forms.IntegerField(required = False)
+	hitch_category = forms.ChoiceField(choices = HITCH_CHOICES, required = False)
+	drawbar_category = forms.ChoiceField(choices = DRAWBAR_CHOICES, required = False)
+	speed_range_min = forms.FloatField(required = False)
+	speed_range_max = forms.FloatField(required = False)
+	year_purchased = forms.IntegerField(required = False)
+	engine_hours = forms.IntegerField(required = False)
+	service_interval = forms.IntegerField(required = False)
+	base_cost = forms.FloatField(required = False)
+	m_type = forms.ChoiceField(choices = MTYPE_CHOICES, required = False)
+	front_tires = forms.CharField(max_length = 20, required = False)
+	rear_tires = forms.CharField(max_length = 20, required = False)
+	steering = forms.ChoiceField(choices = STEERING_CHOICES, required = False)
+	operator_station = forms.ChoiceField(choices = OPERATORSTATION_CHOICES, required = False)
+	status = forms.ChoiceField(choices = STATUS_CHOICES, required = False)
+	hour_cost = forms.FloatField(required = False)
+	beacon = forms.ModelChoiceField(queryset = Beacon.objects.all(), required = False)
+	note = forms.CharField(max_length = 250, required = False)
+	photo = forms.URLField(max_length = 200, required = False)
+	photo1 = forms.URLField(max_length = 200, required = False)
+	photo2 = forms.URLField(max_length = 200, required = False)
 ### End ###
 
 ### Structure for machineForm ###
@@ -143,57 +182,117 @@ class machineForm(forms.Form):
 		(4, 'Quarantine'),
 	)
 	manufacturer_model = forms.ModelChoiceField(queryset = ManufacturerModel.objects.all())
-	repair_shop = forms.ModelChoiceField(queryset = RepairShop.objects.all())
-	shop = forms.ModelChoiceField(queryset = Shop.objects.all())
-	equipment_type = forms.ModelChoiceField(queryset = EquipmentType.objects.all())
 	nickname = forms.CharField(max_length = 20)
-	qr_code = forms.CharField(max_length = 10)
 	asset_number = forms.CharField(max_length = 15)
 	serial_number = forms.CharField(max_length = 25)
-	horsepower = forms.IntegerField()
-	hitch_capacity = forms.IntegerField()
-	hitch_category = forms.ChoiceField(choices = HITCH_CHOICES)
-	drawbar_category = forms.ChoiceField(choices = DRAWBAR_CHOICES)
-	speed_range_min = forms.FloatField()
-	speed_range_max = forms.FloatField()
-	year_purchased = forms.IntegerField()
-	engine_hours = forms.IntegerField()
-	service_interval = forms.IntegerField()
-	base_cost = forms.FloatField()
-	m_type = forms.ChoiceField(choices = MTYPE_CHOICES)
-	front_tires = forms.CharField(max_length = 20)
-	rear_tires = forms.CharField(max_length = 20)
-	steering = forms.ChoiceField(choices = STEERING_CHOICES)
-	operator_station = forms.ChoiceField(choices = OPERATORSTATION_CHOICES)
-	status = forms.ChoiceField(choices = STATUS_CHOICES, required = True)
-	hour_cost = forms.FloatField()
-	photo = forms.URLField(max_length = 200)
+	repair_shop = forms.ModelChoiceField(queryset = RepairShop.objects.all(), required = False)
+	shop = forms.ModelChoiceField(queryset = Shop.objects.all(), required = False)
+	#equipment_type = forms.ModelChoiceField(queryset = EquipmentType.objects.all(), required = False)
+	qr_code = forms.CharField(max_length = 10, required = False)
+	horsepower = forms.IntegerField(required = False)
+	hitch_capacity = forms.IntegerField(required = False)
+	hitch_category = forms.ChoiceField(choices = HITCH_CHOICES, required = False)
+	drawbar_category = forms.ChoiceField(choices = DRAWBAR_CHOICES, required = False)
+	speed_range_min = forms.FloatField(required = False)
+	speed_range_max = forms.FloatField(required = False)
+	year_purchased = forms.IntegerField(required = False)
+	engine_hours = forms.IntegerField(required = False)
+	service_interval = forms.IntegerField(required = False)
+	base_cost = forms.FloatField(required = False)
+	m_type = forms.ChoiceField(choices = MTYPE_CHOICES, required = False)
+	front_tires = forms.CharField(max_length = 20, required = False)
+	rear_tires = forms.CharField(max_length = 20, required = False)
+	steering = forms.ChoiceField(choices = STEERING_CHOICES, required = False)
+	operator_station = forms.ChoiceField(choices = OPERATORSTATION_CHOICES, required = False)
+	status = forms.ChoiceField(choices = STATUS_CHOICES, required = False)
+	hour_cost = forms.FloatField(required = False)
+	beacon = forms.ModelChoiceField(queryset = Beacon.objects.all(), required = False)
+	note = forms.CharField(max_length = 250, required = False)
+	photo = forms.URLField(max_length = 200, required = False)
+	photo1 = forms.URLField(max_length = 200, required = False)
+	photo2 = forms.URLField(max_length = 200, required = False)
+### End ###
+
+### Structure for implementUpdateForm ###
+class implementUpdateForm(forms.Form):
+	implement_id = forms.IntegerField(widget = forms.HiddenInput())
+	manufacturer_model = forms.ModelChoiceField(queryset = ManufacturerModel.objects.all())
+	nickname = forms.CharField(max_length = 20)
+	asset_number = forms.CharField(max_length = 15)
+	serial_number = forms.CharField(max_length = 25)
+	repair_shop = forms.ModelChoiceField(queryset = RepairShop.objects.all(), required = False)
+	shop = forms.ModelChoiceField(queryset = Shop.objects.all(), required = False)
+	#equipment_type = forms.ModelChoiceField(queryset = EquipmentType.objects.all())
+	qr_code = forms.CharField(required = False, max_length = 10)
+	horse_power_req = forms.IntegerField(required = False)
+	hitch_capacity_req = forms.IntegerField(required = False)
+	hitch_category = forms.ChoiceField(choices = Machine.HITCH_CHOICES, required = False)
+	drawbar_category = forms.ChoiceField(choices = Machine.DRAWBAR_CHOICES, required = False)
+	speed_range_min = forms.FloatField(required = False)
+	speed_range_max = forms.FloatField(required = False)
+	year_purchased = forms.IntegerField(required = False)
+	implement_hours = forms.IntegerField(required = False)
+	service_interval = forms.IntegerField(required = False)
+	base_cost = forms.FloatField(required = False)
+	hour_cost = forms.FloatField(required = False)
+	beacon = forms.ModelChoiceField(queryset = Beacon.objects.all(), required = False)
+	status = forms.ChoiceField(choices = Machine.STATUS_CHOICES, required = False)
+	photo = forms.URLField(max_length = 200, required = False)
+	photo1 = forms.URLField(max_length = 200, required = False)
+	photo2 = forms.URLField(max_length = 200, required = False)
 ### End ###
 
 ### Structure for implementForm ###
 class implementForm(forms.Form):
 	manufacturer_model = forms.ModelChoiceField(queryset = ManufacturerModel.objects.all())
-	repair_shop = forms.ModelChoiceField(queryset = RepairShop.objects.all())
-	shop = forms.ModelChoiceField(queryset = Shop.objects.all())
-	equipment_type = forms.ModelChoiceField(queryset = EquipmentType.objects.all())
 	nickname = forms.CharField(max_length = 20)
-	qr_code = forms.CharField()
-	asset_number = forms.CharField()
-	serial_number = forms.CharField()
-	horse_power_req = forms.IntegerField()
-	hitch_capacity_req = forms.IntegerField()
-	hitch_category = forms.ChoiceField(choices = Machine.HITCH_CHOICES)
-	drawbar_category = forms.ChoiceField(choices = Machine.DRAWBAR_CHOICES)
-	speed_range_min = forms.FloatField()
-	speed_range_max = forms.FloatField()
-	year_purchased = forms.IntegerField()
-	implement_hours = forms.IntegerField()
-	service_interval = forms.IntegerField()
-	base_cost = forms.FloatField()
-	hour_cost = forms.FloatField()
-	status = forms.ChoiceField(choices = Machine.STATUS_CHOICES)
-	photo = forms.URLField()
+	asset_number = forms.CharField(max_length = 15)
+	serial_number = forms.CharField(max_length = 25)
+	repair_shop = forms.ModelChoiceField(queryset = RepairShop.objects.all(), required = False)
+	shop = forms.ModelChoiceField(queryset = Shop.objects.all(), required = False)
+	#equipment_type = forms.ModelChoiceField(queryset = EquipmentType.objects.all())
+	qr_code = forms.CharField(required = False, max_length = 10)
+	horse_power_req = forms.IntegerField(required = False)
+	hitch_capacity_req = forms.IntegerField(required = False)
+	hitch_category = forms.ChoiceField(choices = Machine.HITCH_CHOICES, required = False)
+	drawbar_category = forms.ChoiceField(choices = Machine.DRAWBAR_CHOICES, required = False)
+	speed_range_min = forms.FloatField(required = False)
+	speed_range_max = forms.FloatField(required = False)
+	year_purchased = forms.IntegerField(required = False)
+	implement_hours = forms.IntegerField(required = False)
+	service_interval = forms.IntegerField(required = False)
+	base_cost = forms.FloatField(required = False)
+	hour_cost = forms.FloatField(required = False)
+	beacon = forms.ModelChoiceField(queryset = Beacon.objects.all(), required = False)
+	status = forms.ChoiceField(choices = Machine.STATUS_CHOICES, required = False)
+	photo = forms.URLField(max_length = 200, required = False)
+	photo1 = forms.URLField(max_length = 200, required = False)
+	photo2 = forms.URLField(max_length = 200, required = False)
 ### End ###
+
+
+### Structure for userForm ####
+class UserForm(forms.Form):
+	username = forms.CharField()
+	password = forms.CharField(widget = forms.PasswordInput)
+	first_name = forms.CharField()
+	last_name = forms.CharField()
+
+### End ###
+
+### Structor for user password update ###
+class UserFormUpdate(forms.Form):
+	first_name = forms.CharField()
+	last_name = forms.CharField()
+### End ###
+
+### Structor for employee ###
+class employeePasswordForm(forms.Form):
+	# password = forms.CharField(widget = forms.PasswordInput)
+	password1 = forms.CharField(widget = forms.PasswordInput)
+	password2 = forms.CharField(widget = forms.PasswordInput)
+### End ###
+
 
 ### Structor for employee###
 class employeeForm(forms.Form):
@@ -206,7 +305,7 @@ class employeeForm(forms.Form):
 		(2, 'es'),
 		(1, 'pt-br'),
 	)
-	last_task = forms.ModelChoiceField(queryset = Task.objects.all(), required = False)
+
 	user = forms.ModelChoiceField(queryset = User.objects.all(), required = False)
 	active = forms.BooleanField(required = False)
 	company_id = forms.CharField(required = False)
@@ -215,10 +314,54 @@ class employeeForm(forms.Form):
 	start_date = forms.DateField(widget=SelectDateWidget(empty_label=("Choose Year", "Choose Month", "Choose Day")), required = False)
 	hour_cost = forms.FloatField(required = False)
 	contact_number = forms.CharField(required = False)
-	permission_level = forms.ChoiceField(choices = PERMISSION_LEVEL_CHOICES)
-	photo = forms.URLField(required = False)
+	permission_level = forms.ChoiceField(choices = PERMISSION_LEVEL_CHOICES)	
 	notes = forms.CharField(max_length = 250, required = False)
+	teamManager = forms.BooleanField(required = False)
 	manager = forms.ModelChoiceField(queryset = Employee.objects.filter(permission_level = '2'))
+	image = forms.ImageField(required = False)	
+### End ###
+
+
+### Structor for employee Update###
+class employeeUpdateForm(forms.Form):
+	PERMISSION_LEVEL_CHOICES = (
+		(1, 'Driver'),
+		(2, 'Manager'),
+	)
+	LANGUAGE_CHOICES = (
+		(3, 'en'),
+		(2, 'es'),
+		(1, 'pt-br'),
+	)
+
+	user = forms.IntegerField(required = False)
+	company_id = forms.CharField(required = False)
+	language = forms.ChoiceField(choices = LANGUAGE_CHOICES)
+	qr_code = forms.CharField(required = False)
+	start_date = forms.DateField(widget=SelectDateWidget(empty_label=("Choose Year", "Choose Month", "Choose Day")), required = False)
+	hour_cost = forms.FloatField(required = False)
+	contact_number = forms.CharField(required = False)
+	permission_level = forms.ChoiceField(choices = PERMISSION_LEVEL_CHOICES)	
+	notes = forms.CharField(max_length = 250, required = False)
+	active = forms.BooleanField(required = False)
+	teamManager = forms.BooleanField(required = False)
+	manager = forms.ModelChoiceField(queryset = Employee.objects.filter(permission_level = '2'))
+	image = forms.ImageField(required = False)
+### End ###
+
+### Structure for Grou[ ###
+class Group(forms.Form):
+	name = forms.CharField(required = False)
+	creator = forms.ModelChoiceField(queryset = Employee.objects.all())
+	data = forms.DateField()
+	permanent = models.BooleanField(default = False)
+### End ###
+
+
+### Structure for GroupParticipant ###
+# class GroupParticipant(forms.Form):
+# 	group = forms.ModelChoiceField(queryset = Group.objects.all(), empty_label = ("Group Name"))
+# 	participant = forms.ModelChoiceField(queryset = Employee.objects.all())
 ### End ###
 
 ### Structure for employeeAttendanceForm ###
@@ -227,6 +370,7 @@ class employeeAttendanceForm(forms.Form):
 	date = forms.DateField()
 	hour_started = forms.TimeField()
 	hour_ended = forms.TimeField()
+	edited = forms.BooleanField()
 ### End ###
 
 ### Structure for qualificationForm ###
@@ -434,6 +578,8 @@ class implementChecklistForm(forms.Form):
 ### Structure for breakForm ###
 class breakForm(forms.Form):
 	attendance = forms.ModelChoiceField(queryset = EmployeeAttendance.objects.all())
+	lunch = forms.BooleanField()
+	edited = forms.BooleanField()
 	start = forms.TimeField()
 	end = forms.TimeField(required = False)
 ### End ###
@@ -499,6 +645,11 @@ class storeAnswersForm(forms.Form):
 				for iten in  ans:
 					awr = iten['answer']
 					note = ''
+					photo = ''
+					try:
+						photo = iten['photo']
+					except KeyError:
+						pass
 
 					try:
 						note = iten['note']
@@ -511,7 +662,8 @@ class storeAnswersForm(forms.Form):
 							qr_code = equipment,
 							answer = awr,
 							note = note,
-							date = now
+							date = now,
+							photo = photo
 						)
 					)
 				return ret
@@ -519,7 +671,12 @@ class storeAnswersForm(forms.Form):
 				for iten in ans:
 					awr = iten['answer']
 					note = ''
+					photo = ''
 
+					try:
+						photo = iten['photo']
+					except KeyError:
+						pass
 					try:
 						note = iten['note']
 					except KeyError:
@@ -531,7 +688,8 @@ class storeAnswersForm(forms.Form):
 							qr_code = equipment,
 							answer = awr,
 							note = note,
-							date = now
+							date = now,
+							photo = photo
 						)
 					)
 				return ret

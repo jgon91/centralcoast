@@ -140,15 +140,12 @@
 						setEquipmentStatus("{{ csrf_token }}", "{% url 'updateEquipmentStatus' %}", item.qr_code, $("#btnRed").val());
 						changeColorStatus("btnBroken", "btnOk", "btnService");
 				});
-				$("#notesSubmit").click(function() {
-					updateEquipmentNotes("{{ csrf_token }}", "{% url 'updateEquipmentNotes' %}", item.qr_code, $("#notesEquip").val());
-				});
 
 			});
 			//Functions
 			function loadEquipmentInfo(token, url, id) {
 				$.ajax({
-					method : "POST",
+					method : "GET",
 					url : url,
 					data : {
 						"csrfmiddlewaretoken" : token,
@@ -164,7 +161,6 @@
 							$("#model").html(data.model);
 							$("#hours_cost").html(data.hour_cost);
 							$("#hp").html(data.horse_power);
-							$("#notesEquip").html(data.note);
 							//all specs to modal
 							$("#nicknameM").html(data.nickname);
 							$("#asset_numberM").html(data.asset_number);
@@ -196,27 +192,8 @@
 							$("#img1").attr("src", photo1);
 							$("#img2").attr("src", photo2);
 							$("#img3").attr("src", photo3);
-						} else if(data.code == 1){
-							<!--alert("Equipment not found.");-->
-							window.location.href = "{% url 'scanQRCode'%}";
-						}
+						} 
 					}
-				});
-			}
-
-			function updateEquipmentNotes(token, url, id, notes) {
-				$.ajax({
-					method : "POST",
-					url : url,
-					data : {
-						"csrfmiddlewaretoken" : token,
-						"qr_code" : id,
-						"notes" : notes
-					},
-					datatype : "json",
-					success : function(data, status, xhr) {
-					}
-
 				});
 			}
 
@@ -303,7 +280,7 @@
 			<div id="content" class="divEquip">
 				{% trans 'TRACTOR' %}: <span id="nickname"></span>
 				<div class="row rowUpEquip">
-					<div id="colBtnsEquip">
+					<div class="col-xs-3 col-md-3" id="colBtnsEquip">
 						{% trans 'Status' %}:
 						<a href="#">
 						<input type="button" id="btnOk" id="btn3nStatus1" class="btnStatusEquip" value="{% trans 'OK - Ready to work' %}"/>
@@ -318,29 +295,28 @@
 						<input type="hidden" id="btnRed" value="3"/>
 						</a>
 					</div>
-					<div id="colNoteEquip">
+					<div class="col-xs-3 col-md-3" id="colNoteEquip">
 						{% trans 'Notes' %}:
 						<br>
-						<textarea rows="2" cols="2" id="notesEquip"></textarea>
-
+						<textarea rows="2" cols="2" form="notesSubmit" id="notesEquip"></textarea>
 					</div>
-					<div id="colSpecEquip">
+					<div class="col-xs-6 col-md-6" id="colSpecEquip">
 						{% trans 'QR Sticker' %}: <span id="qr_code"></span>
 						<br>
-						{% trans 'Asset' %}: <span id="asset_number"></span>
+						{% trans 'Reiter Asset' %}: <span id="asset_number"></span>
 						<br>
 						{% trans 'Manufacturer' %}: <span id="manufacturer"></span>
 						<br>
 						{% trans 'Model' %}: <span id="model"></span>
 						<br>
-						{% trans 'Hours' %}: <span id="engineHoursM"></span>
+						{% trans 'Hours' %}: <span id="hours_cost"></span>
 						<br>
 						{% trans 'Horse Power' %}: <span id="hp"></span>
 					</div>
 				</div>
 				<div class="row rowDownEquip">
 					<div class="col-xs-6 col-md-6" id="colMapHolder">
-						<!--<div class="map" id="mapholder"></div>-->
+						<div class="map" id="mapholder"></div>
 					</div>
 					<div class="col-xs-2 col-md-2" id="colSpecImg1">
 						<a href="#">
@@ -354,8 +330,8 @@
 					</div>
 					<div class="col-xs-2 col-md-2" id="colSpecImg3">
 						<a href="#">
-  							<input type="button" class="btnSubmitNotes" value="UPDATE" id="notesSubmit">
 						</a>
+					</div>	
 					</div>
 				</div>
 			</div>
@@ -370,7 +346,7 @@
 						</button>
 							{% trans 'TRACTOR' %}: <span id="nicknameM" class="specModalEquip"></span><br>
 							{% trans 'QR Sticker' %}: <span id="qr_codeM" class="specModalEquip"></span><br>
-							{% trans 'Asset' %}: <span id="asset_numberM" class="specModalEquip"></span><br>
+							{% trans 'Reiter Asset' %}: <span id="asset_numberM" class="specModalEquip"></span><br>
 							{% trans 'Manufacturer' %}: <span id="manufacturerM" class="specModalEquip"></span><br>
 							{% trans 'Model' %}: <span id="modelM" class="specModalEquip"></span><br>
 							{% trans 'Serial Number' %}: <span id="serial_numberM" class="specModalEquip"></span><br>
@@ -401,11 +377,7 @@
 					<!-- Modal content-->
 					<div class="modal-content modalEquip">
 						<div class="modal-body" id="slideModalEquip">
-							<div class="modal-header" style="border-bottom: none; margin-bottom: 10px;  padding-right: 10px; padding-top: 5px; padding-bottom: 15px;">
-        						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-      						</div>
-							<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
-
+							<div id="myCarousel" class="carousel slide" data-ride="carousel">
 								<!-- Indicators -->
 								<ol class="carousel-indicators">
 									<li data-target="#myCarousel" data-slide-to="0" class="active"></li>

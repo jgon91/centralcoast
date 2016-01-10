@@ -15,20 +15,17 @@
 		<header id="headHome"></header>
 		<div class="row" id="driverMenu">
 			<div class="btnHomeDriver">
-				<a href="{% url 'timeKeeperGroup'%}">
-				<input type="button" class="btnMain" value="{% trans 'TIMEKEEPER' %}" id="btnTimerkeeper" />
+				<a href="{% url 'time_keeper'%}">
+				<input type="button" class="btnMain"  value="{% trans 'TIMEKEEPER' %}" id="btnTimerkeeper" />
 				</a>
 			</div>
+
 			<!--<div class="btnHomeDriver">-->
 				<!--<a href="{% url 'scanQRCode' %}?url={% url 'checklist' %}">-->
 				<!--<input type="button" class="btnMain" value="{% trans 'CHECKLIST' %}" id="btnChecklist" />-->
 				<!--</a>-->
 			<!--</div>-->
-			<!--<div class="btnHomeDriver">-->
-				<!--<a href="{% url 'lightTaskFlow'%}">-->
-				<!--<input type="button" class="btnMain" value="{% trans 'TASKFLOW' %}" id="btnTaskflow" />-->
-				<!--</a>-->
-			<!--</div>-->
+
 			<!--<div class="btnHomeDriver">-->
 				<!--<a href="{% url 'schedule'%}">-->
 				<!--<input type="button" class="btnMain" value="{% trans 'SCHEDULE' %}" id="btnScheduler" />-->
@@ -42,11 +39,8 @@
 
 		</div>
 	</body>
-	
+
 	<div>
 		<img src="{% static 'imgSmall/backgroundFooter.png' %}" id="backgroundFooter">
 	</div>
-	<!--  <footer>
-		&copy;2015 Heavy Connect, Inc.
-	</footer>  -->
 </html>
