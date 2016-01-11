@@ -351,11 +351,16 @@ def startShiftGroup(request):
 
 			else:
 				ids = request.POST.getlist('ids[]')
+				group_id = request.POST['group']
 				auxSuccess = []
 				auxError = []
 				for item in ids:					
-					aux = startShift(request, item)										
-					aux['user'] = item					
+					aux = startShift(request, item)
+					attendance =  EmployeeAttendance.objects.filter(employee__user__id = item).order_by('-date', '-hour_started').first()
+					group = Group.objects.filter(id = group_id).first()
+					attendance.group = group
+					attendance.save()
+					aux['user'] = item
 					if aux['success'] == True:
 						auxSuccess.append(aux)
 					else:
@@ -2094,7 +2099,6 @@ def timeLogById(request):
 
 						breakDuration = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #variable used to decrease time from the total when one break still going on
 						breakTime = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) #help to calculate work time between breaks
-						time_aux = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) #variable used to remove second of the date
 						atten_start = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute,seconds = item.hour_started.second)
 						for doc in breaks:
 							aux = {} #puts breakStart, breakDuration and workBreak together
@@ -2160,14 +2164,17 @@ def timeLogById(request):
 						if item.hour_ended != None:
 							endTurn = datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second)
 							Attendance_end =  datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second)
+							end = Attendance_end
 							if endTurn >= breakTime:
 								count += endTurn - breakTime
 							else:
 								count += (keeper2 - breakTime) + endTurn
 						else:
+
 							Attendance_end = 'In Progress'
 							time_now = datetime.datetime.now()
 							time_aux = datetime.timedelta(hours = time_now.hour, minutes = time_now.minute, seconds = time_now.second)
+							end = time_aux
 							if time_aux >= breakTime:
 								count += (time_aux - breakTime) - breakDuration
 							else:
@@ -2179,7 +2186,9 @@ def timeLogById(request):
 					minutes, seconds = divmod(remainder, 60)
 					hours = checkHours(hours)
 					minutes = checkMinutes(minutes)
-					result['Total'] = str(hours) + ':' + str(minutes)
+
+					total_time = end - atten_start
+					result['Total'] = str(total_time)
 					hours, remainder = divmod(atten_start.seconds, 3600)
 					minutes, seconds = divmod(remainder, 60)
 					hours = checkHours(hours)
@@ -3594,7 +3603,6 @@ def getCsv(request):
 	response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
 
 	writer = csv.writer(response)
-	# writer.writerow(['ID', 'Name', 'Team Lead', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked'])
 	start = time.strptime(request.POST['start'], "%m/%d/%Y")
 	end = time.strptime(request.POST['end'], "%m/%d/%Y")
 	start = str(start.tm_year) +"-"+str(start.tm_mon)+"-"+str(start.tm_mday)
@@ -3602,7 +3610,7 @@ def getCsv(request):
 	attendances = EmployeeAttendance.objects.all().order_by('-date').filter(date__range = (start, end))
 
 	header = []
-	header.extend(('Attendance ID', 'ID', 'Name', 'Team Lead', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked(w/out breaks)'))
+	header.extend(('Attendance ID', 'ID', 'Name', 'Team Lead', 'Team Name', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked(w/ breaks)'))
 	header.extend(('Job 1', 'Total Time'))
 	header.extend(('Job 2',  'Total Time'))
 	header.extend(('Job 3', 'Total Time'))
@@ -3629,10 +3637,13 @@ def getCsv(request):
 			date = attendance.date
 			hour_started = attendance.hour_started
 			hour_ended = attendance.hour_ended
+
 			if(attendance.group is None):
 				leader_name = 'N/A'
+				crew = 'N/A'
 			else:
 				leader_name = attendance.group.creator.user.first_name + ", " + attendance.group.creator.user.last_name
+				crew = attendance.group.name
 
 			if hour_ended == None:
 				hour_ended = 'N/A'
@@ -3640,35 +3651,32 @@ def getCsv(request):
 				hour_started = 'N/A'
 			if hour_ended != 'N/A' and hour_started != 'N/A':
 				if hour_ended > hour_started:
-					hours_today = getHoursToday(attendance.employee.id, str(attendance.date) +' 00:00:00')
+					end =  datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
+					start =  datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
+					hours_today = str(end - start)
+
+					# hours_today = getHoursToday(attendance.employee.id, str(attendance.date) +' 00:00:00')
 				else:
 					hours_today = 'N/A'
 			else:
 				hours_today = 'N/A'
 			employee_name = attendance.employee.user.last_name + ", " + attendance.employee.user.first_name
 			# writer.writerow([employee_id, employee_name, leader_name, date, hour_started, hour_ended, hours_today])
-			data_row.extend((attendance_id, employee_id, employee_name, leader_name, date, hour_started, hour_ended, hours_today))
+			data_row.extend((attendance_id, employee_id, employee_name, leader_name, crew, date, hour_started, hour_ended, hours_today))
 			breaks = Break.objects.filter(attendance__id = attendance.id)#.order_by('start')
 			jobs = Task.objects.filter(attendance_id = attendance.id).order_by('-id')
 			i = 1
 			break_num = breaks.count()
 			m = 1
-			job_num = jobs.count()
-
 			lunch_breaks = []
 			reg_breaks = []
 			combined_breaks = []
 			while m <=8:
-				print m
-				print jobs.count()
 				if m <= jobs.count():
 					job_code = jobs[m-1].description
-					print job_code
 					hours_spent = jobs[m-1].hours_spent
-					print hours_spent
 					data_row.extend((job_code, hours_spent))
 				else:
-					print 'hello'
 					data_row.extend(('', ''))
 				m += 1
 
@@ -3725,55 +3733,44 @@ def timeKeeperDailyReport(request):
 			start = str(start.tm_year) +"-"+str(start.tm_mon)+"-"+str(start.tm_mday)
 			end = str(end.tm_year) +"-"+str(end.tm_mon)+"-"+str(end.tm_mday)
 			attendances = EmployeeAttendance.objects.all().order_by('-date').filter(date__range = (start, end))
-			tasks = EmployeeTask.objects.all()
-			all_attendances = []
 			total_times = []
 			all_names = []
 			group_leader = []
 			qr_code = []
-
-			i = 0
+			crews = []
 			for attendance in attendances:
-				temp = {}
-				temp["first_name"] = attendance.employee.user.first_name
-				temp['last_name'] = attendance.employee.user.last_name
-				temp['employee_id'] = attendance.employee.id
-				temp['date'] = attendance.date
-				temp['hour_started']=attendance.hour_started
+				breaks = Break.objects.filter(attendance = attendance)
+				start =  datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
 
-				temp['hour_ended']=attendance.hour_ended
-
-				hours_today = getHoursToday(attendance.employee.id, str(attendance.date) +' 00:00:00')
-				if str(attendance.hour_ended) < str(attendance.hour_started):
+				if attendance.hour_ended is None:
+					end = 'N/A'
 					hours_today = 'N/A'
-				all_names.append(attendance.employee.user.last_name + ", " + attendance.employee.user.first_name)
+				else:
+					end =  datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
+					hours_today = str(end - start)
+				# if str(attendance.hour_ended) < str(attendance.hour_started):
+				# 	hours_today = 'N/A'
+				all_names.append(str(attendance.employee.user.last_name + ", " + attendance.employee.user.first_name))
 				if(attendance.group is None):
 					leader_name = 'N/A'
+					crew_name = 'N/A'
 				else:
-					leader_name = attendance.group.creator.user.first_name + ", " + attendance.group.creator.user.last_name
-
+					leader_name = str(attendance.group.creator.user.first_name + ", " + attendance.group.creator.user.last_name)
+					crew_name = str(attendance.group.name)
 				group_leader.append(leader_name)
-				qr_code.append(attendance.employee.qr_code)
+				crews.append(crew_name)
+				qr_code.append(str(attendance.employee.qr_code))
 				total_times.append(hours_today)
-				temp["total_hours"] = hours_today
-				all_attendances.append(temp)
-				# all_attendances[i] = temp
-				i = i+1
 			all_attendances_ser = serializers.serialize("json", attendances)
-			tasks_ser = serializers.serialize("json", tasks)
-
-			# breaks = Break.objects.all()
-			# all_breaks = serializers.serialize("json", breaks)
-			# result['all_breaks'] = all_breaks
-			# result['all_attendances'] = all_attendances
+			# crews_ser = serializers.serialize("json", crews)
 
 			result['success'] = True
 			result['all_attendances']=all_attendances_ser
 			result['total_times'] = total_times
 			result['all_names'] = all_names
-			result['tasks'] = tasks_ser
 			result['qr_code'] = qr_code
 			result['group_leader'] = group_leader
+			result['crews'] = crews
 		else:
 			result['code'] = 2  #Use ajax to perform requests
 	else:

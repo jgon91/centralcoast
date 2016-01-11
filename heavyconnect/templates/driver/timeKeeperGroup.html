@@ -55,6 +55,7 @@
 		var idTimelog;
 		var user_id;
 		var id_checked = [];
+		var group_checked = [];
 		var id_scanned = []; // Reiniatilize this array when create a new group
 		var name_scanned = [];
 		var teamChecked = -1;
@@ -132,6 +133,7 @@
 					if ($("input[name='teamRadio']").is(":checked")) {
 						if ($("#team" + i).is(":checked")) {
 							var teamChecked = $("#team" + i).val();
+							group_checked.push(teamChecked);
 							$("#messageTimekeeper").css("color", "#1F3801");	//green
 							$("#messageTimekeeper").html("{% trans 'Starting Team shift' %}...");
 							emptyDivs();
@@ -402,7 +404,7 @@
 							arrayNames[i] = data.participant[i].name;
 						}
 						if (action == 1) {
-							startShiftGroup("{{ csrf_token }}", "{% url 'startShiftGroup' %}");
+							startShiftGroup("{{ csrf_token }}", "{% url 'startShiftGroup' %}", group);
 						}
 						if (action == 2) {
 							stopShiftGroup("{{ csrf_token }}", "{% url 'stopShiftGroup' %}");
@@ -425,11 +427,11 @@
 				}
 			});
 		}
-		function startShiftGroup(token, url) {
+		function startShiftGroup(token, url, group) {
 			$.ajax({
 				method : "POST",
 				url : url,
-				data : {"csrfmiddlewaretoken" : token, "ids": id_checked},
+				data : {"csrfmiddlewaretoken" : token, "ids": id_checked, "group": group},
 				datatype : "json",
 				success : function(data, status, xhr) {
 					arrayErrors = [];
@@ -1035,7 +1037,7 @@
 			</div>
 		</div>
 		<footer>
-			&copy;2015 HeavyConnect, Inc.
+			&copy;2016 HeavyConnect, Inc.
 		</footer>
 
 		<div id="clearBoth"></div>

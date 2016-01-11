@@ -53,7 +53,6 @@ function saveTask(token, url, urlScheduler){
 		datatype: "json",
 		success: function(data, status, xhr){
 			if(data.success){
-				alert("Task created");
 				document.location = urlScheduler + "?createNewTask=sucess";
 			}else if(data.code == 3){
 				var errorsMessage = "";
@@ -84,7 +83,6 @@ function saveTask(token, url, urlScheduler){
 				if(data.errors.description != null){
 					errorsMessage += "\nDescription: " + data.errors.description;
 				}
-				alert("Erros:" + errorsMessage);
 			}
 			console.log(data.errors);
 		}	

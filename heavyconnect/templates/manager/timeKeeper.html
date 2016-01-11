@@ -136,28 +136,15 @@
 					if (data) {
 						$('#results').html("");
 						parsed_result = $.parseJSON(data.all_attendances);
-						parsed_tasks = $.parseJSON(data.tasks);
-						<!--$(function () {-->
-							<!--$.each(parsed_tasks, function (i, item) {-->
-								<!--$('<tr>').append(-->
-								<!--$('<td>').text(item.fields.employee),-->
-								<!--$('<td>').text(data.all_names[i]),-->
-								<!--$('<td>').text(item.fields.date),-->
-								<!--$('<td>').text(start_hour),-->
-								<!--$('<td>').text(end_hour),-->
-								<!--$('<td>').text(data.total_times[i])).appendTo('#report_table');-->
-								<!--$('<tr>').append(-->
-								<!--$('<td colspan="6" class="hiddenRow">').append(-->
-								<!--$('<div id='+demo+' class="accordian-body collapse">').text('breaks'))-->
-								<!--).appendTo('#task_report_table');-->
-							<!--});-->
-						<!--});-->
+
 						$(function () {
 							var i = 1;
 							$.each(parsed_result, function (i, item) {
+
 								var start_hour = item.fields.hour_started;
 								var end_hour = item.fields.hour_ended;
 								var total_time = data.total_times[i];
+
 								if(! start_hour){
 									start_hour = 'N/A';
 								}
@@ -176,23 +163,10 @@
 
 								var demo = "demo" + i;
 
-								<!--$('<tr data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle">').append(-->
-								<!--$('<td>').text(data.qr_code[i]),-->
-								<!--$('<td>').text(data.all_names[i]),-->
-								<!--$('<td>').text(data.group_leader[i]),-->
-								<!--&lt;!&ndash;$('<td>').text('N/A'),&ndash;&gt;-->
-								<!--&lt;!&ndash;$('<td>').text('N/A'),&ndash;&gt;-->
-								<!--$('<td>').text(item.fields.date),-->
-								<!--$('<td>').text(start_hour),-->
-								<!--$('<td>').text(end_hour),-->
-								<!--$('<td>').text(total_time)).html('#results');-->
 								$('#results').append('<tr data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle"> <td>' +
-								data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>' + data.group_leader[i] + '</td><td>' + item.fields.date +'</td><td>' +
+								data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>' + data.group_leader[i] + '</td><td>'+ data.crews[i]+'</td><td>' + item.fields.date +'</td><td>' +
 								start_hour + '</td><td>' + end_hour + '</td><td>' + total_time+'</td></tr>');
-								<!--$('<tr>').append(-->
-								<!--$('<td colspan="6" class="hiddenRow">').append(-->
-								<!--$('<div id='+demo+' class="accordian-body collapse">').text('breaks'))-->
-								<!--).appendTo('#report_table');-->
+
 								i = i+1;
 
 							});
@@ -232,12 +206,13 @@
 						<th>ID</th>
 						<th>Name</th>
 						<th>Team Lead</th>
+						<th>Team Name</th>
 						<!--<th>Location</th>-->
 						<!--<th>Job Code</th>-->
 						<th>Date</th>
 						<th>Clock-In</th>
 						<th>Clock-Out</th>
-						<th>Hours Worked</th>
+						<th>Hours Worked(w/ breaks)</th>
 					</tr>
 				</thead>
 				<tbody id="results">
