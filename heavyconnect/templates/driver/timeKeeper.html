@@ -780,6 +780,7 @@
 		function callEditBreak(break_id) {
 			var new_time_start = $("#newBreakBeg" + break_id).val();
 			var new_time_end = $("#newBreakEnd" + break_id).val();
+
 			updateBreak("{{ csrf_token }}", "{% url 'updateBreak' %}", break_id, new_time_start, new_time_end);
 		}
 		function updateBreak(token, url, break_id, new_time_start, new_time_end) {
@@ -796,6 +797,8 @@
 						$("#messageTimekeeper").css("color", "#1F3801");	//green
 						$("#messageTimekeeper").html("SCHEDULE");
 						timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+					}else {
+
 					}
 				}
 			});

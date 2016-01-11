@@ -4007,20 +4007,32 @@ def updateBreak(request):
 				break_item = Break.objects.get(id = break_id)
 
 				new_time_start = request.POST['new_time_start']
+				print new_time_start
+
 				new_time_start = new_time_start.split(":")
 				new_time_end = request.POST['new_time_end']
 				new_time_end = new_time_end.split(":")
+				print new_time_end
 
 				time_start['hour'] = int(new_time_start[0])
 				time_start['minute'] = int(new_time_start[1])
+				if (new_time_start) != 3:
+					time_start['second'] = 0
+				else:
+					time_start['second'] = int(new_time_start[2])
 				time_end['hour'] = int(new_time_end[0])
 				time_end['minute'] = int(new_time_end[1])
+				if len(new_time_end) != 3:
+					time_end['second'] = 0
+				else:
+					time_end['second'] = int(new_time_end[2])
 
 				new_hour_started = datetime.timedelta(hours = time_start['hour'], minutes = time_start['minute'], seconds = time_start['second'])
 				new_hour_stopped = datetime.timedelta(hours = time_end['hour'], minutes = time_end['minute'], seconds = time_end['second'])
 
 				attendance = EmployeeAttendance.objects.get(id = break_item.attendance.id)
 				break_after = Break.objects.filter(attendance = break_item.attendance.id, start__range = (break_item.end, attendance.hour_ended)).first() #First break after
+
 				break_before = Break.objects.filter(attendance = break_item.attendance.id, start__range = (attendance.hour_started, break_item.start)).order_by('-end').exclude(id = break_id).first() # First break before
 				if break_item is not None:
 					if new_hour_started < new_hour_stopped:
@@ -4030,11 +4042,12 @@ def updateBreak(request):
 							if new_hour_started > start_shift and new_hour_stopped < start_break_after:
 								if break_before is not None:
 									stop_break_before = datetime.timedelta(hours = break_before.end.hour, minutes = break_before.end.minute, seconds = break_before.end.second)
-									start_break_after = datetime.timedelta(hours = break_before.end.hour, minutes = break_before.end.minute, seconds = break_before.end.second)
+									start_break_after = datetime.timedelta(hours = break_after.end.hour, minutes = break_after.end.minute, seconds = break_after.end.second)
+
 									if new_hour_started > stop_break_before and new_hour_stopped < start_break_after:
 										break_item.start = str(new_hour_started)
 										break_item.end = str(new_hour_stopped)
-										#break_item.edited = True
+										break_item.edited = True
 										break_item.save()
 										result['success'] = True
 									else:
@@ -4048,7 +4061,7 @@ def updateBreak(request):
 									if new_hour_stopped < end_shift:
 										break_item.start = str(new_hour_started)
 										break_item.end = str(new_hour_stopped)
-										#break_item.edited = True
+										break_item.edited = True
 										break_item.save()
 										result['success'] = True
 									else:
@@ -4068,7 +4081,7 @@ def updateBreak(request):
 									if new_hour_started > stop_break_before and new_hour_stopped < end_shift:
 										break_item.start = str(new_hour_started)
 										break_item.end = str(new_hour_stopped)
-										#break_item.edited = True
+										break_item.edited = True
 										break_item.save()
 										result['success'] = True
 									else:
