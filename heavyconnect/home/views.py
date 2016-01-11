@@ -2084,6 +2084,9 @@ def timeLogById(request):
 									job = Task(description = "N/A", hours_spent = 0, attendance = item)
 									job.save()
 									i += 1
+						else:
+							job = Task(description = "N/A", hours_spent = 0, attendance = item)
+							job.save()
 						tasks = Task.objects.filter(attendance = item).order_by('-id')
 						i = 0
 						for task in tasks:
