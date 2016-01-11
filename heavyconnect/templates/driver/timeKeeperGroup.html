@@ -474,32 +474,7 @@
 				}
 			});
 		}
-		<!--function stopBreakGroup(token, url) {-->
-			<!--$.ajax({-->
-				<!--method: "POST",-->
-				<!--url: url,-->
-				<!--data: {"csrfmiddlewaretoken": token, "ids": id_checked, "lunch": lunch},-->
-				<!--datatype: "json",-->
-				<!--success: function(data, status, xhr){-->
-					<!--arrayErrors = [];-->
-					<!--arrayErrors[1] = '{% trans 'You need to start a break first' %}.';-->
-					<!--arrayErrors[2] = '{% trans 'The shift for today was already finished' %}.';-->
-					<!--arrayErrors[3] = '{% trans 'You need to start a shift first' %}.';-->
-					<!--arrayErrors[5] = '{% trans 'Error. Contact Suport' %}.';-->
-					<!--arrayErrors[6] = '{% trans 'Error. Contact Suport' %}.';-->
-					<!--printResult(data);-->
-					<!--if (data.success) {-->
-						<!--$("#messageTimekeeper").css("color", "#1F3801");	//green-->
-						<!--if (lunch == 0) {-->
-							<!--$("#messageTimekeeper").html("{% trans 'Break Ended' %}:");-->
-						<!--}-->
-						<!--if (lunch == 1) {-->
-							<!--$("#messageTimekeeper").html("{% trans 'Lunch Ended' %}:");-->
-						<!--}-->
-					<!--}-->
-				<!--}-->
-			<!--});-->
-		<!--}-->
+
 		function stopShiftGroup(token, url) {
 			$.ajax({
 				method: "POST",
