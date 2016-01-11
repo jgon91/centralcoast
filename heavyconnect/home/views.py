@@ -32,12 +32,12 @@ from home.models import Client
 LANGUAGE_CHOICES = ['pt-br','es', 'en-us']
 
 # # create your public tenant
-# tenant = Client(domain_url='demo.heavyconnect.com', # don't add your port or www here! on a local server you'll want to use localhost here
-#                 schema_name='public',
-#                 name='Schemas Inc.',
-#                 paid_until='2016-12-05',
-#                 on_trial=False)
-# tenant.save()
+tenant = Client(domain_url='scaroni.heavyconnect.com', # don't add your port or www here! on a local server you'll want to use localhost here
+                schema_name='scaroni',
+                name='Scaroni',
+                paid_until='2016-12-05',
+                on_trial=False)
+tenant.save()
 #
 # tenant = Client(domain_url='test.heavyconnect.com', # don't add your port or www here!
 #                 schema_name='test1',
