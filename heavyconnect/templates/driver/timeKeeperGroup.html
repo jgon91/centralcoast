@@ -298,6 +298,19 @@
     							+ '<tr><td><input type="button" id="addNow" style="background: #1F3801;background-size: 100% 100%;border-radius: 7px;border: none;box-shadow: 2px 2px 5px gray;height: 50px;width: 200px;color: white;font-size: 25px;font-weight: 700;" onclick="createNow(id_scanned)" value="Create Now"></td></tr></table>');
 			});
 		});
+
+		function tConvert (time) {
+		  // Check correct time format and split into components
+		  time = time.toString ().match (/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+
+		  if (time.length > 1) { // If time format correct
+			time = time.slice (1);  // Remove full string match value
+			time[5] = +time[0] < 12 ? 'AM' : 'PM'; // Set AM/PM
+			time[0] = +time[0] % 12 || 12; // Adjust hours
+		  }
+		  return time.join (''); // return adjusted time or original string
+		}
+
 		function openAdd() {
 			$('#qrCodeModal').modal();
 		}
@@ -602,7 +615,7 @@
 						currentEnd = data.Attendance_end;
 						if(data.no_attendance == 'false'){
 						if (data.Attendance_end == 'In Progress') {
-							$("#divTimelog").append("<table id='tableTimelog' ><tr id='trStartShift'><td colspan='2'>{% trans 'Start Shift' %}: " + data.Attendance_start + "</td></tr>");
+							$("#divTimelog").append("<table id='tableTimelog' ><tr id='trStartShift'><td colspan='2'>{% trans 'Start Shift' %}: " + tConvert(data.Attendance_start) + "</td></tr>");
 							var n=1;
 							<!--breakDuration = data.tasks[n-1].duration;-->
 							breakDuration = "";
@@ -616,11 +629,11 @@
 								n=n+1;
 								if (data.breaks[i].lunch == 0){
 									lun[data.breaks[i].breakId] = 0
-									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + breaks + " {% trans 'Break' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + breaks + " {% trans 'Break' %} " + tConvert(data.breaks[i].breakStart) + " - " + tConvert(data.breaks[i].breakStop) + "</td></tr>");
 									breaks++;
 								} else {
 									lun[data.breaks[i].breakId] = 1;
-									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + lunchs + " {% trans 'Lunch' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td></tr>");
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + lunchs + " {% trans 'Lunch' %} " + tConvert(data.breaks[i].breakStart) + " - " + tConvert(data.breaks[i].breakStop) + "</td></tr>");
 									lunchs++;
 								}
 								<!--breakDuration = data.tasks[n-1].duration;-->
@@ -628,9 +641,9 @@
 								$("#tableTimelog").append("<tr id='data.tasks[n-1].jobId' class='job' ><td class='colBorderTimelog'>" + breakDuration + "</td><td> {% trans 'Job' %} #" + n +" N/A </td><td></td></tr>");
 
 							}
-							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>{% trans 'End Shift' %}: " + data.Attendance_end + "</td></tr>");
+							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>{% trans 'End Shift' %}: " + tConvert(data.Attendance_end) + "</td></tr>");
 						} else {
-							$("#divTimelog").append("<table id='tableTimelog' ><tr id='trStartShift'><td colspan='2'>{% trans 'Start Shift' %}: " + data.Attendance_start + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editStartShift(this.id, currentStart)'/></td></tr>");
+							$("#divTimelog").append("<table id='tableTimelog' ><tr id='trStartShift'><td colspan='2'>{% trans 'Start Shift' %}: " + tConvert(data.Attendance_start) + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editStartShift(this.id, currentStart)'/></td></tr>");
 							var n=1;
 							<!--breakDuration = data.tasks[n-1].duration;-->
 							breakDuration = "";
@@ -647,18 +660,18 @@
 								breakDuration = "";
 								if (data.breaks[i].lunch == 0){
 									lun[data.breaks[i].breakId] = 0
-									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + breaks + " {% trans 'Break' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + breaks + " {% trans 'Break' %} " + tConvert(data.breaks[i].breakStart) + " - " + tConvert(data.breaks[i].breakStop) + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
 									breaks++;
 								} else {
 									lun[data.breaks[i].breakId] = 1;
-									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + lunchs + " {% trans 'Lunch' %} " + data.breaks[i].breakStart + " - " + data.breaks[i].breakStop + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\" ) no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + lunchs + " {% trans 'Lunch' %} " + tConvert(data.breaks[i].breakStart) + " - " + tConvert(data.breaks[i].breakStop) + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\" ) no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
 									lunchs++;
 								}
 								$("#tableTimelog").append("<tr id='job" + data.tasks[n-1].jobId + "' class='job'><td class='colBorderTimelog'>" + breakDuration + "</td><td> {% trans 'Job' %} #" + n +"  "+ data.tasks[n-1].description + " </td><td><input id='job" + data.tasks[n-1].jobId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editJob(this.id, `${breakDuration}`, `${breaks}`, `${idTimelog}`)'/></td></tr>");
 
 
 							}
-							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>{% trans 'End Shift' %}: " + data.Attendance_end + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editStopShift(this.id, currentEnd)'/></td></tr>");
+							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>{% trans 'End Shift' %}: " + tConvert(data.Attendance_end) + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='editStopShift(this.id, currentEnd)'/></td></tr>");
 							$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + data.attendanceId + "'>");
 
 							if (data.signature == true) {
