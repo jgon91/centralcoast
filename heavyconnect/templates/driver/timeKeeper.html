@@ -667,7 +667,7 @@
 							$("#tableTimelog").append("<tr id='job" + data.tasks[n-1].jobId + "' class='job'><td class='colBorderTimelog'>" + breakDuration + "</td><td> {% trans 'Job' %} #" + n +"  "+ data.tasks[n-1].description + " </td><td><input id='job" + data.tasks[n-1].jobId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 30px !important;height: 30px !important;border: none !important;' onclick='editJob(this.id, `${breakDuration}`, `${breaks}`, `${idTimelog}`)'/></td></tr>");
 
 							for (i = 0; i < data.breaks.length; i++) {
-								workBreak[data.breaks[i].breakId] = data.breaks[i].workBreak;
+								workBreak[data.breaks[i].breakId] = data.breaks[i].breakDuration;
 								breakN[data.breaks[i].breakId] = breaks;
 								breakBeg[data.breaks[i].breakId] = data.breaks[i].breakStart;
 								breakEnd[data.breaks[i].breakId] = data.breaks[i].breakStop;
