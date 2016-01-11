@@ -3653,8 +3653,6 @@ def getCsv(request):
 					end =  datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
 					start =  datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
 					hours_today = str(end - start)
-
-					# hours_today = getHoursToday(attendance.employee.id, str(attendance.date) +' 00:00:00')
 				else:
 					hours_today = 'N/A'
 			else:
@@ -3662,7 +3660,7 @@ def getCsv(request):
 			employee_name = attendance.employee.user.last_name + ", " + attendance.employee.user.first_name
 			# writer.writerow([employee_id, employee_name, leader_name, date, hour_started, hour_ended, hours_today])
 			data_row.extend((attendance_id, employee_id, employee_name, leader_name, crew, date, hour_started, hour_ended, hours_today))
-			breaks = Break.objects.filter(attendance__id = attendance.id)#.order_by('start')
+			breaks = Break.objects.filter(attendance__id = attendance.id).order_by('start')
 			jobs = Task.objects.filter(attendance_id = attendance.id).order_by('-id')
 			i = 1
 			break_num = breaks.count()
@@ -3672,8 +3670,32 @@ def getCsv(request):
 			combined_breaks = []
 			while m <=8:
 				if m <= jobs.count():
+					print 'hi'
 					job_code = jobs[m-1].description
 					hours_spent = jobs[m-1].hours_spent
+					if m ==1:
+						print 1
+						startJob = start
+						endJob = breaks[0].start
+						endJob = datetime.timedelta(hours = endJob.hour, minutes = endJob.minute, seconds = endJob.second)
+					elif m == jobs.count():
+						print 2
+						startJob = breaks[m-2].end
+						startJob =  datetime.timedelta(hours = startJob.hour, minutes = startJob.minute, seconds = startJob.second)
+						endJob = end
+						print endJob
+					else:
+						print 3
+						startJob = breaks[m-2].end
+						startJob =  datetime.timedelta(hours = startJob.hour, minutes = startJob.minute, seconds = startJob.second)
+						endJob = breaks[m-1].start
+						endJob = datetime.timedelta(hours = endJob.hour, minutes = endJob.minute, seconds = endJob.second)
+					print startJob
+					print endJob
+
+					hours_spent = endJob - startJob
+					print hours_spent
+
 					data_row.extend((job_code, hours_spent))
 				else:
 					data_row.extend(('', ''))
