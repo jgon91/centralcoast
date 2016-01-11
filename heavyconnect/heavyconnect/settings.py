@@ -81,9 +81,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.locale.LocaleMiddleware',
-    'django.middleware.cache.UpdateCacheMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
+
 )
 
 ROOT_URLCONF = 'heavyconnect.urls'
@@ -109,16 +107,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'heavyconnect.wsgi.application'
 
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-#         'TIMEOUT': 1209600,
-#     }
-# }
 
 # DATABASES = {
 #          'default': {
-#              'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+#              'ENGINE': 'tenant_schemas.postgresql_backend', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
 #              'NAME': 'dev',                      # Or path to database file if using sqlite3.
 #              'USER': '',                      # Not used with sqlite3.
 #              'PASSWORD': '',                  # Not used with sqlite3.
@@ -182,7 +174,6 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 
-# STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.CachedStaticFilesStorage'
 
 STATICFILES_DIRS = (
     os.path.join(PROJECT_ROOT, '../static').replace('\\','/'),

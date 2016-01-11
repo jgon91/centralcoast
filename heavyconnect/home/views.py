@@ -720,7 +720,6 @@ def login(request):
 				if user is not None:
 					if user.is_active:
 						auth_login(request,user)
-						#return redirect('driver')
 						result['success'] = True
 					else:
 						result['code'] = 1 #This user is not active in the system
@@ -3049,10 +3048,10 @@ def indexManager(request):
 	emplo = Employee.objects.get(user = request.user)
 	if request.session.get(LANGUAGE_SESSION_KEY) == None:
 		request.session[LANGUAGE_SESSION_KEY] = LANGUAGE_CHOICES[emplo.language - 1]
-		return redirect('driver')
+		return redirect('indexManager')
 	if LANGUAGE_CHOICES[emplo.language - 1] != request.session[LANGUAGE_SESSION_KEY]:
 		request.session[LANGUAGE_SESSION_KEY] = LANGUAGE_CHOICES[emplo.language - 1]
-		return redirect('driver')
+		return redirect('indexManager')
 	return render(request, 'manager/home.html')
 
 @login_required
