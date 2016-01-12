@@ -18,20 +18,18 @@ body {
 	min-width: 360px;
 }
 footer {
-	/*color: white;*	/
 	width: 100%;
-	/*background: #434343;*/
-	position: relative;
-	bottom: 0px;
-	padding: 2px;
-	text-align: center;
-	margin-top: 60px;
+    height: 100px;
+    bottom: 0;
+    left: 0;
+    text-align: center;
 }
 .namePage {
 	float: left;
 	color: #4C6A2A;
 	font-weight: 600;
 	margin-left: 5px;
+	position: relative;
 }
 .namePageCenter {
 	float: center;
@@ -337,14 +335,12 @@ input[type=button]{
 }
 
 #clock {
-    left: 35%;
-    top:0%;
     font-size: 25px;
-    padding: 20px;
-    position: absolute;
-    display: inline;
-    color: white;
+    position: relative;
+    color: #3C3C3C;
     font-weight: 600;
+    background: #E6F1C0;
+    text-align: right;
 }
 
 .btnGreenTime {
@@ -1477,20 +1473,13 @@ body {
     width: 100%;
     min-width: 640px;
 }
-footer {
-    /*color: white;*	/
-     width: 100%;
-     /*background: #434343;*/
-    position: relative;
-    bottom: 0px;
-    padding: 2px;
-    text-align: center;
-}
+
 .namePage {
     float: left;
     color: #4C6A2A;
     font-weight: 600;
     margin-left: 5px;
+    position: relative;
 }
 .namePageCenter {
     float: center;

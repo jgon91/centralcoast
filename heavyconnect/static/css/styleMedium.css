@@ -3,7 +3,10 @@
 	height: 105px !important;
 }
 #menuTop {
-	margin-left: 5px;
+    height: 105px;
+    margin: 0px;
+    padding: 0px;
+    margin-left: 5px;
 }
 #logoHome {
 	width: 150px;
@@ -25,13 +28,12 @@
 }
 
 #clock {
-	left: 35%;
-    top: 0%;
-    right: 30%;
-    font-size: 25px;
-    margin-top: 2%;
-    color: white;
+	font-size: 25px;
+    position: relative;
+    color: #3C3C3C;
     font-weight: 600;
+    background: #E6F1C0;
+    text-align: center;
 }
 
 #userImg {

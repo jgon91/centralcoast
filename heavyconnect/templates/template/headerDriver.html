@@ -30,11 +30,12 @@
 
 				<a href="{% url 'time_keeper'%}"><input style="background: url('/static/imgSmall/buttons/btnTimekeeperTop.png') no-repeat top left;
     background-size: 100% 100%;" type="button" class="btnTop" id="btnTimerkeeperUp" /></a>
-				<span id="clock"></span>
+
 				<a href="{% url 'logout' %}"><input type="button" value="{% trans 'EXIT' %}" id="logOff"/></a>
 				<a  href="{% url 'profile' %}"><input type="button" id="userImg"/></a>
 
 			</div>
+			<div id="clock"></div>
 		</div>
 	<link rel="stylesheet" href="{% static 'css/bootstrap/css/bootstrap.min.css' %}">
 	<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
