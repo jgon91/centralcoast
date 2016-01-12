@@ -4,7 +4,6 @@
 		{% load staticfiles %}
 		<link rel="stylesheet" type="text/css" href="{% static 'css/equipStyle.css' %}">
 		<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-		<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
 		<script src="{% static 'js/script.js' %}"></script>
 		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
 		<script>
@@ -12,9 +11,25 @@
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerDriver' %}");
-				getLocation();
 				getUserInformation("{{ csrf_token }}", "{% url 'driverInfo' %}");
 			});
+
+			function getProfileImage(token, url){
+			$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token},
+				async: true,
+				datatype : "json",
+				success : function(data, status, xhr) {
+					//console.log(data.imageUrl);
+					$("#userImg").css("background", "url({% static 'media/' %}" + data.imageUrl + ")");
+					$("#userImg").css("background-size", "100% 100%");
+					$("#userImg").css("border-radius", "7px");
+				}
+			});
+		}
+		getProfileImage("{{ csrf_token }}", "{% url 'getImageUser' %}");
 
 			function getUserInformation(token, url) {
 
@@ -34,6 +49,8 @@
 							$("#hours_week").html(data.hours_week);
 							$("#ternure").html(data.ternure);
 							$("#ternure").html(data.timeRecord);
+							$("#manager").html(data.manager);
+							$("#language").html(data.language);
 						}
 					});
 			}
@@ -52,11 +69,11 @@
 				<div id="contentProfile">
 				<div class="row">
 					<div class="col-md-4"></div>
-					<div class="col-md-2"><img id="userPicture" src="{% static 'img/userPicture.png' %}" /></div>
+					<div class="col-md-2"><img id="userImg"/></div>
 					<div class="col-md-3 userInfo1">
 						First Name: <span id="firstName"></span><br>
 						Last Name: <span id="lastName"></span><br>
-						QR Recal: <span id="qr_code"></span><br>
+						Employee ID: <span id="qr_code"></span><br>
 					</div>
 					<div class="col-md-3"></div>
 				</div>
@@ -66,72 +83,12 @@
 						Hire Date: <span id="hire_date"></span><br>
 						Hours Today: <span id="hours_today"></span><br>
 						Hours this Week: <span id="hours_week"></span><br>
+						Manager: <span id="manager"></span><br>
+						Language: <span id="language"></span><br>
 				</div>
 				<div class="col-md-4"></div>
 				</div>
-<!--
-					<div id="userAllInfo">
-						<div class="row" id="rowUser">
-							<div class="col-xs-3 col-md-3" id="userImage">
-								<img id="userPicture" src="{% static 'img/userPicture.png' %}" />
-							</div>
-							<div class="col-xs-3 col-md-3" id="userInfo">
-								<ul class="profileList">
-									<li>First Name: <span id="firstName"></span></li>
-									<li>Last Name: <span id="lastName"></span></li>
-									<!--<li>EID: <span id="userId"><strong>X0918</strong></span></li>
-								</ul>
-							</div>
-						</div>
 
-						<div class="row" id="rowInfo" >
-							<div class="col-xs-3 col-md-3" id="addInfo">
-								<ul class="profileList">
-									<li>QR Recal: <span id="qr_code"></span></li>
-									<li>Hire Date: <span id="hire_date"></span></li>
-									<!--<li>Ternure: <span id="ternure"></span></li>
-								</ul>
-							</div>
-							<div class="col-xs-3 col-md-3" id="addInfo">
-								<ul class="profileList">
-									<!--<li>On-Time Record: <span id="timeRecord"></span></li>
-									<!--<li>Utilization: <span id="utilization"></span></li>
-									<li>Hours Today: <span id="hours_today"></span></li>
-									<li>Hours this Week: <span id="hours_week"></span></li>
-								</ul>
-							</div>
-						</div>
-
-					</div>
-<!--
-					<strong>LOCATION:</strong>
-
-					<div class="divDown">
-						<div class="col-xs-6 col-md-6" style="padding: 0px">
-							<div class="map" id="mapholder"></div>
-						</div>
-						<div class="col-xs-3 col-md-3" id="colStatus">
-							<div id="taskProfile">
-								CURRENTLY:
-							</div>
-							<div id="infoEquipment">
-								<ul class="profileList">
-									<li>Implement:</li>
-									<li ><span id="implementName">20' Disk</span><br /><br /></li>
-									<li>Field:</li>
-									<li><span id="fieldID">01324323</span><br /><br /></li>
-									<li>Task:</li>
-									<li><span id="taskName">Disking</span><br /><br /></li>
-								</ul>
-							</div>
-						</div>
-
-						<div class="col-xs-3 col-md-3" id="colStatus">
-							NOTES:
-							<textarea id="notes" rows="6" cols="20" form="notesSubmit" id="notes"></textarea>
-						</div>
-					</div>
--->
 				</div>
 			</div>
 			<div id="clearBoth"></div>

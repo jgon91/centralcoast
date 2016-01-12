@@ -749,8 +749,18 @@ def getDriverInformation(request):
 				result['qr_code'] = employee.qr_code
 				result['hire_date'] = str(employee.start_date)
 				result['utilization'] = 0
+				language = employee.language
+				if language == 3:
+					language = 'English'
+				elif language == 2:
+					language = 'Spanish'
+				else:
+					language = 'Portuguese'
+				result['manager'] = str(employee.manager.user.first_name) + " " + str(employee.manager.user.last_name)
+				result['language'] = language
+
 				result['hours_today'] = getHoursToday(employee.id, datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')) # Salles changed it in order to keep the function working with the function
-				result['hours_week'] = getHoursWeek(employee.id, datetime.date.today())
+				result['hours_week'] = "--"#getHoursWeek(employee.id, datetime.date.today())
 				result['success'] = True
 			except DoesNotExist:
 				result['code'] = 1 #There is no users associated with this
@@ -1995,8 +2005,6 @@ def getHoursToday(employee_id, date_entry):
 		lenght = len(breaks)
 		count2 = 0
 		addition = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #addition works to add the time of the last break on the count. It is because the lastbreak should not be counted on if the attendance has the end value none
-		itemStart = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second)
-
 		for doc in breaks:
 			docStart = datetime.timedelta(hours = doc.start.hour, minutes = doc.start.minute, seconds = doc.start.second)
 			if docStart > keeper: #keeps the bigger break start, bigger because the time of the next break is always after the last one
@@ -2022,8 +2030,10 @@ def getHoursToday(employee_id, date_entry):
 					aux = datetime.timedelta(hours = item.hour_ended.hour, minutes = item.hour_ended.minute, seconds = item.hour_ended.second)
 					aux2 = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second)
 					count += aux - aux2
-			else: 
+			else:
 				time_now = datetime.datetime.now().time()
+				print 'Time_now: ' + str(time_now)
+				print 'item.hour_started: ' + str(item.hour_started)
 				if time_now < item.hour_started:
 					aux = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second)
 					aux2 = datetime.timedelta(hours = time_now.hour, minutes = time_now.minute, seconds = time_now.second)
@@ -2031,7 +2041,10 @@ def getHoursToday(employee_id, date_entry):
 				else:
 					aux = datetime.timedelta(hours = time_now.hour, minutes = time_now.minute, seconds = time_now.second)
 					aux2 = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second)
+					print str(aux)
+					print str(aux2)
 					count += aux - aux2
+					print 'Count: ' + str(count)
 		else:
 			if item.hour_ended != None: #this if will treat if the attendance does not have the end field proprely filled
 				if item.hour_ended >= item.hour_started:
@@ -2244,6 +2257,7 @@ def getHoursWeek(employeeid, desired_date):
 			hours_worked_today = datetime.timedelta(hours=int(times[0]), minutes=int(times[1]), seconds=int(times[2]))
 			hours_worked_week = hours_worked_week + hours_worked_today
 	return str(hours_worked_week)
+
 
 
 #Return the information about the driver and his or her schedule

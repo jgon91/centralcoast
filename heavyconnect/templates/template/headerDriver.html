@@ -18,7 +18,7 @@
 		<title>HeavyConnect</title>
 		<meta name="description" content="">
 		<meta name="viewport" content="width=device-width; initial-scale=1.0">
-		<link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
+		<link rel="shortcut icon" href="{% static 'favicon.ico' %}">
 
 		<!--IMPORTS-->
 	</head>
@@ -32,7 +32,7 @@
     background-size: 100% 100%;" type="button" class="btnTop" id="btnTimerkeeperUp" /></a>
 				<span id="clock"></span>
 				<a href="{% url 'logout' %}"><input type="button" value="{% trans 'EXIT' %}" id="logOff"/></a>
-				<a href="#"><input type="button" id="userImg"/></a>
+				<a  href="{% url 'profile' %}"><input type="button" id="userImg"/></a>
 
 			</div>
 		</div>

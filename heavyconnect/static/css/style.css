@@ -284,10 +284,7 @@ input[type="button"] {
 	background: url('../img/buttons/btnHomeUp.jpg') no-repeat top left;
 	background-size: 100% 100%;
 }
-#btnHomeUp:hover {
-	background: url('../img/buttons/btnHomeUpHover.jpg') no-repeat top left;
-	background-size: 100% 100%;
-}
+
 #btnEquipmentUp {
 	background: url('../img/buttons/btnEquipmentUp.jpg') no-repeat top left;
 	background-size: 100% 100%;
