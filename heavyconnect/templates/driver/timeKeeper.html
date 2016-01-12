@@ -6,6 +6,30 @@
 		<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
 		<script src="{% static 'jSignature/jSignature.min.js'%}"></script>
 		<script src="{% static 'js/timeKeeper.js'%}"></script>
+			<style>
+		.job {
+				background-color: #9AC8F1;
+			}
+			.editIcon {
+				background: url('/static/imgSmall/editIcon.png') no-repeat top left !important;
+				background-size: 100% 100% !important;
+				width: 30px !important;
+				height: 30px !important;
+				border: none !important;
+			}
+			.editedIcon {
+
+				background: url('/static/imgSmall/editedIcon.png') no-repeat top left !important;
+				background-size: 100% 100% !important;
+				width: 30px !important;
+				height: 30px !important;
+				border: none !important;
+			}
+			.full-size{
+				width: 95%;
+    			height: 92%;
+			}
+	</style>
 		<script>
 		var idTimelog = 48;
 		var offline = -1;
@@ -130,9 +154,6 @@
 				timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
 			});
 		}); 
-	    </script>
-
-		<script>
 
 		function getTimeWorked (currentTime, initialW) {
 			var hour = 0;
@@ -644,7 +665,7 @@
 		}
 
 		</script>
-	  </head>
+	</head>
 	<body>
 	<header id="head"></header>
 		<div id="wrapper">
@@ -724,32 +745,6 @@
 				</div>
 			</div>
 		</div>
-	</div>
-	<style>
-		.job {
-				background-color: #9AC8F1;
-			}
-			.editIcon {
-				background: url('/static/imgSmall/editIcon.png') no-repeat top left !important;
-				background-size: 100% 100% !important;
-				width: 30px !important;
-				height: 30px !important;
-				border: none !important;
-			}
-			.editedIcon {
-
-				background: url('/static/imgSmall/editedIcon.png') no-repeat top left !important;
-				background-size: 100% 100% !important;
-				width: 30px !important;
-				height: 30px !important;
-				border: none !important;
-			}
-			.full-size{
-				width: 95%;
-    			height: 92%;
-			}
-	</style>
-
-
 	</body>
+
 </html>
