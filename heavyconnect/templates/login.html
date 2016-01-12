@@ -29,6 +29,7 @@
 					left:0;
 					text-align: center;
 			}
+
 		</style>
 		<script>
 			$("#username").click(function() {
@@ -52,7 +53,7 @@
 		<div id="wrapper">
 			<div id="header">
 				<div class="col-xs-12 col-md-12">
-					<img id="loginLogo" src="{% static 'imgSmall/logo.png' %}"/>
+					<img style="width: 370px;" id="loginLogo" src="{% static 'imgSmall/logo.png' %}"/>
 				</div>
 			</div>
 			<div id="login">
@@ -61,12 +62,12 @@
 					<form id="login-form">
 						{% csrf_token %}
 						<tr>
-							<td><img class="icnLogin" src="{% static 'imgSmall/userIcn.png' %}"/></td><td>
+							<td><img class="icnLogin" style="height: 45px;" src="{% static 'imgSmall/userIcn.png' %}"/></td><td>
 							<input  type="text" class="input_login" id="username" name="username" placeholder="Enter your username"/>
 							</td>
 						</tr>
 						<tr>
-							<td><img class="icnLogin" src="{% static 'imgSmall/passwordIcn.png' %}" /></td><td>
+							<td><img class="icnLogin" style="height: 45px;" src="{% static 'imgSmall/passwordIcn.png' %}" /></td><td>
 							<input  type="password" class="input_login" id="password" name="password" placeholder="Enter your password" onkeypress="enter()"/>
 							</td>
 						</tr>

@@ -36,6 +36,14 @@
     text-align: center;
 }
 
+#messageTimekeeper{
+    margin-top: 10px;
+}
+
+.modalButton {
+ 	margin-top: 20px;
+}
+
 #userImg {
 	width: 95px;
 	height: 95px;

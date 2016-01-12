@@ -143,8 +143,8 @@ input[type=password] {
 .input_login {
 	width: 350px;
 	box-shadow: 2px 3px 2px -1px black;
-	width: 355px;
-	height: 55px;
+	height: 45px;
+    width: 245px;
 }
 #home {
 	color: white;
