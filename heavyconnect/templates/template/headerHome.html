@@ -59,7 +59,7 @@
 			<div id="menuTop">
 				<img src="{% static 'img/logoNegative.png' %}" id="logoHome"/>
 				<a href="{% url 'logout' %}"><input type="button" value="{% trans 'EXIT' %}" id="logOff"/></a>
-				<a><input type="button" id="userImg"/></a>
+				<a href="{% url 'profile' %}"><input type="button" id="userImg"/></a>
 			</div>
 			<div id="clock"></div>
 		</div>

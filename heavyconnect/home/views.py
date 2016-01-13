@@ -13,6 +13,7 @@ from django.core import serializers
 from easy_pdf.views import PDFTemplateView
 from reportlab.pdfgen import canvas
 import csv
+import xlwt
 
 LANGUAGE_CHOICES = ['pt-br','es', 'en-us']
 
@@ -3611,6 +3612,166 @@ def getPdf(request):
     return response
 
 @login_required
+def getExcel(request):
+	result = {}
+	result['success'] = True
+	wb = xlwt.Workbook()
+
+	ws = wb.add_sheet("sheet")
+	start = "01/01/2016"
+	end = "01/30/2016"
+	start = time.strptime(start, "%m/%d/%Y")
+	end = time.strptime(end, "%m/%d/%Y")
+
+	start = str(start.tm_year) +"-"+str(start.tm_mon)+"-"+str(start.tm_mday)
+	end = str(end.tm_year) +"-"+str(end.tm_mon)+"-"+str(end.tm_mday)
+	attendances = EmployeeAttendance.objects.all().order_by('-date').filter(date__range = (start, end))
+
+	header = []
+	header.extend(('Attendance ID', 'ID', 'Name', 'Team Lead', 'Team Name', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked(w/ breaks)'))
+	header.extend(('Job 1', 'Total Time'))
+	header.extend(('Job 2',  'Total Time'))
+	header.extend(('Job 3', 'Total Time'))
+	header.extend(('Job 4', 'Total Time'))
+	header.extend(('Job 5',  'Total Time'))
+	header.extend(('Job 6', 'Total Time'))
+	header.extend(('Job 7', 'Total Time'))
+	header.extend(('Job 8', 'Total Time'))
+	header.extend(('Break 1', 'Hour Started', 'Hour Ended', 'Break Time'))
+	header.extend(('Lunch 1', 'Hour Started', 'Hour Ended', 'Break Time'))
+	header.extend(('Break 2', 'Hour Started', 'Hour Ended', 'Break Time'))
+	header.extend(('Lunch 2', 'Hour Started', 'Hour Ended', 'Break Time'))
+	header.extend(('Break 3', 'Hour Started', 'Hour Ended', 'Break Time'))
+	header.extend(('Lunch 3', 'Hour Started', 'Hour Ended', 'Break Time'))
+	header.extend(('Break 4', 'Hour Started', 'Hour Ended', 'Break Time'))
+	print header
+	j = 0
+	for head in header:
+		ws.write(0,j,head)
+		j += 1
+	q = 2
+	if attendances.count > 0:
+		for attendance in attendances:
+			data_row = []
+
+			employee_id = attendance.employee.qr_code
+			attendance_id = attendance.id
+			date = attendance.date
+
+			if attendance.hour_started != None:
+				hour_started = datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
+			else:
+				hour_started = 'N/A'
+
+			if attendance.hour_ended != None:
+				hour_ended = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
+			else:
+				hour_ended = 'N/A'
+
+			if(attendance.group is None):
+				leader_name = 'N/A'
+				crew = 'N/A'
+			else:
+				leader_name = attendance.group.creator.user.first_name + ", " + attendance.group.creator.user.last_name
+				crew = attendance.group.name
+			now = datetime.datetime.now().time()
+			if hour_ended == 'N/A' or hour_ended == None:
+				hour_ended = datetime.timedelta(hours = now.hour, minutes = now.minute, seconds = now.second)
+			if hour_ended != 'N/A' and hour_started != 'N/A':
+				if hour_ended > hour_started:
+					# hour_ended =  datetime.timedelta(hours = hour_ended.hours, minutes = hour_ended.minutes, seconds = hour_ended.seconds)
+					# hour_started =  datetime.timedelta(hours = hour_started.hours, minutes = hour_started.minutes, seconds = hour_started.seconds)
+					hours_today = str(hour_ended - hour_started)
+				else:
+					hours_today = 'N/A'
+			else:
+				hours_today = 'N/A'
+			employee_name = attendance.employee.user.last_name + ", " + attendance.employee.user.first_name
+			data_row.extend((str(attendance_id), str(employee_id), str(employee_name), str(leader_name), str(crew), str(date), str(hour_started), str(hour_ended), str(hours_today)))
+			breaks = Break.objects.filter(attendance__id = attendance.id).order_by('start')
+			jobs = Task.objects.filter(attendance_id = attendance.id).order_by('-id')
+			i = 1
+			break_num = breaks.count()
+			m = 1
+			lunch_breaks = []
+			reg_breaks = []
+			combined_breaks = []
+			print jobs.count()
+			print breaks.count()
+			print jobs
+			print breaks
+			while m <=8:
+				if m <= jobs.count() and breaks.count() > 0:
+					job_code = jobs[m-1].description
+					if m ==1:
+						startJob =  hour_started
+						endJob = breaks[0].start
+						endJob = datetime.timedelta(hours = endJob.hour, minutes = endJob.minute, seconds = endJob.second)
+					elif m == jobs.count():
+						startJob = breaks[m-2].end
+						startJob =  datetime.timedelta(hours = startJob.hour, minutes = startJob.minute, seconds = startJob.second)
+						endJob = hour_ended
+					else:
+						startJob = breaks[m-2].end
+						startJob =  datetime.timedelta(hours = startJob.hour, minutes = startJob.minute, seconds = startJob.second)
+						endJob = breaks[m-1].start
+						endJob = datetime.timedelta(hours = endJob.hour, minutes = endJob.minute, seconds = endJob.second)
+
+					hours_spent = endJob - startJob
+
+					data_row.extend((str(job_code), str(hours_spent)))
+				else:
+					data_row.extend(('', ''))
+				m += 1
+
+			if break_num > 0:
+				for item in breaks:
+					if item.lunch == True:
+
+						lunch_breaks.append(item)
+					else:
+						reg_breaks.append(item)
+				most_breaks = max(len(lunch_breaks), len(reg_breaks))
+				i=0
+				while most_breaks > i:
+					if(len(reg_breaks) > i):
+						combined_breaks.append(reg_breaks[i])
+					else:
+						combined_breaks.append("")
+					if(len(lunch_breaks) > i):
+						combined_breaks.append(lunch_breaks[i])
+					else:
+						combined_breaks.append("")
+					i += 1
+				i=1
+				for item in combined_breaks:
+					num_break = i
+					if(item != ""):
+						if item.start != None and item.end != None:
+							if item.end >= item.start:
+								start = datetime.timedelta(hours = item.start.hour, minutes = item.start.minute, seconds = item.start.second)
+								end = datetime.timedelta(hours = item.end.hour, minutes = item.end.minute, seconds = item.end.second)
+								total = end - start
+							else:
+								total = 'N/A'
+						else:
+							total = 'N/A'
+						data_row.extend((str(num_break), str(item.start), str(item.end), str(total)))
+					else:
+						data_row.extend(('', '', '', ''))
+					i += 1
+			k = 0
+			for data in data_row:
+				ws.write(q,k,data)
+				k += 1
+			q+=1
+
+	response = HttpResponse(content_type='application/vnd.ms-excel; charset=utf-16')
+	response['Content-Disposition'] = 'attachment; filename=mymodel.xls'
+	wb.save(response)
+	return response
+
+@login_required
 def getCsv(request):
 	result = {}
 	result['success'] = True
@@ -3667,13 +3828,14 @@ def getCsv(request):
 				hour_started = 'N/A'
 			if hour_ended != 'N/A' and hour_started != 'N/A':
 				if hour_ended > hour_started:
-					end =  datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
-					start =  datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
-					hours_today = str(end - start)
+					hour_ended =  datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
+					hour_started =  datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
+					hours_today = str(hour_started - hour_ended)
 				else:
 					hours_today = 'N/A'
 			else:
 				hours_today = 'N/A'
+			print hour_started
 			employee_name = attendance.employee.user.last_name + ", " + attendance.employee.user.first_name
 			# writer.writerow([employee_id, employee_name, leader_name, date, hour_started, hour_ended, hours_today])
 			data_row.extend((attendance_id, employee_id, employee_name, leader_name, crew, date, hour_started, hour_ended, hours_today))
@@ -3685,21 +3847,22 @@ def getCsv(request):
 			lunch_breaks = []
 			reg_breaks = []
 			combined_breaks = []
+			print 'hello'
+			print hour_started
 			while m <=8:
 				if m <= jobs.count():
 					print 'hi'
 					job_code = jobs[m-1].description
-					hours_spent = jobs[m-1].hours_spent
 					if m ==1:
 						print 1
-						startJob = start
+						startJob = hour_started
 						endJob = breaks[0].start
 						endJob = datetime.timedelta(hours = endJob.hour, minutes = endJob.minute, seconds = endJob.second)
 					elif m == jobs.count():
 						print 2
 						startJob = breaks[m-2].end
 						startJob =  datetime.timedelta(hours = startJob.hour, minutes = startJob.minute, seconds = startJob.second)
-						endJob = end
+						endJob = hour_ended
 						print endJob
 					else:
 						print 3

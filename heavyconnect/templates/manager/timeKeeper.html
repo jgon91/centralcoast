@@ -37,10 +37,7 @@
 				today = mm+'/'+dd+'/'+yyyy;
 				getReport("{{ csrf_token }}", "{% url 'timeKeeperDailyReport' %}", today, today);
 
-			$("#exportPdf").click(function (e){
-				getPdf("{{ csrf_token }}", "{% url 'timecard_pdf' %}");
 
-			});
 			$('.input-daterange').datepicker({
 				autoclose: true,
 				todayHighlight: true
@@ -100,6 +97,7 @@
 				}
 				});
 			}
+
 
 			function getPdf(token, url){
 				$.ajax({
@@ -187,7 +185,7 @@
 					<div class="namePage">
 
 					</div>
-					<div id="report" style="margin: 10px;">
+					<div id="report" style="margin: 10px; margin-top: 45px;">
 					<!--<div class="col-lg-6">-->
 					<div class="panel panel-default">
 					<div class="panel-heading"><h3><img src="{% static 'imgSmall/iconTimekeeper.png' %}"/>
@@ -226,7 +224,7 @@
 						</div>
 
 				</div>
-				<!--<button style="float: right;margin-right: 15px;" type="button" class="btn btn-default" id="exportPdf" ><span class="glyphicon glyphicon-download"></span>Download .pdf</button>-->
+				<a href="{% url 'timecard_excel' %}"><button style="float: right;margin-right: 15px;" type="button" class="btn btn-default" ><span class="glyphicon glyphicon-download"></span>Download .xls</button></a>
 				<button style="float: right;margin-right: 15px;" type="button" class="btn btn-default" id="btnExport" onclick="downloadCsv()"><span class="glyphicon glyphicon-download"></span>Download .csv</button>
 
 

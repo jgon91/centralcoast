@@ -46,7 +46,7 @@
 							$("#hire_date").html(data.hire_date);
 							$("#utilization").html(data.utilization);
 							$("#hours_today").html(data.hours_today);
-							$("#hours_week").html(data.hours_week);
+							<!--$("#hours_week").html(data.hours_week);-->
 							$("#ternure").html(data.ternure);
 							$("#ternure").html(data.timeRecord);
 							$("#manager").html(data.manager);
@@ -63,36 +63,37 @@
 		<div id="wrapper">
 			<div id="menuLeft"></div>
 			<div id="content">
-				<div id="namePage" style="width: 200px">
-					EMPLOYEE PROFILE
-				</div>
+
 				<div id="contentProfile">
-				<div class="row">
-					<div class="col-md-4"></div>
-					<div class="col-md-2"><img id="userImg"/></div>
-					<div class="col-md-3 userInfo1">
-						First Name: <span id="firstName"></span><br>
-						Last Name: <span id="lastName"></span><br>
+					<div class="container" style="text-align:left;">
+					<div class="row">
+					<div class="col-md-4" ><img id="userImg"/></div>
+					<div class="col-md-8 ">
+						First Name: <span id="firstName"></span><br></div>
+						<div class="col-md-8 ">
+						Last Name: <span id="lastName"></span><br></div>
+						<div class="col-md-8 ">
 						Employee ID: <span id="qr_code"></span><br>
 					</div>
-					<div class="col-md-3"></div>
+					</div>
+					<div class="row">
+					<div class="col-md-12 ">
+							Hire Date: <span id="hire_date"></span><br></div>
+						<div class="col-md-12 ">
+							Hours Today: <span id="hours_today"></span><br></div>
+						<!--<div class="col-md-12 ">-->
+							<!--Hours this Week: <span id="hours_week"></span><br></div>-->
+						<div class="col-md-12 ">
+							Manager: <span id="manager"></span><br></div>
+						<div class="col-md-12 ">
+							Language: <span id="language"></span><br>
+						</div>
+					</div>
 				</div>
-				<div class="row">
-				<div class="col-md-4"></div>
-				<div class="col-md-4 userInfo2">
-						Hire Date: <span id="hire_date"></span><br>
-						Hours Today: <span id="hours_today"></span><br>
-						Hours this Week: <span id="hours_week"></span><br>
-						Manager: <span id="manager"></span><br>
-						Language: <span id="language"></span><br>
 				</div>
-				<div class="col-md-4"></div>
-				</div>
-
 				</div>
 			</div>
 			<div id="clearBoth"></div>
-		</div>
 		<footer id="foot"></footer>
 	</body>
 

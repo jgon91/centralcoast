@@ -13,19 +13,8 @@
 	padding: 0px;
 	margin-left: 4px;
 }
-#userImg {
-	background: url('../img/user.png') no-repeat top left;
-	background-size: 100% 100%;
-	width: 105px;
-	height: 90px;
-	margin-right: 5px;
-	margin-top: 5px;
-	float: right;
-}
-#userImg:hover {
-	background-size: 120% 120%;
-	background-position: center;
-}
+
+
 #logOff {
 	background: url('../img/buttons/logOffHover.jpg') no-repeat top left;
 	background-size: 100% 100%;
