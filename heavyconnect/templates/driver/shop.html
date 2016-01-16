@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{% load staticfiles %}
+		{% load i18n %}
+
+		<script src="{% static 'js/jquery-1.11.2.min.js'%}"></script>
+		<script src="{% static 'jSignature/jSignature.min.js'%}"></script>
+		<!-- <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script> -->
+		<script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="{% static 'WebCodeCam/js/main.js' %}"></script>
+		<script type="text/javascript" src="{% static 'WebCodeCam/js/startScanQRCode.js' %}"></script>
+		<script type="text/javascript" src="{% static 'WebCodeCam/js/qrcodelib.js' %}"></script>
+		<script type="text/javascript" src="{% static 'WebCodeCam/js/WebCodeCam.js' %}"></script>
+		<style>
+			.full-size{
+				width: 95%;
+			}
+			.btnCreateTeam {
+			background: #1F3801 !important;
+    background-size: 100% 100%;
+    border-radius: 7px;
+    border: 1px solid #1F3801 !important;
+    box-shadow: 2px 2px 5px gray;
+    height: 65px;
+    width: 250px;
+    color: white;
+    margin-bottom: 25px;
+    font-size: 25px;
+    font-weight: 700;}
+		</style>
+		<script>
+		$(document).ready(function(){
+			$('[data-toggle="popover"]').popover();
+		});
+		</script>
+		<style>
+			.errorIcon {
+				background: url('/static/imgSmall/errorIcon.png') no-repeat top left !important;
+				background-size: 100% 100% !important;
+				width: 20px !important;
+				height: 20px !important;
+				border: none !important;
+			}
+			.job {
+				background-color: #9AC8F1;
+			}
+
+		</style>
+		<script type="text/javascript">
+		var action = -1;	//1 = start shift ... 2 = stop shift ... 3 = start break ... 4 = stop break ... 5 = timelog
+		var lunch = 0;		//	0 = break ... 1 = lunch
+		var employeesTimelog = [];
+		var idTimelog;
+		var user_id;
+		var breaks = 0;
+		var id_checked = [];
+		var group_checked = [];
+		var id_scanned = []; // Reiniatilize this array when create a new group
+		var name_scanned = [];
+		var teamChecked = -1;
+		var arrayNames = [];
+		var data_scanned = {};
+		var arrayTeams = [];
+		var idGroup = 0;
+		var arrayErrors = [];
+
+		$(document).ready(function() {
+			$("#foot").load("{%url 'footer'%}");
+			$("#head").load("{%url 'headerDriver'%}");
+			$("#signature").jSignature();
+			$("#saveSignature").click(function(){
+				var $sigdiv = $("#signature");
+				var datapair = $sigdiv.jSignature("getData","base30");
+				var attendanceId = $("#attendanceId").val();
+				saveSignature("{{ csrf_token }}", "{% url 'saveSignature' %}", datapair[1], attendanceId);
+			});
+			$("#clearSignature").click(function() {
+				var $sigdiv = $("#signature");
+				$sigdiv.jSignature("reset");
+			});
+			getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
+
+			$("input[name='employeeSelected']").change(function() {
+			   if ($("input[id='"+this.id+"']").is(":checked")) {
+					user_id = this.value;
+					id_checked.push(user_id);
+				} else {
+				    user_id = this.value;
+					index = id_checked.indexOf(user_id);
+					id_checked.splice(index, 1);
+				}
+			});
+		    $('#selectAllEmployee').click(function(event) {
+		        if(this.checked) { // check select status
+		            $('.checkboxEmployee').each(function() {
+		            	if (this.checked != true) {
+			                this.checked = true;
+			                user_id = this.value;
+							id_checked.push(user_id);
+						}
+		            });
+		        }else{
+		            $('.checkboxEmployee').each(function() {
+		                this.checked = false; //deselect all checkboxes
+		                user_id = this.value;
+						index = id_checked.indexOf(user_id);
+						id_checked.splice(index, 1);
+		            });
+		        }
+		    });
+		    $('html').on('click', function(e) {
+		    	if (e.target.className == "errorIcon") {
+		    		//show popover
+		    	} else {
+		    		if (typeof $(e.target).data('original-title') == 'undefined' && !$(e.target).parents().is('.popover.in')) {
+    					$('[data-original-title]').popover('hide');
+  					}
+  				}
+			});
+			$("#shift").click(function() {
+				$('#showTimekeeperModal').modal();
+				$("#messageTimekeeper").css("color", "#1F3801");	//green
+				$("#messageTimekeeper").html("{% trans 'SHIFT' %}");
+				emptyDivs();
+				$("#clock-in").append('<input type="button" value="{% trans 'CLOCK-IN' %}" class="btnsTimekeeper"/>');
+				$("#clock-out").append('<input type="button" value="{% trans 'CLOCK-OUT' %}" class="btnsTimekeeper"/>');
+			});
+			$("#clock-in").click(function() {
+				$("#messageTimekeeper").css("color", "#1F3801");	//green
+				$("#messageTimekeeper").html("{% trans 'Starting Team shift' %}...");
+				emptyDivs();
+				action = 1;
+				startShiftGroup("{{ csrf_token }}", "{% url 'startShiftGroup' %}", data_scanned.qr_code);
+
+
+			});
+			$("#clock-out").click(function() {
+				$("#messageTimekeeper").css("color", "#1F3801");	//green
+				$("#messageTimekeeper").html("{% trans 'Stopping Team shift' %}...");
+				emptyDivs();
+				action = 2;
+				stopShiftGroup("{{ csrf_token }}", "{% url 'stopShiftGroup' %}");
+
+
+			});
+
+			$("#timelog").click(function() {
+				$('#showTimekeeperModal').modal();
+				emptyDivs();
+				$("#messageTimekeeper").html("SCHEDULE");
+				timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+			});
+			$("#timelog2").click(function() {
+				$('#showTimekeeperModal').modal();
+				emptyDivs();
+				$("#messageTimekeeper").html("SCHEDULE");
+				timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+			});
+			$("#scheduleButton").click(function() {
+				$('#showTimekeeperModal').modal();
+				emptyDivs();
+				$("#messageTimekeeper").html("SCHEDULE");
+				timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+			});
+			$("#timelogBack1").click(function() {
+				emptyDivs();
+				$('#showTimekeeperModal').modal();
+				$("#messageTimekeeper").css("color", "#1F3801");	//green
+			});
+			$("#timelogBack2").click(function() {
+				emptyDivs();
+				$('#showTimekeeperModal').modal();
+				$("#messageTimekeeper").css("color", "#1F3801");	//green
+			});
+			$("#btnSignature").click(function(){
+				$("#messageTimekeeper").css("color", "#1F3801");	//green
+				$("#messageTimekeeper").html("{% trans 'Checking shift' %}...");
+				callChecklist("{{ csrf_token }}", "{% url 'retrieveAttendanceChecklist' %}", data_scanned.qr_code);
+			});
+
+		});
+
+		function tConvert (time) {
+		  // Check correct time format and split into components
+		  time = time.toString ().match (/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+
+		  if (time.length > 1) { // If time format correct
+			time = time.slice (1);  // Remove full string match value
+			time[5] = +time[0] < 12 ? 'AM' : 'PM'; // Set AM/PM
+			time[0] = +time[0] % 12 || 12; // Adjust hours
+		  }
+		  return time.join (''); // return adjusted time or original string
+		}
+
+		function openAdd() {
+			$('#qrCodeModal').modal();
+		}
+
+
+		function getEmployeeShifts(token, url) {
+			$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					if (data.success) {
+						if (data.hour_started != 'None') {
+							shiftStarted = 1;
+						}
+						for(var i = 0; i < data.breaks.length; i++) {
+							if (data.breaks[i][1] == "None") {
+								if (data.breaks[i][2] == 1) {
+									lunchStarted = 1;
+								} else {
+									breakStarted = 1
+								}
+							}
+						}
+						if (data.hour_ended != "None") {
+							shiftStarted = 0;
+						}
+					} else if (data.code == 1) {
+						$('#showTimekeeperModal').modal();
+						$("#messageTimekeeper").css("color", "#BB330C");	//red
+						$("#messageTimekeeper").html("{% trans 'There are no shift records for this employee' %}.");
+						//hideModal();
+					} else if (data.code == 2) {
+						$('#showTimekeeperModal').modal();
+						$("#messageTimekeeper").css("color", "#BB330C");	//red
+						$("#messageTimekeeper").html("{% trans 'Error. Contact Support' %}.");
+						//hideModal();
+					} else if (data.code == 3) {
+						$('#showTimekeeperModal').modal();
+						$("#messageTimekeeper").css("color", "#BB330C");	//red
+						$("#messageTimekeeper").html("{% trans 'Error. Contact Support' %}.");
+						//hideModal();
+					}
+				}
+			});
+		}
+
+
+		function startShiftGroup(token, url, group) {
+			$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token, "qr_code": group},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					arrayErrors = [];
+					arrayErrors[1] = '{% trans 'You need to finish the current shift before create a new one' %}.';
+					arrayErrors[2] = '{% trans 'There is no users associated with this id' %}.';
+					arrayErrors[5] = '{% trans 'Error. Contact Suport' %}.';
+					arrayErrors[6] = '{% trans 'Error. Contact Suport' %}.';
+					printResult(data);
+					if (data.success) {
+						$("#messageTimekeeper").css("color", "#1F3801");	//green
+						$("#messageTimekeeper").html("{% trans 'Clock-in' %}:");
+					} else {
+					    alert('fail');
+					}
+				}
+			});
+		}
+		function startBreakGroup(token, url) {
+			$.ajax({
+				method : "POST",
+				url : url,
+				acync: false,
+				data : {"csrfmiddlewaretoken" : token, "ids": id_checked, "lunch": lunch},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					arrayErrors = [];
+					arrayErrors[1] = '{% trans 'You cannot start two breaks at the same time' %}.';
+					arrayErrors[2] = '{% trans 'The shift for today was already finished' %}.';
+					arrayErrors[3] = '{% trans 'You need to start a shift first' %}.';
+					arrayErrors[5] = '{% trans 'Error. Contact Suport' %}.';
+					arrayErrors[6] = '{% trans 'Error. Contact Suport' %}.';
+					printResult(data);
+					if (data.success) {
+						$("#messageTimekeeper").css("color", "#1F3801");	//green
+						if (lunch == 0) {
+							$("#messageTimekeeper").html("{% trans 'Break Started' %}:");
+						}
+						if (lunch == 1) {
+							$("#messageTimekeeper").html("{% trans 'Lunch Started' %}:");
+						}
+					}
+				}
+			});
+		}
+
+		function stopShiftGroup(token, url) {
+			$.ajax({
+				method: "POST",
+				url: url,
+				data: {"csrfmiddlewaretoken": token, "qr_code": data_scanned.qr_code},
+				datatype: "json",
+				success: function(data, status, xhr){
+					arrayErrors = [];
+					arrayErrors[2] = '{% trans 'The shift for today was already finished' %}.';
+					arrayErrors[3] = '{% trans 'You have not started a shift yet' %}.';
+					arrayErrors[4] = '{% trans 'This user is not authorized to use the system' %}.';
+					arrayErrors[5] = '{% trans 'Error. Contact Suport' %}.';
+					arrayErrors[6] = '{% trans 'Error. Contact Suport' %}.';
+					printResult(data);
+					if (data.success) {
+						$("#messageTimekeeper").css("color", "#1F3801");	//green
+						$("#messageTimekeeper").html("Clock-out:");
+						$("#scheduleButton").append("<input type='button' id='timelog2' value='SCHEDULE' class='btnsTimekeeper'/>");
+					}
+				}
+			});
+		}
+		function callChecklist(token, url, user_id) {
+			$.ajax({
+				method: "POST",
+				url: url,
+				data: {"csrfmiddlewaretoken": token, "qr_code": user_id},
+				datatype: "json",
+				success: function(data, status, xhr){
+					if (data.success) {
+						var attendanceId = $("#attendanceId").val();
+						emptyDivs();
+						$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + attendanceId + "'>");
+    					$("#messageTimekeeper").css("color", "#1F3801");	//green
+    					if(data.checklist.length == 0 ){
+    						$("#messageTimekeeper").html("{% trans 'Click to Sign' %}:");
+    						$("#divSignNow").append("<input type='button' id='btnSignNow' onClick='callBtnSign()' value='{% trans 'SIGN NOW' %}'/>");
+    						$("#btnSignNow").attr("disabled", false);
+    					}else {
+    					$("#messageTimekeeper").html("{% trans 'Check before sign' %}:");
+    					$("#questions").css("text-align", "left");
+    					$("#questions").css("font-size", "25px");
+    					$("#questions").append("<table>");
+
+    					for (i = 0; i < data.checklist.length; i++) {
+    						$("#questions").append("<tr><td><label><input type='checkbox' onClick='allChecked(" + data.checklist.length + ")' class='checkQuestions'/>&nbsp;&nbsp;" + data.checklist[i].description + "</label></td></td>");
+    					}
+    					$("#questions").append("</table>");
+    					$("#divSignNow").append("<input type='button' id='btnSignNow' onClick='callBtnSign()' value='{% trans 'SIGN NOW' %}'/>");
+    					$("#btnSignNow").attr("disabled", true);
+    					}
+					}
+				}
+			});
+		}
+		function allChecked(questionsN) {
+			var countQuestions = $('input:checkbox[class=checkQuestions]:checked');
+			if (questionsN == countQuestions.length) {
+				 $("#btnSignNow").css("background", "#2fce4a");
+				 $("#btnSignNow").attr("disabled", false);
+			} else {
+				$("#btnSignNow").css("background", "#E5E5E5");
+				$("#btnSignNow").attr("disabled", true);
+			}
+		}
+		function callBtnSign() {
+			$('#showTimekeeperModal').modal('hide');
+			$('#signModal').modal();
+		}
+		function saveSignature(token, url, signature, attendanceId){
+			console.log(signature + " - " + attendanceId);
+			$.ajax({
+				method : "POST",
+				url : url,
+				async: false,
+				data : {"csrfmiddlewaretoken" : token, "id": attendanceId, "signature": signature},
+				datatype : "json",
+				success : function(data, status, xhr) {
+						var $sigdiv = $("#signature");
+						$sigdiv.jSignature("reset");
+						$('#signModal').modal('hide');
+				}
+			});
+		}
+
+
+		function timelog(token, url) {
+			$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token, "qr_code": data_scanned.qr_code, "id":data_scanned.qr_code},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					var i = 0;
+					var breaks = 1;
+					var lunchs = 1;
+					workBreak = [];
+					breakN = [];
+					breakBeg = [];
+					breakEnd = [];
+					lun = [];
+					currentStart = data.Attendance_start;
+					currentEnd = data.Attendance_end;
+					if(data.no_attendance == 'false'){
+					if (data.Attendance_end == 'In Progress') {
+						$("#divTimelog").append("<table id='tableTimelog' ><tr><td colspan='2'>Start Shift: " + tConvert(data.Attendance_start) + "</td></tr>");
+						var n=1;
+						<!--breakDuration = data.tasks[n-1].duration;-->
+						breakDuration = "";
+						$("#tableTimelog").append("<tr id='data.tasks[n-1].jobId' class='job' ><td class='colBorderTimelog'>" + breakDuration + "</td><td> {% trans 'Job' %} #" + n +" N/A </td><td></td></tr>");
+
+						for (i = 0; i < data.breaks.length; i++) {
+							n=n+1;
+							if (data.breaks[i].lunch == 0){
+								$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + breaks + " Break " + tConvert(data.breaks[i].breakStart) + " - " + tConvert(data.breaks[i].breakStop) + "</td></tr>");
+								breaks++;
+							} else {
+								$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + lunchs + " Lunch " + tConvert(data.breaks[i].breakStart) + " - " + tConvert(data.breaks[i].breakStop) + "</td></tr>");
+								lunchs++;
+							}
+							breakDuration = "";
+							$("#tableTimelog").append("<tr id='data.tasks[n-1].jobId' class='job' ><td class='colBorderTimelog'>" + breakDuration + "</td><td> {% trans 'Job' %} #" + n +" N/A </td><td></td></tr>");
+
+						}
+						$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + tConvert(data.Attendance_end) + "</td></tr>");
+					} else {
+						$("#divTimelog").append("<table id='tableTimelog' ><tr id='trStartShift'><td colspan='2'>Start Shift: " + tConvert(data.Attendance_start) + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' onclick='editStartShift(this.id, currentStart)'/></td></tr>");
+							var n=1;
+							<!--breakDuration = data.tasks[n-1].duration;-->
+							breakDuration = "";
+							$("#tableTimelog").append("<tr id='job" + data.tasks[n-1].jobId + "' class='job'><td class='colBorderTimelog'>" + breakDuration + "</td><td> {% trans 'Job' %} #" + n +"  "+ data.tasks[n-1].description + " </td><td><input id='job" + data.tasks[n-1].jobId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 30px !important;height: 30px !important;border: none !important;' onclick='editJob(this.id, `${breakDuration}`, `${breaks}`, `${idTimelog}`)'/></td></tr>");
+
+							for (i = 0; i < data.breaks.length; i++) {
+								workBreak[data.breaks[i].breakId] = data.breaks[i].breakDuration;
+								breakN[data.breaks[i].breakId] = breaks;
+								breakBeg[data.breaks[i].breakId] = data.breaks[i].breakStart;
+								breakEnd[data.breaks[i].breakId] = data.breaks[i].breakStop;
+								n = n+1;
+								<!--breakDuration = data.tasks[n-1].duration;-->
+								breakDuration = "";
+								if (data.breaks[i].lunch == 0){
+									lun[data.breaks[i].breakId] = 0
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + breaks + " Break " + tConvert(data.breaks[i].breakStart) + " - " + tConvert(data.breaks[i].breakStop) + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
+									breaks++;
+								} else {
+									lun[data.breaks[i].breakId] = 1;
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + lunchs + " Lunch " + tConvert(data.breaks[i].breakStart) + " - " + tConvert(data.breaks[i].breakStop) + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
+									lunchs++;
+								}
+								$("#tableTimelog").append("<tr id='job" + data.tasks[n-1].jobId + "' class='job'><td class='colBorderTimelog'>" + breakDuration + "</td><td> {% trans 'Job' %} #" + n +"  "+ data.tasks[n-1].description + " </td><td><input id='job" + data.tasks[n-1].jobId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 30px !important;height: 30px !important;border: none !important;' onclick='editJob(this.id, `${breakDuration}`, `${breaks}`, `${idTimelog}`)'/></td></tr>");
+							}
+							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + tConvert(data.Attendance_end) + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' onclick='editStopShift(this.id, currentEnd)'/></td></tr>");
+							$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + data.attendanceId + "'>");
+							if (data.signature == true) {
+								$("#btnSignature").append("<input type='button' id='btnSign' value='SIGNED'/>");
+								$("#btnSign").css("background", "#799520");
+							} else {
+								$("#btnSignature").append("<input type='button' id='btnSign' value='SIGN'/>");
+								$("#btnSign").css("background", "#E5E5E5");
+							}
+					}
+					} else {
+						$("#divTimelog").append("No Attendances Today <p>Please start a shift to see your schedule.</p>");
+					}
+					$("#tableTimelog").append("<tr><td colspan='3'>Total: " + data.Total + " hours</td></tr>");
+				}
+			});
+		}
+
+		function printResult(data) {
+
+			if (data.success) {
+				$("#success").css("color", "#1F3801");	//green
+				$("#success").append("{% trans 'SUCCESS' %}");
+			}
+			if (data.error) {
+				$("#error").css("color", "#BB330C");	//red
+				$("#error").append("{% trans 'ERROR' %}");
+			}
+
+		}
+		function popoverError(popId) {
+			$('#' + popId).popover();
+		}
+
+		function hideModal() {
+			setTimeout(function(){
+    			$('#showTimekeeperModal').modal('hide')
+			}, 3000);
+		}
+		function emptyDivs() {
+			$("#success").empty();
+			$("#error").empty();
+			$("#scheduleButton").empty();
+			$("#team").empty();
+			$("#clock-in").empty();
+			$("#clock-out").empty();
+			$("#divTimelog").empty();
+			$("#timelogBack1").hide();
+			$("#timelogBack2").hide();
+			$("#questions").empty();
+			$("#btnSignature").empty();
+			$("#divSignNow").empty();
+			$("#btnSignNow").empty();
+		}
+		function editStartShift(editId, currentStart) {
+			$(".editIcon").attr('disabled', true);
+			shift_id = editId;
+			$("#trStartShift").html("<td colspan='2'>{% trans 'Start Shift' %}: <input id='newTime' type='time'/></td><td><input type='button' style='background: url(\"/static/imgSmall/editedIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' class='editedIcon' onclick='callEditStartShift(shift_id)'/></td>");
+			$("#newTime").val(currentStart);
+		}
+		function callEditStartShift(shift_id) {
+			var new_time = $("#newTime").val();
+			updateStartShift("{{ csrf_token }}", "{% url 'updateStartShift' %}", shift_id, new_time);
+		}
+		function updateStartShift(token, url, shift_id, new_time) {
+			$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token, "shift_id": shift_id, "new_time": new_time},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					if (data.success) {
+						$(".editIcon").attr('disabled', false);
+						emptyDivs();
+						$("#timelogBack2").show();
+						$("#messageTimekeeper").css("color", "#1F3801");	//green
+						$("#messageTimekeeper").html("SCHEDULE");
+						timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+					}
+				}
+			});
+		}
+
+		function editJob(editId, workBreak, breakN, employeeId) {
+			breakId = editId
+			var jobNum = editId.slice(3,4);
+			hours = workBreak
+			emid = employeeId
+			$(".editIcon").attr('disabled', true);
+			var newJob = '#new'+breakId;
+			$("#" + breakId).html("<td class='colBorderTimelog'>" + workBreak + "</td><td>#" + jobNum + " {% trans 'Job' %} <input id='new" + breakId + "' type='text'/></td><td><input type='button' class='editedIcon' style='background: url(\"/static/imgSmall/editedIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='callEditJob(breakId, hours, emid)'/></td>");
+		}
+
+		function callEditJob(jobId, breakDuration, employeeId) {
+			createJob(jobId, "{{csrf_token}}", "{% url 'editJob' %}", $('#new'+jobId).val(), breakDuration, employeeId);
+		}
+
+		function createJob(jobId, token, url, description, hours, employeeId) {
+			$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token, "description": description, "jobId":jobId, "hours_spent" : hours, "qr_code" : data_scanned.qr_code},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					if (data.success) {
+						$(".editIcon").attr('disabled', false);
+						emptyDivs();
+						$("#timelogBack2").show();
+						$("#messageTimekeeper").css("color", "#1F3801");	//green
+						$("#messageTimekeeper").html("SCHEDULE");
+						timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+					}
+				}
+			});
+		}
+
+		function editBreak(editId, workBreak, breakN, breakBeg, breakEnd, lun) {
+			$(".editIcon").attr('disabled', true);
+			breakId = editId;
+			if (lun == 0) {
+				$("#" + breakId).html("<td class='colBorderTimelog'>" + workBreak + "</td><td>#" + breakN + " {% trans 'Break' %} <input id='newBreakBeg" + breakId + "' type='time'/> - <input id='newBreakEnd" + breakId + "' type='time'/></td><td><input type='button' class='editedIcon' style='background: url(\"/static/imgSmall/editedIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='callEditBreak(breakId)'/></td>");
+				$("#newBreakBeg" + breakId).val(breakBeg);
+				$("#newBreakEnd" + breakId).val(breakEnd);
+			}
+			if (lun == 1) {
+				$("#" + breakId).html("<td class='colBorderTimelog'>" + workBreak + "</td><td>#" + breakN + " {% trans 'Lunch' %} <input id='newBreakBeg" + breakId + "' type='time'/> - <input id='newBreakEnd" + breakId + "' type='time'/></td><td><input type='button' class='editedIcon' style='background: url(\"/static/imgSmall/editedIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='callEditBreak(breakId)'/></td>");
+				$("#newBreakBeg" + breakId).val(breakBeg);
+				$("#newBreakEnd" + breakId).val(breakEnd);
+			}
+		}
+		function callEditBreak(break_id) {
+			var new_time_start = $("#newBreakBeg" + break_id).val();
+			var new_time_end = $("#newBreakEnd" + break_id).val();
+			updateBreak("{{ csrf_token }}", "{% url 'updateBreak' %}", break_id, new_time_start, new_time_end);
+		}
+		function updateBreak(token, url, break_id, new_time_start, new_time_end) {
+			$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token, "break_id": break_id, "new_time_start": new_time_start, "new_time_end": new_time_end},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					if (data.success) {
+						$(".editIcon").attr('disabled', false);
+						emptyDivs();
+						$("#timelogBack2").show();
+						$("#messageTimekeeper").css("color", "#1F3801");	//green
+						$("#messageTimekeeper").html("SCHEDULE");
+						timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+					}
+				}
+			});
+		}
+		function editStopShift(editId, currentEnd) {
+			$(".editIcon").attr('disabled', true);
+			shift_id = editId;
+			$("#trStopShift").html("<td colspan='2'>{% trans 'End Shift' %}: <input id='newTimeEnd' type='time'/></td><td><input type='button' class='editedIcon' style='background: url(\"/static/imgSmall/editedIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='callEditStopShift(shift_id)'/></td>");
+			$("#newTimeEnd").val(currentEnd);
+		}
+		function callEditStopShift(shift_id) {
+			var new_time = $("#newTimeEnd").val();
+			updateStopShift("{{ csrf_token }}", "{% url 'updateStopShift' %}", shift_id, new_time);
+		}
+		function updateStopShift(token, url, shift_id, new_time) {
+			$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token, "shift_id": shift_id, "new_time": new_time},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					if (data.success) {
+						$(".editIcon").attr('disabled', false);
+						emptyDivs();
+						$("#timelogBack2").show();
+						$("#messageTimekeeper").css("color", "#1F3801");	//green
+						$("#messageTimekeeper").html("SCHEDULE");
+						timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+					}
+				}
+			});
+		}
+		function addEmployeeGroup(keeppingAdd) {
+			if (keeppingAdd == false) {
+				$("#addEmployee").modal("hide");
+				$("#qrCodeModal").modal("hide");
+			} else {
+				$("#qrCodeModal").modal();
+				$("#addEmployee").modal("hide");
+			}
+		}
+		function checkEmployeeScanned(token, url, id) {
+				$.ajax({
+					method : "GET",
+					url : url,
+					//async: false,
+					data : {
+						"csrfmiddlewaretoken" : token,
+						"qr_code" : id
+					}, // id could be qrCode or employeeId
+					datatype : "json",
+					success : function(data, status, xhr) {
+						$("#errorQrCode").html("")
+
+						if (data.success) {
+							$("#qrCodeModal").modal("hide");
+							feedBackQrCode("show", "green", "{% trans 'Enter your PIN:' %}");
+							data_scanned.qr_code = id;
+							data_scanned.employee = data.employee;
+							data_scanned.validated = "false";
+							$("#pin_input").show();
+
+						} else {
+							feedBackQrCode("show", "red", "{% trans 'This employee does not exist. Please enter another ID.' %}");
+						}
+					}
+				});
+
+		}
+
+		function checkEmployeePassword(token, url, id, password) {
+				$.ajax({
+					method : "GET",
+					url : url,
+					//async: false,
+					data : {
+						"csrfmiddlewaretoken" : token,
+						"qr_code" : id,
+						"password" : password,
+					}, // id could be qrCode or employeeId
+					datatype : "json",
+					success : function(data, status, xhr) {
+						$("#errorQrCode").html("")
+
+						if (data.success) {
+							$("#qrCodeModal").modal("hide");
+							feedBackQrCode("show", "green", "{% trans 'Successfully Validated.' %}");
+							data_scanned.qr_code = id;
+							data_scanned.employee = data.employee
+							<!--$("#signed_in").show();-->
+							$("#signed_in").html("SIGNED IN: "+ data.employee);
+							data_scanned.validated = "true";
+							$("#pin_input").hide();
+
+						} else {
+						    data_scanned = {};
+						    <!--$("#signed_in").hide();-->
+							feedBackQrCode("show", "red", "{% trans 'Incorrect PIN. Please try your PIN again.' %}");
+						}
+					}
+				});
+
+		}
+
+
+		function feedBackQrCode(modal, color, message){
+			$("#addEmployee").modal(modal);
+			$("#errorQrCode").css("color", color)
+			$("#errorQrCode").html(message)
+			$("#qr_code").val(""); // Clean input text #qr_code
+		}
+		</script>
+		<style>
+            .errorIcon {
+                background: url('../imgSmall/errorIcon.png') no-repeat top left !important;
+                background-size: 100% 100% !important;
+                width: 20px !important;
+                height: 20px !important;
+                border: none !important;
+            }
+            .editIcon {
+                background: url('../imgSmall/editIcon.png') no-repeat top left !important;
+                background-size: 100% 100% !important;
+                width: 30px !important;
+                height: 30px !important;
+                border: none !important;
+            }
+            .editedIcon {
+
+                background: url('../imgSmall/editedIcon.png') no-repeat top left !important;
+                background-size: 100% 100% !important;
+                width: 20px !important;
+                height: 20px !important;
+                border: none !important;
+            }
+			label {
+				 padding: 10px;
+				 margin: 0px;
+				 display: block;
+			}
+			#tableMessage {
+				margin: auto;
+				width: 90%;
+				padding: 10px;
+				text-align: center;
+			}
+			#tableMessage tr, #tableMessage td {
+				margin: auto;
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<header id="head"></header>
+		<input type="hidden" value="1" id="url">
+		<div id="wrapper">
+			<div id="content">
+				<div class="namePage">
+					<img style="height:35px;" src="{% static 'imgSmall/iconTimekeeper.png' %}"/>
+					{% trans 'HC TIMEKEEPER' %}
+				</div>
+
+				<div class="row">
+					<div class="col-xs-12 col-md-12" style="margin-top: 15px;">
+                        <div id="signed_in" style="font-weight: 600;font-size: 24px;">Please Sign In</div>
+						<input type="button" id="createTeam"  onclick="openAdd()" value="{% trans 'SELECT EMPLOYEE' %}" class="btnCreateTeam"/>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-md-12">
+						<input type="button" id="shift" value="{% trans 'SHIFT' %}" class="btnsTimekeeper"/>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-xs-12 col-md-12">
+						<input type="button" id="timelog" value="{% trans 'SCHEDULE' %}" class="btnsTimekeeper"/>
+					</div>
+				</div>
+			</div>
+		</div>
+		<footer>
+			&copy;2016 HeavyConnect, Inc.
+		</footer>
+
+		<div id="clearBoth"></div>
+		<!-- MODAL SIGNATURE - TIMEKEEPER -->
+		<div class="modal fade" id="signModal" role="dialog">
+			<div>
+				<!-- Modal content-->
+				<div class="modal-content signModalDialog">
+					<button type="button" class="closeSignature" data-dismiss="modal"></button>
+					<div class="modal-title" id="titleSign">{% trans 'Sign Here' %}</div>
+					<div class="modal-body" id="signatureContent">
+					<div id="signField">
+						<div id="signature"></div>
+						<button type="button" id="clearSignature" class="btn btn-default">{% trans 'Clear' %}</button>
+						<!--<button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>-->
+
+							<button type="button" id="saveSignature" class="btn btn-success" >
+								{% trans 'Confirm' %}
+							</button>
+
+					</div>
+					<div id="clearBoth"></div>
+				</div>
+			</div>
+		</div>
+	  </div>
+
+		<!-- MODAL OF ALERT - TIMEKEEPER -->
+		<div class="modal fade" id="showTimekeeperModal" role="dialog">
+			<div class="modal-dialog full-size" >
+				<!-- Modal content-->
+				<div class="modal-content modalTimekeeper">
+					<div class="modal-body">
+						<button type="button" id="timelogBack1" style="background: url('/static/imgSmall/buttons/backPastTasks.png') no-repeat top left;
+    background-size: 100% 100%;
+    width: 40px;
+    height: 40px;
+    float: left;
+    border: none;
+    border-radius: 7px;
+    box-shadow: -1px 1px 7px gray;
+    margin: 0px;
+    padding: 0px;"></button>
+						<button type="button" id="timelogBack2" style="background: url('/static/imgSmall/buttons/backPastTasks.png') no-repeat top left;
+    background-size: 100% 100%;
+    width: 40px;
+    height: 40px;
+    float: left;
+    border: none;
+    border-radius: 7px;
+    box-shadow: -1px 1px 7px gray;
+    margin: 0px;
+    padding: 0px;"></button>
+						<button type="button" class="closeTimekeeper" data-dismiss="modal"></button>
+						<span id="messageTimekeeper"></span>
+
+						<table id="tableMessage">
+							<tr>
+								<td><div id="success"></div></td>
+								<td><div id="error"></div></td>
+
+							</tr>
+							<tr>
+								<td><div id="scheduleButton"></div></td>
+							</tr>
+						</table>
+
+						<div id="clock-in"></div>
+						<div id="clock-out"></div>
+						<div id="divTimelog"></div>
+						<div id="questions"></div>
+						<div id="btnSignature"></div>
+						<div id="divSignNow"></div>
+						<br>
+						<div class="both"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="qrCodeModal" role="dialog">
+				<!-- Modal content-->
+            <div class="modal-dialog full-size" style="text-align: center;">
+				<div class="modal-content qrCodeModalDialog">
+					<div class="modal-body" id="QrCodeContent">
+                        <span style="font-size:30px; font-weight:600;">Search Employee</span>
+					<button type="button" class="closeEquip" data-dismiss="modal"></button>
+					<div id="QR-Code" style="font-size: 25px;">
+						<div class="panel panel-primary" style="border: none;">
+							<div style="margin auto 40px; text-align: center; margin-top: 20px;">
+								<input type="text" id="qr_code" style="color:black;" placeholder="{% trans 'Type Employee ID' %}"/>
+
+								<button id="submit" title="Play" type="button" class="btn btn-success btn-xl" onclick="checkEmployeeScanned('{{ csrf_token }}', '/home/checkEmployeeQrCode/', $('#qr_code').val());">
+									<span class="glyphicon glyphicon-play"></span>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+		</div>
+            </div>
+	  </div>
+
+	  <!-- Modal Confirm to Add another employee -->
+		<div class="modal fade" id="addEmployee" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal-content modalTask" style="text-align: center;">
+					<button type="button" style="background: url('/static/imgSmall/buttons/esc.png') no-repeat top left;
+    background-size: 100% 100%;
+    width: 50px;
+    height: 50px;
+    float: right;
+    border: none;
+    border-radius: 7px;
+    box-shadow: -1px 1px 7px gray;
+    margin: 0px;
+    padding: 0px;" class="closeTask" data-dismiss="modal"></button>
+
+					</br>
+					<span id="errorQrCode" style="font-weight: 600; text-align: center;font-size:30px; "></span>
+					<div class="modal-body equipmentAlertModalBody">
+                        <div id="PIN" style="font-size: 25px;">
+						<div class="panel panel-primary" style="border: none;">
+							<div id="pin_input" style="margin auto 40px; text-align: center; margin-top: 20px;">
+								<input type="text" id="employee_pin" style="color:black;" placeholder="{% trans 'Type Employee ID' %}"/>
+
+								<button id="submit_pin" title="Play" type="button" class="btn btn-success btn-xl" onclick="checkEmployeePassword('{{ csrf_token }}', '/home/checkEmployeePassword/', `${data_scanned.qr_code}`, $('#employee_pin').val());">
+									<span class="glyphicon glyphicon-play"></span>
+								</button>
+							</div>
+						</div>
+					</div>
+					</div>
+
+					<div class="both"></div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
