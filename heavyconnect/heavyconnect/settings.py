@@ -63,7 +63,7 @@ ADMINS = [('Jessica', 'jgon91@gmail.com')]
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'jgon91@gmail.com'
-EMAIL_HOST_PASSWORD = 'AngelaMunoz91!'
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_PASS']
 SERVER_EMAIL = 'jgon91@gmail.com'
 MANAGERS = ADMINS
 EMAIL_USE_TLS = True
@@ -122,11 +122,11 @@ WSGI_APPLICATION = 'heavyconnect.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'tenant_schemas.postgresql_backend',
-        'NAME': 'd3ghphbaaf2alv',                      # Or path to database file if using sqlite3.
-        'USER': 'lhiebmankdbyyt',                      # Not used with sqlite3.
-        'PASSWORD': 'Anko1tlUH6zuxLbAhsSlPmuLP1',                  # Not used with sqlite3.
-        'HOST': 'ec2-54-197-247-170.compute-1.amazonaws.com',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '5432',
+        'NAME': os.environ['DB_NAME'],                      # Or path to database file if using sqlite3.
+        'USER': os.environ['DB_USER'],                      # Not used with sqlite3.
+        'PASSWORD': os.environ['DB_PASS'],                  # Not used with sqlite3.
+        'HOST': os.environ['DB_HOST'],                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': os.environ['DB_PORT'],
     }
 }
 
