@@ -13,21 +13,34 @@
 		<script type="text/javascript" src="{% static 'WebCodeCam/js/qrcodelib.js' %}"></script>
 		<script type="text/javascript" src="{% static 'WebCodeCam/js/WebCodeCam.js' %}"></script>
 		<style>
+			.closeEquip {
+				background: url('/static/imgSmall/buttons/esc.png') no-repeat top left;
+				background-size: 100% 100%;
+				width: 50px;
+				height: 50px;
+				float: right;
+				border: none;
+				border-radius: 7px;
+				box-shadow: -1px 1px 7px gray;
+				margin: 0px;
+				padding: 0px;
+			}
 			.full-size{
 				width: 95%;
 			}
 			.btnCreateTeam {
-			background: #1F3801 !important;
-    background-size: 100% 100%;
-    border-radius: 7px;
-    border: 1px solid #1F3801 !important;
-    box-shadow: 2px 2px 5px gray;
-    height: 65px;
-    width: 250px;
-    color: white;
-    margin-bottom: 25px;
-    font-size: 25px;
-    font-weight: 700;}
+				background: #1F3801 !important;
+				background-size: 100% 100%;
+				border-radius: 7px;
+				border: 1px solid #1F3801 !important;
+				box-shadow: 2px 2px 5px gray;
+				height: 65px;
+				width: 250px;
+				color: white;
+				margin-bottom: 25px;
+				font-size: 25px;
+				font-weight: 700;
+			}
 		</style>
 		<script>
 		$(document).ready(function(){
@@ -932,7 +945,7 @@
 						$("#errorQrCode").html("")
 						var data_scanned = {};
 						if (data.success) {
-							$("#qrCodeModal").modal("hide");
+							<!--$("#qrCodeModal").modal("hide");-->
 							feedBackQrCode("show", "green", "{% trans 'Employee added to the group!' %}");
 							data_scanned.qr_code = id;
 							data_scanned.employee = data.employee
@@ -1164,36 +1177,36 @@
 					</span>
 					</br>
 					<span id="errorQrCode" style="font-weight: bold; text-align: center;"></span>
-					<div class="modal-body equipmentAlertModalBody">
-						<p>
-							{% trans 'Would you like to add another employee to the Group?' %}
-						</p>
-					</div>
-					<input type="button" value="{% trans 'Yes' %}" style="background: url('/static/imgSmall/buttons/startNow.png') no-repeat top left;
-    background-size: 100% 100%;
-    width: 140px;
-    height: 40px;
-    border: none;
-    border-radius: 10px;
-    box-shadow: 2px 2px 5px gray;
-    margin-right: 90px;
-    margin-left: 75px;
-    margin-bottom: 0px;
-    text-decoration: none;
-    color: white;
-    font-size: 20px;
-    float: left;" class="btnModalYes" id="btnYesAddEmployee" onclick="addEmployeeGroup(true);"/>
-					<input type="button" value="{% trans 'No' %}" style="background: url('/static/imgSmall/buttons/btnRed.png') no-repeat top left !important;
-    background-size: 100% 100% !important;
-    border-radius: 10px !important;
-    border: none !important;
-    box-shadow: 2px 2px 5px gray !important;
-    color: white;
-    font-size: 20px;
-    margin-bottom: 10px !important;
-    width: 140px !important;
-    height: 40px;
-    float: left;" class="btnModalNo" id="btnNoAddEmployee" onclick="addEmployeeGroup(false);"/>
+					<!--<div class="modal-body equipmentAlertModalBody">-->
+						<!--<p>-->
+							<!--{% trans 'Would you like to add another employee to the Group?' %}-->
+						<!--</p>-->
+					<!--</div>-->
+					<!--<input type="button" value="{% trans 'Yes' %}" style="background: url('/static/imgSmall/buttons/startNow.png') no-repeat top left;-->
+    <!--background-size: 100% 100%;-->
+    <!--width: 140px;-->
+    <!--height: 40px;-->
+    <!--border: none;-->
+    <!--border-radius: 10px;-->
+    <!--box-shadow: 2px 2px 5px gray;-->
+    <!--margin-right: 90px;-->
+    <!--margin-left: 75px;-->
+    <!--margin-bottom: 0px;-->
+    <!--text-decoration: none;-->
+    <!--color: white;-->
+    <!--font-size: 20px;-->
+    <!--float: left;" class="btnModalYes" id="btnYesAddEmployee" onclick="addEmployeeGroup(true);"/>-->
+					<!--<input type="button" value="{% trans 'No' %}" style="background: url('/static/imgSmall/buttons/btnRed.png') no-repeat top left !important;-->
+    <!--background-size: 100% 100% !important;-->
+    <!--border-radius: 10px !important;-->
+    <!--border: none !important;-->
+    <!--box-shadow: 2px 2px 5px gray !important;-->
+    <!--color: white;-->
+    <!--font-size: 20px;-->
+    <!--margin-bottom: 10px !important;-->
+    <!--width: 140px !important;-->
+    <!--height: 40px;-->
+    <!--float: left;" class="btnModalNo" id="btnNoAddEmployee" onclick="addEmployeeGroup(false);"/>-->
 					<div class="both"></div>
 				</div>
 			</div>
