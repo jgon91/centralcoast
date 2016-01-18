@@ -106,7 +106,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'heavyconnect.wsgi.application'
 
-#
+
 # DATABASES = {
 #          'default': {
 #              'ENGINE': 'tenant_schemas.postgresql_backend', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
@@ -118,7 +118,6 @@ WSGI_APPLICATION = 'heavyconnect.wsgi.application'
 #
 #          }
 #      }
-#demo
 DATABASES = {
     'default': {
         'ENGINE': 'tenant_schemas.postgresql_backend',
@@ -138,18 +137,6 @@ DATABASES = {
 #         'USER': 'dntkrypwpilsae',                      # Not used with sqlite3.
 #         'PASSWORD': 'QAUjydqmetOvNSew_L1c309zd6',                  # Not used with sqlite3.
 #         'HOST': 'ec2-54-204-12-25.compute-1.amazonaws.com',                      # Set to empty string for localhost. Not used with sqlite3.
-#         'PORT': '5432',
-#     }
-# }
-
-#scaroni
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'tenant_schemas.postgresql_backend',
-#         'NAME': 'd5j0r9l1p6hbs1',                      # Or path to database file if using sqlite3.
-#         'USER': 'lvmlaczuulaeir',                      # Not used with sqlite3.
-#         'PASSWORD': 'uLbuWqcYB2GCNFAZMatjN9uTip',                  # Not used with sqlite3.
-#         'HOST': 'ec2-107-21-219-109.compute-1.amazonaws.com',                      # Set to empty string for localhost. Not used with sqlite3.
 #         'PORT': '5432',
 #     }
 # }
