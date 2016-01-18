@@ -900,8 +900,10 @@ def retrieveGroup(request):
 				group_part = GroupParticipant.objects.filter(group = item).first()
 				print 'group participant'
 				print group_part
-
-				part_id = group_part.participant.user.id
+				if group_part is not None:
+					part_id = group_part.participant.user.id
+				else:
+					part_id = group_part.creator.user.id
 
 				attendance = EmployeeAttendance.objects.filter(employee__user__id = part_id, date__range = (start_date,end_date)).order_by('-hour_started')[:1].first()
 				# attendance = EmployeeAttendance.objects.filter(group = item).order_by('date').first()
