@@ -892,18 +892,18 @@ def retrieveGroup(request):
 			groups = Group.objects.filter(Q(date = date, creator__user__id = request.user.id) | Q(permanent = True, creator__user__id = request.user.id))
 			groupArray = []
 			for item in groups:
-				print 'group id'
-				print item.name
+
 				date = datetime.datetime.now() #today date
 				start_date = datetime.datetime.combine(date, datetime.time.min) #today date at 0:00 AM
 				end_date = datetime.datetime.combine(date, datetime.time.max) # date at 11:59 PM
 				group_part = GroupParticipant.objects.filter(group = item).first()
-				print 'group participant'
-				print group_part
+
 				if group_part is not None:
 					part_id = group_part.participant.user.id
+					print 'have'
 				else:
 					part_id = group_part.creator.user.id
+					print 'not have'
 
 				attendance = EmployeeAttendance.objects.filter(employee__user__id = part_id, date__range = (start_date,end_date)).order_by('-hour_started')[:1].first()
 				# attendance = EmployeeAttendance.objects.filter(group = item).order_by('date').first()
