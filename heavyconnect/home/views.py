@@ -893,7 +893,6 @@ def retrieveGroup(request):
 			groupArray = []
 			for item in groups:
 				print 'group id'
-				print item.id
 				print item.name
 				date = datetime.datetime.now() #today date
 				start_date = datetime.datetime.combine(date, datetime.time.min) #today date at 0:00 AM
