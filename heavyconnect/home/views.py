@@ -478,7 +478,6 @@ def stopShiftAuto(request, idUser):
 					now = now.replace(hour=0, minute=0, second=0)
 
 					total_hours = total_hours.total_seconds()/60/60
-					print total_hours
 					# hour_ended = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
 					# hour_started = datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
 					one_break = datetime.timedelta(minutes = 15)
@@ -489,7 +488,6 @@ def stopShiftAuto(request, idUser):
 					ten_hours = datetime.timedelta(hours = 10)
 					fourteen_hours = datetime.timedelta(hours = 14)
 					twelve_hours = datetime.timedelta(hours = 12)
-					print total_hours <= 7 and total_hours > 6
 					if total_hours > 18 :
 						#3 meals, 5 breaks
 
@@ -896,6 +894,7 @@ def retrieveGroup(request):
 			for item in groups:
 				print 'group id'
 				print item.id
+				print item.name
 				date = datetime.datetime.now() #today date
 				start_date = datetime.datetime.combine(date, datetime.time.min) #today date at 0:00 AM
 				end_date = datetime.datetime.combine(date, datetime.time.max) # date at 11:59 PM
@@ -2362,9 +2361,7 @@ def timeLogById(request):
 						result['attendanceId'] = item.id
 						breaks = Break.objects.filter(attendance__id = item.id).order_by('start')
 						tasks = Task.objects.filter(attendance__id = item.id)
-						print 'breaks'
-						print len(breaks)
-						print 'jobs'
+
 						if len(breaks) > 0:
 							req_num_tasks = len(breaks) + 1
 							if len(tasks) < req_num_tasks:
