@@ -894,10 +894,14 @@ def retrieveGroup(request):
 			groups = Group.objects.filter(Q(date = date, creator__user__id = request.user.id) | Q(permanent = True, creator__user__id = request.user.id))
 			groupArray = []
 			for item in groups:
+				print 'group id'
+				print item.id
 				date = datetime.datetime.now() #today date
 				start_date = datetime.datetime.combine(date, datetime.time.min) #today date at 0:00 AM
 				end_date = datetime.datetime.combine(date, datetime.time.max) # date at 11:59 PM
 				group_part = GroupParticipant.objects.filter(group = item).first()
+				print 'group participant'
+				print group_part
 
 				part_id = group_part.participant.user.id
 
