@@ -118,7 +118,6 @@ Required HTML & Javascript example
             flipVertical: false,  // false or true
             flipHorizontal: false,  // false or true
             zoom: -1, // if zoom = -1, auto zoom for optimal resolution else int
-            beep: "js/beep.mp3", // string, audio file location
             autoBrightnessValue: false, // functional when value autoBrightnessValue is int
             brightness: 0, // int 
             grayScale: false, // false or true

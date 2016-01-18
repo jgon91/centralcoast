@@ -34,7 +34,7 @@ qr-decoder (qrcodelib.js) -> https://github.com/LazarSoft/jsqrcode
 			flipVertical: false,
 			flipHorizontal: false,
 			zoom: -1,
-			beep: "js/beep.mp3",
+//			beep: "js/beep.mp3",
 			brightness: 0,
 			autoBrightnessValue: false,
 			grayScale: false,

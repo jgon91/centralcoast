@@ -175,6 +175,7 @@
 					}
 				}
 			});
+
 			$("#break").click(function() {
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
@@ -309,7 +310,53 @@
     							+ '<tr><td><div id="addingList"></div></tr></td>'
     							+ '<tr><td><input type="button" id="addNow" style="background: #1F3801;background-size: 100% 100%;border-radius: 7px;border: none;box-shadow: 2px 2px 5px gray;height: 50px;width: 200px;color: white;font-size: 25px;font-weight: 700;" onclick="createNow(id_scanned)" value="Create Now"></td></tr></table>');
 			});
+
+			 $('#qr-canvas').WebCodeCam({
+            ReadQRCode: true, // false or true
+            ReadBarecode: true, // false or true
+            width: 320,
+            height: 240,
+            videoSource: {
+                    id: true,      //default Videosource
+                    maxWidth: 640, //max Videosource resolution width
+                    maxHeight: 480 //max Videosource resolution height
+            },
+            flipVertical: false,  // false or true
+            flipHorizontal: false,  // false or true
+            zoom: -1, // if zoom = -1, auto zoom for optimal resolution else int
+            autoBrightnessValue: false, // functional when value autoBrightnessValue is int
+            brightness: 0, // int
+            grayScale: false, // false or true
+            contrast: 0, // int
+            threshold: 0, // int
+            sharpness: [], //or matrix, example for sharpness ->  [0, -1, 0, -1, 5, -1, 0, -1, 0]
+            resultFunction: function(resText, lastImageSrc) {
+                        /* resText as decoded code, lastImageSrc as image source
+                        example:
+                        alert(resText);
+                        */
+                        checkEmployeeScanned('{{ csrf_token }}', '/home/checkEmployeeQrCode/', resText);
+            },
+            getUserMediaError: function() {
+                        /* callback funtion to getUserMediaError
+                        example:
+                        alert('Sorry, the browser you are using doesn\'t support getUserMedia');
+                        */
+            },
+            cameraError: function(error) {
+                        /* callback funtion to cameraError,
+                        example:
+                        var p, message = 'Error detected with the following parameters:\n';
+                        for (p in error) {
+                                message += p + ': ' + error[p] + '\n';
+                        }
+                        alert(message);
+                        */
+            }
+        });
 		});
+
+
 
 		function tConvert (time) {
 		  // Check correct time format and split into components
@@ -1131,7 +1178,7 @@
 								<select id="cameraId" class="form-control" style="display: inline-block;width: auto; display: none;"></select>
 								<a href="#">
 								<input id="play" style ="background: url('/static/imgSmall/buttons/scan.png') no-repeat top left;background-size: 100% 100%;width: 161px;height: 40px;font-size: 14px;padding-left: 60px;color: white;"value="{% trans 'Scan QR-Code' %}" title="Play" type="button" class="btn btn-success btn-sm">
-								</input> </a>
+								</a>
 							</div>
 							<div class="panel-body" id="contentQRCode" style="padding-top: 10px; padding-bottom: 0px;">
 								<div class="col-md-12 col-xs-12" style="text-align: center;">
