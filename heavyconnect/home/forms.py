@@ -299,6 +299,7 @@ class employeeForm(forms.Form):
 	PERMISSION_LEVEL_CHOICES = (
 		(1, 'Driver'),
 		(2, 'Manager'),
+		(3, 'Shop'),
 	)
 	LANGUAGE_CHOICES = (
 		(3, 'en'),
@@ -327,6 +328,7 @@ class employeeUpdateForm(forms.Form):
 	PERMISSION_LEVEL_CHOICES = (
 		(1, 'Driver'),
 		(2, 'Manager'),
+		(3, 'Shop'),
 	)
 	LANGUAGE_CHOICES = (
 		(3, 'en'),

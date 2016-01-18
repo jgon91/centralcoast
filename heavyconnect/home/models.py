@@ -258,7 +258,7 @@ class Employee(models.Model):
 	start_date = models.DateField(blank = True, null = True)
 	hour_cost = models.FloatField(blank = True, null = True)
 	contact_number = models.CharField(max_length = 14, blank = True)
-	permission_level = models.IntegerField(choices = ((1, 'Driver'), (2, 'Manager')), default = 1)
+	permission_level = models.IntegerField(choices = ((1, 'Driver'), (2, 'Manager'), (3, 'Shop')), default = 1)
 	notes = models.CharField(max_length = 250, null = True, blank = True)
 	manager = models.ForeignKey('self', null = True, blank = True)
 	teamManager = models.BooleanField(default = False)
