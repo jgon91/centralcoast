@@ -894,13 +894,24 @@ def retrieveGroup(request):
 			groups = Group.objects.filter(Q(date = date, creator__user__id = request.user.id) | Q(permanent = True, creator__user__id = request.user.id))
 			groupArray = []
 			for item in groups:
-				attendance = EmployeeAttendance.objects.filter(group = item).order_by('date').first()
+				date = datetime.datetime.now() #today date
+				start_date = datetime.datetime.combine(date, datetime.time.min) #today date at 0:00 AM
+				end_date = datetime.datetime.combine(date, datetime.time.max) # date at 11:59 PM
+				group_part = GroupParticipant.objects.filter(group = item).first()
+
+				part_id = group_part.participant.user.id
+
+				attendance = EmployeeAttendance.objects.filter(employee__user__id = part_id, date__range = (start_date,end_date)).order_by('-hour_started')[:1].first()
+				# attendance = EmployeeAttendance.objects.filter(group = item).order_by('date').first()
 				if attendance is not None:
-					print attendance
-					print attendance.hour_started
-					print type(attendance.hour_ended)
-					print attendance.hour_ended.hour
-					end = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
+
+					if attendance.hour_ended is None:
+
+						hour_ended = datetime.datetime.now().time()
+
+					else:
+						hour_ended = attendance.hour_ended
+					end = datetime.timedelta(hours = hour_ended.hour, minutes = hour_ended.minute, seconds = hour_ended.second)
 					start = datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
 					total = end - start
 					total_hours = str(round(total.total_seconds()/60/60,2))
