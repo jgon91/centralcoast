@@ -902,12 +902,13 @@ def retrieveGroup(request):
 					part_id = group_part.participant.user.id
 					print 'have'
 				else:
-					part_id = group_part.creator.user.id
+					print 'not have'
+					part_id = item.creator.user.id
 					print 'not have'
 
 				attendance = EmployeeAttendance.objects.filter(employee__user__id = part_id, date__range = (start_date,end_date)).order_by('-hour_started')[:1].first()
 				# attendance = EmployeeAttendance.objects.filter(group = item).order_by('date').first()
-				if attendance is not None:
+				if attendance is not None and group_part is not None:
 
 					if attendance.hour_ended is None:
 
