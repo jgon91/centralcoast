@@ -627,7 +627,7 @@
 		}
 		function teamsBtns() {
 			for (var i = 0; i < arrayTeams.length; i++) {
-				$("#divTimelog").append("<input style='margin-bottom: 20px;height: 65px;border-radius: .25em;' type='button' id='" + arrayTeams[i].id + "' onclick='callTeam(this.id)' value='" + arrayTeams[i].Name + "("+ arrayTeams[i].size +")   HOURS: "+ arrayTeams[i].totalHours +"'/><br>");
+				$("#divTimelog").append("<input style='width:100%;margin-bottom: 20px;height: 65px;border-radius: .25em;' type='button' id='" + arrayTeams[i].id + "' onclick='callTeam(this.id)' value='" + arrayTeams[i].Name + "("+ arrayTeams[i].size +")   HOURS: "+ arrayTeams[i].totalHours +"'/><br>");
 			}
 		}
 		function callTeam(groupId) {
