@@ -121,10 +121,15 @@
 			$("#shift").click(function() {
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				$("#messageTimekeeper").html("{% trans 'SHIFT' %}");
+
 				emptyDivs();
-				$("#clock-in").append('<input type="button" value="{% trans 'CLOCK-IN' %}" class="btnsTimekeeper"/>');
-				$("#clock-out").append('<input type="button" value="{% trans 'CLOCK-OUT' %}" class="btnsTimekeeper"/>');
+				if(data_scanned.validated == "true"){
+					$("#messageTimekeeper").html("{% trans 'SHIFT' %}");
+					$("#clock-in").append('<input type="button" value="{% trans 'CLOCK-IN' %}" class="btnsTimekeeper"/>');
+					$("#clock-out").append('<input type="button" value="{% trans 'CLOCK-OUT' %}" class="btnsTimekeeper"/>');
+				} else {
+					$("#clock-in").append("Please Sign In");
+				}
 			});
 			$("#clock-in").click(function() {
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
@@ -149,19 +154,31 @@
 				$('#showTimekeeperModal').modal();
 				emptyDivs();
 				$("#messageTimekeeper").html("SCHEDULE");
-				timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+				if(data_scanned.validated == "true"){
+					timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+				} else {
+					$("#messageTimekeeper").html("Please Sign In");
+				}
 			});
 			$("#timelog2").click(function() {
 				$('#showTimekeeperModal').modal();
 				emptyDivs();
 				$("#messageTimekeeper").html("SCHEDULE");
-				timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+				if(data_scanned.validated == "true"){
+					timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+				} else {
+					$("#messageTimekeeper").html("Please Sign In");
+				}
 			});
 			$("#scheduleButton").click(function() {
 				$('#showTimekeeperModal').modal();
 				emptyDivs();
 				$("#messageTimekeeper").html("SCHEDULE");
-				timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+				if(data_scanned.validated == "true"){
+					timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+				} else {
+					$("#messageTimekeeper").html("Please Sign In");
+				}
 			});
 			$("#timelogBack1").click(function() {
 				emptyDivs();
@@ -671,8 +688,7 @@
 						"csrfmiddlewaretoken" : token,
 						"qr_code" : id,
 						"password" : password,
-					}, // id could be qrCode or employeeId
-					datatype : "json",
+					}, // id could be qrCode or employeeId,
 					success : function(data, status, xhr) {
 						$("#errorQrCode").html("")
 
