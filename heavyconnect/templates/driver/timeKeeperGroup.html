@@ -483,7 +483,7 @@
 							$("#timelogBack1").show();
 							$("#messageTimekeeper").html("Select the Employee to see their SCHEDULE:");
 							for (var j = 0; j < data.participant.length; j++) {
-								$("#divTimelog").append("<input style='margin-bottom: 20px;height: 65px;border-radius: .25em;' type='button' id='" + id_checked[j] + "' onclick='timelogId(this.id)' value='" + arrayNames[j] + "'/><br>");
+								$("#divTimelog").append("<input style='width: 100%;margin-bottom: 20px;height: 65px;border-radius: .25em;' type='button' id='" + id_checked[j] + "' onclick='timelogId(this.id)' value='" + arrayNames[j] + "'/><br>");
 							}
 						}
 						action = -1;
