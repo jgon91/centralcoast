@@ -31,8 +31,8 @@ ALLOWED_HOSTS = [
     '*'
     ]
 
-SECURE_SSL_REDIRECT = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SECURE_SSL_REDIRECT = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 SHARED_APPS = (
     'tenant_schemas',  # mandatory
