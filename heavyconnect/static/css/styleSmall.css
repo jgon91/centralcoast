@@ -510,6 +510,7 @@ input[type='time'] {
 	box-shadow: -1px 1px 7px gray;
 	margin: 0px;
 	padding: 0px;
+	margin-bottom: 10px;
 }
 #divTimelog {
 	color: black;
@@ -1803,18 +1804,7 @@ input[type=button] {
 /* MODAL SGNATURE BEGIN */
 /* MODAL TIMEKEEPER BEGIN */
 
-.closeTimekeeper {
-    background: url('../imgSmall/buttons/esc.png') no-repeat top left;
-    background-size: 100% 100%;
-    width: 40px;
-    height: 40px;
-    float: right;
-    border: none;
-    border-radius: 7px;
-    box-shadow: -1px 1px 7px gray;
-    margin: 0px;
-    padding: 0px;
-}
+
 #employeeList {
     text-align: left;
     font-size: 20px;
