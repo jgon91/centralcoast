@@ -18,7 +18,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
+# See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/{% static 'media/' %}
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'dgaaxm0o4)7max48$chs1im)av623&qw^t*e4evk8m*@48al3^'
@@ -31,8 +31,8 @@ ALLOWED_HOSTS = [
     '*'
     ]
 
-# SECURE_SSL_REDIRECT = True
-# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 SHARED_APPS = (
     'tenant_schemas',  # mandatory
@@ -109,7 +109,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'heavyconnect.wsgi.application'
 
-
+#
 # DATABASES = {
 #          'default': {
 #              'ENGINE': 'tenant_schemas.postgresql_backend', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.

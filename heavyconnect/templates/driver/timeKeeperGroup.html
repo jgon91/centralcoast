@@ -200,7 +200,7 @@
 						}
 					} else {
 						$("#messageTimekeeper").css("color", "#BB330C");	//red
-						$("#messageTimekeeper").html("{% trans 'Select 1 Team for this action' %}:");
+						$("#messageTimekeeper").html("{% trans 'Select 1 Team' %}:");
 					}
 				}
 			});
@@ -208,7 +208,7 @@
 			$("#lunch").click(function() {
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				$("#messageTimekeeper").html("{% trans 'Select the employees for this action' %}");
+				$("#messageTimekeeper").html("{% trans 'Select the Team(s):' %}");
 				emptyDivs();
 				$("#startLunch").append('<input type="button" value="{% trans 'START LUNCH' %}" class="btnsTimekeeper"/>');
 				$("#teamsList").show();
@@ -1171,8 +1171,8 @@
 				<div class="modal-content qrCodeModalDialog">
 					<div class="modal-body" id="QrCodeContent">
 					<button type="button" class="closeEquip" data-dismiss="modal"></button>
-					<div id="QR-Code" class="container">
-						<div class="panel panel-primary col-xs-12" style="border: none;">
+					<div id="QR-Code" style="width: 385px;" class="container">
+						<div class="panel panel-primary col-xs-12" style="margin: 0 auto;border: none;width: 385px;">
 							<div style="margin auto 40px; text-align: center; padding-top: 10px;">
 								<select id="cameraId" class="form-control" style="display: inline-block;width: auto; display: none;"></select>
 								<span style ="background: #E6F1C0;width: 161px;height: 40px;font-size: 14px; color: black;font-weight:600" class="btn-sm">{% trans 'Scan Code' %}</span>
