@@ -189,34 +189,38 @@
 					<!--<div class="col-lg-6">-->
 					<div class="panel panel-default">
 					<div class="panel-heading"><h3><img src="{% static 'imgSmall/iconTimekeeper.png' %}"/>
-						{% trans 'HC TIMEKEEPER REPORT' %}</h3></div>
+						{% trans 'HC TIMEKEEPER REPORT' %}</h3>
+					</div>
 					<div class="panel-body">
 					<div class="input-daterange input-group" id="datepicker">
 						<input type="text" id="start" class="input-sm form-control" name="start" />
 						<span class="input-group-addon">to</span>
 						<input type="text" id="stop" class="input-sm form-control" name="end" />
-					</div>
-						<button style="float: right;margin-top: 15px; margin-bottom:10px;height:50px;font-size:15px;font-weight:600;background-color: #6DA8F5;" type="button" class="btn btn-default" onclick="updateReport()" ><span class="glyphicon glyphicon-refresh"></span>Update Report</button>
 
-			<table class="table table-condensed" id="report_table" style="border-collapse:collapse;">
-				<thead>
-					<tr>
-						<th>ID</th>
-						<th>Name</th>
-						<th>Team Lead</th>
-						<th>Team Name</th>
-						<!--<th>Location</th>-->
-						<!--<th>Job Code</th>-->
-						<th>Date</th>
-						<th>Clock-In</th>
-						<th>Clock-Out</th>
-						<th>Hours Worked(w/ breaks)</th>
-					</tr>
-				</thead>
-				<tbody id="results">
-				</tbody>
-			</table>
-            </div>
+					</div>
+					<button style="float: right;margin-top: 15px; margin-bottom:10px;height:50px;font-size:15px;font-weight:600;background-color: #6DA8F5;" type="button" class="btn btn-default" onclick="updateReport()" ><span class="glyphicon glyphicon-refresh"></span>Update Report</button>
+
+
+
+					<table class="table table-condensed" id="report_table" style="border-collapse:collapse;">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Name</th>
+								<th>Team Lead</th>
+								<th>Team Name</th>
+								<!--<th>Location</th>-->
+								<!--<th>Job Code</th>-->
+								<th>Date</th>
+								<th>Clock-In</th>
+								<th>Clock-Out</th>
+								<th>Hours Worked(w/ breaks)</th>
+							</tr>
+						</thead>
+						<tbody id="results">
+						</tbody>
+					</table>
+            		</div>
 
           </div>
 
@@ -224,8 +228,8 @@
 						</div>
 
 				</div>
-				<a href="{% url 'timecard_excel' %}"><button style="float: right;margin-right: 15px;" type="button" class="btn btn-default" ><span class="glyphicon glyphicon-download"></span>Download .xls</button></a>
-				<button style="float: right;margin-right: 15px;" type="button" class="btn btn-default" id="btnExport" onclick="downloadCsv()"><span class="glyphicon glyphicon-download"></span>Download .csv</button>
+				<!--<a href="{% url 'timecard_excel' %}"><button style="float: right;margin-right: 15px;" type="button" class="btn btn-default" ><span class="glyphicon glyphicon-download"></span>Download .xls</button></a>-->
+				<button style="float: right;margin-right: 15px;height: 50px; font-weight: 600;font-size: 15px;" type="button" class="btn btn-success" id="btnExport" onclick="downloadCsv()"><span style="font-size: 15px;" class="glyphicon glyphicon-download"></span>Download .csv</button>
 
 
 			</div>

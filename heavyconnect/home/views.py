@@ -2478,7 +2478,8 @@ def timeLogById(request):
 					minutes = checkMinutes(minutes)
 
 					total_time = end - atten_start
-					result['Total'] = str(total_time)
+					total_time = str(round(total_time.total_seconds()/60/60,2))
+					result['Total'] = total_time
 					hours, remainder = divmod(atten_start.seconds, 3600)
 					minutes, seconds = divmod(remainder, 60)
 					hours = checkHours(hours)
@@ -3967,7 +3968,9 @@ def getExcel(request):
 				if hour_ended > hour_started:
 					# hour_ended =  datetime.timedelta(hours = hour_ended.hours, minutes = hour_ended.minutes, seconds = hour_ended.seconds)
 					# hour_started =  datetime.timedelta(hours = hour_started.hours, minutes = hour_started.minutes, seconds = hour_started.seconds)
-					hours_today = str(hour_ended - hour_started)
+					hours_today = hour_ended - hour_started
+
+					hours_today = str(round(hours_today.total_seconds()/60/60, 2))
 				else:
 					hours_today = 'N/A'
 			else:
@@ -4097,6 +4100,7 @@ def getCsv(request):
 			date = attendance.date
 			hour_started = attendance.hour_started
 			hour_ended = attendance.hour_ended
+			now = datetime.datetime.now().time()
 
 			if(attendance.group is None):
 				leader_name = 'N/A'
@@ -4105,22 +4109,34 @@ def getCsv(request):
 				leader_name = attendance.group.creator.user.first_name + ", " + attendance.group.creator.user.last_name
 				crew = attendance.group.name
 
-			if hour_ended == None:
-				hour_ended = 'N/A'
-			if hour_started == None:
+			if attendance.hour_started != None:
+				hour_started = datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
+			else:
 				hour_started = 'N/A'
+
+			if attendance.hour_ended != None:
+				hour_ended = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
+			else:
+				hour_ended = 'N/A'
+
+			if hour_ended == 'N/A' or hour_ended == None:
+				hour_ended = datetime.timedelta(hours = now.hour, minutes = now.minute, seconds = now.second)
 			if hour_ended != 'N/A' and hour_started != 'N/A':
 				if hour_ended > hour_started:
-					hour_ended =  datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
-					hour_started =  datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
-					hours_today = str(hour_started - hour_ended)
+					# hour_ended =  datetime.timedelta(hours = hour_ended.hours, minutes = hour_ended.minutes, seconds = hour_ended.seconds)
+					# hour_started =  datetime.timedelta(hours = hour_started.hours, minutes = hour_started.minutes, seconds = hour_started.seconds)
+					hours_today = hour_ended - hour_started
+					hours_today = str(round(hours_today.total_seconds()/60/60, 2))
 				else:
 					hours_today = 'N/A'
 			else:
 				hours_today = 'N/A'
+			print 'hours today'
+			print hours_today
+			print hour_ended
+			print hour_started
 
 			employee_name = attendance.employee.user.last_name + ", " + attendance.employee.user.first_name
-			# writer.writerow([employee_id, employee_name, leader_name, date, hour_started, hour_ended, hours_today])
 			data_row.extend((attendance_id, employee_id, employee_name, leader_name, crew, date, hour_started, hour_ended, hours_today))
 			breaks = Break.objects.filter(attendance__id = attendance.id).order_by('start')
 			jobs = Task.objects.filter(attendance_id = attendance.id).order_by('-id')
@@ -4131,16 +4147,16 @@ def getCsv(request):
 			reg_breaks = []
 			combined_breaks = []
 
-
 			while m <=8:
-				if m <= jobs.count():
+				if m <= jobs.count() and breaks.count() > 0:
+					print jobs.count()
 
 					job_code = jobs[m-1].description
 					if m ==1:
-
 						startJob = hour_started
 						endJob = breaks[0].start
 						endJob = datetime.timedelta(hours = endJob.hour, minutes = endJob.minute, seconds = endJob.second)
+
 					elif m == jobs.count():
 
 						startJob = breaks[m-2].end
@@ -4153,13 +4169,20 @@ def getCsv(request):
 						startJob =  datetime.timedelta(hours = startJob.hour, minutes = startJob.minute, seconds = startJob.second)
 						endJob = breaks[m-1].start
 						endJob = datetime.timedelta(hours = endJob.hour, minutes = endJob.minute, seconds = endJob.second)
+					print 'hours spend'
+					print endJob
+					print startJob
 
+					print type(endJob)
+					print type(startJob)
 					hours_spent = endJob - startJob
+					print hours_spent
 					data_row.extend((job_code, hours_spent))
 				else:
+					print 'no row'
 					data_row.extend(('', ''))
 				m += 1
-
+			print 'lunch breaks'
 			if break_num > 0:
 				for item in breaks:
 					if item.lunch == True:
@@ -4169,6 +4192,7 @@ def getCsv(request):
 						reg_breaks.append(item)
 				most_breaks = max(len(lunch_breaks), len(reg_breaks))
 				i=0
+				print 'most breaks'
 				while most_breaks > i:
 					if(len(reg_breaks) > i):
 						combined_breaks.append(reg_breaks[i])
@@ -4180,6 +4204,7 @@ def getCsv(request):
 						combined_breaks.append("")
 					i += 1
 				i=1
+				print 'combined breaks'
 				for item in combined_breaks:
 					num_break = i
 					if(item != ""):
@@ -4223,11 +4248,15 @@ def timeKeeperDailyReport(request):
 				start =  datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
 
 				if attendance.hour_ended is None:
-					end = 'N/A'
-					hours_today = 'N/A'
+					now = datetime.datetime.now()
+					end =  datetime.timedelta(hours = now.hour, minutes = now.minute, seconds = now.second)
+					hours_today = end - start
+					hours_today = str(round(hours_today.total_seconds()/60/60, 2))
+					end = 'In Progress'
 				else:
 					end =  datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
-					hours_today = str(end - start)
+					hours_today = end - start
+					hours_today = str(round(hours_today.total_seconds()/60/60, 2))
 				# if str(attendance.hour_ended) < str(attendance.hour_started):
 				# 	hours_today = 'N/A'
 				all_names.append(str(attendance.employee.user.last_name + ", " + attendance.employee.user.first_name))

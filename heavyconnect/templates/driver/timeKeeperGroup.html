@@ -266,6 +266,7 @@
 				callChecklist("{{ csrf_token }}", "{% url 'retrieveAttendanceChecklist' %}", idTimelog);
 			});
 			$("#createTeam").click(function(){
+			 	id_scanned = [];
     			emptyDivs();
     			$('#showTimekeeperModal').modal();
     			$("#messageTimekeeper").css("color", "#1F3801");	//green
@@ -274,7 +275,7 @@
     							+ '<tr><td><label>{% trans 'Save Team' %}?&nbsp;&nbsp;<input type="checkbox" id="saveTeam"/></label></td></tr>'
     							+ '<tr><td><input type="button" id="scanNow" onclick="openAdd()" value="{% trans 'Add Employees' %}" class="btnsTimekeeper"/></td></tr>'
     							+ '<tr><td><div id="addingList"></div></tr></td>'
-    							+ '<tr><td><input type="button" id="addNow" style="background: #1F3801;background-size: 100% 100%;border-radius: 7px;border: none;box-shadow: 2px 2px 5px gray;height: 50px;width: 200px;color: white;font-size: 25px;font-weight: 700;" onclick="createNow(id_scanned)" value="Create Now"></td></tr></table>');
+    							+ '<tr><td><input type="button" id="addNow" style="background: #1F3801;background-size: 100% 100%;border-radius: 7px;border: none;box-shadow: 2px 2px 5px gray;height: 65px;width: 250px;color: white;font-size: 25px;font-weight: 700;" onclick="createNow(id_scanned)" value="Create Now"></td></tr></table>');
 			});
 
 			 $('#qr-canvas').WebCodeCam({
@@ -282,6 +283,7 @@
             ReadBarecode: true,
             width: 320,
             height: 240,
+            <!--beep: {% static 'WebCodeCam/js/beep.mp3' %},-->
             <!--videoSource: {-->
                     <!--id: true,      //default Videosource-->
                     <!--maxWidth: 640, //max Videosource resolution width-->
@@ -368,16 +370,21 @@
 			$('#qrCodeModal').modal();
 		}
 		function createNow(arrayIds) {
-			var nameTeam = $("#nameTeam").val();
-			if ($('#saveTeam').is(":checked")) {
-  				var permanent = 1;
-			} else {
-				var permanent = 0;
-			}
-			emptyDivs();
-			$("#messageTimekeeper").html("{% trans 'Creating team' %}...");
+			if(arrayIds.length > 0){
+				var nameTeam = $("#nameTeam").val();
+				if ($('#saveTeam').is(":checked")) {
+					var permanent = 1;
+				} else {
+					var permanent = 0;
+				}
+				emptyDivs();
+				$("#messageTimekeeper").html("{% trans 'Creating team' %}...");
 
-			createGroup("{{ csrf_token }}", "{% url 'createGroup' %}", nameTeam, JSON.stringify(arrayIds), permanent);
+				createGroup("{{ csrf_token }}", "{% url 'createGroup' %}", nameTeam, JSON.stringify(arrayIds), permanent);
+			}else {
+				feedBackQrCode("show", "red", "{% trans 'Please add an employee.' %}");
+
+			}
 		}
 		function createGroup(token, url, nameTeam, codes, permanent){
 			$.ajax({
@@ -449,7 +456,7 @@
 						$("#teamsList").css("text-align", "left");
 						$("#teamsList").html('');
 						for (var i = 0; i < data.group.length; i++) {
-							$("#teamsList").append('<label  id="teamName'+i+'" style="margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" type="checkbox" onChange="checkState()" name="teamRadio" value="' + data.group[i].id + '" id="team' + i +'"/> ' + data.group[i].Name + '('+ data.group[i].size +')   HOURS: '+ data.group[i].totalHours +'</label>');
+							$("#teamsList").append('<label  id="teamName'+i+'" style="box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onChange="checkState()" name="teamRadio" value="' + data.group[i].id + '" id="team' + i +'"/> ' + data.group[i].Name + '('+ data.group[i].size +')   HOURS: '+ data.group[i].totalHours +'</label>');
  						}
 					}
 				}
@@ -483,7 +490,7 @@
 							$("#timelogBack1").show();
 							$("#messageTimekeeper").html("Select the Employee to see their SCHEDULE:");
 							for (var j = 0; j < data.participant.length; j++) {
-								$("#divTimelog").append("<input style='width: 100%;margin-bottom: 20px;height: 65px;border-radius: .25em;' type='button' id='" + id_checked[j] + "' onclick='timelogId(this.id)' value='" + arrayNames[j] + "'/><br>");
+								$("#divTimelog").append("<input style='box-shadow: 1px 1px 3px gray;width: 100%;margin-bottom: 20px;height: 65px;border-radius: .25em;' type='button' id='" + id_checked[j] + "' onclick='timelogId(this.id)' value='" + arrayNames[j] + "'/><br>");
 							}
 						}
 						action = -1;
@@ -627,7 +634,7 @@
 		}
 		function teamsBtns() {
 			for (var i = 0; i < arrayTeams.length; i++) {
-				$("#divTimelog").append("<input style='width:100%;margin-bottom: 20px;height: 65px;border-radius: .25em;' type='button' id='" + arrayTeams[i].id + "' onclick='callTeam(this.id)' value='" + arrayTeams[i].Name + "("+ arrayTeams[i].size +")   HOURS: "+ arrayTeams[i].totalHours +"'/><br>");
+				$("#divTimelog").append("<input style='box-shadow: 1px 1px 3px gray;width:100%;margin-bottom: 20px;height: 65px;border-radius: .25em;' type='button' id='" + arrayTeams[i].id + "' onclick='callTeam(this.id)' value='" + arrayTeams[i].Name + "("+ arrayTeams[i].size +")   HOURS: "+ arrayTeams[i].totalHours +"'/><br>");
 			}
 		}
 		function callTeam(groupId) {
@@ -641,6 +648,22 @@
 			$("#timelogBack2").show();
 			$("#messageTimekeeper").css("color", "#1F3801");	//green
 			$("#messageTimekeeper").html("SCHEDULE");
+			var today = new Date();
+			var dd = today.getDate();
+			var mm = today.getMonth()+1; //January is 0!
+			var yyyy = today.getFullYear();
+
+			if(dd<10) {
+				dd='0'+dd
+			}
+
+			if(mm<10) {
+				mm='0'+mm
+			}
+
+			today = mm+'/'+dd+'/'+yyyy;
+			$("#messageTimekeeper").append("<span>"+today+"</span>");
+
 			idTimelog = idShow;
 			timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
 		}
@@ -982,13 +1005,12 @@
 						$("#errorQrCode").html("")
 						var data_scanned = {};
 						if (data.success) {
-							<!--$("#qrCodeModal").modal("hide");-->
-							feedBackQrCode("show", "green", "{% trans 'Employee added to the group!' %}");
+							feedBackQrCode("show", "green", "{% trans 'Employee added.' %}");
 							data_scanned.qr_code = id;
 							data_scanned.employee = data.employee
 							id_scanned.push(data_scanned);
 							$("#addingList").empty();
-							var addingHtml = '<select class="form-control"><option> {% trans 'Employees Added' %} (' + id_scanned.length + ')</option>';
+							var addingHtml = '<select style="    height: 50px;margin-bottom: 10px;font-size: 24px;" class="form-control"><option> {% trans 'Employees Added' %} (' + id_scanned.length + ')</option>';
 							for (i = 0; i < id_scanned.length; i++) {
 								addingHtml += '<option disabled>' + id_scanned[i].employee + '</option>';
     						}
@@ -996,12 +1018,12 @@
 
     						$("#addingList").append(addingHtml);
 						} else {
-							feedBackQrCode("show", "red", "{% trans 'This employee does not exist!' %}");
+							feedBackQrCode("show", "red", "{% trans 'Employee does not exist.' %}");
 						}
 					}
 				});
 			}else{
-				feedBackQrCode("show", "red", "{% trans 'Employee already added to the group!' %}");
+				feedBackQrCode("show", "red", "{% trans 'Employee already added.' %}");
 			}
 		}
 		function checkQrCode(qr_code){
@@ -1014,6 +1036,9 @@
 		}
 		function feedBackQrCode(modal, color, message){
 			$("#addEmployee").modal(modal);
+			setTimeout(function(){
+			  $('#addEmployee').modal('hide')
+			}, 1000);
 			$("#errorQrCode").css("color", color)
 			$("#errorQrCode").html(message)
 			$("#qr_code").val(""); // Clean input text #qr_code
@@ -1150,11 +1175,9 @@
 						<div class="panel panel-primary col-xs-12" style="border: none;">
 							<div style="margin auto 40px; text-align: center; padding-top: 10px;">
 								<select id="cameraId" class="form-control" style="display: inline-block;width: auto; display: none;"></select>
-								<a href="#">
-								<input id="play" style ="background: url('/static/imgSmall/buttons/scan.png') no-repeat top left;background-size: 100% 100%;width: 161px;height: 40px;font-size: 14px;padding-left: 60px;color: white;"value="{% trans 'Scan Code' %}" title="Play" type="button" class="btn btn-success btn-sm">
-								</a>
+								<span style ="background: #E6F1C0;width: 161px;height: 40px;font-size: 14px; color: black;font-weight:600" class="btn-sm">{% trans 'Scan Code' %}</span>
 							</div>
-							<div class="panel-body" id="contentQRCode" style="padding-top: 10px; padding-bottom: 0px;">
+							<div class="panel-body" id="contentQRCode" style="padding-top:0px;padding-bottom: 0px;">
 								<div class="col-md-12 col-xs-12" style="text-align: center;">
 									<div class="well" id="well" style="padding: 0px; position: relative;display: inline-block; border: green solid 2px;">
 										<canvas id="qr-canvas" width="200px" height="200px"></canvas>
@@ -1166,9 +1189,10 @@
 								</div>
 							</div>
 							<div style="margin auto 40px; text-align: center;">
+								<span style ="background: #E6F1C0;width: 161px;height: 40px;font-size: 14px; color: black;font-weight:600" class="btn-sm">{% trans 'Enter Code' %}</span>
 								<input type="text" id="qr_code" style="color:black;" placeholder="{% trans 'Type Employee ID' %}"/>
 
-								<button id="submit" title="Play" type="button" class="btn btn-success btn-sm" onclick="checkEmployeeScanned('{{ csrf_token }}', '/home/checkEmployeeQrCode/', $('#qr_code').val());">
+								<button id="submit" style="background:#1F3801;" title="Play" type="button" class="btn btn-success btn-sm" onclick="checkEmployeeScanned('{{ csrf_token }}', '/home/checkEmployeeQrCode/', $('#qr_code').val());">
 									<span class="glyphicon glyphicon-play"></span>
 								</button>
 
