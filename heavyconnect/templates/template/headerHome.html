@@ -57,6 +57,8 @@
 	<body>
 		<div id="top">
 			<div id="menuTop">
+				<meta name="apple-mobile-web-app-capable" content="yes">
+				<meta name="mobile-web-app-capable" content="yes">
 				<img src="{% static 'img/logoNegative.png' %}" id="logoHome"/>
 				<a href="{% url 'logout' %}"><input type="button" value="{% trans 'EXIT' %}" id="logOff"/></a>
 				<a href="{% url 'profile' %}"><input type="button" id="userImg"/></a>

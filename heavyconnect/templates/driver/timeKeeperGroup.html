@@ -236,28 +236,28 @@
 				emptyDivs();
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				$("#messageTimekeeper").html("{% trans 'Select a Team to see SCHEDULE' %}:");
+				$("#messageTimekeeper").html("{% trans 'Select a Team' %}:");
 				teamsBtns();
 			});
 			$("#scheduleButton").click(function() {
 				emptyDivs();
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				$("#messageTimekeeper").html("{% trans 'Select a Team to see SCHEDULE' %}:");
+				$("#messageTimekeeper").html("{% trans 'Select a Team' %}:");
 				teamsBtns();
 			});
 			$("#timelogBack1").click(function() {
 				emptyDivs();
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				$("#messageTimekeeper").html("{% trans 'Select a Team to see SCHEDULE' %}:");
+				$("#messageTimekeeper").html("{% trans 'Select a Team' %}:");
 				teamsBtns();
 			});
 			$("#timelogBack2").click(function() {
 				emptyDivs();
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				$("#messageTimekeeper").html("{% trans 'Select the Employee to see SCHEDULE' %}:");
+				$("#messageTimekeeper").html("{% trans 'Select an Employee' %}:");
 				callTeam(idGroup);
 			});
 			$("#btnSignature").click(function(){
@@ -488,7 +488,7 @@
 
 						if (action == 5) {
 							$("#timelogBack1").show();
-							$("#messageTimekeeper").html("Select the Employee to see their SCHEDULE:");
+							$("#messageTimekeeper").html("Select an Employee:");
 							for (var j = 0; j < data.participant.length; j++) {
 								$("#divTimelog").append("<input style='box-shadow: 1px 1px 3px gray;width: 100%;margin-bottom: 20px;height: 65px;border-radius: .25em;' type='button' id='" + id_checked[j] + "' onclick='timelogId(this.id)' value='" + arrayNames[j] + "'/><br>");
 							}
@@ -662,7 +662,7 @@
 			}
 
 			today = mm+'/'+dd+'/'+yyyy;
-			$("#messageTimekeeper").append("<span>"+today+"</span>");
+			$("#messageTimekeeper").append("<p align='center' style='margin-left:40px;'>"+today+"</p>");
 
 			idTimelog = idShow;
 			timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
