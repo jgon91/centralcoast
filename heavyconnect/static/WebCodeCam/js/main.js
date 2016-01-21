@@ -82,10 +82,10 @@
             grabImg.classList.remove("disabled");
         }
     };
-    var decoder = new WebCodeCamJS('#qr-canvas');
-    decoder.buildSelectMenu("#camera-select");
-    decoder.init(args);
-    decoder.play();
+//    var decoder = new WebCodeCamJS('#qr-canvas');
+//    decoder.buildSelectMenu("#camera-select");
+//    decoder.init(args);
+//    decoder.play();
 //    decodeLocal.addEventListener("click", function() {
 //        Page.decodeLocalImage();
 //    }, false);

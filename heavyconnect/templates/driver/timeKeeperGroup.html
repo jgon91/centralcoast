@@ -280,66 +280,93 @@
     							+ '<tr><td><div id="addingList"></div></tr></td>'
     							+ '<tr><td><input type="button" id="addNow" style="background: #1F3801;background-size: 100% 100%;border-radius: 7px;border: none;box-shadow: 2px 2px 5px gray;height: 65px;width: 250px;color: white;font-size: 25px;font-weight: 700;" onclick="createNow(id_scanned)" value="Create Now"></td></tr></table>');
 			});
-			<!--var decoder = new WebCodeCamJS('#qr-canvas');-->
-			 <!--var decoder = $('#qr-canvas').WebCodeCamJS({-->
-            <!--ReadQRCode: true,-->
-            <!--ReadBarecode: true,-->
-            <!--width: 320,-->
-            <!--height: 240,-->
-            <!--&lt;!&ndash;beep: {% static 'WebCodeCam/js/beep.mp3' %},&ndash;&gt;-->
-            <!--&lt;!&ndash;videoSource: {&ndash;&gt;-->
-                    <!--&lt;!&ndash;id: true,      //default Videosource&ndash;&gt;-->
-                    <!--&lt;!&ndash;maxWidth: 640, //max Videosource resolution width&ndash;&gt;-->
-                    <!--&lt;!&ndash;maxHeight: 480 //max Videosource resolution height&ndash;&gt;-->
-            <!--&lt;!&ndash;},&ndash;&gt;-->
-            <!--constraints: {                  // default constraints-->
-				<!--video: {-->
-					<!--mandatory: {-->
-						<!--maxWidth: 640,-->
-						<!--maxHeight: 480-->
-					<!--},-->
-					<!--optional: [{-->
-						<!--sourceId: true-->
-					<!--}]-->
-				<!--},-->
-				<!--audio: false-->
-        	<!--},-->
-            <!--flipVertical: false,  // false or true-->
-            <!--flipHorizontal: false,  // false or true-->
-            <!--zoom: -1, // if zoom = -1, auto zoom for optimal resolution else int-->
-            <!--autoBrightnessValue: false, // functional when value autoBrightnessValue is int-->
-            <!--brightness: 0, // int-->
-            <!--grayScale: false, // false or true-->
-            <!--contrast: 0, // int-->
-            <!--threshold: 0, // int-->
-            <!--sharpness: [], //or matrix, example for sharpness ->  [0, -1, 0, -1, 5, -1, 0, -1, 0]-->
-            <!--resultFunction: function(resText, lastImageSrc) {-->
-                        <!--/* resText as decoded code, lastImageSrc as image source-->
-                        <!--example:-->
-                        <!--alert(resText);-->
-                        <!--*/-->
-                        <!--checkEmployeeScanned('{{ csrf_token }}', '/home/checkEmployeeQrCode/', resText);-->
+			function fadeOut(el, v) {
+				el.style.opacity = 1;
+				(function fade() {
+					if ((el.style.opacity -= 0.1) < v) {
+						el.style.display = "none";
+						el.classList.add("is-hidden");
+					} else {
+						requestAnimationFrame(fade);
+					}
+				})();
+			}
+			function Q(el) {
+				if (typeof el === 'string') {
+					var els = document.querySelectorAll(el);
+					return typeof els === 'undefined' ? undefined : els.length > 1 ? els : els[0];
+				}
+				return el;
+			}
+			var scannerLaser = Q(".scanner-laser");
+			 var args = {
+            ReadQRCode: true,
+            ReadBarecode: true,
+            width: 320,
+            height: 240,
+            <!--beep: {% static 'WebCodeCam/js/beep.mp3' %},-->
+            <!--videoSource: {-->
+                    <!--id: true,      //default Videosource-->
+                    <!--maxWidth: 640, //max Videosource resolution width-->
+                    <!--maxHeight: 480 //max Videosource resolution height-->
             <!--},-->
-            <!--getUserMediaError: function() {-->
-                        <!--/* callback funtion to getUserMediaError-->
-                        <!--example:-->
-                        <!--alert('Sorry, the browser you are using doesn\'t support getUserMedia');-->
-                        <!--*/-->
-            <!--},-->
-            <!--cameraError: function(error) {-->
-                        <!--/* callback funtion to cameraError,-->
-                        <!--example:-->
-                        <!--var p, message = 'Error detected with the following parameters:\n';-->
-                        <!--for (p in error) {-->
-                                <!--message += p + ': ' + error[p] + '\n';-->
-                        <!--}-->
-                        <!--alert(message);-->
-                        <!--*/-->
-            <!--}-->
-        <!--});-->
+            constraints: {                  // default constraints
+				video: {
+					mandatory: {
+						maxWidth: 640,
+						maxHeight: 480
+					},
+					optional: [{
+						sourceId: true
+					}]
+				},
+				audio: false
+        	},
+            flipVertical: false,  // false or true
+            flipHorizontal: false,  // false or true
+            zoom: -1, // if zoom = -1, auto zoom for optimal resolution else int
+            autoBrightnessValue: false, // functional when value autoBrightnessValue is int
+            brightness: 0, // int
+            grayScale: false, // false or true
+            contrast: 0, // int
+            threshold: 0, // int
+            sharpness: [], //or matrix, example for sharpness ->  [0, -1, 0, -1, 5, -1, 0, -1, 0]
+            resultFunction: function(res) {
+				[].forEach.call(scannerLaser, function(el) {
+					fadeOut(el, 0.5);
+					setTimeout(function() {
+						<!--fadeIn(el, 0.5);-->
+					}, 300);
+				});
+				<!--scannedImg.src = res.imgData;-->
+				<!--scannedQR[txt] = res.format + ': ' + res.code;-->
+				<!--alert(res.code);-->
+				<!--alert(res.format);-->
+				checkEmployeeScanned('{{ csrf_token }}', '/home/checkEmployeeQrCode/', res.code);
+        	},
+            getUserMediaError: function() {
+                        /* callback funtion to getUserMediaError
+                        example:
+                        alert('Sorry, the browser you are using doesn\'t support getUserMedia');
+                        */
+            },
+            cameraError: function(error) {
+                        /* callback funtion to cameraError,
+                        example:
+                        var p, message = 'Error detected with the following parameters:\n';
+                        for (p in error) {
+                                message += p + ': ' + error[p] + '\n';
+                        }
+                        alert(message);
+                        */
+            }
+        }
+        var decoder = new WebCodeCamJS('#qr-canvas');
 
         <!--decoder.buildSelectMenu('#camera-select', 1); //index : default camera index optional-->
-		<!--decoder.init();-->
+		decoder.init(args);
+		decoder.buildSelectMenu("#camera-select");
+		decoder.play();
 		<!--decoder.getOptimalZoom();-->
 
 		});
