@@ -31,8 +31,8 @@ ALLOWED_HOSTS = [
     '*'
     ]
 
-SECURE_SSL_REDIRECT = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SECURE_SSL_REDIRECT = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 SHARED_APPS = (
     'tenant_schemas',  # mandatory
@@ -66,8 +66,8 @@ ADMINS = [('Jessica', 'jgon91@gmail.com')]
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'jgon91@gmail.com'
-EMAIL_HOST_PASSWORD = os.environ['EMAIL_PASS']
-SERVER_EMAIL = 'jgon91@gmail.com'
+# EMAIL_HOST_PASSWORD = os.environ['EMAIL_PASS']
+# SERVER_EMAIL = 'jgon91@gmail.com'
 MANAGERS = ADMINS
 EMAIL_USE_TLS = True
 
