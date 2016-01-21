@@ -58,14 +58,12 @@
             for (p in error) {
                 message += p + ": " + error[p] + "\n";
             }
-            alert(message);
         },
         getUserMediaError: function(error) {
             var p, message = "Error detected with the following parameters:\n";
             for (p in error) {
                 message += p + ": " + error[p] + "\n";
             }
-            alert(message);
         },
         cameraError: function(error) {
             var p, message = "Error detected with the following parameters:\n";
@@ -78,7 +76,6 @@
                 for (p in error) {
                     message += p + ": " + error[p] + "\n";
                 }
-                alert(message);
             }
         },
         cameraSuccess: function() {
