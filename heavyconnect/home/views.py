@@ -3886,7 +3886,7 @@ def getAllEmployees(request):
 	if request.method == 'POST':
 		if request.is_ajax():
 			try:
-				all_employee = Employee.objects.all()
+				all_employee = Employee.objects.all().exclude(permission_level = 3)
 				employees = []
 				for each in all_employee:
 					each_result['first_name'] = each.user.first_name
