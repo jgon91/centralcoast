@@ -66,8 +66,8 @@ ADMINS = [('Jessica', 'jgon91@gmail.com')]
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'jgon91@gmail.com'
-# EMAIL_HOST_PASSWORD = os.environ['EMAIL_PASS']
-# SERVER_EMAIL = 'jgon91@gmail.com'
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_PASS']
+SERVER_EMAIL = 'jgon91@gmail.com'
 MANAGERS = ADMINS
 EMAIL_USE_TLS = True
 
@@ -109,18 +109,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'heavyconnect.wsgi.application'
 
-#
-# DATABASES = {
-#          'default': {
-#              'ENGINE': 'tenant_schemas.postgresql_backend', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-#              'NAME': 'dev',                      # Or path to database file if using sqlite3.
-#              'USER': '',                      # Not used with sqlite3.
-#              'PASSWORD': '',                  # Not used with sqlite3.
-#              'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
-#              'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
-#
-#          }
-#      }
+
 DATABASES = {
     'default': {
         'ENGINE': 'tenant_schemas.postgresql_backend',
@@ -131,18 +120,6 @@ DATABASES = {
         'PORT': os.environ['DB_PORT'],
     }
 }
-
-#tanda
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'tenant_schemas.postgresql_backend',
-#         'NAME': 'd395pa1l0s6i0g',                      # Or path to database file if using sqlite3.
-#         'USER': 'dntkrypwpilsae',                      # Not used with sqlite3.
-#         'PASSWORD': 'QAUjydqmetOvNSew_L1c309zd6',                  # Not used with sqlite3.
-#         'HOST': 'ec2-54-204-12-25.compute-1.amazonaws.com',                      # Set to empty string for localhost. Not used with sqlite3.
-#         'PORT': '5432',
-#     }
-# }
 
 DATABASE_ROUTERS = (
     'tenant_schemas.routers.TenantSyncRouter',
