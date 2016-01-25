@@ -3626,11 +3626,16 @@ def saveAnswerChecklistAttendance(request):
 				employee = Employee.objects.get(user = request.user)
 				attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
 				answer = request.POST['answer']
-				print 'save answer'
+				print 'answer'
+				print answer
+				print 'question'
+				print question
+				print 'attendance'
+				print attendance
 
 				employeeAnswer = EmployeeAttendanceChecklist(question = question, attendance = attendance, answer = answer)
-				employeeAnswer.save()
 				print employeeAnswer
+				employeeAnswer.save()
 				result['success'] = True
 
 			except(Employee.DoesNotExist, EmployeeAttendance.DoesNotExist, Question.DoesNotExist) as e:
