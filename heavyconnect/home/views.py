@@ -41,12 +41,12 @@ LANGUAGE_CHOICES = ['pt-br','es', 'en-us']
 #                 on_trial=False)
 # tenant.save()
 #
-# tenant = Client(domain_url='t-and-a.heavyconnect.com', # don't add your port or www here!
-#                 schema_name='tanda',
-#                 name='T & A',
-#                 paid_until='2014-12-05',
-#                 on_trial=True)
-# tenant.save() # migrate_schemas automatically called, your tenant is ready to be used!
+tenant = Client(domain_url='t-and-a.heavyconnect.com', # don't add your port or www here!
+                schema_name='tanda',
+                name='T & A',
+                paid_until='2014-12-05',
+                on_trial=True)
+tenant.save() # migrate_schemas automatically called, your tenant is ready to be used!
 
 class HelloPDFView(PDFTemplateView):
 	template_name = "template/timecard.html"
@@ -4401,6 +4401,7 @@ def getCsv(request):
 								start = datetime.timedelta(hours = item.start.hour, minutes = item.start.minute, seconds = item.start.second)
 								end = datetime.timedelta(hours = item.end.hour, minutes = item.end.minute, seconds = item.end.second)
 								total = end - start
+								total = str(round(total.total_seconds()/60/60, 2))
 							else:
 								total = 'N/A'
 						else:
