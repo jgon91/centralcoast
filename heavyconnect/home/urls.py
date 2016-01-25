@@ -135,10 +135,14 @@ urlpatterns = [
     url(r'^retrieveGroup/$', main_views.retrieveGroup, name = 'retrieveGroup'),
     url(r'^retrieveParticipant/$', main_views.retrieveParticipant, name = 'retrieveParticipant'),
     url(r'^retrieveAttendanceChecklist/$', main_views.retrieveAttendanceChecklist, name = 'retrieveAttendanceChecklist'),
+    url(r'^getChecklistAttendance/$', main_views.getChecklistAttendance, name = 'getChecklistAttendance'),
     url(r'^retrieveAllEquipmentInfoGPS/$', main_views.retrieveAllEquipmentInfoGPS, name = 'retrieveAllEquipmentInfoGPS'),
     url(r'^retrieveAllMachineInfoGPS/$', main_views.retrieveAllMachineInfoGPS, name = 'retrieveAllMachineInfoGPS'),
+    url(r'^saveAnswerChecklistAttendance/$', main_views.saveAnswerChecklistAttendance, name = 'saveAnswerChecklistAttendance'),
     url(r'^getImageUser/$', main_views.getImageUser, name = 'getImageUser'),
     url(r'^numEmployeeCheck/$', main_views.numEmployeeCheck, name = 'numEmployeeCheck'),
+    url(r'^declineShift/$', main_views.declineShift, name = 'declineShift'),
+    url(r'^undeclineShift/$', main_views.undeclineShift, name = 'undeclineShift'),
     #url(r'^checkAttendanceBreaks/$', main_views.checkAttendanceBreaks, name = 'retrieveAttendanceChecklist'),
    ### End ###
 

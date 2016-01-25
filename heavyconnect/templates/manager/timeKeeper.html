@@ -160,10 +160,16 @@
 								}
 
 								var demo = "demo" + i;
+								if(data.declines[i] == false){
+									$('#results').append('<tr data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle"> <td>' +
+									data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>' + data.group_leader[i] + '</td><td>'+ data.crews[i]+'</td><td>' + data.job_codes[i] +'</td><td>' + data.ranches[i] +'</td><td>' + item.fields.date +'</td><td>' +
+									start_hour + '</td><td>' + end_hour + '</td><td>' + total_time+'</td></tr>');
+								} else {
+									$('#results').append('<tr style="background:red;" data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle"> <td>' +
+									data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>' + data.group_leader[i] + '</td><td>'+ data.crews[i]+'</td><td>' + data.job_codes[i] +'</td><td>' + data.ranches[i] +'</td><td>' + item.fields.date +'</td><td>' +
+									start_hour + '</td><td>' + end_hour + '</td><td>' + total_time+'</td></tr>');
+								}
 
-								$('#results').append('<tr data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle"> <td>' +
-								data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>' + data.group_leader[i] + '</td><td>'+ data.crews[i]+'</td><td>' + item.fields.date +'</td><td>' +
-								start_hour + '</td><td>' + end_hour + '</td><td>' + total_time+'</td></tr>');
 
 								i = i+1;
 
@@ -210,7 +216,8 @@
 								<th>Team Lead</th>
 								<th>Team Name</th>
 								<!--<th>Location</th>-->
-								<!--<th>Job Code</th>-->
+								<th>Job Code</th>
+								<th>Ranch</th>
 								<th>Date</th>
 								<th>Clock-In</th>
 								<th>Clock-Out</th>

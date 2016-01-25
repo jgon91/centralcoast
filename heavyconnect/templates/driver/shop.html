@@ -13,6 +13,81 @@
 		<script type="text/javascript" src="{% static 'WebCodeCam/js/qrcodelib.js' %}"></script>
 		<script type="text/javascript" src="{% static 'WebCodeCam/js/WebCodeCam.js' %}"></script>
 		<style>
+			#emp-list{
+			    text-align: center;
+				width: 250px;
+				display: inherit;
+				font-weight: 600;
+				margin: -9px -50% 0px 0px;
+				position: absolute;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				background: whitesmoke;
+
+			}
+			#btnForward {
+				background: url('/static/imgSmall/buttons/nextPastTasks.png') no-repeat top left;
+			}
+			#btnBack {
+				background: url('/static/imgSmall/buttons/backPastTasks.png') no-repeat top left;
+			}
+			.btnBackAdv {
+				background-size: 100% 100%;
+				width: 34px;
+				border-radius: 10px;
+				height: 34px;
+				color: white;
+				font-size: 20px;
+				margin: auto;
+			}
+			ul {
+				border: 2px solid #ddd;
+				margin: 0px auto;
+				width: 300px;
+				padding-left:0px;
+			}
+
+			li {
+				cursor: pointer;
+				font:bold 24px "Lucida Grande",Arial,Sans-Serif;
+				padding: 5px 10px 10px 10px;
+				position:relative;
+				list-style-type: none;
+
+			}
+
+			li.current, li:hover {
+				background-color: #ddd !important;
+			}
+
+			li:nth-child(2n+1) {
+				background:none repeat scroll 0 0 whiteSmoke;
+			}
+
+			li.current span { text-decoration: underline; }
+
+			li div {
+				display: inline;
+				float: right;
+				position: relative;
+				top: -5px;
+			}
+
+			li div img {
+				margin-left: 10px;
+			}
+			.closeEquip{
+			background: url('/static/imgSmall/buttons/esc.png') no-repeat top left;
+			background-size: 100% 100%;
+			width: 50px;
+			height: 50px;
+			float: right;
+			border: none;
+			border-radius: 7px;
+			box-shadow: -1px 1px 7px gray;
+			margin: 0px;
+			padding: 0px;
+			}
 			.full-size{
 				width: 95%;
 			}
@@ -61,9 +136,13 @@
 		var teamChecked = -1;
 		var arrayNames = [];
 		var data_scanned = {};
+		var checkboxList = true;
 		var arrayTeams = [];
 		var idGroup = 0;
 		var arrayErrors = [];
+		var checked_employees = [];
+		var indexQuestions = 0;
+		var answers = [];
 
 		$(document).ready(function() {
 			$("#foot").load("{%url 'footer'%}");
@@ -75,9 +154,20 @@
 				var attendanceId = $("#attendanceId").val();
 				saveSignature("{{ csrf_token }}", "{% url 'saveSignature' %}", datapair[1], attendanceId);
 			});
+			if($("ul").has("li").length == 0) {
+				  $("ul").html("Please Add Employees");
+			}
 			$("#clearSignature").click(function() {
 				var $sigdiv = $("#signature");
 				$sigdiv.jSignature("reset");
+			});
+
+			$("#getAllEmp").click(function() {
+				$('#showTimekeeperModal').modal();
+				$("#messageTimekeeper").css("color", "#1F3801");	//green
+				$("#messageTimekeeper").html("{% trans 'Select Employees' %}:");
+				checkboxList = true;
+				getAllEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}");
 			});
 			getEmployeeShifts("{{ csrf_token }}", "{% url 'getEmployeeShifts' %}");
 
@@ -91,6 +181,7 @@
 					id_checked.splice(index, 1);
 				}
 			});
+			addRemove();
 		    $('#selectAllEmployee').click(function(event) {
 		        if(this.checked) { // check select status
 		            $('.checkboxEmployee').each(function() {
@@ -109,6 +200,13 @@
 		            });
 		        }
 		    });
+
+		    $("#divSignNow").click(function(){
+				$("#messageTimekeeper").css("color", "#1F3801");
+				$("#messageTimekeeper").html("{% trans 'Attendance Checklist' %}");
+				retrieveQuestions("{{ csrf_token }}", "{% url 'getChecklistAttendance' %}");
+			});
+
 		    $('html').on('click', function(e) {
 		    	if (e.target.className == "errorIcon") {
 		    		//show popover
@@ -118,82 +216,96 @@
   					}
   				}
 			});
+
 			$("#shift").click(function() {
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
+				$("#messageTimekeeper").html("{% trans 'Select Employee(s)' %}:");
+				checkboxList = true;
+				emptyDivs();
+				getAllEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}");
+				$("#next").append("<input type='button' id='nextButton' value='NEXT' class='btnsTimekeeper' disabled/>");
+
+
+			});
+
+			$("#next").click(function() {
+				$("#messageTimekeeper").css("color", "#1F3801");	//green
+				$("#messageTimekeeper").html("{% trans 'SHIFT' %}");
 
 				emptyDivs();
-				if(data_scanned.validated == "true"){
-					$("#messageTimekeeper").html("{% trans 'SHIFT' %}");
-					$("#clock-in").append('<input type="button" value="{% trans 'CLOCK-IN' %}" class="btnsTimekeeper"/>');
-					$("#clock-out").append('<input type="button" value="{% trans 'CLOCK-OUT' %}" class="btnsTimekeeper"/>');
-				} else {
-					$("#clock-in").append("Please Sign In");
-				}
+				$("#timelogBack1").show();
+				$("#clock-in").append('<input type="button" value="{% trans 'CLOCK-IN' %}" class="btnsTimekeeper"/>');
+				$("#clock-out").append('<input type="button"  value="{% trans 'CLOCK-OUT' %}" class="btnsTimekeeper"/>');
+
 			});
+
 			$("#clock-in").click(function() {
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				$("#messageTimekeeper").html("{% trans 'Starting Team shift' %}...");
+				$("#messageTimekeeper").html("{% trans 'Starting Shift' %}...");
 				emptyDivs();
 				action = 1;
-				startShiftGroup("{{ csrf_token }}", "{% url 'startShiftGroup' %}", data_scanned.qr_code);
-
-
+				startShiftGroup("{{ csrf_token }}", "{% url 'startShiftGroup' %}", checked_employees);
 			});
+
 			$("#clock-out").click(function() {
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				$("#messageTimekeeper").html("{% trans 'Stopping Team shift' %}...");
+				$("#messageTimekeeper").html("{% trans 'Stopping Shift' %}...");
 				emptyDivs();
 				action = 2;
-				stopShiftGroup("{{ csrf_token }}", "{% url 'stopShiftGroup' %}");
-
-
+				stopShiftGroup("{{ csrf_token }}", "{% url 'stopShiftGroup' %}", checked_employees);
 			});
 
 			$("#timelog").click(function() {
-				$('#showTimekeeperModal').modal();
 				emptyDivs();
-				$("#messageTimekeeper").html("SCHEDULE");
-				if(data_scanned.validated == "true"){
-					timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
-				} else {
-					$("#messageTimekeeper").html("Please Sign In");
-				}
+				$('#showTimekeeperModal').modal();
+				$("#messageTimekeeper").css("color", "#1F3801");	//green
+				$("#messageTimekeeper").html("{% trans 'Select an Employee' %}:");
+				checkboxList = false;
+				getAllEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}");
 			});
+
+
 			$("#timelog2").click(function() {
 				$('#showTimekeeperModal').modal();
 				emptyDivs();
 				$("#messageTimekeeper").html("SCHEDULE");
-				if(data_scanned.validated == "true"){
-					timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
-				} else {
-					$("#messageTimekeeper").html("Please Sign In");
-				}
+				checkboxList = false;
+				getAllEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}");
+
 			});
+
 			$("#scheduleButton").click(function() {
 				$('#showTimekeeperModal').modal();
 				emptyDivs();
 				$("#messageTimekeeper").html("SCHEDULE");
-				if(data_scanned.validated == "true"){
-					timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
-				} else {
-					$("#messageTimekeeper").html("Please Sign In");
-				}
+				checkboxList = false;
+				getAllEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}");
+
 			});
 			$("#timelogBack1").click(function() {
 				emptyDivs();
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
+				$("#messageTimekeeper").html("{% trans 'Select Employee(s)' %}:");
+				emptyDivs();
+				checkboxList = true;
+				getAllEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}");
+				$("#next").append("<input type='button' id='nextButton' value='NEXT' class='btnsTimekeeper' disabled/>");
+
 			});
 			$("#timelogBack2").click(function() {
 				emptyDivs();
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
+				$("#messageTimekeeper").html("Select an Employee:");
+				checkboxList = false;
+				getAllEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}");
 			});
 			$("#btnSignature").click(function(){
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
 				$("#messageTimekeeper").html("{% trans 'Checking shift' %}...");
-				callChecklist("{{ csrf_token }}", "{% url 'retrieveAttendanceChecklist' %}", data_scanned.qr_code);
+				callChecklist("{{ csrf_token }}", "{% url 'retrieveAttendanceChecklist' %}", idTimelog);
 			});
 
 		});
@@ -213,6 +325,118 @@
 		function openAdd() {
 			$('#qrCodeModal').modal();
 		}
+
+function addRemove() {
+
+
+		var images = {
+    		del: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA9tJREFUeNq0Vk1IVFEUPjNvNGcqUunHbhC1KRUM6RZM6VCG4hhGRRRREK2GIGjRpk1Ll21aRe2KiDYRrYpAsCCHGXxqalg2SQnqjMPM2KT21Jl5nXPfva/nm6Q2Xfh83nvP+b5z7znvvPGYpgn/c/ieeDzgwX+8FsL46EE8KFmAogs0NBekbwQs3Ea/V+Rryj01wrjYc/7WLV76bfyvI0I+Z27eJF8KMKw2tHP4B08QRrWei0g+OzsLwXCYjb57x8CKQjdlNOoyvWsRwfXI6Rs3eDabhaZQiH2MxxtwawqR0M5ajk8vI/nk5CQUCgXI5XLQcvIkG+nvLxOBP5B3X7vG5+bmhO/i4iI0HjnCPg8NNeDeA+2MdBzGiENdXWxmZgZWV1chnU5DK87HYrE1IuAi77x6lSsfQiAQgNePHumUR/JRJ9ApKe+jURbq7GTT09PCOJVKQbC9nY0PDtoi4CA/fuECV7YEv98Pb589E+QeCyAEaJSkyGg8zoJtbSyZTIoj09EPtrayxNgYk6acyI+eOiXyRTaEqqoqiL18aZN7rdz+FjClCJXi+PAwO4j3mMlkoFQqASWvkXP2dWKCoR0/3NEh7pz2CEQ+1NdHV2iTKwHPQ0nuqndxBW3d3SJKNaqrqwVhPp+31yorK2EkGtWJWLNgvx9lJzBdJ/mCEe9rbGSGYQgbei4vL9vkmqbBcCxWFrnzBL713hxyIpG+3t7I4WCQf5+fh6WlJTuhdJL5bNaOfN1W0S+VKh2okMpKvcLrhQxWlBoeeQUFOf8p/19FrDhAt6Edcji4+ot4/Vuam/lUIlG2T9ji97OsYTBnFZb1rXUEBHmovp6nsc7V+kascxNL0mm7FUVSDpG/CqjIT+zdyxewTNVVbfD5IJpK6UnDmN2DpD7HNTKcT6GI6RIpE1DkXbt28ZUfP2yCCmzpvZmMLlu4/g3J9rlESPSzS2SNgCI/t307N7EUnc4vcjlB7rWqRadkTiDZAZfIfpyPOUScAoL8Sm0t9xaLa8gfO8g1GVVRiowi2SGXSBPOB2VOKBit2VK7f72mhjsNCfeQ3JTk9D6/RnxAbKaEozOVpo5kLS4REo3iOgWm7bCMp3Ch4RhuqGTfkeRJxBucxxF5iXHEjBQJ4JPI/uB7G4NKiHPUIdrxq3YJYGCipsakJ84jdf/wrZS+EZdvuM7x/a5YANg0CfAdjzc3Yhi7pwGe92GXwPVaeSN+qlT5ktOTAq9GbEObneibwklxwDC2fAK4i92hf0F+BVSF+qSj6hQeKzWinAsSRbmmfixojq6iflyUZMdYlt2i8EuAAQCebgnbDx2SvgAAAABJRU5ErkJggg==',
+		};
+
+		var options =
+			'<div>' +
+				'<img class="del" src="' + images.del + '"/>' +
+			'</div>';
+
+		var stick = false;
+		var locked = false;
+
+		function removeOptions(force) {
+			if (!stick || force) {
+				var target = $('li.current');
+				$('div', target).remove();
+				 $(target).remove('div');
+				 $(target).animate({
+					paddingLeft: 20
+				}, 200);
+				 $(target).removeClass('current');
+			}
+		}
+
+		function appendOptions(target) {
+			$(target).append(options);
+		}
+
+		function showOptions(e) {
+			var target = e.target;
+			if (!$(target).hasClass('current')) {
+				removeOptions(true);
+				 $(target).addClass('current');
+				 $(target).animate({
+					paddingLeft: 10
+				}, 200);
+				appendOptions(target);
+			}
+		}
+
+		var primaryAction = {
+			run: function(li) {
+				<!--alert('Primary Action');-->
+			}
+		};
+
+
+
+		var deleteAction = {
+			run: function(li) {
+				$(li).fadeOut(500, function() {
+					var index = id_scanned.indexOf($(this)[0].id);
+					if (index > -1) {
+						id_scanned.splice(index, 1);
+					}
+
+					$(this).remove();
+					if($("ul").has("li").length == 0) {
+						  $("ul").html("Please Add Employees");
+					}
+					locked = false;
+					stick = false;
+
+				});
+			}
+		}
+
+		$('li').hover(function(e) {
+			if (!locked && e.target.tagName === 'LI') {
+				stick = false;
+				showOptions(e);
+			}
+		}, function(e) {
+			removeOptions();
+		});
+
+		$('ul').click(function(e) {
+		   var target = e.target;
+			stick = true;
+			switch (target.tagName) {
+				case 'LI':
+				case 'SPAN':
+					if (!locked) {
+						editAction.reset();
+						if (target.tagName === 'SPAN') {
+							target = $(target).parent();
+						}
+						if ($(target).hasClass('current')) {
+							primaryAction.run(target);
+						}
+						else {
+							showOptions(e);
+						}
+					}
+				break;
+				case 'IMG':
+					var li = $(target).parent().parent();
+					stick = true;
+					locked = true;
+
+					 if ($(target).hasClass('del')) {
+						 deleteAction.run(li);
+					 }
+
+				break;
+			}
+		});
+}
 
 
 		function getEmployeeShifts(token, url) {
@@ -259,13 +483,14 @@
 		}
 
 
-		function startShiftGroup(token, url, group) {
+		function startShiftGroup(token, url, employees) {
 			$.ajax({
 				method : "POST",
 				url : url,
-				data : {"csrfmiddlewaretoken" : token, "qr_code": group},
+				data : {"csrfmiddlewaretoken" : token, "qr_list": employees},
 				datatype : "json",
 				success : function(data, status, xhr) {
+
 					arrayErrors = [];
 					arrayErrors[1] = '{% trans 'You need to finish the current shift before create a new one' %}.';
 					arrayErrors[2] = '{% trans 'There is no users associated with this id' %}.';
@@ -276,17 +501,216 @@
 						$("#messageTimekeeper").css("color", "#1F3801");	//green
 						$("#messageTimekeeper").html("{% trans 'Clock-in' %}:");
 					} else {
-					    alert('fail');
 					}
 				}
 			});
 		}
+
+		function timelogId(idShow) {
+			emptyDivs();
+			$("#timelogBack2").show();
+			$("#messageTimekeeper").css("color", "#1F3801");	//green
+			$("#messageTimekeeper").html("SCHEDULE");
+			var today = new Date();
+			var dd = today.getDate();
+			var mm = today.getMonth()+1; //January is 0!
+			var yyyy = today.getFullYear();
+
+			if(dd<10) {
+				dd='0'+dd
+			}
+
+			if(mm<10) {
+				mm='0'+mm
+			}
+
+			today = mm+'/'+dd+'/'+yyyy;
+			$("#messageTimekeeper").append("<p align='center' style='margin-left:40px;'>"+today+"</p>");
+
+			idTimelog = idShow;
+			timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+		}
+
+		function retrieveQuestions(token, url){
+			$.ajax({
+					method: "POST",
+					url: url,
+					async: false,
+					data: {"csrfmiddlewaretoken": token,
+						   "category": 1
+					},
+					datatype: "json",
+					success: function(data, status, xhr){
+						if(data.success){
+							var attendanceId = $("#attendanceId").val();
+							questions = data.questions;
+							emptyDivs();
+							$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + attendanceId + "'>");
+							$("#messageTimekeeper").css("margin-left", "7.5%");
+							$("#messageTimekeeper").html("{% trans 'Answer Before Signing' %}:");
+							$("#attendanceCheckList").css("display", "block");
+							$("#attendanceCheckList").css("text-align", "center");
+							$("#attendanceCheckList").css("font-size", "18px");
+							$("#attendanceCheckList").css("margin", "0 30%");
+							$("#attendanceCheckList").append("<div class='form-group'>");
+							$("#attendanceCheckList").append("<form role='form'>");
+							$("#attendanceCheckList").append("<table style='margin: auto;'>");
+							$("#attendanceCheckList").append("<tr><td colspan='3'><span id='indexQuestions'>Question (" + (indexQuestions+1) + "/" + questions.length + ")</span></td></tr>");
+							$("#attendanceCheckList").append("<tr><td colspan='3'><label for='answer' id='question'></label></td></tr>");
+							showQuestion(questions[indexQuestions]);
+							$("#attendanceCheckList").append("<tr>"+
+								"<td><input type='button' name='btnBackQuestion' id='btnBack' onclick='previousQuestion()' class='btnBackAdv' style='float: left;' /></td>"+
+								"<td><input type='text' name='inputAnswer' id='answer' class='form-control' value=''/></td>"+
+								"<td><input type='button' name='btnAnswer' id='btnForward' onclick='saveQuestion()' class='btnBackAdv' style='float: left;' /></td>"+
+								"</tr></tr>");
+							$("#attendanceCheckList").append("</table></br>");
+							$("#attendanceCheckList").append("</form>");
+	    					$("#attendanceCheckList").append("</div>");
+	    					//$("#attendanceCheckList").append("<span id='messageChecklist'></span>");
+	    					$("#divSignNow").css("margin", "auto");
+	    					$("#divSignNow").append("<input type='button' id='btnSignNow' onClick='callBtnSign()' style='box-shadow: 1px 1px 3px gray; border-radius: .25em;' value='{% trans 'SIGN NOW' %}'/>");
+	    					<!--$("#btnSignNow").attr("disabled", true);-->
+	    				}
+					}
+			});
+		}
+
+		function previousQuestion(){
+			if (indexQuestions > 0) {
+				indexQuestions -= 1;
+				$("#attendanceCheckList").fadeOut(0);
+				$("#indexQuestions").html("Question (" + (indexQuestions+1) + "/" + questions.length + ")");
+				$("#answer").val(answer[indexQuestions]);
+				showQuestion(questions[indexQuestions]);
+				$("#attendanceCheckList").fadeIn(500);
+			}
+
+		}
+
+		function saveQuestion(){
+				$("#attendanceCheckList").fadeOut(0);
+				answers[indexQuestions] = ($("input[name='inputAnswer']").val());
+				saveAnswer("{{ csrf_token }}", "{% url 'saveAnswerChecklistAttendance' %}", questions[indexQuestions].id, answers[indexQuestions]);
+				indexQuestions += 1;
+				$("#indexQuestions").html("Question (" + (indexQuestions+1) + "/" + questions.length + ")");
+
+			if (indexQuestions < questions.length){
+				showQuestion(questions[indexQuestions]);
+				$("input[name='inputAnswer']").val("");
+				$("#attendanceCheckList").fadeIn(500);
+
+			}else{
+				indexQuestions = 0;
+				$("#messageTimekeeper").css("margin", "auto");
+				$("#messageTimekeeper").html("{% trans 'Checklist completed' %}!");
+				$("#divSignNow").append("<input type='button' id='btnRetake' value='{% trans 'RETAKE IT' %}'/>");
+				$("#btnRetake").css("margin-left", "5px");
+				<!--$("#btnSignNow").attr("disabled", false);-->
+			}
+
+		}
+
+		function showQuestion(question){
+			$("#question").html(question.description);
+		}
+
+
+		function saveAnswer(token, url, questionId, answer){
+			$.ajax({
+				method : "POST",
+				url : url,
+				async: true,
+				data : {"csrfmiddlewaretoken" : token,
+						"question" : questionId,
+						"answer" : answer
+				},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					console.log(data.success);
+				}
+			});
+
+		}
+
+		function checkState(){
+			var iNodes= document.getElementsByClassName('teamName');
+			var numChecked = 0;
+			length = iNodes.length;
+		   	for (i= 0; i < length ; i++){
+				if (iNodes[i].checked === true){
+					numChecked = numChecked + 1;
+					iNodes[i].parentNode.style.backgroundColor = "#75C1DA";
+					var index = checked_employees.indexOf(iNodes[i].value);
+					if (index == -1) {
+						checked_employees.push(iNodes[i].value);
+					}
+				}
+				else{
+					element = document.getElementById('teamName' + i);
+					element.style.backgroundColor="#DDD";
+					var index = checked_employees.indexOf(iNodes[i].value);
+					if (index > -1) {
+						checked_employees.splice(index, 1);
+					}
+				}
+			}
+			if(numChecked == 0){
+				document.getElementById("nextButton").disabled = true;
+			}else {
+				document.getElementById("nextButton").disabled = false;
+			}
+		}
+
+		function getAllEmployees(token, url) {
+			$.ajax({
+				method: "POST",
+				url: url,
+				data: {"csrfmiddlewaretoken": token },
+				datatype: "json",
+				success: function(data, status, xhr){
+					if(checkboxList == true) {
+						for(var i = 0; i < data.employees.length; i++){
+							<!--if(data.employees[i].shift_status == "0"){-->
+							$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onChange="checkState()" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'</label>');
+							<!--} else if(data.employees[i].shift_status == "1"){-->
+								<!--$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#18CE19; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onChange="checkState()" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'</label>');-->
+
+							<!--}else if(data.employees[i].shift_status == "2"){-->
+								<!--$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#EA2E0A; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onChange="checkState()" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'</label>');-->
+
+							<!--}else if(data.employees[i].shift_status == "3"){-->
+								<!--$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#3952E2; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onChange="checkState()" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'</label>');-->
+
+							<!--}-->
+
+						}
+					}else{
+						for(var i = 0; i < data.employees.length; i++){
+							if(data.employees[i].shift_status == "0"){
+								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input id='+data.employees[i].user_id+' class="teamName" style="opacity:0" type="checkbox" onclick="timelogId(this.id)" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'</label>');
+							} else if(data.employees[i].shift_status == "3") {
+								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#18CE19; width:100%;border-radius: .25em;"><input id='+data.employees[i].user_id+' class="teamName" style="opacity:0" type="checkbox" onclick="timelogId(this.id)" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'</label>');
+							}else if(data.employees[i].shift_status == "2") {
+								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#3952E2; width:100%;border-radius: .25em;"><input id='+data.employees[i].user_id+' class="teamName" style="opacity:0" type="checkbox" onclick="timelogId(this.id)" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'</label>');
+							}else if(data.employees[i].shift_status == "1") {
+								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#FFF; width:100%;border-radius: .25em;"><input id='+data.employees[i].user_id+' class="teamName" style="opacity:0" type="checkbox" onclick="timelogId(this.id)" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'</label>');
+							}
+
+						}
+					}
+
+
+				}
+			});
+		}
+
+
 		function startBreakGroup(token, url) {
 			$.ajax({
 				method : "POST",
 				url : url,
 				acync: false,
-				data : {"csrfmiddlewaretoken" : token, "ids": id_checked, "lunch": lunch},
+				data : {"csrfmiddlewaretoken" : token, "qr_list": id_pushed, "lunch": lunch},
 				datatype : "json",
 				success : function(data, status, xhr) {
 					arrayErrors = [];
@@ -309,11 +733,11 @@
 			});
 		}
 
-		function stopShiftGroup(token, url) {
+		function stopShiftGroup(token, url, employees) {
 			$.ajax({
 				method: "POST",
 				url: url,
-				data: {"csrfmiddlewaretoken": token, "qr_code": data_scanned.qr_code},
+				data: {"csrfmiddlewaretoken": token, "qr_list": employees},
 				datatype: "json",
 				success: function(data, status, xhr){
 					arrayErrors = [];
@@ -335,7 +759,7 @@
 			$.ajax({
 				method: "POST",
 				url: url,
-				data: {"csrfmiddlewaretoken": token, "qr_code": user_id},
+				data: {"csrfmiddlewaretoken": token, "id": user_id},
 				datatype: "json",
 				success: function(data, status, xhr){
 					if (data.success) {
@@ -345,10 +769,10 @@
     					$("#messageTimekeeper").css("color", "#1F3801");	//green
     					if(data.checklist.length == 0 ){
     						$("#messageTimekeeper").html("{% trans 'Click to Sign' %}:");
-    						$("#divSignNow").append("<input type='button' id='btnSignNow' onClick='callBtnSign()' value='{% trans 'SIGN NOW' %}'/>");
+    						$("#divSignNow").append("<input type='button' style='box-shadow: 1px 1px 3px gray; border-radius: .25em;' id='btnSignNow' value='{% trans 'SIGN NOW' %}'/>");
     						$("#btnSignNow").attr("disabled", false);
     					}else {
-    					$("#messageTimekeeper").html("{% trans 'Check before sign' %}:");
+    					$("#messageTimekeeper").html("{% trans 'Check Before Signing' %}:");
     					$("#questions").css("text-align", "left");
     					$("#questions").css("font-size", "25px");
     					$("#questions").append("<table>");
@@ -357,13 +781,33 @@
     						$("#questions").append("<tr><td><label><input type='checkbox' onClick='allChecked(" + data.checklist.length + ")' class='checkQuestions'/>&nbsp;&nbsp;" + data.checklist[i].description + "</label></td></td>");
     					}
     					$("#questions").append("</table>");
-    					$("#divSignNow").append("<input type='button' id='btnSignNow' onClick='callBtnSign()' value='{% trans 'SIGN NOW' %}'/>");
+    					$("#divSignNow").append("<input type='button' style='box-shadow: 1px 1px 3px gray; border-radius: .25em; margin-right: 50px;' id='btnSignNow' value='{% trans 'SIGN NOW' %}'/>");
+    					$("#divSignNow").append("<input type='button' style='box-shadow: 1px 1px 3px gray; border-radius: .25em;' id='btnDeclineCheckList' value='{% trans 'DECLINE' %}'/>");
+    					$("#btnDeclineCheckList").css("background-color", "#B83419");
+						$("#btnDeclineCheckList").click(function(){
+							declineShift("{{ csrf_token }}", "{% url 'declineShift' %}");
+						});
     					$("#btnSignNow").attr("disabled", true);
     					}
 					}
 				}
 			});
 		}
+
+		function declineShift(token, url) {
+			$.ajax({
+				method: "POST",
+				url: url,
+				data: {"csrfmiddlewaretoken": token},
+				datatype: "json",
+				success: function(data, status, xhr){
+					if (data.success) {
+
+					}
+				}
+			});
+		}
+
 		function allChecked(questionsN) {
 			var countQuestions = $('input:checkbox[class=checkQuestions]:checked');
 			if (questionsN == countQuestions.length) {
@@ -375,6 +819,7 @@
 			}
 		}
 		function callBtnSign() {
+			saveQuestion();
 			$('#showTimekeeperModal').modal('hide');
 			$('#signModal').modal();
 		}
@@ -399,7 +844,7 @@
 			$.ajax({
 				method : "POST",
 				url : url,
-				data : {"csrfmiddlewaretoken" : token, "qr_code": data_scanned.qr_code, "id":data_scanned.qr_code},
+				data : {"csrfmiddlewaretoken" : token, "qr_code": data_scanned.qr_code, "id":idTimelog},
 				datatype : "json",
 				success : function(data, status, xhr) {
 					var i = 0;
@@ -418,7 +863,6 @@
 						var n=1;
 						<!--breakDuration = data.tasks[n-1].duration;-->
 						breakDuration = "";
-						$("#tableTimelog").append("<tr id='data.tasks[n-1].jobId' class='job' ><td class='colBorderTimelog'>" + breakDuration + "</td><td> {% trans 'Job' %} #" + n +" N/A </td><td></td></tr>");
 
 						for (i = 0; i < data.breaks.length; i++) {
 							n=n+1;
@@ -430,7 +874,6 @@
 								lunchs++;
 							}
 							breakDuration = "";
-							$("#tableTimelog").append("<tr id='data.tasks[n-1].jobId' class='job' ><td class='colBorderTimelog'>" + breakDuration + "</td><td> {% trans 'Job' %} #" + n +" N/A </td><td></td></tr>");
 
 						}
 						$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + tConvert(data.Attendance_end) + "</td></tr>");
@@ -439,7 +882,6 @@
 							var n=1;
 							<!--breakDuration = data.tasks[n-1].duration;-->
 							breakDuration = "";
-							$("#tableTimelog").append("<tr id='job" + data.tasks[n-1].jobId + "' class='job'><td class='colBorderTimelog'>" + breakDuration + "</td><td> {% trans 'Job' %} #" + n +"  "+ data.tasks[n-1].description + " </td><td><input id='job" + data.tasks[n-1].jobId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 30px !important;height: 30px !important;border: none !important;' onclick='editJob(this.id, `${breakDuration}`, `${breaks}`, `${idTimelog}`)'/></td></tr>");
 
 							for (i = 0; i < data.breaks.length; i++) {
 								workBreak[data.breaks[i].breakId] = data.breaks[i].breakDuration;
@@ -458,18 +900,17 @@
 									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + lunchs + " Lunch " + tConvert(data.breaks[i].breakStart) + " - " + tConvert(data.breaks[i].breakStop) + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
 									lunchs++;
 								}
-								$("#tableTimelog").append("<tr id='job" + data.tasks[n-1].jobId + "' class='job'><td class='colBorderTimelog'>" + breakDuration + "</td><td> {% trans 'Job' %} #" + n +"  "+ data.tasks[n-1].description + " </td><td><input id='job" + data.tasks[n-1].jobId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 30px !important;height: 30px !important;border: none !important;' onclick='editJob(this.id, `${breakDuration}`, `${breaks}`, `${idTimelog}`)'/></td></tr>");
 							}
 							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + tConvert(data.Attendance_end) + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' onclick='editStopShift(this.id, currentEnd)'/></td></tr>");
 							$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + data.attendanceId + "'>");
 							if (data.signature == true) {
-								$("#btnSignature").append("<input type='button' id='btnSign' value='SIGNED'/>");
+								$("#btnSignature").append("<input type='button' style='box-shadow: 1px 1px 3px gray; border-radius: .25em;' id='btnSign' value='SIGNED'/>");
 								$("#btnSign").css("background", "#799520");
 							} else {
 								$("#btnSignature").append("<input type='button' id='btnSign' value='SIGN'/>");
 								$("#btnSign").css("background", "#E5E5E5");
 							}
-					}
+						}
 					} else {
 						$("#divTimelog").append("No Attendances Today <p>Please start a shift to see your schedule.</p>");
 					}
@@ -480,11 +921,11 @@
 
 		function printResult(data) {
 
-			if (data.success) {
+			if (data.success && data.success.length > 0) {
 				$("#success").css("color", "#1F3801");	//green
 				$("#success").append("{% trans 'SUCCESS' %}");
 			}
-			if (data.error) {
+			if (data.error && data.error.length > 0) {
 				$("#error").css("color", "#BB330C");	//red
 				$("#error").append("{% trans 'ERROR' %}");
 			}
@@ -509,10 +950,12 @@
 			$("#divTimelog").empty();
 			$("#timelogBack1").hide();
 			$("#timelogBack2").hide();
+			$("#next").empty();
 			$("#questions").empty();
 			$("#btnSignature").empty();
 			$("#divSignNow").empty();
 			$("#btnSignNow").empty();
+			$("#attendanceCheckList").empty();
 		}
 		function editStartShift(editId, currentStart) {
 			$(".editIcon").attr('disabled', true);
@@ -543,38 +986,7 @@
 			});
 		}
 
-		function editJob(editId, workBreak, breakN, employeeId) {
-			breakId = editId
-			var jobNum = editId.slice(3,4);
-			hours = workBreak
-			emid = employeeId
-			$(".editIcon").attr('disabled', true);
-			var newJob = '#new'+breakId;
-			$("#" + breakId).html("<td class='colBorderTimelog'>" + workBreak + "</td><td>#" + jobNum + " {% trans 'Job' %} <input id='new" + breakId + "' type='text'/></td><td><input type='button' class='editedIcon' style='background: url(\"/static/imgSmall/editedIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='callEditJob(breakId, hours, emid)'/></td>");
-		}
 
-		function callEditJob(jobId, breakDuration, employeeId) {
-			createJob(jobId, "{{csrf_token}}", "{% url 'editJob' %}", $('#new'+jobId).val(), breakDuration, employeeId);
-		}
-
-		function createJob(jobId, token, url, description, hours, employeeId) {
-			$.ajax({
-				method : "POST",
-				url : url,
-				data : {"csrfmiddlewaretoken" : token, "description": description, "jobId":jobId, "hours_spent" : hours, "qr_code" : data_scanned.qr_code},
-				datatype : "json",
-				success : function(data, status, xhr) {
-					if (data.success) {
-						$(".editIcon").attr('disabled', false);
-						emptyDivs();
-						$("#timelogBack2").show();
-						$("#messageTimekeeper").css("color", "#1F3801");	//green
-						$("#messageTimekeeper").html("SCHEDULE");
-						timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
-					}
-				}
-			});
-		}
 
 		function editBreak(editId, workBreak, breakN, breakBeg, breakEnd, lun) {
 			$(".editIcon").attr('disabled', true);
@@ -664,12 +1076,18 @@
 						$("#errorQrCode").html("")
 
 						if (data.success) {
-							$("#qrCodeModal").modal("hide");
-							feedBackQrCode("show", "green", "{% trans 'Enter your PIN:' %}");
-							data_scanned.qr_code = id;
-							data_scanned.employee = data.employee;
-							data_scanned.validated = "false";
-							$("#pin_input").show();
+							if(id_scanned.indexOf(data_scanned.qr_code)==-1){
+								$("#qrCodeModal").modal("hide");
+								feedBackQrCode("show", "green", "{% trans 'Enter your PIN:' %}");
+								data_scanned.qr_code = id;
+								data_scanned.employee = data.employee;
+								data_scanned.validated = "false";
+								$("#pin_input").show();
+							  }
+							else{
+							  <!--alert("element found");-->
+							  }
+
 
 						} else {
 							feedBackQrCode("show", "red", "{% trans 'This employee does not exist. Please enter another ID.' %}");
@@ -692,15 +1110,26 @@
 					success : function(data, status, xhr) {
 						$("#errorQrCode").html("")
 
+
 						if (data.success) {
 							$("#qrCodeModal").modal("hide");
 							feedBackQrCode("show", "green", "{% trans 'Successfully Validated.' %}");
 							data_scanned.qr_code = id;
 							data_scanned.employee = data.employee
 							<!--$("#signed_in").show();-->
-							$("#signed_in").html("SIGNED IN: "+ data.employee);
+							<!--$("#signed_in").html("SIGNED IN: "+ data.employee);-->
 							data_scanned.validated = "true";
 							$("#pin_input").hide();
+							if($("ul").has("li").length == 0) {
+								  $("ul").html("");
+							}
+							var ul = document.getElementById("emp-list");
+							var li = document.createElement("li");
+							li.appendChild(document.createTextNode(data.employee));
+							li.setAttribute("id", id); // added line
+							id_scanned.push(id);
+							ul.appendChild(li);
+							addRemove();
 
 						} else {
 						    data_scanned = {};
@@ -771,12 +1200,7 @@
 				</div>
 
 				<div class="row">
-					<div class="col-xs-12 col-md-12" style="margin-top: 15px;">
-                        <div id="signed_in" style="font-weight: 600;font-size: 24px;">Please Sign In</div>
-						<input type="button" id="createTeam"  onclick="openAdd()" value="{% trans 'SELECT EMPLOYEE' %}" class="btnCreateTeam"/>
-					</div>
-				</div>
-				<div class="row">
+				<div class="row" style="margin-top: 65px;">
 					<div class="col-xs-12 col-md-12">
 						<input type="button" id="shift" value="{% trans 'SHIFT' %}" class="btnsTimekeeper"/>
 					</div>
@@ -862,8 +1286,10 @@
 						<div id="clock-out"></div>
 						<div id="divTimelog"></div>
 						<div id="questions"></div>
+						<div id="attendanceCheckList"></div>
 						<div id="btnSignature"></div>
 						<div id="divSignNow"></div>
+						<div id="next"></div>
 						<br>
 						<div class="both"></div>
 					</div>
@@ -916,7 +1342,7 @@
                         <div id="PIN" style="font-size: 25px;">
 						<div class="panel panel-primary" style="border: none;">
 							<div id="pin_input" style="margin auto 40px; text-align: center; margin-top: 20px;">
-								<input type="text" id="employee_pin" style="color:black;" placeholder="{% trans 'Type Employee ID' %}"/>
+								<input type="password" id="employee_pin" style="color:black;" placeholder="{% trans 'Type your PIN' %}"/>
 
 								<button id="submit_pin" title="Play" type="button" class="btn btn-success btn-xl" onclick="checkEmployeePassword('{{ csrf_token }}', '/home/checkEmployeePassword/', `${data_scanned.qr_code}`, $('#employee_pin').val());">
 									<span class="glyphicon glyphicon-play"></span>

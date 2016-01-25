@@ -28,6 +28,7 @@ import time
 from home.forms import *
 from home.models import *
 from home.models import Client
+from home.models import EmployeeAttendanceChecklist
 
 
 LANGUAGE_CHOICES = ['pt-br','es', 'en-us']
@@ -133,6 +134,7 @@ def createNewTask(request):
 					status = 1
 					#Getting the employee that are logged in or passed in the ajax call	        
 					if 'employeeId' not in request.POST:
+
 					    employee = Employee.objects.get(user_id = request.user.id)
 					else:
 						employee = Employee.objects.get(user_id = request.POST['employeeId'])
@@ -348,7 +350,33 @@ def startShiftGroup(request):
 	result = {}
 	if request.method == "POST":
 		if request.is_ajax():
-			if 'qr_code' in request.POST:
+			if 'qr_list[]' in request.POST:
+				ids = request.POST.getlist('qr_list[]')
+				auxSuccess = []
+				auxError = []
+				for item in ids:
+					print 'item'
+					print int(item)
+					employee = Employee.objects.get(qr_code = int(item))
+					userId = employee.user.id
+					print userId
+
+					aux = startShift(request, userId)
+					attendance =  EmployeeAttendance.objects.filter(employee__user__id = userId).order_by('-date', '-hour_started').first()
+					attendance.save()
+					aux['user'] = userId
+					print aux['success']
+					if aux['success'] == True:
+						auxSuccess.append(aux)
+
+					else:
+						auxError.append(aux)
+				result['success'] = auxSuccess
+				print auxSuccess
+				result['error'] = auxError
+				print auxError
+				return HttpResponse(json.dumps(result),content_type='application/json')
+			elif 'qr_code' in request.POST:
 				employee = Employee.objects.get(qr_code = request.POST['qr_code'])
 				userId = employee.user.id
 				result = startShift(request, userId)
@@ -448,8 +476,9 @@ def stopShiftAuto(request, idUser):
 	result = {}
 	try:
 		employee = Employee.objects.get(user_id = idUser)
+		print employee
 		attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
-
+		result['id'] = employee.user.id
 		if attendance is not None:
 
 			result['attendance-date'] = str(attendance.date)
@@ -461,9 +490,10 @@ def stopShiftAuto(request, idUser):
 				new_time = datetime.datetime.strptime(request.POST['time'], '%H:%M:%S %Y-%m-%d')
 				time_delta = (new_time - datetime.datetime.combine(attendance.date,attendance.hour_started))
 			if ((time_delta.seconds / 3600.0) < 16.17) or (time_delta.days == 0):
+				print 'hello'
 
 				if attendance.hour_ended is None:
-
+					print 'hi'
 					if 'time' in request.POST:
 						attendance.hour_ended = new_time
 					else:
@@ -471,11 +501,17 @@ def stopShiftAuto(request, idUser):
 
 					# attendance.signature = signature
 					attendance.save() #in order to deal with time zone problem for now
+					print 'hour ended'
 					hour_ended = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
+					print 'hour started'
 					hour_started = datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
-
+					print 'now'
+					now = datetime.datetime.now()
+					print 'now'
+					print now
 					total_hours = hour_ended - hour_started
 					now = now.replace(hour=0, minute=0, second=0)
+					# now = datetime.timedelta()
 
 					total_hours = total_hours.total_seconds()/60/60
 					# hour_ended = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
@@ -509,39 +545,40 @@ def stopShiftAuto(request, idUser):
 						break4_started = hour_started + fourteen_hours
 						break4_ended = break4_started + one_break
 
-						break1_started = now + break_started#datetime.datetime(hour = break_started.hours, minute = break_started.minutes, second = break_started.seconds) + datetime.timedelta(hours = 0)
-						break1_ended = break_started + break_ended#datetime.datetime(hour = break_ended.hours, minute = break_ended.minutes, second = break_ended.seconds) + datetime.timedelta(hours = 0)
-						break1 = Break(attendance = attendance, lunch = False, start = break1_started, end = break1_ended, edited=False)
+						break1_started = now + break_started
+						break1_ended = now + break_ended
+						break1 = Break(attendance = attendance, lunch = False, start = break1_started.time(), end = break1_ended.time(), edited=False)
 						break1.save()
 
-						break2_started = now + break2_started#datetime.datetime(hour = break2_started.hours, minute = break2_started.minutes, second = break2_started.seconds)
-						break2_ended = break2_started + break2_ended#datetime.datetime(hour = break2_ended.hours, minute = break2_ended.minutes, second = break2_ended.seconds)
-						break2 = Break(attendance= attendance, lunch = False, start = break2_started, end = break2_ended, edited=False)
+						break2_started = now + break2_started
+						break2_ended = now + break2_ended
+						break2 = Break(attendance= attendance, lunch = False, start = break2_started.time(), end = break2_ended.time(), edited=False)
 						break2.save()
 
-						break3_started = now + break3_started#datetime.datetime(hour = break2_started.hours, minute = break2_started.minutes, second = break2_started.seconds)
-						break3_ended = break3_started + break3_ended#datetime.datetime(hour = break2_ended.hours, minute = break2_ended.minutes, second = break2_ended.seconds)
-						break3 = Break(attendance= attendance, lunch = False, start = break3_started, end = break3_ended, edited=False)
+						break3_started = now + break3_started
+						break3_ended = now + break3_ended
+						break3 = Break(attendance= attendance, lunch = False, start = break3_started.time(), end = break3_ended.time(), edited=False)
 						break3.save()
 
-						break4_started = now + break4_started#datetime.datetime(hour = break2_started.hours, minute = break2_started.minutes, second = break2_started.seconds)
-						break4_ended = break4_started + break4_ended#datetime.datetime(hour = break2_ended.hours, minute = break2_ended.minutes, second = break2_ended.seconds)
-						break4 = Break(attendance= attendance, lunch = False, start = break4_started, end = break4_ended, edited=False)
+						break4_started = now + break4_started
+						break4_ended = now + break4_ended
+						break4 = Break(attendance= attendance, lunch = False, start = break4_started.time(), end = break4_ended.time(), edited=False)
 						break4.save()
 
-						lunch_started = now + lunch_started #datetime.datetime(hour = lunch_started.hours, minute = lunch_started.minutes, second = lunch_started.seconds)
-						lunch_ended = lunch_started + lunch_ended #datetime.datetime(hour = lunch_ended.hours, minute = lunch_ended.minutes, second = lunch_ended.seconds)
+						lunch_started = now + lunch_started
+						lunch_ended = now + lunch_ended
 
-						lunch1 = Break(attendance = attendance, lunch = True, start = lunch_started, end = lunch_ended, edited=False)
-						lunch2_started = now + lunch2_started #datetime.datetime(hour = lunch_started.hours, minute = lunch_started.minutes, second = lunch_started.seconds)
-						lunch2_ended = lunch2_started + lunch2_ended #datetime.datetime(hour = lunch_ended.hours, minute = lunch_ended.minutes, second = lunch_ended.seconds)
+						lunch1 = Break(attendance = attendance, lunch = True, start = lunch_started.time(), end = lunch_ended.time(), edited=False)
+						lunch2_started = now + lunch2_started
+						lunch2_ended = now + lunch2_ended
 
-						lunch2 = Break(attendance = attendance, lunch = True, start = lunch2_started, end = lunch2_ended, edited=False)
+						lunch2 = Break(attendance = attendance, lunch = True, start = lunch2_started.time(), end = lunch2_ended.time(), edited=False)
 
 						lunch1.save()
 						lunch2.save()
 
 					elif total_hours <= 14 and total_hours > 10:
+						print '2, 3'
 						#2 meals, 3 breaks
 						break_started = hour_started + two_hours
 						break_ended = break_started + one_break
@@ -554,30 +591,30 @@ def stopShiftAuto(request, idUser):
 						break3_started = hour_started + twelve_hours
 						break3_ended = break3_started + one_break
 
-						break1_started = now + break_started#datetime.datetime(hour = break_started.hours, minute = break_started.minutes, second = break_started.seconds) + datetime.timedelta(hours = 0)
-						break1_ended = break1_ended + break_ended#datetime.datetime(hour = break_ended.hours, minute = break_ended.minutes, second = break_ended.seconds) + datetime.timedelta(hours = 0)
-						break1 = Break(attendance = attendance, lunch = False, start = break1_started, end = break1_ended, edited=False)
+						break1_started = now + break_started
+						break1_ended = now + break_ended
+						break1 = Break(attendance = attendance, lunch = False, start = break1_started.time(), end = break1_ended.time(), edited=False)
 						break1.save()
 
-						break2_started = now + break2_started#datetime.datetime(hour = break2_started.hours, minute = break2_started.minutes, second = break2_started.seconds)
-						break2_ended = break2_started + break2_ended#datetime.datetime(hour = break2_ended.hours, minute = break2_ended.minutes, second = break2_ended.seconds)
-						break2 = Break(attendance= attendance, lunch = False, start = break2_started, end = break2_ended, edited=False)
+						break2_started = now + break2_started
+						break2_ended = now + break2_ended
+						break2 = Break(attendance= attendance, lunch = False, start = break2_started.time(), end = break2_ended.time(), edited=False)
 						break2.save()
 
-						break3_started = now + break3_started#datetime.datetime(hour = break2_started.hours, minute = break2_started.minutes, second = break2_started.seconds)
-						break3_ended = break3_started+ break3_ended#datetime.datetime(hour = break2_ended.hours, minute = break2_ended.minutes, second = break2_ended.seconds)
-						break3 = Break(attendance= attendance, lunch = False, start = break3_started, end = break3_ended, edited=False)
+						break3_started = now + break3_started
+						break3_ended = now + break3_ended
+						break3 = Break(attendance= attendance, lunch = False, start = break3_started.time(), end = break3_ended.time(), edited=False)
 						break3.save()
 
-						lunch_started = now+ lunch_started #datetime.datetime(hour = lunch_started.hours, minute = lunch_started.minutes, second = lunch_started.seconds)
-						lunch_ended = lunch_started + lunch_ended #datetime.datetime(hour = lunch_ended.hours, minute = lunch_ended.minutes, second = lunch_ended.seconds)
+						lunch_started = now+ lunch_started
+						lunch_ended = now + lunch_ended
 
-						lunch1 = Break(attendance = attendance, lunch = True, start = lunch_started, end = lunch_ended, edited=False)
+						lunch1 = Break(attendance = attendance, lunch = True, start = lunch_started.time(), end = lunch_ended.time(), edited=False)
 
-						lunch2_started = now + lunch2_started #datetime.datetime(hour = lunch_started.hours, minute = lunch_started.minutes, second = lunch_started.seconds)
-						lunch2_ended = lunch2_started + lunch2_ended #datetime.datetime(hour = lunch_ended.hours, minute = lunch_ended.minutes, second = lunch_ended.seconds)
+						lunch2_started = now + lunch2_started
+						lunch2_ended = now + lunch2_ended
 
-						lunch2 = Break(attendance = attendance, lunch = True, start = lunch2_started, end = lunch2_ended, edited=False)
+						lunch2 = Break(attendance = attendance, lunch = True, start = lunch2_started.time(), end = lunch2_ended.time(), edited=False)
 
 						lunch1.save()
 						lunch2.save()
@@ -585,7 +622,7 @@ def stopShiftAuto(request, idUser):
 					elif total_hours <= 10 and total_hours > 6:
 
 						#1 meals, 2 breaks
-
+						print '2, 1'
 						break_started = hour_started + two_hours
 
 						break_ended = break_started + one_break
@@ -593,23 +630,30 @@ def stopShiftAuto(request, idUser):
 						break2_ended = break2_started + one_break
 						lunch_started = hour_started + five_hours
 						lunch_ended = lunch_started + one_lunch
-
+						print now
+						print type(now)
+						print break_started
+						print type(break_started)
 
 						break1_started = now + break_started#datetime.datetime(hour = break_started.hours, minute = break_started.minutes, second = break_started.seconds) + datetime.timedelta(hours = 0)
 
-						break1_ended = break1_started + break_ended#datetime.datetime(hour = break_ended.hours, minute = break_ended.minutes, second = break_ended.seconds) + datetime.timedelta(hours = 0)
+						break1_ended = now + break_ended#datetime.datetime(hour = break_ended.hours, minute = break_ended.minutes, second = break_ended.seconds) + datetime.timedelta(hours = 0)
 
-						break1 = Break(attendance = attendance, lunch = False, start = break1_started, end = break1_ended, edited=False)
+						# break1_ended = now + break1_ended
+
+						break1 = Break(attendance = attendance, lunch = False, start = break1_started.time(), end = break1_ended.time(), edited=False)
+
 						break1.save()
 
 						break2_started = now + break2_started#datetime.datetime(hour = break2_started.hours, minute = break2_started.minutes, second = break2_started.seconds)
-						break2_ended = break2_started + break2_ended#datetime.datetime(hour = break2_ended.hours, minute = break2_ended.minutes, second = break2_ended.seconds)
-						break2 = Break(attendance= attendance, lunch = False, start = break2_started, end = break2_ended, edited=False)
+
+						break2_ended = now + break2_ended#datetime.datetime(hour = break2_ended.hours, minute = break2_ended.minutes, second = break2_ended.seconds)
+
+						break2 = Break(attendance= attendance, lunch = False, start = break2_started.time(), end = break2_ended.time(), edited=False)
 						break2.save()
 						lunch_started = now + lunch_started #datetime.datetime(hour = lunch_started.hours, minute = lunch_started.minutes, second = lunch_started.seconds)
-						lunch_ended = lunch_started + lunch_ended #datetime.datetime(hour = lunch_ended.hours, minute = lunch_ended.minutes, second = lunch_ended.seconds)
-
-						lunch1 = Break(attendance = attendance, lunch = True, start = lunch_started, end = lunch_ended, edited=False)
+						lunch_ended = now + lunch_ended #datetime.datetime(hour = lunch_ended.hours, minute = lunch_ended.minutes, second = lunch_ended.seconds)
+						lunch1 = Break(attendance = attendance, lunch = True, start = lunch_started.time(), end = lunch_ended.time(), edited=False)
 
 						lunch1.save()
 						print '2, 1'
@@ -619,44 +663,33 @@ def stopShiftAuto(request, idUser):
 						#1 meals, 1 breaks
 						break_started = hour_started + two_hours
 						break_ended = break_started + one_break
-						break_started = now + break_started#datetime.datetime(hour = break_started.hours, minute = break_started.minutes, second = break_started.seconds) + datetime.timedelta(hours = 0)
-						break_ended = break_started + break_ended#datetime.datetime(hour = break_ended.hours, minute = break_ended.minutes, second = break_ended.seconds) + datetime.timedelta(hours = 0)
-
+						break_started = now + break_started
+						break_ended = break_started + break_ended
 						lunch_started = hour_started + five_hours
 						lunch_ended = lunch_started + one_lunch
-						lunch_started = now + lunch_started #datetime.datetime(hour = lunch_started.hours, minute = lunch_started.minutes, second = lunch_started.seconds)
-						lunch_ended = lunch_started + lunch_ended #datetime.datetime(hour = lunch_ended.hours, minute = lunch_ended.minutes, second = lunch_ended.seconds)
-
-						break1 = Break(attendance__id = attendance.id, lunch = False, start = break_started, end = break_ended)
-						lunch1 = Break(attendance__id = attendance.id, lunch = True, start = lunch_started, end = lunch_ended)
-
+						lunch_started = now + lunch_started
+						lunch_ended = now + lunch_ended
+						break1 = Break(attendance__id = attendance.id, lunch = False, start = break_started.time(), end = break_ended.time())
+						lunch1 = Break(attendance__id = attendance.id, lunch = True, start = lunch_started.time(), end = lunch_ended.time())
 						break1.save()
 						lunch1.save()
 						print '1, 1'
-					elif total_hours <= 5 and total_hours > 4:
+					elif total_hours <= 5 and total_hours >= 3.5:
 						#0 meals, 1 breaks
 						break_started = hour_started + two_hours
 						break_ended = break_started + one_break
-						break_started = now + break_started#datetime.datetime(hour = break_started.hours, minute = break_started.minutes, second = break_started.seconds) + datetime.timedelta(hours = 0)
-						break_ended = break_started + break_ended#datetime.datetime(hour = break_ended.hours, minute = break_ended.minutes, second = break_ended.seconds) + datetime.timedelta(hours = 0)
+						break_started = now + break_started
+						break_ended = now + break_ended
 
-						break1 = Break(attendance = attendance, lunch = False, start = break_started, end = break_ended)
+						break1 = Break(attendance = attendance, lunch = False, start = break_started.time(), end = break_ended.time())
 						break1.save()
 						print '1, 0'
-					elif total_hours >= 3.5:
-						#0 meals, 1 breaks
-						break_started = hour_started + two_hours
-						break_ended = break_started + one_break
-						break_started = now + break_started#datetime.datetime(hour = break_started.hours, minute = break_started.minutes, second = break_started.seconds) + datetime.timedelta(hours = 0)
-						break_ended = break_started + break_ended#datetime.datetime(hour = break_ended.hours, minute = break_ended.minutes, second = break_ended.seconds) + datetime.timedelta(hours = 0)
 
-						break1 = Break(attendance = attendance, lunch = False, start = break_started, end = break_ended)
-						break1.save()
-						print '1, 0'
 
 					#Doesn't calculate correctly
 					# attendance.hours_worked = attendanceHoursWorked(attendance)
 					# attendance.save()
+
 					result['success'] = True
 					result['hour_ended'] = str(attendance.hour_ended)
 				else:
@@ -676,6 +709,25 @@ def stopShiftGroup(request):
 	result = {}
 	if request.method == "POST":
 		if request.is_ajax():
+			if 'qr_list[]' in request.POST:
+				ids = request.POST.getlist('qr_list[]')
+				auxSuccess = []
+				auxError = []
+				for item in ids:
+					employee = Employee.objects.get(qr_code = int(item))
+					userId = employee.user.id
+					print 'stop shift auto'
+					aux = stopShiftAuto(request, userId)
+					aux['id'] = userId
+					if aux['success'] == True:
+						auxSuccess.append(aux)
+					else:
+						auxError.append(aux)
+
+				result['success'] = auxSuccess
+				result['error'] = auxError
+
+				return HttpResponse(json.dumps(result),content_type='application/json')
 			if 'qr_code' in request.POST:
 				employee = Employee.objects.get(qr_code = request.POST['qr_code'])
 				userId = employee.user.id
@@ -942,14 +994,30 @@ def retrieveParticipant(request):
 	result = {'sucess' : False}
 	if request.method == "POST":
 		if request.is_ajax():
-			group = request.POST['group']
-			participantArray = []
-			participant = GroupParticipant.objects.filter(group_id = group)
-			for item in participant:
-				aux = {}
-				aux['name'] = str(item.participant.user.first_name) + ' ' + str(item.participant.user.last_name)
-				aux['id'] = item.participant.user.id
-				participantArray.append(aux)
+			if 'group' in request.POST:
+				print 'bye'
+				group = request.POST['group']
+				participantArray = []
+				participant = GroupParticipant.objects.filter(group_id = group)
+				for item in participant:
+					aux = {}
+					aux['name'] = str(item.participant.user.first_name) + ' ' + str(item.participant.user.last_name)
+					aux['id'] = item.participant.user.id
+					participantArray.append(aux)
+			elif 'qr_list' in request.POST:
+				print 'qr in post'
+				qr_codes = request.POST.getlist('qr_list[]')
+				print 'qr codes'
+				print qr_codes
+				participantArray = []
+				for item in qr_codes:
+					employee = Employee.objects.get(qr_code = item)
+					user = employee.user
+					aux = {}
+					aux['name'] = str(user.first_name) + ' ' + str(user.last_name)
+					aux['id'] = user.id
+					participantArray.append(aux)
+			print 'no qr'
 			result['participant'] = participantArray
 			result['success'] = True
 		else:
@@ -2337,12 +2405,14 @@ def timeLogById(request):
 			if 'id' in request.POST:
 				if 'single' in request.POST:
 					userId = request.user.id
-				elif 'qr_code' in request.POST:
-					employee = Employee.objects.get(qr_code = request.POST['qr_code'])
-					userId = employee.user.id
+				# elif 'qr_code' in request.POST:
+				# 	employee = Employee.objects.get(qr_code = request.POST['qr_code'])
+				# 	userId = employee.user.id
 
 				else:
 					userId = request.POST['id']
+				print 'user id'
+				print userId
 				array_breaks = []
 				array_tasks = []
 				result['signature'] = True
@@ -3500,6 +3570,77 @@ def storeChecklistAnswers(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+
+@login_required
+def getChecklistAttendance(request):
+	result = {'success' : False}
+	item = {}
+
+	if request.method == 'POST':
+		if request.is_ajax():
+			language = request.LANGUAGE_CODE
+			category = request.POST['category']
+			print category
+			refer = Question.EMPLOYEE
+			print refer
+			question =  Question.objects.all().first()
+			print question.category
+			print question.refers
+
+
+			questions = Question.objects.filter(category = category, refers = refer).order_by('id')
+			print 'questions'
+			print questions
+			temp = []
+
+			if 'es'in language:
+				translations = TranslatedQuestion.objects.filter(idiom = TranslatedQuestion.SPANISH, question__in = questions.values('id')).order_by('question')
+				for (q,t) in zip(questions,translations):
+					item['id'] = q.id
+					item['description'] = t.description
+					temp.append(item)
+					item = {}
+			else: #return the questions in english by default, unless another language was requested
+				for q in questions:
+					item['id'] = q.id
+					item['description'] = q.description
+					temp.append(item)
+					item = {}
+			result['questions'] = temp
+			result['success'] = True
+		else:
+			result['code'] = 2 #Use ajax to perform requests
+	else:
+		result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+@login_required
+def saveAnswerChecklistAttendance(request):
+	result = {'success' : False}
+
+	if request.method == 'POST':
+		if request.is_ajax():
+			try:
+				question = Question.objects.get(id = request.POST['question'])
+				employee = Employee.objects.get(user = request.user)
+				attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
+				answer = request.POST['answer']
+				print 'save answer'
+
+				employeeAnswer = EmployeeAttendanceChecklist(question = question, attendance = attendance, answer = answer)
+				employeeAnswer.save()
+				print employeeAnswer
+				result['success'] = True
+
+			except(Employee.DoesNotExist, EmployeeAttendance.DoesNotExist, Question.DoesNotExist) as e:
+				result['code'] =  1 #There is no users associated with this id:
+		else:
+			result['code'] = 2 #Use ajax to perform requests
+	else:
+		result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
 @login_required
 def getChecklistEquipment(request):
 	result = {'success' : False}
@@ -3751,6 +3892,42 @@ def getAllEmployees(request):
 					each_result['first_name'] = each.user.first_name
 					each_result['last_name'] = each.user.last_name
 					each_result['user_id'] = each.user.id
+					date = datetime.datetime.now() #today date
+					start_date = datetime.datetime.combine(date, datetime.time.min) #today date at 0:00 AM
+					end_date = datetime.datetime.combine(date, datetime.time.max) # date at 11:59 PM
+					employeeAttendance = EmployeeAttendance.objects.filter(employee__user__id = each.user.id, date__range = (start_date,end_date)).order_by('-hour_started')[:1].first()
+					print employeeAttendance
+					if employeeAttendance != None:
+						if employeeAttendance.hour_started is not None:
+							each_result['shift_status'] = 1
+							if employeeAttendance.hour_ended is not None:
+								each_result['shift_status'] = 2
+							signed = employeeAttendance.signature
+							if signed == "" or signed == None or signed == "None":
+								print
+							else:
+								each_result['shift_status'] = 3
+						else:
+							each_result['shift_status'] = 0
+					else:
+						each_result['shift_status'] = 0
+					if employeeAttendance != None:
+
+						print 'signed'
+						signed = employeeAttendance.signature
+						print 'signed'
+						print signed
+						if signed == "" or signed == None or signed == "None":
+							signed = "False"
+						else:
+							print 'true'
+							signed = "True"
+					else:
+						print 'hi'
+						signed = "False"
+					print signed
+					each_result['qr_code'] = each.qr_code
+					each_result['signed'] = signed
 					each_result['photo'] = each.photoEmployee.name
 					employees.append(each_result)
 					each_result = {}
@@ -4073,15 +4250,15 @@ def getCsv(request):
 	attendances = EmployeeAttendance.objects.all().order_by('-date').filter(date__range = (start, end))
 
 	header = []
-	header.extend(('Attendance ID', 'ID', 'Name', 'Team Lead', 'Team Name', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked(w/ breaks)'))
-	header.extend(('Job 1', 'Total Time'))
-	header.extend(('Job 2',  'Total Time'))
-	header.extend(('Job 3', 'Total Time'))
-	header.extend(('Job 4', 'Total Time'))
-	header.extend(('Job 5',  'Total Time'))
-	header.extend(('Job 6', 'Total Time'))
-	header.extend(('Job 7', 'Total Time'))
-	header.extend(('Job 8', 'Total Time'))
+	header.extend(('Attendance ID', 'ID', 'Name', 'Team Lead', 'Team Name', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked(w/ breaks)', 'Job', 'Ranch','Declined'))
+	# header.extend('Job')
+	# header.extend(('Job 2',  'Total Time'))
+	# header.extend(('Job 3', 'Total Time'))
+	# header.extend(('Job 4', 'Total Time'))
+	# header.extend(('Job 5',  'Total Time'))
+	# header.extend(('Job 6', 'Total Time'))
+	# header.extend(('Job 7', 'Total Time'))
+	# header.extend(('Job 8', 'Total Time'))
 	header.extend(('Break 1', 'Hour Started', 'Hour Ended', 'Break Time'))
 	header.extend(('Lunch 1', 'Hour Started', 'Hour Ended', 'Break Time'))
 	header.extend(('Break 2', 'Hour Started', 'Hour Ended', 'Break Time'))
@@ -4098,6 +4275,7 @@ def getCsv(request):
 			employee_id = attendance.employee.qr_code
 			attendance_id = attendance.id
 			date = attendance.date
+			declined = attendance.declined
 			hour_started = attendance.hour_started
 			hour_ended = attendance.hour_ended
 			now = datetime.datetime.now().time()
@@ -4131,13 +4309,22 @@ def getCsv(request):
 					hours_today = 'N/A'
 			else:
 				hours_today = 'N/A'
-			print 'hours today'
-			print hours_today
-			print hour_ended
-			print hour_started
+
+
+			job_code = EmployeeAttendanceChecklist.objects.filter(attendance = attendance, question__description = 'Job Code').first()
+			ranch = EmployeeAttendanceChecklist.objects.filter(attendance = attendance, question__description = 'Ranch').first()
+			print job_code
+			if job_code is None or job_code == "":
+				job_code = "N/A"
+			else:
+				job_code = job_code.answer
+			if ranch is None or ranch == "":
+				ranch = "N/A"
+			else:
+				ranch = ranch.answer
 
 			employee_name = attendance.employee.user.last_name + ", " + attendance.employee.user.first_name
-			data_row.extend((attendance_id, employee_id, employee_name, leader_name, crew, date, hour_started, hour_ended, hours_today))
+			data_row.extend((attendance_id, employee_id, employee_name, leader_name, crew, date, hour_started, hour_ended, hours_today, job_code, ranch,declined))
 			breaks = Break.objects.filter(attendance__id = attendance.id).order_by('start')
 			jobs = Task.objects.filter(attendance_id = attendance.id).order_by('-id')
 			i = 1
@@ -4147,42 +4334,43 @@ def getCsv(request):
 			reg_breaks = []
 			combined_breaks = []
 
-			while m <=8:
-				if m <= jobs.count() and breaks.count() > 0:
-					print jobs.count()
+			# while m <=8:
+			# 	if m <= jobs.count() and breaks.count() > 0:
+			# 		print jobs.count()
+            #
+			# 		job_code = jobs[m-1].description
+			# 		if m ==1:
+			# 			startJob = hour_started
+			# 			endJob = breaks[0].start
+			# 			endJob = datetime.timedelta(hours = endJob.hour, minutes = endJob.minute, seconds = endJob.second)
+            #
+			# 		elif m == jobs.count():
+            #
+			# 			startJob = breaks[m-2].end
+			# 			startJob =  datetime.timedelta(hours = startJob.hour, minutes = startJob.minute, seconds = startJob.second)
+			# 			endJob = hour_ended
+            #
+			# 		else:
+            #
+			# 			startJob = breaks[m-2].end
+			# 			startJob =  datetime.timedelta(hours = startJob.hour, minutes = startJob.minute, seconds = startJob.second)
+			# 			endJob = breaks[m-1].start
+			# 			endJob = datetime.timedelta(hours = endJob.hour, minutes = endJob.minute, seconds = endJob.second)
+			# 		print 'hours spend'
+			# 		print endJob
+			# 		print startJob
+            #
+			# 		print type(endJob)
+			# 		print type(startJob)
+			# 		hours_spent = endJob - startJob
+			# 		print hours_spent
+			# 		data_row.extend((job_code, hours_spent))
+			# 	else:
+			# 		print 'no row'
+			# 		data_row.extend(('', ''))
+			# 	m += 1
 
-					job_code = jobs[m-1].description
-					if m ==1:
-						startJob = hour_started
-						endJob = breaks[0].start
-						endJob = datetime.timedelta(hours = endJob.hour, minutes = endJob.minute, seconds = endJob.second)
 
-					elif m == jobs.count():
-
-						startJob = breaks[m-2].end
-						startJob =  datetime.timedelta(hours = startJob.hour, minutes = startJob.minute, seconds = startJob.second)
-						endJob = hour_ended
-
-					else:
-
-						startJob = breaks[m-2].end
-						startJob =  datetime.timedelta(hours = startJob.hour, minutes = startJob.minute, seconds = startJob.second)
-						endJob = breaks[m-1].start
-						endJob = datetime.timedelta(hours = endJob.hour, minutes = endJob.minute, seconds = endJob.second)
-					print 'hours spend'
-					print endJob
-					print startJob
-
-					print type(endJob)
-					print type(startJob)
-					hours_spent = endJob - startJob
-					print hours_spent
-					data_row.extend((job_code, hours_spent))
-				else:
-					print 'no row'
-					data_row.extend(('', ''))
-				m += 1
-			print 'lunch breaks'
 			if break_num > 0:
 				for item in breaks:
 					if item.lunch == True:
@@ -4243,7 +4431,11 @@ def timeKeeperDailyReport(request):
 			group_leader = []
 			qr_code = []
 			crews = []
+			job_codes = []
+			ranches = []
+			declines = []
 			for attendance in attendances:
+				declines.append(attendance.declined)
 				breaks = Break.objects.filter(attendance = attendance)
 				start =  datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
 
@@ -4263,13 +4455,28 @@ def timeKeeperDailyReport(request):
 				if(attendance.group is None):
 					leader_name = 'N/A'
 					crew_name = 'N/A'
+					job_code = EmployeeAttendanceChecklist.objects.filter(attendance = attendance, question__description = "Job Code").first()
+					ranch = EmployeeAttendanceChecklist.objects.filter(attendance = attendance, question__description = "Ranch").first()
 				else:
 					leader_name = str(attendance.group.creator.user.first_name + ", " + attendance.group.creator.user.last_name)
 					crew_name = str(attendance.group.name)
+					job_code = EmployeeAttendanceChecklist.objects.filter(attendance = attendance, question__description = "Job Code").first()
+					ranch = EmployeeAttendanceChecklist.objects.filter(attendance = attendance, question__description = "Ranch").first()
 				group_leader.append(leader_name)
 				crews.append(crew_name)
 				qr_code.append(str(attendance.employee.qr_code))
 				total_times.append(hours_today)
+				if job_code is None or job_code== "":
+					job_code = "N/A"
+				else:
+					job_code = str(job_code.answer)
+				if ranch is None or ranch== "":
+					ranch = "N/A"
+				else:
+					ranch = str(ranch.answer)
+				job_codes.append(job_code)
+				ranches.append(ranch)
+
 			all_attendances_ser = serializers.serialize("json", attendances)
 			# crews_ser = serializers.serialize("json", crews)
 
@@ -4280,12 +4487,81 @@ def timeKeeperDailyReport(request):
 			result['qr_code'] = qr_code
 			result['group_leader'] = group_leader
 			result['crews'] = crews
+			result['job_codes'] = job_codes
+			result['ranches'] = ranches
+			result['declines'] = declines
 		else:
 			result['code'] = 2  #Use ajax to perform requests
 	else:
 		result['code'] = 3  #Request was not POST
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+@login_required
+def declineShift(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+	 	if request.is_ajax():
+			if 'id' in request.POST:
+				user_id = request.POST['id']
+				if 'attendance_id' in request.POST:
+					try:
+						attendance = EmployeeAttendance.objects.get(employee__user__id = user_id, id = attendance_id)
+					except DoesNotExist:
+						result['code'] = 1 #There is no users associated with this
+				else:
+					attendance = EmployeeAttendance.objects.filter(employee__user__id = user_id).order_by('-date','-hour_started').first()
+			else:
+				if 'attendance_id' in request.POST:
+					try:
+						attendance = EmployeeAttendance.objects.get(employee__user__id = request.user.id, id = attendance_id)
+					except DoesNotExist:
+						result['code'] = 1 #There is no users associated with this
+				else:
+					attendance = EmployeeAttendance.objects.filter(employee__user__id = request.user.id).order_by('-date','-hour_started').first()
+			attendance.declined = True
+			attendance.save()
+			result['success'] = True
+		else:
+			result['code'] = 2 #Use ajax to perform requests
+	else:
+		result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
+@login_required
+def undeclineShift(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+	 	if request.is_ajax():
+			if 'id' in request.POST:
+				user_id = request.POST['id']
+				if 'attendance_id' in request.POST:
+					try:
+						attendance = EmployeeAttendance.objects.get(employee__user__id = user_id, id = attendance_id)
+					except DoesNotExist:
+						result['code'] = 1 #There is no users associated with this
+				else:
+					attendance = EmployeeAttendance.objects.filter(employee__user__id = user_id).order_by('-date','-hour_started').first()
+			else:
+				if 'attendance_id' in request.POST:
+					try:
+						attendance = EmployeeAttendance.objects.get(employee__user__id = request.user.id, id = attendance_id)
+					except DoesNotExist:
+						result['code'] = 1 #There is no users associated with this
+				else:
+					attendance = EmployeeAttendance.objects.filter(employee__user__id = 1).order_by('-date','-hour_started').first()
+			attendance.declined = False
+			attendance.save()
+			result['success'] = True
+		else:
+			result['code'] = 2 #Use ajax to perform requests
+	else:
+		result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+
 @login_required
 def machineManagerDelete(request):
 	result = {'success' : False}
@@ -5445,21 +5721,6 @@ def retrieveAttendanceChecklist(request):
 	if request.method == 'POST':
 		if request.is_ajax():
 		 	checklist = AttendanceChecklist.objects.all()
-			if 'qr_code' in request.POST:
-				employee = Employee.objects.get(qr_code = request.POST['qr_code'])
-				userId = employee.user.id
-			elif 'single' in request.POST:
-				userId = request.user.id
-			else:
-		 		userId = request.POST['id']
-		 	attendance = checkAttendanceBreaks(userId) #user id
-		 	if attendance == -1:
-		 		result['checklist'] = []
-		 		result['code'] = 4 #User id does not exist
-		 		return HttpResponse(json.dumps(result),content_type='application/json')
-
-		 	result['break'] = attendance['breaks']
-			result['lunch'] = attendance['lunch']
 			questionArray = []
 			for item in checklist:
 				aux = {}

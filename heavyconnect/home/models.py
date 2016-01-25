@@ -290,6 +290,7 @@ class EmployeeAttendance(models.Model):
 	group = models.ForeignKey(Group, null = True, blank = True)
 	edited = models.BooleanField(default = False)
 	hours_worked = models.TimeField(null = True, blank = True)
+	declined = models.BooleanField(default = False)
 	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
@@ -554,19 +555,22 @@ class Question(models.Model):
 	NONE = 0
 	MACHINE = 1
 	IMPLEMENT = 2
+	EMPLOYEE = 3
 
 	CATDEFAULT = 5
 
 	QUESTION_CHOICES = (
-		(1, 'Before Lunch Break'),
-		(2, 'Post Lunch Pre Start'),
-		(3, 'Post Lunch Start'),
-		(4, 'End of Day Inspection'),
-		(5, 'Default'),
+		(1, 'Default'),
+		(2, 'Before Lunch Break'),
+		(3, 'Post Lunch Pre Start'),
+		(4, 'Post Lunch Start'),
+		(5, 'End of Day Inspection'),
+		(6, 'End of shift'),
 	)
 	REFERS_CHOICES = (
 		(MACHINE, 'Machine'),
 		(IMPLEMENT, 'Implement'),
+		(EMPLOYEE, 'Employee'),
 	)
 	description = models.CharField(max_length = 250)
 	category = models.IntegerField(choices = QUESTION_CHOICES)
@@ -616,6 +620,14 @@ class MachineChecklist(models.Model):
 
 	def __unicode__(self):
 		return "ID: " + str(self.id) + " Machine: " + str(self.qr_code.manufacturer_model) + ", Answer: " + str(self.answer) + ", Note: " + str(self.note) +', Date: '+ str(self.date)
+
+class EmployeeAttendanceChecklist(models.Model):
+	question = models.ForeignKey(Question)
+	attendance = models.ForeignKey(EmployeeAttendance)
+	answer = models.CharField(max_length = 200, blank = True)
+
+	def __unicode__(self):
+		return "ID: " + str(self.id) + " Answer: " + str(self.answer) + ", Question: " + str(self.question.description) + ", Attendance: " + str(self.attendance.employee)
 
 
 class ImplementChecklist(models.Model):
