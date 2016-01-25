@@ -39,14 +39,14 @@ LANGUAGE_CHOICES = ['pt-br','es', 'en-us']
 #                 name='Scaroni',
 #                 paid_until='2016-12-05',
 #                 on_trial=False)
-# tenant.save()
-#
-tenant = Client(domain_url='t-and-a.heavyconnect.com', # don't add your port or www here!
-                schema_name='tanda',
-                name='T & A',
-                paid_until='2014-12-05',
-                on_trial=True)
-tenant.save() # migrate_schemas automatically called, your tenant is ready to be used!
+# # tenant.save()
+# #
+# tenant = Client(domain_url='t-and-a.heavyconnect.com', # don't add your port or www here!
+#                 schema_name='tanda',
+#                 name='T & A',
+#                 paid_until='2014-12-05',
+#                 on_trial=True)
+# tenant.save() # migrate_schemas automatically called, your tenant is ready to be used!
 
 class HelloPDFView(PDFTemplateView):
 	template_name = "template/timecard.html"
