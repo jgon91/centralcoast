@@ -3629,7 +3629,7 @@ def saveAnswerChecklistAttendance(request):
 				question = Question.objects.get(id = request.POST['question'])
 				#need to get the employee that
 				if 'id' in request.POST:
-					employee = employee = Employee.objects.get(user__id = request.POST['id'])
+					employee = Employee.objects.get(user__id = request.POST['id'])
 				else:
 					employee = Employee.objects.get(user = request.user)
 				attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
