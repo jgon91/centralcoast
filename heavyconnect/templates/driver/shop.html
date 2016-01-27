@@ -714,7 +714,6 @@ function addRemove() {
 					<!--if(checkboxList == true) {-->
 						for(var i = 0; i < qr_list.length; i++){
 							if(qr_list.indexOf(data.employees[i].qr_code) > -1 ){
-								alert(data.employees[i].qr_code);
 								$("#messageTimekeeper").html("Summary");
 								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onChange="checkState()" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'</label>');
 							<!--} else if(data.employees[i].shift_status == "1"){-->
