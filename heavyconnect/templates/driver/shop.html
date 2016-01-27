@@ -797,7 +797,9 @@ function addRemove() {
 						<!--$("#messageTimekeeper").html("Clock-out:");-->
 						$("#messageTimekeeper").html("Summary");
 						checkboxList = false;
+						alert(employees.length);
 						if(employees.length > 1) {
+							checkboxList = false;
 							getSomeEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}", employees);
 						}else {
 							timelogId(data.success[0].id);
