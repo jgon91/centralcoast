@@ -621,7 +621,8 @@ function addRemove() {
 				async: true,
 				data : {"csrfmiddlewaretoken" : token,
 						"question" : questionId,
-						"answer" : answer
+						"answer" : answer,
+						"id":idTimelog,
 				},
 				datatype : "json",
 				success : function(data, status, xhr) {
