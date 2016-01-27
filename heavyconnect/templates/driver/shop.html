@@ -797,9 +797,10 @@ function addRemove() {
 						$("#messageTimekeeper").html("Summary");
 						checkboxList = false;
 						if(employees.length > 1) {
-						getSomeEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}", employees);
+							getSomeEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}", employees);
 						}else {
-							timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+							timelogId(data.success[0].id);
+							<!--timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");-->
 						}
 
 					}
@@ -896,7 +897,7 @@ function addRemove() {
 			$.ajax({
 				method : "POST",
 				url : url,
-				data : {"csrfmiddlewaretoken" : token, "qr_code": data_scanned.qr_code, "id":idTimelog},
+				data : {"csrfmiddlewaretoken" : token, "qr_code": idTimelog, "id":idTimelog},
 				datatype : "json",
 				success : function(data, status, xhr) {
 					var i = 0;

@@ -721,7 +721,6 @@ def stopShiftGroup(request):
 				for item in ids:
 					employee = Employee.objects.get(qr_code = int(item))
 					userId = employee.user.id
-					print 'stop shift auto'
 					aux = stopShiftAuto(request, userId)
 					aux['id'] = userId
 					if aux['success'] == True:
