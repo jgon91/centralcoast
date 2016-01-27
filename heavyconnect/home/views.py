@@ -243,7 +243,9 @@ def saveSignature(request):
 		if request.is_ajax():
 			attenId = request.POST['id']
 			atenSignature = request.POST['signature']
+			print 'attenId'
 			if attenId == None:
+				print 'atten none'
 				atten = EmployeeAttendance.objects.filter(employee__user = request.user).order_by('-date', 'hour_started').first()
 				if atenSignature == None:
 					atten.signature = 'Not provided'
@@ -252,7 +254,10 @@ def saveSignature(request):
 				atten.save()
 				result['success'] = True
 			else:
+				print 'attendance'
+				print attenId
 				atten = EmployeeAttendance.objects.get(id = attenId)
+				print atten
 				if atenSignature == None:
 					atten.signature = 'Not provided'
 				else:
@@ -3623,6 +3628,7 @@ def saveAnswerChecklistAttendance(request):
 		if request.is_ajax():
 			try:
 				question = Question.objects.get(id = request.POST['question'])
+				#need to get the employee that
 				employee = Employee.objects.get(user = request.user)
 				attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
 				answer = request.POST['answer']
@@ -4098,15 +4104,15 @@ def getExcel(request):
 	attendances = EmployeeAttendance.objects.all().order_by('-date').filter(date__range = (start, end))
 
 	header = []
-	header.extend(('Attendance ID', 'ID', 'Name', 'Team Lead', 'Team Name', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked(w/ breaks)'))
-	header.extend(('Job 1', 'Total Time'))
-	header.extend(('Job 2',  'Total Time'))
-	header.extend(('Job 3', 'Total Time'))
-	header.extend(('Job 4', 'Total Time'))
-	header.extend(('Job 5',  'Total Time'))
-	header.extend(('Job 6', 'Total Time'))
-	header.extend(('Job 7', 'Total Time'))
-	header.extend(('Job 8', 'Total Time'))
+	header.extend(('Attendance ID', 'ID', 'Name', 'Team Lead', 'Team Name', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked(w/ breaks)', 'Job Code', 'Ranch'))
+	# header.extend(('Job 1', 'Total Time'))
+	# header.extend(('Job 2',  'Total Time'))
+	# header.extend(('Job 3', 'Total Time'))
+	# header.extend(('Job 4', 'Total Time'))
+	# header.extend(('Job 5',  'Total Time'))
+	# header.extend(('Job 6', 'Total Time'))
+	# header.extend(('Job 7', 'Total Time'))
+	# header.extend(('Job 8', 'Total Time'))
 	header.extend(('Break 1', 'Hour Started', 'Hour Ended', 'Break Time'))
 	header.extend(('Lunch 1', 'Hour Started', 'Hour Ended', 'Break Time'))
 	header.extend(('Break 2', 'Hour Started', 'Hour Ended', 'Break Time'))
@@ -4158,7 +4164,19 @@ def getExcel(request):
 			else:
 				hours_today = 'N/A'
 			employee_name = attendance.employee.user.last_name + ", " + attendance.employee.user.first_name
-			data_row.extend((str(attendance_id), str(employee_id), str(employee_name), str(leader_name), str(crew), str(date), str(hour_started), str(hour_ended), str(hours_today)))
+			job_code = EmployeeAttendanceChecklist.objects.filter(attendance = attendance, question__description = 'Job Code').first()
+			ranch = EmployeeAttendanceChecklist.objects.filter(attendance = attendance, question__description = 'Ranch').first()
+			print job_code
+			if job_code is None or job_code == "":
+				job_code = "N/A"
+			else:
+				job_code = job_code.answer
+			if ranch is None or ranch == "":
+				ranch = "N/A"
+			else:
+				ranch = ranch.answer
+
+			data_row.extend((str(attendance_id), str(employee_id), str(employee_name), str(leader_name), str(crew), str(date), str(hour_started), str(hour_ended), str(hours_today), str(job_code), str(ranch)))
 			breaks = Break.objects.filter(attendance__id = attendance.id).order_by('start')
 			jobs = Task.objects.filter(attendance_id = attendance.id).order_by('-id')
 			i = 1
@@ -4168,29 +4186,29 @@ def getExcel(request):
 			reg_breaks = []
 			combined_breaks = []
 
-			while m <=8:
-				if m <= jobs.count() and breaks.count() > 0:
-					job_code = jobs[m-1].description
-					if m ==1:
-						startJob =  hour_started
-						endJob = breaks[0].start
-						endJob = datetime.timedelta(hours = endJob.hour, minutes = endJob.minute, seconds = endJob.second)
-					elif m == jobs.count():
-						startJob = breaks[m-2].end
-						startJob =  datetime.timedelta(hours = startJob.hour, minutes = startJob.minute, seconds = startJob.second)
-						endJob = hour_ended
-					else:
-						startJob = breaks[m-2].end
-						startJob =  datetime.timedelta(hours = startJob.hour, minutes = startJob.minute, seconds = startJob.second)
-						endJob = breaks[m-1].start
-						endJob = datetime.timedelta(hours = endJob.hour, minutes = endJob.minute, seconds = endJob.second)
-
-					hours_spent = endJob - startJob
-
-					data_row.extend((str(job_code), str(hours_spent)))
-				else:
-					data_row.extend(('', ''))
-				m += 1
+			# while m <=8:
+			# 	if m <= jobs.count() and breaks.count() > 0:
+			# 		job_code = jobs[m-1].description
+			# 		if m ==1:
+			# 			startJob =  hour_started
+			# 			endJob = breaks[0].start
+			# 			endJob = datetime.timedelta(hours = endJob.hour, minutes = endJob.minute, seconds = endJob.second)
+			# 		elif m == jobs.count():
+			# 			startJob = breaks[m-2].end
+			# 			startJob =  datetime.timedelta(hours = startJob.hour, minutes = startJob.minute, seconds = startJob.second)
+			# 			endJob = hour_ended
+			# 		else:
+			# 			startJob = breaks[m-2].end
+			# 			startJob =  datetime.timedelta(hours = startJob.hour, minutes = startJob.minute, seconds = startJob.second)
+			# 			endJob = breaks[m-1].start
+			# 			endJob = datetime.timedelta(hours = endJob.hour, minutes = endJob.minute, seconds = endJob.second)
+            #
+			# 		hours_spent = endJob - startJob
+            #
+			# 		data_row.extend((str(job_code), str(hours_spent)))
+			# 	else:
+			# 		data_row.extend(('', ''))
+			# 	m += 1
 
 			if break_num > 0:
 				for item in breaks:
@@ -4220,6 +4238,7 @@ def getExcel(request):
 								start = datetime.timedelta(hours = item.start.hour, minutes = item.start.minute, seconds = item.start.second)
 								end = datetime.timedelta(hours = item.end.hour, minutes = item.end.minute, seconds = item.end.second)
 								total = end - start
+								total = str(round(total.total_seconds()/60/60, 2))
 							else:
 								total = 'N/A'
 						else:
@@ -4235,7 +4254,7 @@ def getExcel(request):
 			q+=1
 
 	response = HttpResponse(content_type='application/vnd.ms-excel; charset=utf-16')
-	response['Content-Disposition'] = 'attachment; filename=mymodel.xls'
+	response['Content-Disposition'] = 'attachment; filename=timecard.xls'
 	wb.save(response)
 	return response
 
@@ -4318,7 +4337,6 @@ def getCsv(request):
 
 			job_code = EmployeeAttendanceChecklist.objects.filter(attendance = attendance, question__description = 'Job Code').first()
 			ranch = EmployeeAttendanceChecklist.objects.filter(attendance = attendance, question__description = 'Ranch').first()
-			print job_code
 			if job_code is None or job_code == "":
 				job_code = "N/A"
 			else:
@@ -4513,6 +4531,7 @@ def declineShift(request):
 				user_id = request.POST['id']
 				if 'attendance_id' in request.POST:
 					try:
+						attendance_id = int(request.POST['attendance_id'])
 						attendance = EmployeeAttendance.objects.get(employee__user__id = user_id, id = attendance_id)
 					except DoesNotExist:
 						result['code'] = 1 #There is no users associated with this
@@ -4521,7 +4540,8 @@ def declineShift(request):
 			else:
 				if 'attendance_id' in request.POST:
 					try:
-						attendance = EmployeeAttendance.objects.get(employee__user__id = request.user.id, id = attendance_id)
+						attendance_id = int(request.POST['attendance_id'])
+						attendance = EmployeeAttendance.objects.get(id = attendance_id)
 					except DoesNotExist:
 						result['code'] = 1 #There is no users associated with this
 				else:

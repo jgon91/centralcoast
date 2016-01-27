@@ -152,15 +152,11 @@
 				var $sigdiv = $("#signature");
 				var datapair = $sigdiv.jSignature("getData","base30");
 				var attendanceId = $("#attendanceId").val();
-				saveSignature("{{ csrf_token }}", "{% url 'saveSignature' %}", datapair[1], attendanceId);
+				saveSignature("{{ csrf_token }}", "{% url 'saveSignature' %}", attendanceId);
 			});
 			if($("ul").has("li").length == 0) {
 				  $("ul").html("Please Add Employees");
 			}
-			$("#clearSignature").click(function() {
-				var $sigdiv = $("#signature");
-				$sigdiv.jSignature("reset");
-			});
 
 			$("#getAllEmp").click(function() {
 				$('#showTimekeeperModal').modal();
@@ -283,6 +279,7 @@
 				getAllEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}");
 
 			});
+
 			$("#timelogBack1").click(function() {
 				emptyDivs();
 				$('#showTimekeeperModal').modal();
@@ -559,10 +556,12 @@ function addRemove() {
 							$("#attendanceCheckList").append("<tr><td colspan='3'><label for='answer' id='question'></label></td></tr>");
 							showQuestion(questions[indexQuestions]);
 							$("#attendanceCheckList").append("<tr>"+
-								"<td><input type='button' name='btnBackQuestion' id='btnBack' onclick='previousQuestion()' class='btnBackAdv' style='float: left;' /></td>"+
-								"<td><input type='text' name='inputAnswer' id='answer' class='form-control' value=''/></td>"+
-								"<td><input type='button' name='btnAnswer' id='btnForward' onclick='saveQuestion()' class='btnBackAdv' style='float: left;' /></td>"+
-								"</tr></tr>");
+							"<td><input type='button' name='btnBackQuestion' id='btnBack' onclick='previousQuestion()' class='btnBackAdv' style='float: left;' /></td>"+
+							"<td><input type='text' name='inputAnswer' id='answer' class='form-control' value=''/></td>"+
+							"<td><input type='button' name='btnAnswer' id='btnForward' onclick='saveQuestion()' class='btnBackAdv' style='float: left;' /></td>"+
+							"</tr></tr>");
+
+
 							$("#attendanceCheckList").append("</table></br>");
 							$("#attendanceCheckList").append("</form>");
 	    					$("#attendanceCheckList").append("</div>");
@@ -670,7 +669,51 @@ function addRemove() {
 				success: function(data, status, xhr){
 					if(checkboxList == true) {
 						for(var i = 0; i < data.employees.length; i++){
+							if(data.employees[i].shift_status == "0"){
+							$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onChange="checkState()" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'</label>');
+							} else if(data.employees[i].shift_status == "1"){
+								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onChange="checkState()" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'<span style="float: right;background: #FFFFFF;border-radius: .5em;padding: 5px;font-size: 24px;">IN</span></label>');
+
+							}else if(data.employees[i].shift_status == "2"){
+								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onChange="checkState()" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'<span style="float: right;background: #003DFF;border-radius: .5em;padding: 5px;font-size: 24px;">OUT</span></label>');
+
+							}else if(data.employees[i].shift_status == "3"){
+								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onChange="checkState()" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'<span style="float: right;background: #4AEF0D;border-radius: .5em;padding: 5px;font-size: 24px;">DONE</span></label>');
+
+							}
+
+						}
+					}else{
+						for(var i = 0; i < data.employees.length; i++){
+							if(data.employees[i].shift_status == "0"){
+								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input id='+data.employees[i].user_id+' class="teamName" style="opacity:0" type="checkbox" onclick="timelogId(this.id)" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'</label>');
+							} else if(data.employees[i].shift_status == "3") {
+								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input id='+data.employees[i].user_id+' class="teamName" style="opacity:0" type="checkbox" onclick="timelogId(this.id)" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'<span style="float: right;background: #4AEF0D;border-radius: .5em;padding: 5px;font-size: 24px;">DONE</span></label>');
+							}else if(data.employees[i].shift_status == "2") {
+								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input id='+data.employees[i].user_id+' class="teamName" style="opacity:0" type="checkbox" onclick="timelogId(this.id)" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'<span style="float: right;background: #003DFF;border-radius: .5em;padding: 5px;font-size: 24px;">OUT</span></label>');
+							}else if(data.employees[i].shift_status == "1") {
+								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input id='+data.employees[i].user_id+' class="teamName" style="opacity:0" type="checkbox" onclick="timelogId(this.id)" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'<span style="float: right;background: #FFFFFF;border-radius: .5em;padding: 5px;font-size: 24px;">IN</span></label>');
+							}
+
+						}
+					}
+
+
+				}
+			});
+		}
+
+		function getSomeEmployees(token, url, qr_list) {
+			$.ajax({
+				method: "POST",
+				url: url,
+				data: {"csrfmiddlewaretoken": token },
+				datatype: "json",
+				success: function(data, status, xhr){
+					if(checkboxList == true) {
+						for(var i = 0; i < qr_list.length; i++){
 							<!--if(data.employees[i].shift_status == "0"){-->
+							if(qr_list.indexOf(data.employees[i].qr_code) > -1 ){
 							$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onChange="checkState()" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'</label>');
 							<!--} else if(data.employees[i].shift_status == "1"){-->
 								<!--$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#18CE19; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onChange="checkState()" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'</label>');-->
@@ -682,10 +725,12 @@ function addRemove() {
 								<!--$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#3952E2; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onChange="checkState()" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'</label>');-->
 
 							<!--}-->
+							}
 
 						}
 					}else{
-						for(var i = 0; i < data.employees.length; i++){
+						for(var i = 0; i < qr_list.length; i++){
+						if(qr_list.indexOf(data.employees[i].qr_code) > -1 ){
 							if(data.employees[i].shift_status == "0"){
 								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input id='+data.employees[i].user_id+' class="teamName" style="opacity:0" type="checkbox" onclick="timelogId(this.id)" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'</label>');
 							} else if(data.employees[i].shift_status == "3") {
@@ -695,7 +740,7 @@ function addRemove() {
 							}else if(data.employees[i].shift_status == "1") {
 								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#FFF; width:100%;border-radius: .25em;"><input id='+data.employees[i].user_id+' class="teamName" style="opacity:0" type="checkbox" onclick="timelogId(this.id)" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'</label>');
 							}
-
+						}
 						}
 					}
 
@@ -703,7 +748,6 @@ function addRemove() {
 				}
 			});
 		}
-
 
 		function startBreakGroup(token, url) {
 			$.ajax({
@@ -746,11 +790,18 @@ function addRemove() {
 					arrayErrors[4] = '{% trans 'This user is not authorized to use the system' %}.';
 					arrayErrors[5] = '{% trans 'Error. Contact Suport' %}.';
 					arrayErrors[6] = '{% trans 'Error. Contact Suport' %}.';
-					printResult(data);
+					<!--printResult(data);-->
 					if (data.success) {
 						$("#messageTimekeeper").css("color", "#1F3801");	//green
-						$("#messageTimekeeper").html("Clock-out:");
-						$("#scheduleButton").append("<input type='button' id='timelog2' value='SCHEDULE' class='btnsTimekeeper'/>");
+						<!--$("#messageTimekeeper").html("Clock-out:");-->
+						$("#messageTimekeeper").html("Summary");
+						checkboxList = false;
+						if(employees.length > 1) {
+						getSomeEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}", employees);
+						}else {
+							timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+						}
+
 					}
 				}
 			});
@@ -782,11 +833,11 @@ function addRemove() {
     					}
     					$("#questions").append("</table>");
     					$("#divSignNow").append("<input type='button' style='box-shadow: 1px 1px 3px gray; border-radius: .25em; margin-right: 50px;' id='btnSignNow' value='{% trans 'SIGN NOW' %}'/>");
-    					$("#divSignNow").append("<input type='button' style='box-shadow: 1px 1px 3px gray; border-radius: .25em;' id='btnDeclineCheckList' value='{% trans 'DECLINE' %}'/>");
-    					$("#btnDeclineCheckList").css("background-color", "#B83419");
-						$("#btnDeclineCheckList").click(function(){
-							declineShift("{{ csrf_token }}", "{% url 'declineShift' %}");
-						});
+    					<!--$("#divSignNow").append("<input type='button' style='box-shadow: 1px 1px 3px gray; border-radius: .25em;margin-left: 20px;' id='btnDeclineCheckList' value='{% trans 'DECLINE' %}'/>");-->
+    					<!--$("#btnDeclineCheckList").css("background-color", "#B83419");-->
+						<!--$("#btnDeclineCheckList").click(function(){-->
+							<!--declineShift("{{ csrf_token }}", "{% url 'declineShift' %}");-->
+						<!--});-->
     					$("#btnSignNow").attr("disabled", true);
     					}
 					}
@@ -794,15 +845,16 @@ function addRemove() {
 			});
 		}
 
-		function declineShift(token, url) {
+		function declineShift(token, url, attendanceid) {
 			$.ajax({
 				method: "POST",
 				url: url,
-				data: {"csrfmiddlewaretoken": token},
+				data: {"csrfmiddlewaretoken": token, "attendance_id":attendanceid},
 				datatype: "json",
 				success: function(data, status, xhr){
 					if (data.success) {
-
+						emptyDivs();
+						$("#messageTimekeeper").html("{% trans 'Shift Declined' %}");
 					}
 				}
 			});
@@ -823,17 +875,17 @@ function addRemove() {
 			$('#showTimekeeperModal').modal('hide');
 			$('#signModal').modal();
 		}
-		function saveSignature(token, url, signature, attendanceId){
-			console.log(signature + " - " + attendanceId);
+		function saveSignature(token, url, attendanceId){
+			<!--console.log(signature + " - " + attendanceId);-->
 			$.ajax({
 				method : "POST",
 				url : url,
 				async: false,
-				data : {"csrfmiddlewaretoken" : token, "id": attendanceId, "signature": signature},
+				data : {"csrfmiddlewaretoken" : token, "id": attendanceId, "signature": document.getElementById("code").value},
 				datatype : "json",
 				success : function(data, status, xhr) {
-						var $sigdiv = $("#signature");
-						$sigdiv.jSignature("reset");
+						<!--var $sigdiv = $("#signature");-->
+						<!--$sigdiv.jSignature("reset");-->
 						$('#signModal').modal('hide');
 				}
 			});
@@ -878,7 +930,7 @@ function addRemove() {
 						}
 						$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + tConvert(data.Attendance_end) + "</td></tr>");
 					} else {
-						$("#divTimelog").append("<table id='tableTimelog' ><tr id='trStartShift'><td colspan='2'>Start Shift: " + tConvert(data.Attendance_start) + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' onclick='editStartShift(this.id, currentStart)'/></td></tr>");
+						$("#divTimelog").append("<table id='tableTimelog' ><tr id='trStartShift'><td colspan='2'>Start Shift: " + tConvert(data.Attendance_start) + "</td></tr>");
 							var n=1;
 							<!--breakDuration = data.tasks[n-1].duration;-->
 							breakDuration = "";
@@ -893,23 +945,22 @@ function addRemove() {
 								breakDuration = "";
 								if (data.breaks[i].lunch == 0){
 									lun[data.breaks[i].breakId] = 0
-									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + breaks + " Break " + tConvert(data.breaks[i].breakStart) + " - " + tConvert(data.breaks[i].breakStop) + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + breaks + " Break " + tConvert(data.breaks[i].breakStart) + " - " + tConvert(data.breaks[i].breakStop) + "</td></tr>");
 									breaks++;
 								} else {
 									lun[data.breaks[i].breakId] = 1;
-									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + lunchs + " Lunch " + tConvert(data.breaks[i].breakStart) + " - " + tConvert(data.breaks[i].breakStop) + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + lunchs + " Lunch " + tConvert(data.breaks[i].breakStart) + " - " + tConvert(data.breaks[i].breakStop) + "</td></tr>");
 									lunchs++;
 								}
 							}
-							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + tConvert(data.Attendance_end) + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' onclick='editStopShift(this.id, currentEnd)'/></td></tr>");
-							$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + data.attendanceId + "'>");
-							if (data.signature == true) {
-								$("#btnSignature").append("<input type='button' style='box-shadow: 1px 1px 3px gray; border-radius: .25em;' id='btnSign' value='SIGNED'/>");
-								$("#btnSign").css("background", "#799520");
-							} else {
-								$("#btnSignature").append("<input type='button' id='btnSign' value='SIGN'/>");
-								$("#btnSign").css("background", "#E5E5E5");
-							}
+							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + tConvert(data.Attendance_end) + "</td></tr>");
+							$("#btnSignature").append("<button type='button' id='attendanceId'  style='background:green;' value='"+data.attendanceId+"' class='btnsTimekeeper'>ACCEPT</button>");
+
+							$("#declineButton").append("<input type='button' id='btnDeclineCheckList' style='background:#BB1818;' value='DECLINE' class='btnsTimekeeper'/>");
+							$("#btnDeclineCheckList").css("background-color", "#B83419");
+							$("#btnDeclineCheckList").click(function(){
+								declineShift("{{ csrf_token }}", "{% url 'declineShift' %}", data.attendanceId);
+							});
 						}
 					} else {
 						$("#divTimelog").append("No Attendances Today <p>Please start a shift to see your schedule.</p>");
@@ -955,18 +1006,12 @@ function addRemove() {
 			$("#btnSignature").empty();
 			$("#divSignNow").empty();
 			$("#btnSignNow").empty();
+			$("#btnDeclineCheckList").empty();
+			$("#declineButton").empty();
+			$("#acceptButton").empty();
 			$("#attendanceCheckList").empty();
 		}
-		function editStartShift(editId, currentStart) {
-			$(".editIcon").attr('disabled', true);
-			shift_id = editId;
-			$("#trStartShift").html("<td colspan='2'>{% trans 'Start Shift' %}: <input id='newTime' type='time'/></td><td><input type='button' style='background: url(\"/static/imgSmall/editedIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' class='editedIcon' onclick='callEditStartShift(shift_id)'/></td>");
-			$("#newTime").val(currentStart);
-		}
-		function callEditStartShift(shift_id) {
-			var new_time = $("#newTime").val();
-			updateStartShift("{{ csrf_token }}", "{% url 'updateStartShift' %}", shift_id, new_time);
-		}
+
 		function updateStartShift(token, url, shift_id, new_time) {
 			$.ajax({
 				method : "POST",
@@ -975,7 +1020,6 @@ function addRemove() {
 				datatype : "json",
 				success : function(data, status, xhr) {
 					if (data.success) {
-						$(".editIcon").attr('disabled', false);
 						emptyDivs();
 						$("#timelogBack2").show();
 						$("#messageTimekeeper").css("color", "#1F3801");	//green
@@ -986,73 +1030,6 @@ function addRemove() {
 			});
 		}
 
-
-
-		function editBreak(editId, workBreak, breakN, breakBeg, breakEnd, lun) {
-			$(".editIcon").attr('disabled', true);
-			breakId = editId;
-			if (lun == 0) {
-				$("#" + breakId).html("<td class='colBorderTimelog'>" + workBreak + "</td><td>#" + breakN + " {% trans 'Break' %} <input id='newBreakBeg" + breakId + "' type='time'/> - <input id='newBreakEnd" + breakId + "' type='time'/></td><td><input type='button' class='editedIcon' style='background: url(\"/static/imgSmall/editedIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='callEditBreak(breakId)'/></td>");
-				$("#newBreakBeg" + breakId).val(breakBeg);
-				$("#newBreakEnd" + breakId).val(breakEnd);
-			}
-			if (lun == 1) {
-				$("#" + breakId).html("<td class='colBorderTimelog'>" + workBreak + "</td><td>#" + breakN + " {% trans 'Lunch' %} <input id='newBreakBeg" + breakId + "' type='time'/> - <input id='newBreakEnd" + breakId + "' type='time'/></td><td><input type='button' class='editedIcon' style='background: url(\"/static/imgSmall/editedIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='callEditBreak(breakId)'/></td>");
-				$("#newBreakBeg" + breakId).val(breakBeg);
-				$("#newBreakEnd" + breakId).val(breakEnd);
-			}
-		}
-		function callEditBreak(break_id) {
-			var new_time_start = $("#newBreakBeg" + break_id).val();
-			var new_time_end = $("#newBreakEnd" + break_id).val();
-			updateBreak("{{ csrf_token }}", "{% url 'updateBreak' %}", break_id, new_time_start, new_time_end);
-		}
-		function updateBreak(token, url, break_id, new_time_start, new_time_end) {
-			$.ajax({
-				method : "POST",
-				url : url,
-				data : {"csrfmiddlewaretoken" : token, "break_id": break_id, "new_time_start": new_time_start, "new_time_end": new_time_end},
-				datatype : "json",
-				success : function(data, status, xhr) {
-					if (data.success) {
-						$(".editIcon").attr('disabled', false);
-						emptyDivs();
-						$("#timelogBack2").show();
-						$("#messageTimekeeper").css("color", "#1F3801");	//green
-						$("#messageTimekeeper").html("SCHEDULE");
-						timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
-					}
-				}
-			});
-		}
-		function editStopShift(editId, currentEnd) {
-			$(".editIcon").attr('disabled', true);
-			shift_id = editId;
-			$("#trStopShift").html("<td colspan='2'>{% trans 'End Shift' %}: <input id='newTimeEnd' type='time'/></td><td><input type='button' class='editedIcon' style='background: url(\"/static/imgSmall/editedIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 20px !important;height: 20px !important;border: none !important;' onclick='callEditStopShift(shift_id)'/></td>");
-			$("#newTimeEnd").val(currentEnd);
-		}
-		function callEditStopShift(shift_id) {
-			var new_time = $("#newTimeEnd").val();
-			updateStopShift("{{ csrf_token }}", "{% url 'updateStopShift' %}", shift_id, new_time);
-		}
-		function updateStopShift(token, url, shift_id, new_time) {
-			$.ajax({
-				method : "POST",
-				url : url,
-				data : {"csrfmiddlewaretoken" : token, "shift_id": shift_id, "new_time": new_time},
-				datatype : "json",
-				success : function(data, status, xhr) {
-					if (data.success) {
-						$(".editIcon").attr('disabled', false);
-						emptyDivs();
-						$("#timelogBack2").show();
-						$("#messageTimekeeper").css("color", "#1F3801");	//green
-						$("#messageTimekeeper").html("SCHEDULE");
-						timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
-					}
-				}
-			});
-		}
 		function addEmployeeGroup(keeppingAdd) {
 			if (keeppingAdd == false) {
 				$("#addEmployee").modal("hide");
@@ -1157,21 +1134,7 @@ function addRemove() {
                 height: 20px !important;
                 border: none !important;
             }
-            .editIcon {
-                background: url('/static/imgSmall/editIcon.png') no-repeat top left !important;
-                background-size: 100% 100% !important;
-                width: 30px !important;
-                height: 30px !important;
-                border: none !important;
-            }
-            .editedIcon {
 
-                background: url('/static/imgSmall/editedIcon.png') no-repeat top left !important;
-                background-size: 100% 100% !important;
-                width: 20px !important;
-                height: 20px !important;
-                border: none !important;
-            }
 			label {
 				 padding: 10px;
 				 margin: 0px;
@@ -1224,19 +1187,16 @@ function addRemove() {
 				<!-- Modal content-->
 				<div class="modal-content signModalDialog">
 					<button type="button" class="closeSignature" data-dismiss="modal"></button>
-					<div class="modal-title" id="titleSign">{% trans 'Sign Here' %}</div>
+					<div class="modal-title" id="titleSign">{% trans 'Enter 4-digit PIN:' %}</div>
 					<div class="modal-body" id="signatureContent">
-					<div id="signField">
-						<div id="signature"></div>
-						<button type="button" id="clearSignature" class="btn btn-default">{% trans 'Clear' %}</button>
+						<input type="text" style="height:70px; width:150px;font-size:24px;" id="code" style="color:black;" placeholder="{% trans 'Type PIN' %}"/>
+						<!--<button type="button" id="clearSignature" class="btn btn-default">{% trans 'Clear' %}</button>-->
 						<!--<button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>-->
 
-							<button type="button" id="saveSignature" class="btn btn-success" >
-								{% trans 'Confirm' %}
+							<button style="height:60px; width:100px;" type="button" id="saveSignature" class="btn btn-success" >
+								{% trans 'SIGN' %}
 							</button>
 
-					</div>
-					<div id="clearBoth"></div>
 				</div>
 			</div>
 		</div>
@@ -1278,18 +1238,23 @@ function addRemove() {
 
 							</tr>
 							<tr>
-								<td><div id="scheduleButton"></div></td>
+								<td></td>
 							</tr>
 						</table>
 
 						<div id="clock-in"></div>
 						<div id="clock-out"></div>
 						<div id="divTimelog"></div>
+						<div id="scheduleButton"></div>
+
+
 						<div id="questions"></div>
 						<div id="attendanceCheckList"></div>
 						<div id="btnSignature"></div>
 						<div id="divSignNow"></div>
 						<div id="next"></div>
+						<div id="acceptButton"></div>
+						<div id="declineButton"></div>
 						<br>
 						<div class="both"></div>
 					</div>

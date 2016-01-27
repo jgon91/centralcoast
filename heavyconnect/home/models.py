@@ -670,7 +670,7 @@ class AttendanceChecklist(models.Model):
 		(4, 'Optional Lunch'),
 	)
 	category = models.IntegerField(choices = QUESTION_CHOICES)
-	description = models.CharField(max_length = 250)
+	description = models.CharField(max_length = 2000)
 	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
