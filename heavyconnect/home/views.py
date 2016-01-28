@@ -39,7 +39,7 @@ tenant = Client(domain_url='ramco.heavyconnect.com', # don't add your port or ww
                 name='Ram Co',
                 paid_until='2016-12-05',
                 on_trial=False)
-# tenant.save()
+tenant.save()
 # #
 # tenant = Client(domain_url='t-and-a.heavyconnect.com', # don't add your port or www here!
 #                 schema_name='tanda',
