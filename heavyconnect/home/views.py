@@ -34,12 +34,12 @@ from home.models import EmployeeAttendanceChecklist
 LANGUAGE_CHOICES = ['pt-br','es', 'en-us']
 
 # # create your public tenant
-# tenant = Client(domain_url='scaroni.heavyconnect.com', # don't add your port or www here! on a local server you'll want to use localhost here
-#                 schema_name='scaroni',
-#                 name='Scaroni',
-#                 paid_until='2016-12-05',
-#                 on_trial=False)
-# # tenant.save()
+tenant = Client(domain_url='ramco.heavyconnect.com', # don't add your port or www here! on a local server you'll want to use localhost here
+                schema_name='ramco',
+                name='Ram Co',
+                paid_until='2016-12-05',
+                on_trial=False)
+# tenant.save()
 # #
 # tenant = Client(domain_url='t-and-a.heavyconnect.com', # don't add your port or www here!
 #                 schema_name='tanda',
