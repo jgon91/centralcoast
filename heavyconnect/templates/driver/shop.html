@@ -152,6 +152,7 @@
 				var $sigdiv = $("#signature");
 				var datapair = $sigdiv.jSignature("getData","base30");
 				var attendanceId = $("#attendanceId").val();
+				alert(attendanceId);
 				saveSignature("{{ csrf_token }}", "{% url 'saveSignature' %}", attendanceId);
 			});
 			if($("ul").has("li").length == 0) {
@@ -177,6 +178,7 @@
 					id_checked.splice(index, 1);
 				}
 			});
+
 			addRemove();
 		    $('#selectAllEmployee').click(function(event) {
 		        if(this.checked) { // check select status
@@ -214,25 +216,14 @@
 			});
 
 			$("#shift").click(function() {
+				document.getElementById('employee_pin').value = '';
+				document.getElementById('employee_pin2').value = '';
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
 				$("#messageTimekeeper").html("{% trans 'Select Employee(s)' %}:");
 				checkboxList = true;
 				emptyDivs();
 				getAllEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}");
-				$("#next").append("<input type='button' id='nextButton' value='NEXT' class='btnsTimekeeper' disabled/>");
-
-
-			});
-
-			$("#next").click(function() {
-				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				$("#messageTimekeeper").html("{% trans 'SHIFT' %}");
-
-				emptyDivs();
-				$("#timelogBack1").show();
-				$("#clock-in").append('<input type="button" value="{% trans 'CLOCK-IN' %}" class="btnsTimekeeper"/>');
-				$("#clock-out").append('<input type="button"  value="{% trans 'CLOCK-OUT' %}" class="btnsTimekeeper"/>');
 
 			});
 
@@ -301,8 +292,10 @@
 			});
 			$("#btnSignature").click(function(){
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				$("#messageTimekeeper").html("{% trans 'Checking shift' %}...");
-				callChecklist("{{ csrf_token }}", "{% url 'retrieveAttendanceChecklist' %}", idTimelog);
+				<!--$("#messageTimekeeper").html("{% trans 'Checking shift' %}...");-->
+				<!--callChecklist("{{ csrf_token }}", "{% url 'retrieveAttendanceChecklist' %}", idTimelog);-->
+				retrieveQuestions("{{ csrf_token }}", "{% url 'getChecklistAttendance' %}");
+
 			});
 
 		});
@@ -317,6 +310,31 @@
 			time[0] = +time[0] % 12 || 12; // Adjust hours
 		  }
 		  return time.join (''); // return adjusted time or original string
+		}
+
+		function checkPin(qr_code){
+			$("#messageTimekeeper").css("color", "#1F3801");	//green
+			$("#messageTimekeeper").html("Enter 4-digit PIN:");
+			document.getElementById("code").style.display = "block";
+			checked_employees.push(qr_code);
+		}
+
+		function inout(qr_code){
+			document.getElementById("code").style.display = "none";
+			$("#messageTimekeeper").css("color", "#1F3801");	//green
+			$("#messageTimekeeper").html("");
+
+			emptyDivs();
+			$("#timelogBack1").show();
+			$("#clock-in").append('<input type="button" value="{% trans 'CLOCK-IN' %}" class="btnsTimekeeper"/>');
+			$("#clock-out").append('<input type="button"  value="{% trans 'CLOCK-OUT' %}" class="btnsTimekeeper"/>');
+		}
+
+		function clockInOut(qr_code) {
+			checked_employees = [];
+			checkPin(qr_code);
+			<!--inout(qr_code);-->
+
 		}
 
 		function openAdd() {
@@ -371,8 +389,6 @@ function addRemove() {
 				<!--alert('Primary Action');-->
 			}
 		};
-
-
 
 		var deleteAction = {
 			run: function(li) {
@@ -499,7 +515,11 @@ function addRemove() {
 						$("#messageTimekeeper").html("{% trans 'Clock-in' %}:");
 					} else {
 					}
-				}
+					checked_employees = [];
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+					checked_employees = [];
+                }
 			});
 		}
 
@@ -526,6 +546,8 @@ function addRemove() {
 
 			idTimelog = idShow;
 			timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");
+			callChecklist("{{ csrf_token }}", "{% url 'retrieveAttendanceChecklist' %}", idTimelog);
+
 		}
 
 		function retrieveQuestions(token, url){
@@ -632,34 +654,34 @@ function addRemove() {
 
 		}
 
-		function checkState(){
-			var iNodes= document.getElementsByClassName('teamName');
-			var numChecked = 0;
-			length = iNodes.length;
-		   	for (i= 0; i < length ; i++){
-				if (iNodes[i].checked === true){
-					numChecked = numChecked + 1;
-					iNodes[i].parentNode.style.backgroundColor = "#75C1DA";
-					var index = checked_employees.indexOf(iNodes[i].value);
-					if (index == -1) {
-						checked_employees.push(iNodes[i].value);
-					}
-				}
-				else{
-					element = document.getElementById('teamName' + i);
-					element.style.backgroundColor="#DDD";
-					var index = checked_employees.indexOf(iNodes[i].value);
-					if (index > -1) {
-						checked_employees.splice(index, 1);
-					}
-				}
-			}
-			if(numChecked == 0){
-				document.getElementById("nextButton").disabled = true;
-			}else {
-				document.getElementById("nextButton").disabled = false;
-			}
-		}
+		<!--function checkState(){-->
+			<!--var iNodes= document.getElementsByClassName('teamName');-->
+			<!--var numChecked = 0;-->
+			<!--length = iNodes.length;-->
+		   	<!--for (i= 0; i < length ; i++){-->
+				<!--if (iNodes[i].checked === true){-->
+					<!--numChecked = numChecked + 1;-->
+					<!--iNodes[i].parentNode.style.backgroundColor = "#75C1DA";-->
+					<!--var index = checked_employees.indexOf(iNodes[i].value);-->
+					<!--if (index == -1) {-->
+						<!--checked_employees.push(iNodes[i].value);-->
+					<!--}-->
+				<!--}-->
+				<!--else{-->
+					<!--element = document.getElementById('teamName' + i);-->
+					<!--element.style.backgroundColor="#DDD";-->
+					<!--var index = checked_employees.indexOf(iNodes[i].value);-->
+					<!--if (index > -1) {-->
+						<!--checked_employees.splice(index, 1);-->
+					<!--}-->
+				<!--}-->
+			<!--}-->
+			<!--if(numChecked == 0){-->
+				<!--document.getElementById("nextButton").disabled = true;-->
+			<!--}else {-->
+				<!--document.getElementById("nextButton").disabled = false;-->
+			<!--}-->
+		<!--}-->
 
 		function getAllEmployees(token, url) {
 			$.ajax({
@@ -671,15 +693,15 @@ function addRemove() {
 					if(checkboxList == true) {
 						for(var i = 0; i < data.employees.length; i++){
 							if(data.employees[i].shift_status == "0"){
-							$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onChange="checkState()" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'</label>');
+							$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onclick="clockInOut('+data.employees[i].qr_code+')" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'</label>');
 							} else if(data.employees[i].shift_status == "1"){
-								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onChange="checkState()" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'<span style="float: right;background: #FFFFFF;border-radius: .5em;padding: 5px;font-size: 24px;">IN</span></label>');
+								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onclick="clockInOut('+data.employees[i].qr_code+')" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'<span style="float: right;background: #FFFFFF;border-radius: .5em;padding: 5px;font-size: 24px;">IN</span></label>');
 
 							}else if(data.employees[i].shift_status == "2"){
-								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onChange="checkState()" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'<span style="float: right;background: #003DFF;border-radius: .5em;padding: 5px;font-size: 24px;">OUT</span></label>');
+								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onclick="clockInOut('+data.employees[i].qr_code+')" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'<span style="float: right;background: #003DFF;border-radius: .5em;padding: 5px;font-size: 24px;">OUT</span></label>');
 
 							}else if(data.employees[i].shift_status == "3"){
-								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onChange="checkState()" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'<span style="float: right;background: #4AEF0D;border-radius: .5em;padding: 5px;font-size: 24px;">DONE</span></label>');
+								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onclick="clockInOut('+data.employees[i].qr_code+')" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'<span style="float: right;background: #4AEF0D;border-radius: .5em;padding: 5px;font-size: 24px;">DONE</span></label>');
 
 							}
 
@@ -806,7 +828,11 @@ function addRemove() {
 						}
 
 					}
-				}
+					checked_employees = [];
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+					checked_employees = [];
+                }
 			});
 		}
 		function callChecklist(token, url, user_id) {
@@ -821,28 +847,25 @@ function addRemove() {
 						emptyDivs();
 						$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + attendanceId + "'>");
     					$("#messageTimekeeper").css("color", "#1F3801");	//green
-    					if(data.checklist.length == 0 ){
-    						$("#messageTimekeeper").html("{% trans 'Click to Sign' %}:");
-    						$("#divSignNow").append("<input type='button' style='box-shadow: 1px 1px 3px gray; border-radius: .25em;' id='btnSignNow' value='{% trans 'SIGN NOW' %}'/>");
-    						$("#btnSignNow").attr("disabled", false);
-    					}else {
-    					$("#messageTimekeeper").html("{% trans 'Check Before Signing' %}:");
+    					<!--if(data.checklist.length == 0 ){-->
+    						<!--$("#messageTimekeeper").html("{% trans 'Click to Sign' %}:");-->
+    						<!--$("#divSignNow").append("<input type='button' style='box-shadow: 1px 1px 3px gray; border-radius: .25em;' id='btnSignNow' value='{% trans 'SIGN NOW' %}'/>");-->
+    						<!--$("#btnSignNow").attr("disabled", false);-->
+    					<!--}else {-->
+    					<!--$("#messageTimekeeper").html("{% trans 'Check Before Signing' %}:");-->
     					$("#questions").css("text-align", "left");
     					$("#questions").css("font-size", "25px");
     					$("#questions").append("<table>");
+
 
     					for (i = 0; i < data.checklist.length; i++) {
     						$("#questions").append("<tr><td><label><input type='checkbox' onClick='allChecked(" + data.checklist.length + ")' class='checkQuestions'/>&nbsp;&nbsp;" + data.checklist[i].description + "</label></td></td>");
     					}
     					$("#questions").append("</table>");
-    					$("#divSignNow").append("<input type='button' style='box-shadow: 1px 1px 3px gray; border-radius: .25em; margin-right: 50px;' id='btnSignNow' value='{% trans 'SIGN NOW' %}'/>");
-    					<!--$("#divSignNow").append("<input type='button' style='box-shadow: 1px 1px 3px gray; border-radius: .25em;margin-left: 20px;' id='btnDeclineCheckList' value='{% trans 'DECLINE' %}'/>");-->
-    					<!--$("#btnDeclineCheckList").css("background-color", "#B83419");-->
-						<!--$("#btnDeclineCheckList").click(function(){-->
-							<!--declineShift("{{ csrf_token }}", "{% url 'declineShift' %}");-->
-						<!--});-->
-    					$("#btnSignNow").attr("disabled", true);
-    					}
+    					<!--$("#divSignNow").append("<input type='button' style='box-shadow: 1px 1px 3px gray; border-radius: .25em; margin-right: 50px;' id='btnSignNow' value='{% trans 'SIGN NOW' %}'/>");-->
+
+    					<!--$("#btnSignNow").attr("disabled", true);-->
+    					<!--}-->
 					}
 				}
 			});
@@ -879,16 +902,13 @@ function addRemove() {
 			$('#signModal').modal();
 		}
 		function saveSignature(token, url, attendanceId){
-			<!--console.log(signature + " - " + attendanceId);-->
 			$.ajax({
 				method : "POST",
 				url : url,
 				async: false,
-				data : {"csrfmiddlewaretoken" : token, "id": attendanceId, "signature": document.getElementById("code").value},
+				data : {"csrfmiddlewaretoken" : token, "id": attendanceId, "signature": document.getElementById("code2").value},
 				datatype : "json",
 				success : function(data, status, xhr) {
-						<!--var $sigdiv = $("#signature");-->
-						<!--$sigdiv.jSignature("reset");-->
 						$('#signModal').modal('hide');
 				}
 			});
@@ -1013,6 +1033,7 @@ function addRemove() {
 			$("#declineButton").empty();
 			$("#acceptButton").empty();
 			$("#attendanceCheckList").empty();
+			document.getElementById("code").style.display = "none";
 		}
 
 		function updateStartShift(token, url, shift_id, new_time) {
@@ -1079,42 +1100,25 @@ function addRemove() {
 
 		function checkEmployeePassword(token, url, id, password) {
 				$.ajax({
-					method : "GET",
+					method : "POST",
 					url : url,
 					//async: false,
 					data : {
 						"csrfmiddlewaretoken" : token,
 						"qr_code" : id,
 						"password" : password,
-					}, // id could be qrCode or employeeId,
+					},
 					success : function(data, status, xhr) {
 						$("#errorQrCode").html("")
-
-
 						if (data.success) {
 							$("#qrCodeModal").modal("hide");
-							feedBackQrCode("show", "green", "{% trans 'Successfully Validated.' %}");
-							data_scanned.qr_code = id;
-							data_scanned.employee = data.employee
-							<!--$("#signed_in").show();-->
-							<!--$("#signed_in").html("SIGNED IN: "+ data.employee);-->
-							data_scanned.validated = "true";
-							$("#pin_input").hide();
-							if($("ul").has("li").length == 0) {
-								  $("ul").html("");
-							}
-							var ul = document.getElementById("emp-list");
-							var li = document.createElement("li");
-							li.appendChild(document.createTextNode(data.employee));
-							li.setAttribute("id", id); // added line
-							id_scanned.push(id);
-							ul.appendChild(li);
-							addRemove();
-
+							<!--feedBackQrCode("show", "green", "{% trans 'Successfully Validated.' %}");-->
+							inout(id);
 						} else {
 						    data_scanned = {};
-						    <!--$("#signed_in").hide();-->
-							feedBackQrCode("show", "red", "{% trans 'Incorrect PIN. Please try your PIN again.' %}");
+						    $("#messageTimekeeper").html("Incorrect PIN. Please try your PIN again.");
+						    document.getElementById("messageTimekeeper").style.color = "red";
+							<!--feedBackQrCode("show", "red", "{% trans 'Incorrect PIN. Please try your PIN again.' %}");-->
 						}
 					}
 				});
@@ -1168,15 +1172,10 @@ function addRemove() {
 				<div class="row">
 				<div class="row" style="margin-top: 65px;">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" id="shift" value="{% trans 'SHIFT' %}" class="btnsTimekeeper"/>
+						<input type="button" id="shift" value="{% trans 'CLOCK IN/OUT' %}" class="btnsTimekeeper"/>
 					</div>
 				</div>
 
-				<div class="row">
-					<div class="col-xs-12 col-md-12">
-						<input type="button" id="timelog" value="{% trans 'SCHEDULE' %}" class="btnsTimekeeper"/>
-					</div>
-				</div>
 			</div>
 		</div>
 		<footer>
@@ -1192,7 +1191,7 @@ function addRemove() {
 					<button type="button" class="closeSignature" data-dismiss="modal"></button>
 					<div class="modal-title" id="titleSign">{% trans 'Enter 4-digit PIN:' %}</div>
 					<div class="modal-body" id="signatureContent">
-						<input type="text" style="height:70px; width:150px;font-size:24px;" id="code" style="color:black;" placeholder="{% trans 'Type PIN' %}"/>
+						<input type="text" style="height:70px; width:150px;font-size:24px;" id="code2" style="color:black;" placeholder="{% trans 'Type PIN' %}"/>
 						<!--<button type="button" id="clearSignature" class="btn btn-default">{% trans 'Clear' %}</button>-->
 						<!--<button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>-->
 
@@ -1245,7 +1244,7 @@ function addRemove() {
 							</tr>
 						</table>
 
-						<div id="clock-in"></div>
+						<div style="margin-top: 30px;" id="clock-in"></div>
 						<div id="clock-out"></div>
 						<div id="divTimelog"></div>
 						<div id="scheduleButton"></div>
@@ -1258,6 +1257,10 @@ function addRemove() {
 						<div id="next"></div>
 						<div id="acceptButton"></div>
 						<div id="declineButton"></div>
+						<div id="code" style="display:none;">
+							<input type="password" id="employee_pin" style="color:black;" placeholder="{% trans 'Type your PIN' %}"/>
+							<button id="submit_pin" title="Play" type="button" class="btn btn-success btn-xl" onclick="checkEmployeePassword('{{ csrf_token }}', '/home/checkEmployeePassword/', checked_employees[0], $('#employee_pin').val());"><span class="glyphicon glyphicon-play"></span></button>
+						</div>
 						<br>
 						<div class="both"></div>
 					</div>
@@ -1278,7 +1281,7 @@ function addRemove() {
 								<input type="text" id="qr_code" style="color:black;" placeholder="{% trans 'Type Employee ID' %}"/>
 
 								<button id="submit" title="Play" type="button" class="btn btn-success btn-xl" onclick="checkEmployeeScanned('{{ csrf_token }}', '/home/checkEmployeeQrCode/', $('#qr_code').val());">
-									<span class="glyphicon glyphicon-play"></span>
+									<!--<span class="glyphicon glyphicon-play"></span>-->
 								</button>
 							</div>
 						</div>
@@ -1310,9 +1313,9 @@ function addRemove() {
                         <div id="PIN" style="font-size: 25px;">
 						<div class="panel panel-primary" style="border: none;">
 							<div id="pin_input" style="margin auto 40px; text-align: center; margin-top: 20px;">
-								<input type="password" id="employee_pin" style="color:black;" placeholder="{% trans 'Type your PIN' %}"/>
+								<input type="password" id="employee_pin2" style="color:black;" placeholder="{% trans 'Type your PIN' %}"/>
 
-								<button id="submit_pin" title="Play" type="button" class="btn btn-success btn-xl" onclick="checkEmployeePassword('{{ csrf_token }}', '/home/checkEmployeePassword/', `${data_scanned.qr_code}`, $('#employee_pin').val());">
+								<button id="submit_pin2" title="Play" type="button" class="btn btn-success btn-xl" onclick="checkEmployeePassword('{{ csrf_token }}', '/home/checkEmployeePassword/', `${data_scanned.qr_code}`, $('#employee_pin2').val());">
 									<span class="glyphicon glyphicon-play"></span>
 								</button>
 							</div>

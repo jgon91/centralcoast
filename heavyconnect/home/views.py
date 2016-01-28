@@ -783,7 +783,7 @@ def startBreak(request, idUser, paramenterlunch):
 						end_time = new_time + datetime.timedelta(hours = 0, minutes = 15)
 					t2_break = Break(attendance = attendance, lunch = lunch, start = new_time, end = end_time)
 					t2_break.save()
-					break_id = t2_break.id;
+					break_id = t2_break.id
 					result['success'] = True
 					# result['time'] = str(t2_break.start)
 					result['user'] = idUser
@@ -5035,26 +5035,38 @@ def checkEmployeeQrCode(request):
 @login_required
 def checkEmployeePassword(request):
 	result = {'success' : False}
+	print 'check'
  	if request.is_ajax():
-		qr_code = request.GET['qr_code']
+		print 'is ajax'
+		qr_code = request.POST['qr_code']
+		print 'qr code'
+		print qr_code
 
-		password = request.GET['password']
+		password = request.POST['password']
+		print password
 		try:
 			employee = Employee.objects.get(qr_code = qr_code)
+			print employee
 
 			if employee is not None:
 				result['success'] = True
 				result['employee'] = employee.user.first_name + " " + employee.user.last_name
 				username = employee.user.username
+				print username
 				user = authenticate(username=username, password=password)
+				print user
 				if user is not None:
+					print user
 
 					if user.is_active:
+						print 'true'
 						# auth_login(request,user)
 						result['success'] = True
 					else:
+						result['success'] = False
 						result['code'] = 1 #This user is not active in the system
 				else:
+					result['success'] = False
 					result['code'] = 2 #Wrong password or username
 		except:
 			result['code'] = 1 # Employee does not exist
