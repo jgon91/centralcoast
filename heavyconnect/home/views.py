@@ -34,12 +34,12 @@ from home.models import EmployeeAttendanceChecklist
 LANGUAGE_CHOICES = ['pt-br','es', 'en-us']
 
 # # create your public tenant
-tenant = Client(domain_url='ramco.heavyconnect.com', # don't add your port or www here! on a local server you'll want to use localhost here
-                schema_name='ramco',
-                name='Ram Co',
-                paid_until='2016-12-05',
-                on_trial=False)
-tenant.save()
+# tenant = Client(domain_url='ramco.heavyconnect.com', # don't add your port or www here! on a local server you'll want to use localhost here
+#                 schema_name='ramco',
+#                 name='Ram Co',
+#                 paid_until='2016-12-05',
+#                 on_trial=False)
+# tenant.save()
 # #
 # tenant = Client(domain_url='t-and-a.heavyconnect.com', # don't add your port or www here!
 #                 schema_name='tanda',
@@ -772,22 +772,30 @@ def startBreak(request, idUser, paramenterlunch):
 				t_break = Break.objects.filter(attendance_id = attendance).order_by('-start')
 				count = t_break.count()
 				if count == 0 or t_break[0].end is not None:
-					time = datetime.datetime.now()
-					if 'time' in request.POST:
-						new_time = datetime.datetime.strptime(request.POST['time'], '%H:%M:%S %Y-%m-%d')
+					if t_break[0].end >= datetime.datetime.now().time():
+						result['code'] = 1 #You cannot start two breaks at the same time
+						print t_break[0].end
+						print type(t_break[0].end)
+						print datetime.datetime.now().time()
+						# print type(datetime.datetime.now().time())
 					else:
-						new_time = datetime.datetime.now()
-					if lunch == 1:
-						end_time = new_time + datetime.timedelta(hours = 0, minutes = 30)
-					else:
-						end_time = new_time + datetime.timedelta(hours = 0, minutes = 15)
-					t2_break = Break(attendance = attendance, lunch = lunch, start = new_time, end = end_time)
-					t2_break.save()
-					break_id = t2_break.id
-					result['success'] = True
-					# result['time'] = str(t2_break.start)
-					result['user'] = idUser
-					result['id'] = break_id
+
+						if 'time' in request.POST:
+							new_time = datetime.datetime.strptime(request.POST['time'], '%H:%M:%S %Y-%m-%d')
+						else:
+							new_time = datetime.datetime.now()
+						if lunch == 1:
+							end_time = new_time + datetime.timedelta(hours = 0, minutes = 30)
+						else:
+							end_time = new_time + datetime.timedelta(hours = 0, minutes = 15)
+						t2_break = Break(attendance = attendance, lunch = lunch, start = new_time, end = end_time)
+
+						t2_break.save()
+						break_id = t2_break.id
+						result['success'] = True
+						# result['time'] = str(t2_break.start)
+						result['user'] = idUser
+						result['id'] = break_id
 				else:
 					result['code'] = 1 #You cannot start two breaks at the same time
 			else:
