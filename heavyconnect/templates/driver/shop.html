@@ -149,11 +149,10 @@
 			$("#head").load("{%url 'headerDriver'%}");
 			$("#signature").jSignature();
 			$("#saveSignature").click(function(){
-				var $sigdiv = $("#signature");
-				var datapair = $sigdiv.jSignature("getData","base30");
+
 				var attendanceId = $("#attendanceId").val();
-				alert(attendanceId);
-				saveSignature("{{ csrf_token }}", "{% url 'saveSignature' %}", attendanceId);
+				<!--alert(document.getElementById("attendanceId").value);-->
+				saveSignature("{{ csrf_token }}", "{% url 'saveSignature' %}", document.getElementById("attendanceId").value);
 			});
 			if($("ul").has("li").length == 0) {
 				  $("ul").html("Please Add Employees");
@@ -202,7 +201,8 @@
 		    $("#divSignNow").click(function(){
 				$("#messageTimekeeper").css("color", "#1F3801");
 				$("#messageTimekeeper").html("{% trans 'Attendance Checklist' %}");
-				retrieveQuestions("{{ csrf_token }}", "{% url 'getChecklistAttendance' %}");
+				<!--alert(document.getElementById("attendanceId").value);-->
+				retrieveQuestions("{{ csrf_token }}", "{% url 'getChecklistAttendance' %}", document.getElementById("attendanceId").value);
 			});
 
 		    $('html').on('click', function(e) {
@@ -294,7 +294,7 @@
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
 				<!--$("#messageTimekeeper").html("{% trans 'Checking shift' %}...");-->
 				<!--callChecklist("{{ csrf_token }}", "{% url 'retrieveAttendanceChecklist' %}", idTimelog);-->
-				retrieveQuestions("{{ csrf_token }}", "{% url 'getChecklistAttendance' %}");
+				retrieveQuestions("{{ csrf_token }}", "{% url 'getChecklistAttendance' %}", document.getElementById("attendanceId").value);
 
 			});
 
@@ -550,7 +550,7 @@ function addRemove() {
 
 		}
 
-		function retrieveQuestions(token, url){
+		function retrieveQuestions(token, url, id){
 			$.ajax({
 					method: "POST",
 					url: url,
@@ -561,7 +561,8 @@ function addRemove() {
 					datatype: "json",
 					success: function(data, status, xhr){
 						if(data.success){
-							var attendanceId = $("#attendanceId").val();
+							var attendanceId = id;
+							<!--alert(attendanceId);-->
 							questions = data.questions;
 							emptyDivs();
 							$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + attendanceId + "'>");
@@ -978,7 +979,7 @@ function addRemove() {
 							}
 							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + tConvert(data.Attendance_end) + "</td></tr>");
 							$("#btnSignature").append("<button type='button' id='attendanceId'  style='background:green;' value='"+data.attendanceId+"' class='btnsTimekeeper'>ACCEPT</button>");
-
+							<!--alert(data.attendanceId);-->
 							$("#declineButton").append("<input type='button' id='btnDeclineCheckList' style='background:#BB1818;' value='DECLINE' class='btnsTimekeeper'/>");
 							$("#btnDeclineCheckList").css("background-color", "#B83419");
 							$("#btnDeclineCheckList").click(function(){
