@@ -152,7 +152,7 @@
 
 				var attendanceId = $("#attendanceId").val();
 				<!--alert(document.getElementById("attendanceId").value);-->
-				saveSignature("{{ csrf_token }}", "{% url 'saveSignature' %}", document.getElementById("attendanceId").value);
+				saveSignature("{{ csrf_token }}", "{% url 'shopSaveSignature' %}", document.getElementById("attendanceId").value);
 			});
 			if($("ul").has("li").length == 0) {
 				  $("ul").html("Please Add Employees");
@@ -907,7 +907,7 @@ function addRemove() {
 				method : "POST",
 				url : url,
 				async: false,
-				data : {"csrfmiddlewaretoken" : token, "id": attendanceId, "signature": document.getElementById("code2").value},
+				data : {"csrfmiddlewaretoken" : token, "id": idTimelog, "signature": document.getElementById("code2").value},
 				datatype : "json",
 				success : function(data, status, xhr) {
 						$('#signModal').modal('hide');

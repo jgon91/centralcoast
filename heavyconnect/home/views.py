@@ -235,6 +235,45 @@ def endTask(request):
 		result['code'] = 3 #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+@login_required
+def shopSaveSignature(request):
+	result = {'success' : False}
+	if request.method == 'POST':
+		if request.is_ajax():
+			if 'id' in request.POST:
+				employee = Employee.objects.get(user__id = request.POST['id'])
+			else:
+				employee = Employee.objects.get(user = request.user)
+			attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
+
+			attenId = attendance.id
+			atenSignature = request.POST['signature']
+			print 'attenId'
+			if attenId == None:
+				print 'atten none'
+				atten = EmployeeAttendance.objects.filter(employee__user = request.user).order_by('-date', 'hour_started').first()
+				if atenSignature == None:
+					atten.signature = 'Not provided'
+				else:
+					atten.signature = atenSignature
+				atten.save()
+				result['success'] = True
+			else:
+				print 'attendance'
+				print attenId
+				atten = EmployeeAttendance.objects.get(id = attenId)
+				print atten
+				if atenSignature == None:
+					atten.signature = 'Not provided'
+				else:
+					atten.signature = atenSignature
+				atten.save()
+				result['success'] = True
+		else:
+			result['code'] = 2 #Use ajax to perform requests
+	else:
+		result['code'] = 3 #Request was not POST
+	return HttpResponse(json.dumps(result),content_type='application/json')
 
 @login_required
 def saveSignature(request):

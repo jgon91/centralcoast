@@ -126,6 +126,7 @@ urlpatterns = [
     url(r'^startBreakGroup/$', main_views.startBreakGroup, name = 'startBreakGroup'),
     url(r'^stopBreakGroup/$', main_views.stopBreakGroup, name = 'stopBreakGroup'),
     url(r'^saveSignature/$', main_views.saveSignature, name = 'saveSignature'),
+    url(r'^shopSaveSignature/$', main_views.shopSaveSignature, name = 'shopSaveSignature'),
     url(r'^updateStartShift/$', main_views.updateStartShift, name = 'updateStartShift'),
     url(r'^updateBreak/$', main_views.updateBreak, name = 'updateBreak'),
     url(r'^updateStopShift/$', main_views.updateStopShift, name = 'updateStopShift'),
