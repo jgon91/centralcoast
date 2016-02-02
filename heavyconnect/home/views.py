@@ -806,19 +806,28 @@ def startBreak(request, idUser, paramenterlunch):
 		lunch = paramenterlunch
 		employee = Employee.objects.get(user = idUser)
 		attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
+		print attendance
 		if attendance is not None:
 			if attendance.hour_ended is None:
+				print 'hhh'
 				t_break = Break.objects.filter(attendance_id = attendance).order_by('-start')
+				print t_break
+
 				count = t_break.count()
 				if count == 0 or t_break[0].end is not None:
-					if t_break[0].end >= datetime.datetime.now().time():
+					print 'iii'
+
+
+					print datetime.datetime.now().time()
+					print type(datetime.datetime.now().time())
+
+					if count > 0 and t_break[0].end >= datetime.datetime.now().time():
+						print 'nnn'
 						result['code'] = 1 #You cannot start two breaks at the same time
-						print t_break[0].end
-						print type(t_break[0].end)
-						print datetime.datetime.now().time()
+
 						# print type(datetime.datetime.now().time())
 					else:
-
+						print 'hello'
 						if 'time' in request.POST:
 							new_time = datetime.datetime.strptime(request.POST['time'], '%H:%M:%S %Y-%m-%d')
 						else:
@@ -828,7 +837,6 @@ def startBreak(request, idUser, paramenterlunch):
 						else:
 							end_time = new_time + datetime.timedelta(hours = 0, minutes = 15)
 						t2_break = Break(attendance = attendance, lunch = lunch, start = new_time, end = end_time)
-
 						t2_break.save()
 						break_id = t2_break.id
 						result['success'] = True
