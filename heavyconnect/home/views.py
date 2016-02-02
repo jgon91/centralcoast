@@ -34,19 +34,19 @@ from home.models import EmployeeAttendanceChecklist
 LANGUAGE_CHOICES = ['pt-br','es', 'en-us']
 
 # create your public tenant
-tenant = Client(domain_url='ramco1.heavyconnect.com', # don't add your port or www here! on a local server you'll want to use localhost here
-                schema_name='ramco',
-                name='Ram Co',
-                paid_until='2016-12-05',
-                on_trial=False)
-tenant.save()
-#
-tenant = Client(domain_url='ramco.heavyconnect.com', # don't add your port or www here!
-                schema_name='public',
-                name='public',
-                paid_until='2014-12-05',
-                on_trial=True)
-tenant.save() # migrate_schemas automatically called, your tenant is ready to be used!
+# tenant = Client(domain_url='ramco1.heavyconnect.com', # don't add your port or www here! on a local server you'll want to use localhost here
+#                 schema_name='ramco',
+#                 name='Ram Co',
+#                 paid_until='2016-12-05',
+#                 on_trial=False)
+# tenant.save()
+# #
+# tenant = Client(domain_url='ramco.heavyconnect.com', # don't add your port or www here!
+#                 schema_name='public',
+#                 name='public',
+#                 paid_until='2014-12-05',
+#                 on_trial=True)
+# tenant.save() # migrate_schemas automatically called, your tenant is ready to be used!
 
 class HelloPDFView(PDFTemplateView):
 	template_name = "template/timecard.html"
