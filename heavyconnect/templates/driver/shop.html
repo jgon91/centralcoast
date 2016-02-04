@@ -25,6 +25,9 @@
 				background: whitesmoke;
 
 			}
+			table > tbody > td {
+				margin: 15px 15px 15px 15px;
+			}
 			#btnForward {
 				background: url('/static/imgSmall/buttons/nextPastTasks.png') no-repeat top left;
 			}
@@ -214,6 +217,8 @@
   					}
   				}
 			});
+
+
 
 			$("#shift").click(function() {
 				document.getElementById('employee_pin').value = '';
@@ -567,31 +572,54 @@ function addRemove() {
 							emptyDivs();
 							$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + attendanceId + "'>");
 							$("#messageTimekeeper").css("margin-left", "7.5%");
-							$("#messageTimekeeper").html("{% trans 'Answer Before Signing' %}:");
+							$("#messageTimekeeper").html("{% trans 'Please Fill in' %}:");
 							$("#attendanceCheckList").css("display", "block");
 							$("#attendanceCheckList").css("text-align", "center");
-							$("#attendanceCheckList").css("font-size", "18px");
-							$("#attendanceCheckList").css("margin", "0 30%");
+							$("#attendanceCheckList").css("font-size", "28px");
 							$("#attendanceCheckList").append("<div class='form-group'>");
 							$("#attendanceCheckList").append("<form role='form'>");
-							$("#attendanceCheckList").append("<table style='margin: auto;'>");
-							$("#attendanceCheckList").append("<tr><td colspan='3'><span id='indexQuestions'>Question (" + (indexQuestions+1) + "/" + questions.length + ")</span></td></tr>");
-							$("#attendanceCheckList").append("<tr><td colspan='3'><label for='answer' id='question'></label></td></tr>");
-							showQuestion(questions[indexQuestions]);
-							$("#attendanceCheckList").append("<tr>"+
-							"<td><input type='button' name='btnBackQuestion' id='btnBack' onclick='previousQuestion()' class='btnBackAdv' style='float: left;' /></td>"+
-							"<td><input type='text' name='inputAnswer' id='answer' class='form-control' value=''/></td>"+
-							"<td><input type='button' name='btnAnswer' id='btnForward' onclick='saveQuestion()' class='btnBackAdv' style='float: left;' /></td>"+
-							"</tr></tr>");
+							$("#attendanceCheckList").append("<table id='taskTable' style='margin: auto;'>"+
+							"<thead><tr>"+
+							"<td>Job Code</td>"+
+							"<td>Location</td>"+
+							"<td>Hours</td>"+
+							"</tr></thead>"+
+							"<tbody><tr>"+
+
+							"<td><select id='job1' name='inputAnswer' class='job tasks select-beast'>"+
+
+							"<option value='599'>599</option>"+
+							"<option value='600'>600</option>"+
+							"</select></td>"+
+							"<td ><input id='ranch1' type='text' value='711674' class='ranch form-control tasks' /></td>"+
+							"<td ><input id='hours1' type='number' class='taskHours form-control tasks' /></td>"+
+
+							"</tr><tr>"+
+							"<td><select id='job2' name='inputAnswer' class='job tasks select-beast'>"+
+
+							"<option value='599'>599</option>"+
+							"<option value='600'>600</option>"+
+							"</select></td>"+
+							"<td><input id='ranch2' type='text' value='711674' class='ranch form-control tasks' /></td>"+
+							"<td><input id='hours2' type='number' class='taskHours form-control tasks' /></td>"+
+
+							"</tr><tr>"+
+							"<td><select id='job3' name='inputAnswer' class='job tasks select-beast'>"+
+
+							"<option value='599'>599</option>"+
+							"<option value='600'>600</option>"+
+							"</select></td>"+
+							"<td><input id='ranch3' type='text' value='711674' class='ranch form-control tasks' /></td>"+
+							"<td><input id='hours3' type='number' class='taskHours form-control tasks' /></td>"+
+
+							"</tr></tbody>");
 
 
 							$("#attendanceCheckList").append("</table></br>");
 							$("#attendanceCheckList").append("</form>");
 	    					$("#attendanceCheckList").append("</div>");
-	    					//$("#attendanceCheckList").append("<span id='messageChecklist'></span>");
 	    					$("#divSignNow").css("margin", "auto");
 	    					$("#divSignNow").append("<input type='button' id='btnSignNow' onClick='callBtnSign()' style='box-shadow: 1px 1px 3px gray; border-radius: .25em;' value='{% trans 'SIGN NOW' %}'/>");
-	    					<!--$("#btnSignNow").attr("disabled", true);-->
 	    				}
 					}
 			});
@@ -897,11 +925,68 @@ function addRemove() {
 				$("#btnSignNow").attr("disabled", true);
 			}
 		}
+
+
 		function callBtnSign() {
-			saveQuestion();
+			<!--saveQuestion();-->
+			var taskData = [];
+			job1 = document.getElementById('job1').value;
+			job2 = document.getElementById('job2').value;
+			job3 = document.getElementById('job3').value;
+			ranch1 = document.getElementById('ranch1').value;
+			ranch2 = document.getElementById('ranch2').value;
+			ranch3 = document.getElementById('ranch3').value;
+			hours1 = document.getElementById('hours1').value;
+			hours2 = document.getElementById('hours2').value;
+			hours3 = document.getElementById('hours3').value;
+			if(job1 != '' && ranch1 != '' && hours1 != ''){
+				taskData.push(job1);
+				taskData.push(ranch1);
+				taskData.push(hours1);
+			}
+			if(job2 != '' && ranch2 != '' && hours2 != ''){
+				taskData.push(job2);
+				taskData.push(ranch2);
+				taskData.push(hours2);
+			}
+			if(job3 != '' && ranch3 != '' && hours3 != ''){
+				taskData.push(job3);
+				taskData.push(ranch3);
+				taskData.push(hours3);
+			}
+
+
+			updateTaskFlow("{{ csrf_token }}", "{% url 'updateLightTaskFlow' %}", JSON.stringify(taskData));
 			$('#showTimekeeperModal').modal('hide');
 			$('#signModal').modal();
+
+
 		}
+
+		function updateTaskFlow(token, url, taskData) {
+            $.ajax({
+					method : "POST",
+					url : url,
+					data : {
+						"csrfmiddlewaretoken" : token,
+						"task_data" : taskData,
+						"id": idTimelog,
+					},
+					datatype : "json",
+					success : function(data, status, xhr) {
+					    if(data.success){
+                            $("#showTimeKeeperModal").modal();
+                            $("#messageTimekeeper").html("Submitted Successfully");
+
+					    } else {
+						    $('#showTimekeeperModal').modal();
+						    $("#messageTimekeeper").html("There was an error. Not Submitted.");
+					    }
+					}
+
+			});
+        }
+
 		function saveSignature(token, url, attendanceId){
 			$.ajax({
 				method : "POST",

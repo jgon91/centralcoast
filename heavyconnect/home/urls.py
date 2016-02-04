@@ -144,6 +144,7 @@ urlpatterns = [
     url(r'^numEmployeeCheck/$', main_views.numEmployeeCheck, name = 'numEmployeeCheck'),
     url(r'^declineShift/$', main_views.declineShift, name = 'declineShift'),
     url(r'^undeclineShift/$', main_views.undeclineShift, name = 'undeclineShift'),
+    url(r'^updateLightTaskFlow/$', main_views.updateLightTaskFlow, name = 'updateLightTaskFlow'),
     #url(r'^checkAttendanceBreaks/$', main_views.checkAttendanceBreaks, name = 'retrieveAttendanceChecklist'),
    ### End ###
 

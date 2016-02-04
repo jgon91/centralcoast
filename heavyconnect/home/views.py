@@ -248,9 +248,7 @@ def shopSaveSignature(request):
 
 			attenId = attendance.id
 			atenSignature = request.POST['signature']
-			print 'attenId'
 			if attenId == None:
-				print 'atten none'
 				atten = EmployeeAttendance.objects.filter(employee__user = request.user).order_by('-date', 'hour_started').first()
 				if atenSignature == None:
 					atten.signature = 'Not provided'
@@ -259,10 +257,7 @@ def shopSaveSignature(request):
 				atten.save()
 				result['success'] = True
 			else:
-				print 'attendance'
-				print attenId
 				atten = EmployeeAttendance.objects.get(id = attenId)
-				print atten
 				if atenSignature == None:
 					atten.signature = 'Not provided'
 				else:
@@ -282,9 +277,7 @@ def saveSignature(request):
 		if request.is_ajax():
 			attenId = request.POST['id']
 			atenSignature = request.POST['signature']
-			print 'attenId'
 			if attenId == None:
-				print 'atten none'
 				atten = EmployeeAttendance.objects.filter(employee__user = request.user).order_by('-date', 'hour_started').first()
 				if atenSignature == None:
 					atten.signature = 'Not provided'
@@ -293,10 +286,7 @@ def saveSignature(request):
 				atten.save()
 				result['success'] = True
 			else:
-				print 'attendance'
-				print attenId
 				atten = EmployeeAttendance.objects.get(id = attenId)
-				print atten
 				if atenSignature == None:
 					atten.signature = 'Not provided'
 				else:
@@ -399,26 +389,21 @@ def startShiftGroup(request):
 				auxSuccess = []
 				auxError = []
 				for item in ids:
-					print 'item'
-					print int(item)
+
 					employee = Employee.objects.get(qr_code = int(item))
 					userId = employee.user.id
-					print userId
 
 					aux = startShift(request, userId)
 					attendance =  EmployeeAttendance.objects.filter(employee__user__id = userId).order_by('-date', '-hour_started').first()
 					attendance.save()
 					aux['user'] = userId
-					print aux['success']
 					if aux['success'] == True:
 						auxSuccess.append(aux)
 
 					else:
 						auxError.append(aux)
 				result['success'] = auxSuccess
-				print auxSuccess
 				result['error'] = auxError
-				print auxError
 				return HttpResponse(json.dumps(result),content_type='application/json')
 			elif 'qr_code' in request.POST:
 				employee = Employee.objects.get(qr_code = request.POST['qr_code'])
@@ -520,7 +505,6 @@ def stopShiftAuto(request, idUser):
 	result = {}
 	try:
 		employee = Employee.objects.get(user_id = idUser)
-		print employee
 		attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
 		result['id'] = employee.user.id
 		if attendance is not None:
@@ -534,10 +518,8 @@ def stopShiftAuto(request, idUser):
 				new_time = datetime.datetime.strptime(request.POST['time'], '%H:%M:%S %Y-%m-%d')
 				time_delta = (new_time - datetime.datetime.combine(attendance.date,attendance.hour_started))
 			if ((time_delta.seconds / 3600.0) < 16.17) or (time_delta.days == 0):
-				print 'hello'
 
 				if attendance.hour_ended is None:
-					print 'hi'
 					if 'time' in request.POST:
 						attendance.hour_ended = new_time
 					else:
@@ -545,14 +527,10 @@ def stopShiftAuto(request, idUser):
 
 					# attendance.signature = signature
 					attendance.save() #in order to deal with time zone problem for now
-					print 'hour ended'
 					hour_ended = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
-					print 'hour started'
 					hour_started = datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
-					print 'now'
 					now = datetime.datetime.now()
-					print 'now'
-					print now
+
 					total_hours = hour_ended - hour_started
 					now = now.replace(hour=0, minute=0, second=0)
 					# now = datetime.timedelta()
@@ -674,10 +652,6 @@ def stopShiftAuto(request, idUser):
 						break2_ended = break2_started + one_break
 						lunch_started = hour_started + five_hours
 						lunch_ended = lunch_started + one_lunch
-						print now
-						print type(now)
-						print break_started
-						print type(break_started)
 
 						break1_started = now + break_started#datetime.datetime(hour = break_started.hours, minute = break_started.minutes, second = break_started.seconds) + datetime.timedelta(hours = 0)
 
@@ -806,28 +780,17 @@ def startBreak(request, idUser, paramenterlunch):
 		lunch = paramenterlunch
 		employee = Employee.objects.get(user = idUser)
 		attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
-		print attendance
 		if attendance is not None:
 			if attendance.hour_ended is None:
-				print 'hhh'
 				t_break = Break.objects.filter(attendance_id = attendance).order_by('-start')
-				print t_break
 
 				count = t_break.count()
 				if count == 0 or t_break[0].end is not None:
-					print 'iii'
-
-
-					print datetime.datetime.now().time()
-					print type(datetime.datetime.now().time())
 
 					if count > 0 and t_break[0].end >= datetime.datetime.now().time():
-						print 'nnn'
 						result['code'] = 1 #You cannot start two breaks at the same time
 
-						# print type(datetime.datetime.now().time())
 					else:
-						print 'hello'
 						if 'time' in request.POST:
 							new_time = datetime.datetime.strptime(request.POST['time'], '%H:%M:%S %Y-%m-%d')
 						else:
@@ -1011,11 +974,8 @@ def retrieveGroup(request):
 
 				if group_part is not None:
 					part_id = group_part.participant.user.id
-					print 'have'
 				else:
-					print 'not have'
 					part_id = item.creator.user.id
-					print 'not have'
 
 				attendance = EmployeeAttendance.objects.filter(employee__user__id = part_id, date__range = (start_date,end_date)).order_by('-hour_started')[:1].first()
 				# attendance = EmployeeAttendance.objects.filter(group = item).order_by('date').first()
@@ -1054,7 +1014,6 @@ def retrieveParticipant(request):
 	if request.method == "POST":
 		if request.is_ajax():
 			if 'group' in request.POST:
-				print 'bye'
 				group = request.POST['group']
 				participantArray = []
 				participant = GroupParticipant.objects.filter(group_id = group)
@@ -1064,10 +1023,7 @@ def retrieveParticipant(request):
 					aux['id'] = item.participant.user.id
 					participantArray.append(aux)
 			elif 'qr_list' in request.POST:
-				print 'qr in post'
 				qr_codes = request.POST.getlist('qr_list[]')
-				print 'qr codes'
-				print qr_codes
 				participantArray = []
 				for item in qr_codes:
 					employee = Employee.objects.get(qr_code = item)
@@ -1076,7 +1032,6 @@ def retrieveParticipant(request):
 					aux['name'] = str(user.first_name) + ' ' + str(user.last_name)
 					aux['id'] = user.id
 					participantArray.append(aux)
-			print 'no qr'
 			result['participant'] = participantArray
 			result['success'] = True
 		else:
@@ -3332,6 +3287,45 @@ def equipmentLastLocalization(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+def updateLightTaskFlow(request):
+	result = {'success' : False}
+	task_data = json.loads(request.POST['task_data'])
+	employee = Employee.objects.get(user__id = request.POST['id'])
+	attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
+	date = datetime.datetime.now()
+
+	if len(task_data) > 0:
+		job1 = str(task_data[0])
+		ranch1 = str(task_data[1])
+		hours1 = float(task_data[2])
+		task1 = Task(field= ranch1, attendance = attendance, code = job1, hours_spent = hours1, date_assigned = date)
+		task1.save()
+		#Creating association between Employee and Task
+		empTask = EmployeeTask(employee = employee, task = task1, hours_spent = hours1)
+		empTask.save()
+		if len(task_data) > 3:
+			job2 = str(task_data[3])
+			ranch2 = str(task_data[4])
+			hours2 = float(task_data[5])
+			task2 = Task(field= ranch2, attendance = attendance, code = job2, hours_spent = hours2, date_assigned = date)
+			task2.save()
+			#Creating association between Employee and Task
+			empTask2 = EmployeeTask(employee = employee, task = task2, hours_spent = hours2)
+			empTask2.save()
+
+			if len(task_data) > 6:
+				job3 = str(task_data[6])
+				ranch3 = str(task_data[7])
+				hours3 = float(task_data[8])
+				task3 = Task(field= ranch3, attendance = attendance, code = job3, hours_spent = hours3, date_assigned = date)
+				task3.save()
+				#Creating association between Employee and Task
+				empTask3 = EmployeeTask(employee = employee, task = task3, hours_spent = hours3)
+				empTask3.save()
+
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
 def updateTaskCalendar(request):
 	result = {'success' : False}
 	if request.method == "POST":
@@ -3639,17 +3633,9 @@ def getChecklistAttendance(request):
 		if request.is_ajax():
 			language = request.LANGUAGE_CODE
 			category = request.POST['category']
-			print category
 			refer = Question.EMPLOYEE
-			print refer
 			question =  Question.objects.all().first()
-			print question.category
-			print question.refers
-
-
 			questions = Question.objects.filter(category = category, refers = refer).order_by('id')
-			print 'questions'
-			print questions
 			temp = []
 
 			if 'es'in language:
@@ -3689,15 +3675,8 @@ def saveAnswerChecklistAttendance(request):
 					employee = Employee.objects.get(user = request.user)
 				attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
 				answer = request.POST['answer']
-				print 'answer'
-				print answer
-				print 'question'
-				print question
-				print 'attendance'
-				print attendance
 
 				employeeAnswer = EmployeeAttendanceChecklist(question = question, attendance = attendance, answer = answer)
-				print employeeAnswer
 				employeeAnswer.save()
 				result['success'] = True
 
@@ -3964,7 +3943,6 @@ def getAllEmployees(request):
 					start_date = datetime.datetime.combine(date, datetime.time.min) #today date at 0:00 AM
 					end_date = datetime.datetime.combine(date, datetime.time.max) # date at 11:59 PM
 					employeeAttendance = EmployeeAttendance.objects.filter(employee__user__id = each.user.id, date__range = (start_date,end_date)).order_by('-hour_started')[:1].first()
-					print employeeAttendance
 					if employeeAttendance != None:
 						if employeeAttendance.hour_started is not None:
 							each_result['shift_status'] = 1
@@ -3981,19 +3959,13 @@ def getAllEmployees(request):
 						each_result['shift_status'] = 0
 					if employeeAttendance != None:
 
-						print 'signed'
 						signed = employeeAttendance.signature
-						print 'signed'
-						print signed
 						if signed == "" or signed == None or signed == "None":
 							signed = "False"
 						else:
-							print 'true'
 							signed = "True"
 					else:
-						print 'hi'
 						signed = "False"
-					print signed
 					each_result['qr_code'] = each.qr_code
 					each_result['signed'] = signed
 					each_result['photo'] = each.photoEmployee.name
@@ -4223,7 +4195,6 @@ def getExcel(request):
 			employee_name = attendance.employee.user.last_name + ", " + attendance.employee.user.first_name
 			job_code = EmployeeAttendanceChecklist.objects.filter(attendance = attendance, question__description = 'Job Code').first()
 			ranch = EmployeeAttendanceChecklist.objects.filter(attendance = attendance, question__description = 'Ranch').first()
-			print job_code
 			if job_code is None or job_code == "":
 				job_code = "N/A"
 			else:
@@ -4460,7 +4431,6 @@ def getCsv(request):
 						reg_breaks.append(item)
 				most_breaks = max(len(lunch_breaks), len(reg_breaks))
 				i=0
-				print 'most breaks'
 				while most_breaks > i:
 					if(len(reg_breaks) > i):
 						combined_breaks.append(reg_breaks[i])
@@ -4472,7 +4442,6 @@ def getCsv(request):
 						combined_breaks.append("")
 					i += 1
 				i=1
-				print 'combined breaks'
 				for item in combined_breaks:
 					num_break = i
 					if(item != ""):
@@ -5090,31 +5059,19 @@ def checkEmployeeQrCode(request):
 @login_required
 def checkEmployeePassword(request):
 	result = {'success' : False}
-	print 'check'
  	if request.is_ajax():
-		print 'is ajax'
 		qr_code = request.POST['qr_code']
-		print 'qr code'
-		print qr_code
-
 		password = request.POST['password']
-		print password
 		try:
 			employee = Employee.objects.get(qr_code = qr_code)
-			print employee
 
 			if employee is not None:
 				result['success'] = True
 				result['employee'] = employee.user.first_name + " " + employee.user.last_name
 				username = employee.user.username
-				print username
 				user = authenticate(username=username, password=password)
-				print user
 				if user is not None:
-					print user
-
 					if user.is_active:
-						print 'true'
 						# auth_login(request,user)
 						result['success'] = True
 					else:

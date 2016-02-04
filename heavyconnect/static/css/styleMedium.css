@@ -58,6 +58,18 @@
 	margin-right: 5px;
 	margin-top: 15px;
 }
+
+#btnTimerkeeper {
+	background: url('../imgSmall/buttons/timekeeper.png') no-repeat top left;
+	background-size: 100% 100%;
+	position: relative;
+    top: 50%;
+    left: 43%;
+	width: 212px;
+    height: 196px;
+    padding-top: 150px;
+    font-size: 24px;
+}
 /*** Header Home End ***/
 /*** Header Driver Begin ***/
 .btnTop {
