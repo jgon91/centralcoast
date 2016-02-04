@@ -324,21 +324,26 @@
 			checked_employees.push(qr_code);
 		}
 
-		function inout(qr_code){
+		function inout(qr_code, clockedin){
 			document.getElementById("code").style.display = "none";
 			$("#messageTimekeeper").css("color", "#1F3801");	//green
 			$("#messageTimekeeper").html("");
 
 			emptyDivs();
 			$("#timelogBack1").show();
-			$("#clock-in").append('<input type="button" value="{% trans 'CLOCK-IN' %}" class="btnsTimekeeper"/>');
-			$("#clock-out").append('<input type="button"  value="{% trans 'CLOCK-OUT' %}" class="btnsTimekeeper"/>');
+			if(clockedin == 'out'){
+				$("#clock-out").append('<input type="button"  value="{% trans 'CLOCK-OUT' %}" class="btnsTimekeeper"/>');
+			}else if(clockedin == 'in') {
+				$("#clock-in").append('<input type="button" value="{% trans 'CLOCK-IN' %}" class="btnsTimekeeper"/>');
+			}else {
+				$("#clock-in").append('<input type="button" value="{% trans 'CLOCK-IN' %}" class="btnsTimekeeper"/>');
+			}
+
 		}
 
 		function clockInOut(qr_code) {
 			checked_employees = [];
 			checkPin(qr_code);
-			<!--inout(qr_code);-->
 
 		}
 
@@ -567,7 +572,6 @@ function addRemove() {
 					success: function(data, status, xhr){
 						if(data.success){
 							var attendanceId = id;
-							<!--alert(attendanceId);-->
 							questions = data.questions;
 							emptyDivs();
 							$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + attendanceId + "'>");
@@ -655,7 +659,6 @@ function addRemove() {
 				$("#messageTimekeeper").html("{% trans 'Checklist completed' %}!");
 				$("#divSignNow").append("<input type='button' id='btnRetake' value='{% trans 'RETAKE IT' %}'/>");
 				$("#btnRetake").css("margin-left", "5px");
-				<!--$("#btnSignNow").attr("disabled", false);-->
 			}
 
 		}
@@ -682,35 +685,6 @@ function addRemove() {
 			});
 
 		}
-
-		<!--function checkState(){-->
-			<!--var iNodes= document.getElementsByClassName('teamName');-->
-			<!--var numChecked = 0;-->
-			<!--length = iNodes.length;-->
-		   	<!--for (i= 0; i < length ; i++){-->
-				<!--if (iNodes[i].checked === true){-->
-					<!--numChecked = numChecked + 1;-->
-					<!--iNodes[i].parentNode.style.backgroundColor = "#75C1DA";-->
-					<!--var index = checked_employees.indexOf(iNodes[i].value);-->
-					<!--if (index == -1) {-->
-						<!--checked_employees.push(iNodes[i].value);-->
-					<!--}-->
-				<!--}-->
-				<!--else{-->
-					<!--element = document.getElementById('teamName' + i);-->
-					<!--element.style.backgroundColor="#DDD";-->
-					<!--var index = checked_employees.indexOf(iNodes[i].value);-->
-					<!--if (index > -1) {-->
-						<!--checked_employees.splice(index, 1);-->
-					<!--}-->
-				<!--}-->
-			<!--}-->
-			<!--if(numChecked == 0){-->
-				<!--document.getElementById("nextButton").disabled = true;-->
-			<!--}else {-->
-				<!--document.getElementById("nextButton").disabled = false;-->
-			<!--}-->
-		<!--}-->
 
 		function getAllEmployees(token, url) {
 			$.ajax({
@@ -1199,7 +1173,8 @@ function addRemove() {
 						if (data.success) {
 							$("#qrCodeModal").modal("hide");
 							<!--feedBackQrCode("show", "green", "{% trans 'Successfully Validated.' %}");-->
-							inout(id);
+							var clockedin = data.clockedin;
+							inout(id, clockedin);
 						} else {
 						    data_scanned = {};
 						    $("#messageTimekeeper").html("Incorrect PIN. Please try again.");
