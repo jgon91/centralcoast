@@ -146,6 +146,8 @@
 		var checked_employees = [];
 		var indexQuestions = 0;
 		var answers = [];
+		var employees = 0;
+		var user_id = 0;
 
 		$(document).ready(function() {
 			$("#foot").load("{%url 'footer'%}");
@@ -297,8 +299,6 @@
 			});
 			$("#btnSignature").click(function(){
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				<!--$("#messageTimekeeper").html("{% trans 'Checking shift' %}...");-->
-				<!--callChecklist("{{ csrf_token }}", "{% url 'retrieveAttendanceChecklist' %}", idTimelog);-->
 				retrieveQuestions("{{ csrf_token }}", "{% url 'getChecklistAttendance' %}", document.getElementById("attendanceId").value);
 
 			});
@@ -317,11 +317,13 @@
 		  return time.join (''); // return adjusted time or original string
 		}
 
-		function checkPin(qr_code){
+		function checkPin(qr_code, userId){
 			$("#messageTimekeeper").css("color", "#1F3801");	//green
 			$("#messageTimekeeper").html("Enter 4-digit PIN:");
 			document.getElementById("code").style.display = "block";
 			checked_employees.push(qr_code);
+			employees = qr_code;
+			user_id = userId;
 		}
 
 		function inout(qr_code, clockedin){
@@ -336,14 +338,21 @@
 			}else if(clockedin == 'in') {
 				$("#clock-in").append('<input type="button" value="{% trans 'CLOCK-IN' %}" class="btnsTimekeeper"/>');
 			}else {
-				$("#clock-in").append('<input type="button" value="{% trans 'CLOCK-IN' %}" class="btnsTimekeeper"/>');
+				if(employees.length > 1) {
+							checkboxList = true;
+							getSomeEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}", employees);
+						}else {
+							timelogId(user_id);
+							<!--timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");-->
+						}
+				<!--$("#clock-in").append('<input type="button" value="{% trans 'CLOCK-IN' %}" class="btnsTimekeeper"/>');-->
 			}
 
 		}
 
-		function clockInOut(qr_code) {
+		function clockInOut(qr_code, userId) {
 			checked_employees = [];
-			checkPin(qr_code);
+			checkPin(qr_code, userId);
 
 		}
 
@@ -696,15 +705,15 @@ function addRemove() {
 					if(checkboxList == true) {
 						for(var i = 0; i < data.employees.length; i++){
 							if(data.employees[i].shift_status == "0"){
-							$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onclick="clockInOut('+data.employees[i].qr_code+')" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'</label>');
+							$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onclick="clockInOut('+data.employees[i].qr_code+','+data.employees[i].user_id+')" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'</label>');
 							} else if(data.employees[i].shift_status == "1"){
-								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onclick="clockInOut('+data.employees[i].qr_code+')" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'<span style="float: right;background: #FFFFFF;border-radius: .5em;padding: 5px;font-size: 24px;">IN</span></label>');
+								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onclick="clockInOut('+data.employees[i].qr_code+','+ data.employees[i].user_id+')" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'<span style="float: right;background: #FFFFFF;border-radius: .5em;padding: 5px;font-size: 24px;">IN</span></label>');
 
 							}else if(data.employees[i].shift_status == "2"){
-								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onclick="clockInOut('+data.employees[i].qr_code+')" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'<span style="float: right;background: #003DFF;border-radius: .5em;padding: 5px;font-size: 24px;">OUT</span></label>');
+								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onclick="clockInOut('+data.employees[i].qr_code+','+ data.employees[i].user_id+')" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'<span style="float: right;background: #003DFF;border-radius: .5em;padding: 5px;font-size: 24px;">OUT</span></label>');
 
 							}else if(data.employees[i].shift_status == "3"){
-								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onclick="clockInOut('+data.employees[i].qr_code+')" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'<span style="float: right;background: #4AEF0D;border-radius: .5em;padding: 5px;font-size: 24px;">DONE</span></label>');
+								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onclick="clockInOut('+data.employees[i].qr_code+','+ data.employees[i].user_id+')" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' ID: '+ data.employees[i].qr_code +'<span style="float: right;background: #4AEF0D;border-radius: .5em;padding: 5px;font-size: 24px;">DONE</span></label>');
 
 							}
 
@@ -818,6 +827,7 @@ function addRemove() {
 					arrayErrors[6] = '{% trans 'Error. Contact Suport' %}.';
 					<!--printResult(data);-->
 					if (data.success) {
+
 						$("#messageTimekeeper").css("color", "#1F3801");	//green
 						<!--$("#messageTimekeeper").html("Clock-out:");-->
 						$("#messageTimekeeper").html("Summary");

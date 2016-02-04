@@ -5074,10 +5074,12 @@ def checkEmployeePassword(request):
 				if attendance is not None:
 					if attendance.hour_started is None:
 						result['clockedin'] = "in"
-					elif attendance.hour_ended is not None:
+					elif attendance.hour_ended is not None and attendance.signature is None:
 						result['clockedin'] = 'sign'
-					else:
+					elif attendance.hour_ended is None:
 						result["clockedin"] = "out"
+					else:
+						result["clockedin"] = "in"
 
 				if user is not None:
 					if user.is_active:
