@@ -4,6 +4,7 @@ body {
 	margin: 0px;
 	padding: 0px;
 	font-family: Helvetica, arial;
+	padding-right: 0px !important
 }
 #logoHome {
 	width: 190px;
@@ -32,6 +33,11 @@ body {
 	margin-right: 5px;
 	margin-top: 5px;
 	float: right;
+}
+
+
+.modal-open {
+  overflow-y: auto;
 }
 
 #logOff {

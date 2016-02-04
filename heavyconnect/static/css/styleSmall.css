@@ -1470,7 +1470,13 @@ body {
     margin: 0px;
     padding: 0px;
     font-family: Helvetica, arial;
+    padding-right: 0px !important;
 }
+
+.modal-open {
+  overflow-y: auto;
+}
+
 #wrapper {
     text-align: center;
     width: 100%;
