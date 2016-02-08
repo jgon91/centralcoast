@@ -3314,15 +3314,21 @@ def updateLightTaskFlow(request):
 			empTask2.save()
 
 			if len(task_data) > 6:
+				print 'here'
 				job3 = str(task_data[6])
 				ranch3 = str(task_data[7])
 				hours3 = float(task_data[8])
+				print job3
+				print ranch3
+				print hours3
 				task3 = Task(field= ranch3, attendance = attendance, code = job3, hours_spent = hours3, date_assigned = date)
+				print task3
 				task3.save()
 				#Creating association between Employee and Task
 				empTask3 = EmployeeTask(employee = employee, task = task3, hours_spent = hours3)
+				print empTask3
 				empTask3.save()
-
+				print "end"
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
