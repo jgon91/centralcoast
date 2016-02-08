@@ -174,10 +174,10 @@
 		var employees = 0;
 		var user_id = 0;
 		var opts = {
-		  lines: 13 // The number of lines to draw
-		, length: 28 // The length of each line
-		, width: 14 // The line thickness
-		, radius: 42 // The radius of the inner circle
+		  lines: 10 // The number of lines to draw
+		, length: 15 // The length of each line
+		, width: 8 // The line thickness
+		, radius: 15 // The radius of the inner circle
 		, scale: 1 // Scales overall size of the spinner
 		, corners: 1 // Corner roundness (0..1)
 		, color: '#000' // #rgb or #rrggbb or array of colors
@@ -527,6 +527,7 @@ function addRemove() {
 				data : {"csrfmiddlewaretoken" : token},
 				datatype : "json",
 				beforeSend: function() {
+					var target = document.getElementById('messageTimekeeper');
 
 					spinner = new Spinner(opts).spin(target);
 				},
@@ -578,6 +579,7 @@ function addRemove() {
 				data : {"csrfmiddlewaretoken" : token, "qr_list": employees},
 				datatype : "json",
 				beforeSend: function() {
+					var target = document.getElementById('messageTimekeeper');
 
 					spinner = new Spinner(opts).spin(target);
 				},
@@ -765,7 +767,7 @@ function addRemove() {
 				data: {"csrfmiddlewaretoken": token },
 				datatype: "json",
 				beforeSend: function() {
-
+					var target = document.getElementById('messageTimekeeper');
 					spinner = new Spinner(opts).spin(target);
 				},
 				complete: function() {
@@ -862,8 +864,9 @@ function addRemove() {
 				data : {"csrfmiddlewaretoken" : token, "qr_list": id_pushed, "lunch": lunch},
 				datatype : "json",
 				beforeSend: function() {
-
+					var target = document.getElementById('messageTimekeeper');
 					spinner = new Spinner(opts).spin(target);
+
 				},
 				complete: function() {
 					spinner.stop();
@@ -896,6 +899,7 @@ function addRemove() {
 				data: {"csrfmiddlewaretoken": token, "qr_list": employees},
 				datatype: "json",
 				beforeSend: function() {
+					var target = document.getElementById('messageTimekeeper');
 
 					spinner = new Spinner(opts).spin(target);
 				},
@@ -939,6 +943,7 @@ function addRemove() {
 				data: {"csrfmiddlewaretoken": token, "id": user_id},
 				datatype: "json",
 				beforeSend: function() {
+					var target = document.getElementById('messageTimekeeper');
 
 					spinner = new Spinner(opts).spin(target);
 				},
@@ -982,6 +987,7 @@ function addRemove() {
 				data: {"csrfmiddlewaretoken": token, "attendance_id":attendanceid},
 				datatype: "json",
 				beforeSend: function() {
+					var target = document.getElementById('messageTimekeeper');
 
 					spinner = new Spinner(opts).spin(target);
 				},
@@ -1056,6 +1062,7 @@ function addRemove() {
 					},
 					datatype : "json",
 					beforeSend: function() {
+					var target = document.getElementById('messageTimekeeper');
 
 					spinner = new Spinner(opts).spin(target);
 					},
@@ -1084,6 +1091,7 @@ function addRemove() {
 				data : {"csrfmiddlewaretoken" : token, "id": idTimelog, "signature": document.getElementById("code2").value},
 				datatype : "json",
 				beforeSend: function() {
+					var target = document.getElementById('messageTimekeeper');
 
 					spinner = new Spinner(opts).spin(target);
 				},
@@ -1233,6 +1241,7 @@ function addRemove() {
 				data : {"csrfmiddlewaretoken" : token, "shift_id": shift_id, "new_time": new_time},
 				datatype : "json",
 				beforeSend: function() {
+					var target = document.getElementById('messageTimekeeper');
 
 					spinner = new Spinner(opts).spin(target);
 				},
@@ -1306,6 +1315,7 @@ function addRemove() {
 						"password" : password,
 					},
 					beforeSend: function() {
+						var target = document.getElementById('messageTimekeeper');
 
 						spinner = new Spinner(opts).spin(target);
 					},
