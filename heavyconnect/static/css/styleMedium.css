@@ -88,7 +88,12 @@
 }
 
 body {
-  padding-right: 0px !important
+    height: 100%;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    font-family: Helvetica, arial;
+    padding-right: 0px !important;
 }
 
 .modal-open {
