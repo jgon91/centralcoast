@@ -3288,7 +3288,7 @@ def equipmentLastLocalization(request):
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
 def updateLightTaskFlow(request):
-	result = {'success' : False}
+	result = {'success' : True}
 	task_data = json.loads(request.POST['task_data'])
 	employee = Employee.objects.get(user__id = request.POST['id'])
 	attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
