@@ -276,6 +276,7 @@
 			$("#shift").click(function() {
 				document.getElementById('employee_pin').value = '';
 				document.getElementById('employee_pin2').value = '';
+				document.getElementById('code2').value = '';
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
 				$("#messageTimekeeper").html("{% trans 'Select Employee(s)' %}:");
