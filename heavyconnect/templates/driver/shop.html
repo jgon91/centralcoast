@@ -13,6 +13,7 @@
 		<script type="text/javascript" src="{% static 'WebCodeCam/js/qrcodelib.js' %}"></script>
 		<script type="text/javascript" src="{% static 'WebCodeCam/js/WebCodeCam.js' %}"></script>
 		<style>
+
 			.tasks {
 				height: 60px; !important
 				    display: block;
@@ -112,7 +113,7 @@
 			padding: 0px;
 			}
 			.full-size{
-				width: 95%;
+				width: 95%; important!
 			}
 			.btnCreateTeam {
 			background: #1F3801 !important;
@@ -892,12 +893,12 @@ function addRemove() {
     					<!--}else {-->
     					<!--$("#messageTimekeeper").html("{% trans 'Check Before Signing' %}:");-->
     					$("#questions").css("text-align", "left");
-    					$("#questions").css("font-size", "25px");
+    					$("#questions").css("font-size", "20px");
     					$("#questions").append("<table>");
 
 
     					for (i = 0; i < data.checklist.length; i++) {
-    						$("#questions").append("<tr><td><label><input type='checkbox' onClick='allChecked(" + data.checklist.length + ")' class='checkQuestions'/>&nbsp;&nbsp;" + data.checklist[i].description + "</label></td></td>");
+    						$("#questions").append("<tr><td><label style='font-weight: 500;'><input type='checkbox' onClick='allChecked(" + data.checklist.length + ")' class='checkQuestions'/>&nbsp;&nbsp;" + data.checklist[i].description + "</label></td></td>");
     					}
     					$("#questions").append("</table>");
     					<!--$("#divSignNow").append("<input type='button' style='box-shadow: 1px 1px 3px gray; border-radius: .25em; margin-right: 50px;' id='btnSignNow' value='{% trans 'SIGN NOW' %}'/>");-->
@@ -1287,11 +1288,11 @@ function addRemove() {
 					<button type="button" class="closeSignature" data-dismiss="modal"></button>
 					<div class="modal-title" id="titleSign">{% trans 'Enter 4-digit PIN:' %}</div>
 					<div class="modal-body" id="signatureContent">
-						<input type="text" style="height:70px; width:150px;font-size:24px;" id="code2" style="color:black;" placeholder="{% trans 'Type PIN' %}"/>
+						<input type="text" style="height:70px; width:200px; border-radius: .15em;font-size:24px;" id="code2" style="color:black;" placeholder="{% trans 'Type PIN' %}"/>
 						<!--<button type="button" id="clearSignature" class="btn btn-default">{% trans 'Clear' %}</button>-->
 						<!--<button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>-->
 
-							<button style="height:60px; width:100px;" type="button" id="saveSignature" class="btn btn-success" >
+							<button style="height:60px; width:100px;box-shadow: -1px 1px 7px gray;" type="button" id="saveSignature" class="btn btn-success" >
 								{% trans 'SIGN' %}
 							</button>
 
@@ -1302,7 +1303,7 @@ function addRemove() {
 
 		<!-- MODAL OF ALERT - TIMEKEEPER -->
 		<div class="modal fade" id="showTimekeeperModal" role="dialog">
-			<div class="modal-dialog full-size" >
+			<div class="modal-dialog full-size" style="width:95%;">
 				<!-- Modal content-->
 				<div class="modal-content modalTimekeeper">
 					<div class="modal-body">
@@ -1354,8 +1355,8 @@ function addRemove() {
 						<div id="acceptButton"></div>
 						<div id="declineButton"></div>
 						<div id="code" style="display:none;">
-							<input type="password" id="employee_pin" style="color:black;" placeholder="{% trans 'Type your PIN' %}"/>
-							<button id="submit_pin" title="Play" type="button" class="btn btn-success btn-xl" onclick="checkEmployeePassword('{{ csrf_token }}', '/home/checkEmployeePassword/', checked_employees[0], $('#employee_pin').val());"><span class="glyphicon glyphicon-play"></span></button>
+							<input type="password" id="employee_pin" style="color:black;border-radius:.15em;" placeholder="{% trans 'Type your PIN' %}"/>
+							<button id="submit_pin" style="height:55px; width:60px;box-shadow: -1px 1px 7px gray;" title="Play" type="button" class="btn btn-success btn-xl" onclick="checkEmployeePassword('{{ csrf_token }}', '/home/checkEmployeePassword/', checked_employees[0], $('#employee_pin').val());"><span class="glyphicon glyphicon-play"></span></button>
 						</div>
 						<br>
 						<div class="both"></div>

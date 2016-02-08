@@ -595,6 +595,19 @@ input[type='time'] {
 	text-decoration: none;
 	color: #4F7316;
 }
+#submit_pin{
+    height: 55px; important!
+    width: 60px; important!
+}
+input[type=checkbox]
+{
+  /* Double-sized Checkboxes */
+  -ms-transform: scale(2); /* IE */
+  -moz-transform: scale(2); /* FF */
+  -webkit-transform: scale(2); /* Safari and Chrome */
+  -o-transform: scale(2); /* Opera */
+  padding: 10px;
+}
 .btnPastNextTask {
 	width: 100%;
 	min-width: 360px;
@@ -1819,11 +1832,7 @@ input[type=button] {
     text-align: left;
     font-size: 20px;
 }
-#employeeList input[type=checkbox] {
-    width: 20px;
-    height: 20px;
-    margin-bottom: 0px;
-}
+
 
 #divTimelog input[type=button] {
     border: 1px solid #DDD;
