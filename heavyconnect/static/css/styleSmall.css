@@ -523,6 +523,10 @@ input[type='time'] {
 #tableTimelog tr td {
 	padding: 5px;
 }
+#taskTable tbody tr td {
+    padding-right: 15px;
+    padding-top: 15px;
+}
 #colBorderTimelog {
 	background: #DDD;
 

@@ -107,6 +107,11 @@ body {
     vertical-align: middle;
 }
 
+#taskTable tbody tr td {
+    padding-right: 15px;
+    padding-top: 15px;
+}
+
 
 .tableListForm {
     margin: auto;
