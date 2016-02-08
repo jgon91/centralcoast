@@ -1,4 +1,12 @@
 /*** General Begin ***/
+body {
+    height: 100%;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    font-family: Helvetica, arial;
+    padding-right: 0px !important;
+}
 
 #wrapper {
 	text-align: center;
@@ -1405,9 +1413,7 @@ input[type=checkbox]
 	background: url('../imgSmall/buttons/escHover.png') no-repeat top left;
 	background-size: 100% 100%;
 }*/
-#slideModalEquip {
-	
-}
+
 .controlModalEquip {
 	border-radius: 10px;
 	width: 20%;
@@ -1489,14 +1495,9 @@ input[type=checkbox]
 }
 
 /*** General Begin ***/
-body {
-    height: 100%;
-    width: 100%;
-    margin: 0px;
-    padding: 0px;
-    font-family: Helvetica, arial;
-    padding-right: 0px !important;
-}
+
+
+
 
 .modal-open {
   overflow-y: auto;
@@ -2816,9 +2817,7 @@ input[type=button] {
  background: url('../imgSmall/buttons/escHover.png') no-repeat top left;
  background-size: 100% 100%;
  }*/
-#slideModalEquip {
 
-}
 .controlModalEquip {
     border-radius: 10px;
     width: 20%;
