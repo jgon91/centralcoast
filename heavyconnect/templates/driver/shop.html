@@ -312,7 +312,7 @@
 				emptyDivs();
 				checkboxList = true;
 				getAllEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}");
-				<!--$("#next").append("<input type='button' id='nextButton' value='NEXT' class='btnsTimekeeper' disabled/>");-->
+				<!--$("#next").append("<input type='button' id='nextButton' value='NEXT' class='btnsTimekeeperShop' disabled/>");-->
 
 			});
 			$("#timelogBack2").click(function() {
@@ -360,9 +360,9 @@
 			emptyDivs();
 			$("#timelogBack1").show();
 			if(clockedin == 'out'){
-				$("#clock-out").append('<input type="button"  value="{% trans 'CLOCK-OUT' %}" class="btnsTimekeeper"/>');
+				$("#clock-out").append('<input type="button"  value="{% trans 'CLOCK-OUT' %}" class="btnsTimekeeperShop"/>');
 			}else if(clockedin == 'in') {
-				$("#clock-in").append('<input type="button" value="{% trans 'CLOCK-IN' %}" class="btnsTimekeeper"/>');
+				$("#clock-in").append('<input type="button" value="{% trans 'CLOCK-IN' %}" class="btnsTimekeeperShop"/>');
 			}else {
 				if(employees.length > 1) {
 							checkboxList = true;
@@ -371,7 +371,7 @@
 							timelogId(user_id);
 							<!--timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");-->
 						}
-				<!--$("#clock-in").append('<input type="button" value="{% trans 'CLOCK-IN' %}" class="btnsTimekeeper"/>');-->
+				<!--$("#clock-in").append('<input type="button" value="{% trans 'CLOCK-IN' %}" class="btnsTimekeeperShop"/>');-->
 			}
 
 		}
@@ -1073,9 +1073,9 @@ function addRemove() {
 								}
 							}
 							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + tConvert(data.Attendance_end) + "</td></tr>");
-							$("#btnSignature").append("<button type='button' id='attendanceId'  style='background:green;' value='"+data.attendanceId+"' class='btnsTimekeeper'>ACCEPT</button>");
+							$("#btnSignature").append("<button type='button' id='attendanceId'  style='background:green;' value='"+data.attendanceId+"' class='btnsTimekeeperShop'>ACCEPT</button>");
 							<!--alert(data.attendanceId);-->
-							$("#declineButton").append("<input type='button' id='btnDeclineCheckList' style='background:#BB1818;' value='DECLINE' class='btnsTimekeeper'/>");
+							$("#declineButton").append("<input type='button' id='btnDeclineCheckList' style='background:#BB1818;' value='DECLINE' class='btnsTimekeeperShop'/>");
 							$("#btnDeclineCheckList").css("background-color", "#B83419");
 							$("#btnDeclineCheckList").click(function(){
 								declineShift("{{ csrf_token }}", "{% url 'declineShift' %}", data.attendanceId);
@@ -1269,7 +1269,7 @@ function addRemove() {
 				<div class="row">
 				<div class="row" style="margin-top: 65px;">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" id="shift" value="{% trans 'CLOCK IN/OUT' %}" class="btnsTimekeeper"/>
+						<input type="button" id="shift" value="{% trans 'CLOCK IN/OUT' %}" class="btnsTimekeeperShop"/>
 					</div>
 				</div>
 

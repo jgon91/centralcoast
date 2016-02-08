@@ -453,6 +453,20 @@ input[type='time'] {
 	font-weight: 700;
 }
 
+.btnsTimekeeperShop {
+	background: url('../imgSmall/buttons/btnGreen.png') no-repeat top left;
+	background-size: 100% 100%;
+	border-radius: 7px;
+	border: none;
+	box-shadow: 2px 2px 5px gray;
+	height: 65px;
+	width: 250px;
+	color: white;
+	margin-bottom: 25px;
+	font-size: 25px;
+	font-weight: 700;
+}
+
 .modal-body {
     max-height: calc(150vh - 210px);
     overflow-y: auto;
