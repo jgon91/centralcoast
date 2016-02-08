@@ -12,6 +12,8 @@
 		<script type="text/javascript" src="{% static 'WebCodeCam/js/startScanQRCode.js' %}"></script>
 		<script type="text/javascript" src="{% static 'WebCodeCam/js/qrcodelib.js' %}"></script>
 		<script type="text/javascript" src="{% static 'WebCodeCam/js/WebCodeCam.js' %}"></script>
+		<script type="text/javascript" src="{% static 'js/spin.min.js' %}"></script>
+
 		<style>
 
 			.tasks {
@@ -171,6 +173,30 @@
 		var answers = [];
 		var employees = 0;
 		var user_id = 0;
+		var opts = {
+		  lines: 13 // The number of lines to draw
+		, length: 28 // The length of each line
+		, width: 14 // The line thickness
+		, radius: 42 // The radius of the inner circle
+		, scale: 1 // Scales overall size of the spinner
+		, corners: 1 // Corner roundness (0..1)
+		, color: '#000' // #rgb or #rrggbb or array of colors
+		, opacity: 0.25 // Opacity of the lines
+		, rotate: 0 // The rotation offset
+		, direction: 1 // 1: clockwise, -1: counterclockwise
+		, speed: 1 // Rounds per second
+		, trail: 60 // Afterglow percentage
+		, fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
+		, zIndex: 2e9 // The z-index (defaults to 2000000000)
+		, className: 'spinner' // The CSS class to assign to the spinner
+		, top: '50%' // Top position relative to parent
+		, left: '50%' // Left position relative to parent
+		, shadow: false // Whether to render a shadow
+		, hwaccel: false // Whether to use hardware acceleration
+		, position: 'absolute' // Element positioning
+		}
+		var target = document.getElementById('messageTimekeeper');
+		var spinner = 0;
 
 		$(document).ready(function() {
 			$("#foot").load("{%url 'footer'%}");
@@ -500,6 +526,13 @@ function addRemove() {
 				url : url,
 				data : {"csrfmiddlewaretoken" : token},
 				datatype : "json",
+				beforeSend: function() {
+
+					spinner = new Spinner(opts).spin(target);
+				},
+				complete: function() {
+					spinner.stop();
+				},
 				success : function(data, status, xhr) {
 					if (data.success) {
 						if (data.hour_started != 'None') {
@@ -544,6 +577,13 @@ function addRemove() {
 				url : url,
 				data : {"csrfmiddlewaretoken" : token, "qr_list": employees},
 				datatype : "json",
+				beforeSend: function() {
+
+					spinner = new Spinner(opts).spin(target);
+				},
+				complete: function() {
+					spinner.stop();
+				},
 				success : function(data, status, xhr) {
 
 					arrayErrors = [];
@@ -724,6 +764,13 @@ function addRemove() {
 				url: url,
 				data: {"csrfmiddlewaretoken": token },
 				datatype: "json",
+				beforeSend: function() {
+
+					spinner = new Spinner(opts).spin(target);
+				},
+				complete: function() {
+					spinner.stop();
+				},
 				success: function(data, status, xhr){
 					if(checkboxList == true) {
 						for(var i = 0; i < data.employees.length; i++){
@@ -814,6 +861,13 @@ function addRemove() {
 				acync: false,
 				data : {"csrfmiddlewaretoken" : token, "qr_list": id_pushed, "lunch": lunch},
 				datatype : "json",
+				beforeSend: function() {
+
+					spinner = new Spinner(opts).spin(target);
+				},
+				complete: function() {
+					spinner.stop();
+				},
 				success : function(data, status, xhr) {
 					arrayErrors = [];
 					arrayErrors[1] = '{% trans 'You cannot start two breaks at the same time' %}.';
@@ -841,6 +895,13 @@ function addRemove() {
 				url: url,
 				data: {"csrfmiddlewaretoken": token, "qr_list": employees},
 				datatype: "json",
+				beforeSend: function() {
+
+					spinner = new Spinner(opts).spin(target);
+				},
+				complete: function() {
+					spinner.stop();
+				},
 				success: function(data, status, xhr){
 					arrayErrors = [];
 					arrayErrors[2] = '{% trans 'The shift for today was already finished' %}.';
@@ -877,6 +938,13 @@ function addRemove() {
 				url: url,
 				data: {"csrfmiddlewaretoken": token, "id": user_id},
 				datatype: "json",
+				beforeSend: function() {
+
+					spinner = new Spinner(opts).spin(target);
+				},
+				complete: function() {
+					spinner.stop();
+				},
 				success: function(data, status, xhr){
 					if (data.success) {
 						var attendanceId = $("#attendanceId").val();
@@ -913,6 +981,13 @@ function addRemove() {
 				url: url,
 				data: {"csrfmiddlewaretoken": token, "attendance_id":attendanceid},
 				datatype: "json",
+				beforeSend: function() {
+
+					spinner = new Spinner(opts).spin(target);
+				},
+				complete: function() {
+					spinner.stop();
+				},
 				success: function(data, status, xhr){
 					if (data.success) {
 						emptyDivs();
@@ -980,6 +1055,13 @@ function addRemove() {
 						"id": idTimelog,
 					},
 					datatype : "json",
+					beforeSend: function() {
+
+					spinner = new Spinner(opts).spin(target);
+					},
+					complete: function() {
+						spinner.stop();
+					},
 					success : function(data, status, xhr) {
 					    if(data.success){
                             $("#showTimeKeeperModal").modal();
@@ -1001,6 +1083,13 @@ function addRemove() {
 				async: false,
 				data : {"csrfmiddlewaretoken" : token, "id": idTimelog, "signature": document.getElementById("code2").value},
 				datatype : "json",
+				beforeSend: function() {
+
+					spinner = new Spinner(opts).spin(target);
+				},
+				complete: function() {
+					spinner.stop();
+				},
 				success : function(data, status, xhr) {
 						$('#signModal').modal('hide');
 				}
@@ -1014,6 +1103,14 @@ function addRemove() {
 				url : url,
 				data : {"csrfmiddlewaretoken" : token, "qr_code": idTimelog, "id":idTimelog},
 				datatype : "json",
+				beforeSend: function() {
+					var target = document.getElementById('divTimelog');
+
+					spinner = new Spinner(opts).spin(target);
+				},
+				complete: function() {
+					spinner.stop();
+				},
 				success : function(data, status, xhr) {
 					var i = 0;
 					var breaks = 1;
@@ -1135,6 +1232,13 @@ function addRemove() {
 				url : url,
 				data : {"csrfmiddlewaretoken" : token, "shift_id": shift_id, "new_time": new_time},
 				datatype : "json",
+				beforeSend: function() {
+
+					spinner = new Spinner(opts).spin(target);
+				},
+				complete: function() {
+					spinner.stop();
+				},
 				success : function(data, status, xhr) {
 					if (data.success) {
 						emptyDivs();
@@ -1200,6 +1304,13 @@ function addRemove() {
 						"csrfmiddlewaretoken" : token,
 						"qr_code" : id,
 						"password" : password,
+					},
+					beforeSend: function() {
+
+						spinner = new Spinner(opts).spin(target);
+					},
+					complete: function() {
+						spinner.stop();
 					},
 					success : function(data, status, xhr) {
 						$("#errorQrCode").html("")
