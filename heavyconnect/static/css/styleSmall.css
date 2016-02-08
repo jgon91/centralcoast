@@ -1473,10 +1473,6 @@ body {
     padding-right: 0px !important;
 }
 
-body.modal-open {
-    overflow: hidden;
-}
-
 .modal-open {
   overflow-y: auto;
 }
