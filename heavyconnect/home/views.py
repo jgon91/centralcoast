@@ -5063,8 +5063,17 @@ def checkEmployeePassword(request):
 		qr_code = request.POST['qr_code']
 		password = request.POST['password']
 		try:
+
+			date = str(datetime.date.today())
+
+			date = datetime.datetime.now() #today date
+			start_date = datetime.datetime.combine(date, datetime.time.min) #today date at 0:00 AM
+			end_date = datetime.datetime.combine(date, datetime.time.max) # date at 11:59 PM
+
 			employee = Employee.objects.get(qr_code = qr_code)
-			attendance = EmployeeAttendance.objects.filter(employee = employee).order_by('-date', '-hour_started').first()
+			attendance = EmployeeAttendance.objects.filter(employee = employee, date__range = (start_date,end_date)).order_by('-hour_started')[:1].first()
+			print attendance
+			# attendance = EmployeeAttendance.objects.filter(employee = employee).order_by('-date', '-hour_started').first()
 
 			if employee is not None:
 				result['success'] = True
@@ -5075,11 +5084,14 @@ def checkEmployeePassword(request):
 					if attendance.hour_started is None:
 						result['clockedin'] = "in"
 					elif attendance.hour_ended is not None and attendance.signature is None:
+						print attendance
 						result['clockedin'] = 'sign'
 					elif attendance.hour_ended is None:
 						result["clockedin"] = "out"
 					else:
 						result["clockedin"] = "in"
+				else:
+					result['clockedin'] = "in"
 
 				if user is not None:
 					if user.is_active:
