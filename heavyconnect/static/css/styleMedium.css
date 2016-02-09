@@ -118,6 +118,9 @@ body {
     -webkit-text-security: disc;
 }
 
+#employee_pin input[type=number] {
+    -webkit-text-security: disc;
+}
 #myModal .modal-content
 {
   height:200px;

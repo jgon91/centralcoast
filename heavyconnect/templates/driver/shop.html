@@ -15,6 +15,9 @@
 		<script type="text/javascript" src="{% static 'js/spin.min.js' %}"></script>
 
 		<style>
+			#employee_pin input[type=number] {
+				-webkit-text-security: disc;
+			}
 			.spinner {
 			  margin-top: 20px;
 			}
@@ -1384,7 +1387,7 @@ function addRemove() {
 					<button type="button" class="closeSignature" data-dismiss="modal"></button>
 					<div class="modal-title" id="titleSign">{% trans 'Enter 4-digit PIN:' %}</div>
 					<div class="modal-body" id="signatureContent">
-						<input class="pin_input" pattern='[0-9]*' inputmode='numeric' type="number" style="height:70px; width:200px; border-radius: .15em;font-size:24px;" id="code2" style="color:black;" placeholder="{% trans 'Type PIN' %}"/>
+						<input class="pin_input" pattern='[0-9]*' inputmode='numeric' type="number" style="-webkit-text-security: disc;height:70px; width:200px; border-radius: .15em;font-size:24px;" id="code2" style="color:black;" placeholder="{% trans 'Type PIN' %}"/>
 						<!--<button type="button" id="clearSignature" class="btn btn-default">{% trans 'Clear' %}</button>-->
 						<!--<button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>-->
 
@@ -1451,7 +1454,7 @@ function addRemove() {
 						<div id="acceptButton"></div>
 						<div id="declineButton"></div>
 						<div id="code" style="display:none;">
-							<input  class="pin_input" pattern='[0-9]*' inputmode='numeric' type="number" id="employee_pin" style="color:black;border-radius:.15em;" placeholder="{% trans 'Type your PIN' %}"/>
+							<input  class="pin_input" pattern='[0-9]*' inputmode='numeric' type="number" id="employee_pin" style="-webkit-text-security: disc;color:black;border-radius:.15em;" placeholder="{% trans 'Type your PIN' %}"/>
 							<button id="submit_pin" style="height:55px; width:60px;box-shadow: -1px 1px 7px gray;" title="Play" type="button" class="btn btn-success btn-xl" onclick="checkEmployeePassword('{{ csrf_token }}', '/home/checkEmployeePassword/', checked_employees[0], $('#employee_pin').val());"><span class="glyphicon glyphicon-play"></span></button>
 						</div>
 						<br>
@@ -1471,7 +1474,7 @@ function addRemove() {
 					<div id="QR-Code" style="font-size: 25px;">
 						<div class="panel panel-primary" style="border: none;">
 							<div style="margin auto 40px; text-align: center; margin-top: 20px;">
-								<input class="pin_input" pattern='[0-9]*' inputmode='numeric' type="number" id="qr_code" style="color:black;" placeholder="{% trans 'Type PIN' %}"/>
+								<input class="pin_input" pattern='[0-9]*' inputmode='numeric' type="number" id="qr_code" style="-webkit-text-security: disc;color:black;" placeholder="{% trans 'Type PIN' %}"/>
 
 								<button id="submit" title="Play" type="button" class="btn btn-success btn-xl" onclick="checkEmployeeScanned('{{ csrf_token }}', '/home/checkEmployeeQrCode/', $('#qr_code').val());">
 									<!--<span class="glyphicon glyphicon-play"></span>-->
@@ -1506,7 +1509,7 @@ function addRemove() {
                         <div id="PIN" style="font-size: 25px;">
 						<div class="panel panel-primary" style="border: none;">
 							<div id="pin_input" style="margin auto 40px; text-align: center; margin-top: 20px;">
-								<input class="pin_input" pattern='[0-9]*' inputmode='numeric' type="number" id="employee_pin2" style="color:black;" placeholder="{% trans 'Type your PIN' %}"/>
+								<input class="pin_input" pattern='[0-9]*' inputmode='numeric' type="number" id="employee_pin2" style="-webkit-text-security: disc;color:black;" placeholder="{% trans 'Type your PIN' %}"/>
 
 								<button id="submit_pin2" title="Play" type="button" class="btn btn-success btn-xl" onclick="checkEmployeePassword('{{ csrf_token }}', '/home/checkEmployeePassword/', `${data_scanned.qr_code}`, $('#employee_pin2').val());">
 									<span class="glyphicon glyphicon-play"></span>
