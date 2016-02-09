@@ -606,6 +606,7 @@ function addRemove() {
 					} else {
 					}
 					checked_employees = [];
+					setTimeout(function() {$('#showTimekeeperModal').modal('hide');}, 1000);
 				},
 				error: function(XMLHttpRequest, textStatus, errorThrown) {
 					checked_employees = [];
@@ -899,11 +900,9 @@ function addRemove() {
 					arrayErrors[4] = '{% trans 'This user is not authorized to use the system' %}.';
 					arrayErrors[5] = '{% trans 'Error. Contact Suport' %}.';
 					arrayErrors[6] = '{% trans 'Error. Contact Suport' %}.';
-					<!--printResult(data);-->
 					if (data.success) {
 
 						$("#messageTimekeeper").css("color", "#1F3801");	//green
-						<!--$("#messageTimekeeper").html("Clock-out:");-->
 						$("#messageTimekeeper").html("Summary");
 						checkboxList = false;
 						if(employees.length > 1) {
@@ -927,26 +926,11 @@ function addRemove() {
 				url: url,
 				data: {"csrfmiddlewaretoken": token, "id": user_id},
 				datatype: "json",
-				beforeSend: function() {
-					var target = document.getElementById('messageTimekeeper');
-
-					spinner = new Spinner(opts).spin(target);
-				},
-				complete: function() {
-					spinner.stop();
-				},
 				success: function(data, status, xhr){
 					if (data.success) {
 						var attendanceId = $("#attendanceId").val();
 						emptyDivs();
 						$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + attendanceId + "'>");
-    					$("#messageTimekeeper").css("color", "#1F3801");	//green
-    					<!--if(data.checklist.length == 0 ){-->
-    						<!--$("#messageTimekeeper").html("{% trans 'Click to Sign' %}:");-->
-    						<!--$("#divSignNow").append("<input type='button' style='box-shadow: 1px 1px 3px gray; border-radius: .25em;' id='btnSignNow' value='{% trans 'SIGN NOW' %}'/>");-->
-    						<!--$("#btnSignNow").attr("disabled", false);-->
-    					<!--}else {-->
-    					<!--$("#messageTimekeeper").html("{% trans 'Check Before Signing' %}:");-->
     					$("#questions").css("text-align", "left");
     					$("#questions").css("font-size", "20px");
     					$("#questions").append("<table>");
@@ -956,10 +940,7 @@ function addRemove() {
     						$("#questions").append("<tr><td><label style='font-weight: 500;'><input type='checkbox' onClick='allChecked(" + data.checklist.length + ")' class='checkQuestions'/>&nbsp;&nbsp;" + data.checklist[i].description + "</label></td></td>");
     					}
     					$("#questions").append("</table>");
-    					<!--$("#divSignNow").append("<input type='button' style='box-shadow: 1px 1px 3px gray; border-radius: .25em; margin-right: 50px;' id='btnSignNow' value='{% trans 'SIGN NOW' %}'/>");-->
 
-    					<!--$("#btnSignNow").attr("disabled", true);-->
-    					<!--}-->
 					}
 				}
 			});
@@ -983,6 +964,7 @@ function addRemove() {
 					if (data.success) {
 						emptyDivs();
 						$("#messageTimekeeper").html("{% trans 'Shift Declined' %}");
+						hideModal();
 					}
 				}
 			});
@@ -1097,7 +1079,6 @@ function addRemove() {
 				datatype : "json",
 				beforeSend: function() {
 					var target = document.getElementById('divTimelog');
-
 					spinner = new Spinner(opts).spin(target);
 				},
 				complete: function() {
@@ -1191,7 +1172,7 @@ function addRemove() {
 		function hideModal() {
 			setTimeout(function(){
     			$('#showTimekeeperModal').modal('hide')
-			}, 3000);
+			}, 1000);
 		}
 		function emptyDivs() {
 			$("#success").empty();
@@ -1388,8 +1369,6 @@ function addRemove() {
 					<div class="modal-title" id="titleSign">{% trans 'Enter 4-digit PIN:' %}</div>
 					<div class="modal-body" id="signatureContent">
 						<input class="pin_input" pattern='[0-9]*' inputmode='numeric' type="number" style="-webkit-text-security: disc;height:70px; width:200px; border-radius: .15em;font-size:24px;" id="code2" style="color:black;" placeholder="{% trans 'Type PIN' %}"/>
-						<!--<button type="button" id="clearSignature" class="btn btn-default">{% trans 'Clear' %}</button>-->
-						<!--<button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>-->
 
 							<button style="height:60px; width:100px;box-shadow: -1px 1px 7px gray;" type="button" id="saveSignature" class="btn btn-success" >
 								{% trans 'SIGN' %}
