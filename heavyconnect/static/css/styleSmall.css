@@ -12,6 +12,9 @@ body {
   overflow-y: auto; important!
 }
 
+input[type=number] {
+    -webkit-text-security: disc;
+}
 
 #wrapper {
 	text-align: center;

@@ -114,6 +114,10 @@ body {
   overflow-y: auto;
 }
 
+input[type=number] {
+    -webkit-text-security: disc;
+}
+
 #myModal .modal-content
 {
   height:200px;
