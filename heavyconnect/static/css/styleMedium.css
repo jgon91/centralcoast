@@ -69,6 +69,20 @@
     height: 196px;
     padding-top: 150px;
     font-size: 24px;
+    margin-top:50px;
+}
+
+#btnManageHome {
+	background: url('../imgSmall/buttons/checklist.png') no-repeat top left;
+	background-size: 100% 100%;
+	width: 212px;
+    height: 196px;
+    padding-top: 150px;
+    font-size: 24px;
+    margin-top:50px;
+    top: 50%;
+    left: 43%;
+    margin-left: 100px;
 }
 /*** Header Home End ***/
 /*** Header Driver Begin ***/
@@ -95,6 +109,8 @@ body {
     font-family: Helvetica, arial;
     padding-right: 0px !important;
 }
+
+
 
 .modal-open {
   overflow-y: auto;

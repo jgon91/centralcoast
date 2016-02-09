@@ -249,7 +249,7 @@ input[type="button"] {
 }
 
 #btnManageUp {
-	background: url('../img/buttons/btnManageUp.png') no-repeat top left;
+	background: url('../img/buttons/checklist.png') no-repeat top left;
 	background-size: 100% 100%;
 }
 

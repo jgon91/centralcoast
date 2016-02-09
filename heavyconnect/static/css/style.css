@@ -269,6 +269,10 @@ input[type="button"] {
 	background: url('../img/buttons/btnManage.png') no-repeat top left;
 	background-size: 100% 100%;
 }
+#btnManageUp {
+	background: url('../img/buttons/checklist.png') no-repeat top left;
+	background-size: 100% 100%;
+}
 #btnManage:hover {
 	background: url('../img/buttons/btnManageHover.png') no-repeat top left;
 	background-size: 100% 100%;
