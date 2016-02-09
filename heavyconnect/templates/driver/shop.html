@@ -1280,14 +1280,12 @@ function addRemove() {
 						$("#errorQrCode").html("")
 						if (data.success) {
 							$("#qrCodeModal").modal("hide");
-							<!--feedBackQrCode("show", "green", "{% trans 'Successfully Validated.' %}");-->
 							var clockedin = data.clockedin;
 							inout(id, clockedin);
 						} else {
 						    data_scanned = {};
-						    $("#messageTimekeeper").html("Incorrect PIN. Please try again.");
-						    document.getElementById("messageTimekeeper").style.color = "red";
-							<!--feedBackQrCode("show", "red", "{% trans 'Incorrect PIN. Please try again.' %}");-->
+						    $("#messageTimekeeper").append("Incorrect PIN. Please try again.");
+						    <!--document.getElementById("messageTimekeeper").style.color = "red";-->
 						}
 					}
 				});
