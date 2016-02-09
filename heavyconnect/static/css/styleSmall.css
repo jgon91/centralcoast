@@ -12,7 +12,7 @@ body {
   overflow-y: auto; important!
 }
 
-input[type=number] {
+.pin_input input[type=number] {
     -webkit-text-security: disc;
 }
 
