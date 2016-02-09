@@ -702,6 +702,7 @@ function addRemove() {
 							"</tr></tbody>");
 
 
+
 							$("#attendanceCheckList").append("</table></br>");
 							$("#attendanceCheckList").append("</form>");
 	    					$("#attendanceCheckList").append("</div>");
@@ -907,7 +908,6 @@ function addRemove() {
 							getSomeEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}", employees);
 						}else {
 							timelogId(data.success[0].id);
-							<!--timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");-->
 						}
 
 					}
@@ -998,7 +998,6 @@ function addRemove() {
 
 
 		function callBtnSign() {
-			<!--saveQuestion();-->
 			var taskData = [];
 			job1 = document.getElementById('job1').value;
 			job2 = document.getElementById('job2').value;
@@ -1029,7 +1028,7 @@ function addRemove() {
 			updateTaskFlow("{{ csrf_token }}", "{% url 'updateLightTaskFlow' %}", JSON.stringify(taskData));
 			$('#showTimekeeperModal').modal('hide');
 			$('#signModal').modal();
-
+			$('#code2').focus();
 
 		}
 
@@ -1155,7 +1154,6 @@ function addRemove() {
 							}
 							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + tConvert(data.Attendance_end) + "</td></tr>");
 							$("#btnSignature").append("<button type='button' id='attendanceId'  style='background:green;' value='"+data.attendanceId+"' class='btnsTimekeeperShop'>ACCEPT</button>");
-							<!--alert(data.attendanceId);-->
 							$("#btnSignature").append("<input type='button' id='btnDeclineCheckList' style='background:#BB1818;margin-left 35px;' value='DECLINE' class='btnsTimekeeperShop'/>");
 							$("#btnDeclineCheckList").css("background-color", "#B83419");
 							$("#btnDeclineCheckList").css("margin-left", "35px");
