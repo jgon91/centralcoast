@@ -3940,6 +3940,8 @@ def getAllEmployees(request):
 		if request.is_ajax():
 			try:
 				all_employee = Employee.objects.all().exclude(permission_level = 3)
+				all_employee = all_employee.exclude(permission_level = 2)
+				print all_employee
 				employees = []
 				for each in all_employee:
 					each_result['first_name'] = each.user.first_name
