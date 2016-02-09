@@ -372,7 +372,9 @@
 		function checkPin(qr_code, userId){
 			$("#messageTimekeeper").css("color", "#1F3801");	//green
 			$("#messageTimekeeper").html("Enter 4-digit PIN:");
+
 			document.getElementById("code").style.display = "block";
+			$('#employee_pin').focus();
 			checked_employees.push(qr_code);
 			employees = qr_code;
 			user_id = userId;
@@ -395,9 +397,7 @@
 							getSomeEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}", employees);
 						}else {
 							timelogId(user_id);
-							<!--timelog("{{ csrf_token }}", "{% url 'timeLogById' %}");-->
 						}
-				<!--$("#clock-in").append('<input type="button" value="{% trans 'CLOCK-IN' %}" class="btnsTimekeeperShop"/>');-->
 			}
 
 		}
