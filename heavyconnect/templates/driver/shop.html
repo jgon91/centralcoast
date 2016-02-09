@@ -339,8 +339,8 @@
 				checkboxList = true;
 				getAllEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}");
 				<!--$("#next").append("<input type='button' id='nextButton' value='NEXT' class='btnsTimekeeperShop' disabled/>");-->
-
 			});
+
 			$("#timelogBack2").click(function() {
 				emptyDivs();
 				$('#showTimekeeperModal').modal();
@@ -672,7 +672,9 @@ function addRemove() {
 							"<option value='599'>599</option>"+
 							"<option value='600'>600</option>"+
 							"</select></td>"+
-							"<td ><input id='ranch1' type='text' value='711674' class='ranch  tasks' /></td>"+
+							"<td ><select id='ranch1'  class='ranch  tasks' >"+
+							"<option value='711674'>711674</option>"+
+							"</select></td>"+
 							"<td ><input pattern='[0-9]*' inputmode='numeric' id='hours1' type='number' class='taskHours  tasks' /></td>"+
 
 							"</tr><tr>"+
@@ -681,7 +683,9 @@ function addRemove() {
 							"<option value='599'>599</option>"+
 							"<option value='600'>600</option>"+
 							"</select></td>"+
-							"<td><input id='ranch2' type='text' value='711674' class='ranch tasks' /></td>"+
+							"<td ><select id='ranch2'  class='ranch  tasks' >"+
+							"<option value='711674'>711674</option>"+
+							"</select></td>"+
 							"<td><input pattern='[0-9]*' inputmode='numeric' id='hours2' type='number' class='taskHours tasks' /></td>"+
 
 							"</tr><tr>"+
@@ -690,7 +694,9 @@ function addRemove() {
 							"<option value='599'>599</option>"+
 							"<option value='600'>600</option>"+
 							"</select></td>"+
-							"<td><input id='ranch3' type='text' value='711674' class='ranch tasks' /></td>"+
+							"<td ><select id='ranch3'  class='ranch  tasks' >"+
+							"<option value='711674'>711674</option>"+
+							"</select></td>"+
 							"<td><input inputmode='numeric' id='hours3' type='number' class='taskHours tasks' /></td>"+
 
 							"</tr></tbody>");
@@ -1137,7 +1143,6 @@ function addRemove() {
 					if (data.Attendance_end == 'In Progress') {
 						$("#divTimelog").append("<table id='tableTimelog' ><tr><td colspan='2'>Start Shift: " + tConvert(data.Attendance_start) + "</td></tr>");
 						var n=1;
-						<!--breakDuration = data.tasks[n-1].duration;-->
 						breakDuration = "";
 
 						for (i = 0; i < data.breaks.length; i++) {
@@ -1156,7 +1161,6 @@ function addRemove() {
 					} else {
 						$("#divTimelog").append("<table id='tableTimelog' ><tr id='trStartShift'><td colspan='2'>Start Shift: " + tConvert(data.Attendance_start) + "</td></tr>");
 							var n=1;
-							<!--breakDuration = data.tasks[n-1].duration;-->
 							breakDuration = "";
 
 							for (i = 0; i < data.breaks.length; i++) {
@@ -1165,7 +1169,6 @@ function addRemove() {
 								breakBeg[data.breaks[i].breakId] = data.breaks[i].breakStart;
 								breakEnd[data.breaks[i].breakId] = data.breaks[i].breakStop;
 								n = n+1;
-								<!--breakDuration = data.tasks[n-1].duration;-->
 								breakDuration = "";
 								if (data.breaks[i].lunch == 0){
 									lun[data.breaks[i].breakId] = 0

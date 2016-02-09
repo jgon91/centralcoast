@@ -4308,10 +4308,10 @@ def getCsv(request):
 	attendances = EmployeeAttendance.objects.all().order_by('-date').filter(date__range = (start, end))
 
 	header = []
-	header.extend(('Attendance ID', 'ID', 'Name', 'Team Lead', 'Team Name', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked(w/ breaks)', 'Job', 'Ranch','Declined'))
-	# header.extend('Job')
-	# header.extend(('Job 2',  'Total Time'))
-	# header.extend(('Job 3', 'Total Time'))
+	header.extend(('Attendance ID', 'ID', 'Name', 'Team Lead', 'Team Name', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked(w/ breaks)','Declined'))
+	header.extend(('Job 1', 'Total Time', 'Location'))
+	header.extend(('Job 2',  'Total Time', 'Location'))
+	header.extend(('Job 3', 'Total Time', 'Location'))
 	# header.extend(('Job 4', 'Total Time'))
 	# header.extend(('Job 5',  'Total Time'))
 	# header.extend(('Job 6', 'Total Time'))
@@ -4367,21 +4367,34 @@ def getCsv(request):
 					hours_today = 'N/A'
 			else:
 				hours_today = 'N/A'
+			print 'tasks'
+			tasks = Task.objects.filter(attendance = attendance).order_by('-id')
+			print tasks
 
-
-			job_code = EmployeeAttendanceChecklist.objects.filter(attendance = attendance, question__description = 'Job Code').first()
-			ranch = EmployeeAttendanceChecklist.objects.filter(attendance = attendance, question__description = 'Ranch').first()
-			if job_code is None or job_code == "":
-				job_code = "N/A"
-			else:
-				job_code = job_code.answer
-			if ranch is None or ranch == "":
-				ranch = "N/A"
-			else:
-				ranch = ranch.answer
+			# job_code = EmployeeAttendanceChecklist.objects.filter(attendance = attendance, question__description = 'Job Code').first()
+			# ranch = EmployeeAttendanceChecklist.objects.filter(attendance = attendance, question__description = 'Ranch').first()
+			# if job_code is None or job_code == "":
+			# 	job_code = "N/A"
+			# else:
+			# 	job_code = job_code.answer
+			# if ranch is None or ranch == "":
+			# 	ranch = "N/A"
+			# else:
+			# 	ranch = ranch.answer
 
 			employee_name = attendance.employee.user.last_name + ", " + attendance.employee.user.first_name
-			data_row.extend((attendance_id, employee_id, employee_name, leader_name, crew, date, hour_started, hour_ended, hours_today, job_code, ranch,declined))
+			data_row.extend((attendance_id, employee_id, employee_name, leader_name, crew, date, hour_started, hour_ended, hours_today,declined))
+
+			for task in tasks:
+				print task
+				empTask = EmployeeTask.objects.filter(task= task).first()
+				print 'emp'
+
+				print empTask
+				if empTask is not None:
+					data_row.extend((task.code, task.hours_spent, task.field))
+				else:
+					print 'none'
 			breaks = Break.objects.filter(attendance__id = attendance.id).order_by('start')
 			jobs = Task.objects.filter(attendance_id = attendance.id).order_by('-id')
 			i = 1
@@ -4390,43 +4403,6 @@ def getCsv(request):
 			lunch_breaks = []
 			reg_breaks = []
 			combined_breaks = []
-
-			# while m <=8:
-			# 	if m <= jobs.count() and breaks.count() > 0:
-			# 		print jobs.count()
-            #
-			# 		job_code = jobs[m-1].description
-			# 		if m ==1:
-			# 			startJob = hour_started
-			# 			endJob = breaks[0].start
-			# 			endJob = datetime.timedelta(hours = endJob.hour, minutes = endJob.minute, seconds = endJob.second)
-            #
-			# 		elif m == jobs.count():
-            #
-			# 			startJob = breaks[m-2].end
-			# 			startJob =  datetime.timedelta(hours = startJob.hour, minutes = startJob.minute, seconds = startJob.second)
-			# 			endJob = hour_ended
-            #
-			# 		else:
-            #
-			# 			startJob = breaks[m-2].end
-			# 			startJob =  datetime.timedelta(hours = startJob.hour, minutes = startJob.minute, seconds = startJob.second)
-			# 			endJob = breaks[m-1].start
-			# 			endJob = datetime.timedelta(hours = endJob.hour, minutes = endJob.minute, seconds = endJob.second)
-			# 		print 'hours spend'
-			# 		print endJob
-			# 		print startJob
-            #
-			# 		print type(endJob)
-			# 		print type(startJob)
-			# 		hours_spent = endJob - startJob
-			# 		print hours_spent
-			# 		data_row.extend((job_code, hours_spent))
-			# 	else:
-			# 		print 'no row'
-			# 		data_row.extend(('', ''))
-			# 	m += 1
-
 
 			if break_num > 0:
 				for item in breaks:
