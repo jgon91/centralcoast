@@ -1183,8 +1183,9 @@ function addRemove() {
 							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + tConvert(data.Attendance_end) + "</td></tr>");
 							$("#btnSignature").append("<button type='button' id='attendanceId'  style='background:green;' value='"+data.attendanceId+"' class='btnsTimekeeperShop'>ACCEPT</button>");
 							<!--alert(data.attendanceId);-->
-							$("#declineButton").append("<input type='button' id='btnDeclineCheckList' style='background:#BB1818;' value='DECLINE' class='btnsTimekeeperShop'/>");
+							$("#btnSignature").append("<input type='button' id='btnDeclineCheckList' style='background:#BB1818;margin-left 35px;' value='DECLINE' class='btnsTimekeeperShop'/>");
 							$("#btnDeclineCheckList").css("background-color", "#B83419");
+							$("#btnDeclineCheckList").css("margin-left", "35px");
 							$("#btnDeclineCheckList").click(function(){
 								declineShift("{{ csrf_token }}", "{% url 'declineShift' %}", data.attendanceId);
 							});
