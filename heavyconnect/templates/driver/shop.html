@@ -178,6 +178,7 @@
 		var answers = [];
 		var employees = 0;
 		var user_id = 0;
+		var employee_name = 0;
 		var opts = {
 		  lines: 10 // The number of lines to draw
 		, length: 15 // The length of each line
@@ -220,7 +221,7 @@
 			$("#getAllEmp").click(function() {
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				$("#messageTimekeeper").html("{% trans 'Select Employees' %}:");
+				$("#messageTimekeeper").html("{% trans 'Select Employee' %}:");
 				checkboxList = true;
 				getAllEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}");
 			});
@@ -282,7 +283,7 @@
 				document.getElementById('code2').value = '';
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				$("#messageTimekeeper").html("{% trans 'Select Employee(s)' %}:");
+				$("#messageTimekeeper").html("{% trans 'Select Employee' %}:");
 				checkboxList = true;
 				emptyDivs();
 				getAllEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}");
@@ -337,7 +338,7 @@
 				emptyDivs();
 				$('#showTimekeeperModal').modal();
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				$("#messageTimekeeper").html("{% trans 'Select Employee(s)' %}:");
+				$("#messageTimekeeper").html("{% trans 'Select Employee' %}:");
 				emptyDivs();
 				checkboxList = true;
 				getAllEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}");
@@ -372,9 +373,10 @@
 		  return time.join (''); // return adjusted time or original string
 		}
 
-		function checkPin(qr_code, userId){
+		function checkPin(qr_code, userId, name){
 			$("#messageTimekeeper").css("color", "#1F3801");	//green
 			$("#messageTimekeeper").html("Enter 4-digit PIN:");
+			$("#messageTimekeeper").append("<p>"+name+"</p>");
 
 			document.getElementById("code").style.display = "block";
 			$('#employee_pin').focus();
@@ -405,9 +407,9 @@
 
 		}
 
-		function clockInOut(qr_code, userId) {
+		function clockInOut(qr_code, userId,name) {
 			checked_employees = [];
-			checkPin(qr_code, userId);
+			checkPin(qr_code, userId,name);
 
 		}
 
@@ -788,36 +790,26 @@ function addRemove() {
 					spinner.stop();
 				},
 				success: function(data, status, xhr){
-					if(checkboxList == true) {
 						for(var i = 0; i < data.employees.length; i++){
+							first_name = data.employees[i].first_name.toString();
+							last_name = data.employees[i].last_name.toString();
+							employee_name = first_name + " " + last_name;
+
 							if(data.employees[i].shift_status == "0"){
-							$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onclick="clockInOut('+data.employees[i].qr_code+','+data.employees[i].user_id+')" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +'</label>');
+
+							$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onclick="clockInOut('+data.employees[i].qr_code+','+data.employees[i].user_id+',\''+employee_name+'\')" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +'</label>');
 							} else if(data.employees[i].shift_status == "1"){
-								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onclick="clockInOut('+data.employees[i].qr_code+','+ data.employees[i].user_id+')" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +'<span style="float: right;background: #FFFFFF;border-radius: .5em;padding: 5px;font-size: 24px;">IN</span></label>');
+								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onclick="clockInOut('+data.employees[i].qr_code+','+ data.employees[i].user_id+',\''+employee_name+'\')" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +'<span style="float: right;background: #FFFFFF;border-radius: .5em;padding: 5px;font-size: 24px;">IN</span></label>');
 
 							}else if(data.employees[i].shift_status == "2"){
-								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onclick="clockInOut('+data.employees[i].qr_code+','+ data.employees[i].user_id+')" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' <span style="float: right;background: #003DFF;border-radius: .5em;padding: 5px;font-size: 24px;">OUT</span></label>');
+								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onclick="clockInOut('+data.employees[i].qr_code+','+ data.employees[i].user_id+',\''+employee_name+'\')" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' <span style="float: right;background: #003DFF;border-radius: .5em;padding: 5px;font-size: 24px;">OUT</span></label>');
 
 							}else if(data.employees[i].shift_status == "3"){
-								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onclick="clockInOut('+data.employees[i].qr_code+','+ data.employees[i].user_id+')" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' <span style="float: right;background: #4AEF0D;border-radius: .5em;padding: 5px;font-size: 24px;">DONE</span></label>');
+								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onclick="clockInOut('+data.employees[i].qr_code+','+ data.employees[i].user_id+',\''+employee_name+'\')" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' <span style="float: right;background: #4AEF0D;border-radius: .5em;padding: 5px;font-size: 24px;">DONE</span></label>');
 
 							}
 
 						}
-					}else{
-						for(var i = 0; i < data.employees.length; i++){
-							if(data.employees[i].shift_status == "0"){
-								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input id='+data.employees[i].user_id+' class="teamName" style="opacity:0" type="checkbox" onclick="timelogId(this.id)" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' </label>');
-							} else if(data.employees[i].shift_status == "3") {
-								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input id='+data.employees[i].user_id+' class="teamName" style="opacity:0" type="checkbox" onclick="timelogId(this.id)" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' <span style="float: right;background: #4AEF0D;border-radius: .5em;padding: 5px;font-size: 24px;">DONE</span></label>');
-							}else if(data.employees[i].shift_status == "2") {
-								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input id='+data.employees[i].user_id+' class="teamName" style="opacity:0" type="checkbox" onclick="timelogId(this.id)" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' <span style="float: right;background: #003DFF;border-radius: .5em;padding: 5px;font-size: 24px;">OUT</span></label>');
-							}else if(data.employees[i].shift_status == "1") {
-								$("#messageTimekeeper").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input id='+data.employees[i].user_id+' class="teamName" style="opacity:0" type="checkbox" onclick="timelogId(this.id)" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +' <span style="float: right;background: #FFFFFF;border-radius: .5em;padding: 5px;font-size: 24px;">IN</span></label>');
-							}
-
-						}
-					}
 
 
 				}

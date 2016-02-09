@@ -28,7 +28,7 @@
 }
 
 #clock {
-	font-size: 25px;
+	font-size: 35px;
     position: relative;
     color: #3C3C3C;
     font-weight: 600;
@@ -147,12 +147,13 @@ body {
 	border-radius: 7px;
 	border: none;
 	box-shadow: 2px 2px 5px gray;
-	height: 100px;
-	width: 300px;
+	height: 130px;
+	width: 400px;
 	color: white;
 	margin-bottom: 25px;
 	font-size: 35px;
 	font-weight: 700;
+	margin-top: 25px;
 }
 
 #employee-table td
