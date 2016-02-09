@@ -8,6 +8,11 @@ body {
     padding-right: 0px !important;
 }
 
+.modal-open {
+  overflow-y: auto; important!
+}
+
+
 #wrapper {
 	text-align: center;
 	width: 100%;
@@ -1495,13 +1500,6 @@ input[type=checkbox]
 }
 
 /*** General Begin ***/
-
-
-
-
-.modal-open {
-  overflow-y: auto;
-}
 
 #wrapper {
     text-align: center;
