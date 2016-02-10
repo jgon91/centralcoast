@@ -33,6 +33,32 @@
 
 		</style>
 		<script>
+		 $(function() {
+
+                if (localStorage.chkbx && localStorage.chkbx != '') {
+                    $('#remember_me').attr('checked', 'checked');
+                    $('#username').val(localStorage.usrname);
+                    $('#password').val(localStorage.pass);
+                } else {
+                    $('#remember_me').removeAttr('checked');
+                    $('#username').val('');
+                    $('#password').val('');
+                }
+
+                $('#btn_login').click(function() {
+
+                    if ($('#remember_me').is(':checked')) {
+                        // save username and password
+                        localStorage.usrname = $('#username').val();
+                        localStorage.pass = $('#password').val();
+                        localStorage.chkbx = $('#remember_me').val();
+                    } else {
+                        localStorage.usrname = '';
+                        localStorage.pass = '';
+                        localStorage.chkbx = '';
+                    }
+                });
+            });
 			$("#username").click(function() {
 				$("#password").attr("placeholder", "Enter your password");
 				$("#username").attr("placeholder", "");
@@ -70,6 +96,13 @@
 						<tr>
 							<td><img class="icnLogin" style="height: 45px;" src="{% static 'imgSmall/passwordIcn.png' %}" /></td><td>
 							<input  type="password" class="input_login" id="password" name="password" placeholder="Enter your password" onkeypress="enter()"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+							<label class="checkbox">
+								<input type="checkbox" value="remember-me" id="remember_me"/> Remember me
+							</label>
 							</td>
 						</tr>
 						<tr>
