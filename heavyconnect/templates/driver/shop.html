@@ -135,16 +135,7 @@
     font-size: 25px;
     font-weight: 700;}
 		</style>
-		<script>
-		$(document).ready(function(){
-			$('[data-toggle="popover"]').popover();
-			<!--var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;-->
 
-			<!--if(iOS){-->
-				<!--document.querySelector('meta[name=viewport]').setAttribute('content','initial-scale=1.0001, minimum-scale=1.0001, maximum-scale=1.0001, user-scalable=no');-->
-			  <!--}-->
-		});
-		</script>
 		<style>
 			.errorIcon {
 				background: url('/static/imgSmall/errorIcon.png') no-repeat top left !important;
@@ -205,13 +196,14 @@
 		var spinner = 0;
 
 		$(document).ready(function() {
+			$('[data-toggle="popover"]').popover();
 			$("#foot").load("{%url 'footer'%}");
 			$("#head").load("{%url 'headerDriver'%}");
 			$("#signature").jSignature();
+
 			$("#saveSignature").click(function(){
 
 				var attendanceId = $("#attendanceId").val();
-				<!--alert(document.getElementById("attendanceId").value);-->
 				saveSignature("{{ csrf_token }}", "{% url 'shopSaveSignature' %}", document.getElementById("attendanceId").value);
 			});
 			if($("ul").has("li").length == 0) {
@@ -959,9 +951,12 @@ function addRemove() {
 				},
 				success: function(data, status, xhr){
 					if (data.success) {
-						emptyDivs();
-						$("#messageTimekeeper").html("{% trans 'Shift Declined' %}");
-						hideModal();
+						<!--emptyDivs();-->
+						$("#messageTimekeeper").css("color", "#1F3801");	//green
+						retrieveQuestions("{{ csrf_token }}", "{% url 'getChecklistAttendance' %}", document.getElementById("attendanceId").value);
+
+						<!--$("#messageTimekeeper").html("{% trans 'Shift Declined' %}");-->
+						<!--hideModal();-->
 					}
 				}
 			});
@@ -1008,9 +1003,6 @@ function addRemove() {
 
 
 			updateTaskFlow("{{ csrf_token }}", "{% url 'updateLightTaskFlow' %}", JSON.stringify(taskData));
-			$('#showTimekeeperModal').modal('hide');
-			$('#signModal').modal();
-			$('#code2').focus();
 
 		}
 
@@ -1025,22 +1017,32 @@ function addRemove() {
 					},
 					datatype : "json",
 					beforeSend: function() {
-					var target = document.getElementById('messageTimekeeper');
+						var target = document.getElementById('messageTimekeeper');
 
-					spinner = new Spinner(opts).spin(target);
+						spinner = new Spinner(opts).spin(target);
 					},
 					complete: function() {
 						spinner.stop();
 					},
 					success : function(data, status, xhr) {
-					    if(data.success){
-                            $("#showTimeKeeperModal").modal();
-                            $("#messageTimekeeper").html("Submitted Successfully");
+					    <!--if(data.success){-->
+                            <!--$("#showTimeKeeperModal").modal();-->
+                            <!--$("#messageTimekeeper").html("Submitted Successfully");-->
 
-					    } else {
-						    $('#showTimekeeperModal').modal();
-						    $("#messageTimekeeper").html("There was an error. Not Submitted.");
-					    }
+					    <!--} else {-->
+						    <!--$('#showTimekeeperModal').modal();-->
+						    <!--$("#messageTimekeeper").html("There was an error. Not Submitted.");-->
+					    <!--}-->
+
+					    $('#showTimekeeperModal').modal('hide');
+					    console.log('should');
+
+						$('#signModal').modal({show: true});
+
+						$('#signModal').on('shown.bs.modal', function() {
+							$(this).find('input').focus();
+
+						});
 					}
 
 			});
@@ -1168,7 +1170,7 @@ function addRemove() {
 
 		function hideModal() {
 			setTimeout(function(){
-    			$('#showTimekeeperModal').modal('hide')
+    			$('#showTimekeeperModal').modal('hide');
 			}, 1000);
 		}
 		function emptyDivs() {
@@ -1363,7 +1365,7 @@ function addRemove() {
 					<button type="button" class="closeSignature" data-dismiss="modal"></button>
 					<div class="modal-title" id="titleSign">{% trans 'Enter 4-digit PIN:' %}</div>
 					<div class="modal-body" id="signatureContent">
-						<input class="pin_input" pattern='[0-9]*' inputmode='numeric' type="number" style="-webkit-text-security: disc;height:70px; width:200px; border-radius: .15em;font-size:24px;" id="code2" style="color:black;" placeholder="{% trans 'Type PIN' %}"/>
+						<input class="pin_input" pattern='[0-9]*' inputmode='numeric' type="number" style="-webkit-text-security: disc;height:70px; width:200px; border-radius: .15em;font-size:24px;" id="code2" style="color:black;" placeholder="{% trans 'Type PIN' %}" autofocus/>
 
 							<button style="height:60px; width:100px;box-shadow: -1px 1px 7px gray;" type="button" id="saveSignature" class="btn btn-success" >
 								{% trans 'SIGN' %}
