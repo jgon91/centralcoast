@@ -1185,6 +1185,8 @@ function addRemove() {
 			$("#timelogBack2").hide();
 			$("#next").empty();
 			$("#questions").empty();
+			$("#errorPin").empty();
+			$("#employeeName").empty();
 			$("#btnSignature").empty();
 			$("#divSignNow").empty();
 			$("#btnSignNow").empty();
@@ -1291,7 +1293,12 @@ function addRemove() {
 							inout(id, clockedin);
 						} else {
 						    data_scanned = {};
-						    $("#messageTimekeeper").append("Incorrect PIN. Please try again.");
+						    $("#errorPin").html("Incorrect PIN. Please try again.");
+						    $("#errorPin").css("color", 'red');
+						    $("#errorPin").css("font-weight", '400');
+						    $("#errorPin").css("font-size", '25px');
+
+						    document.getElementById('employee_pin').value = '';
 						    <!--document.getElementById("messageTimekeeper").style.color = "red";-->
 						}
 					}
@@ -1404,7 +1411,8 @@ function addRemove() {
     padding: 0px;"></button>
 						<button type="button" class="closeTimekeeper" data-dismiss="modal"></button>
 						<span id="messageTimekeeper"></span>
-
+						<p id="employeeName"></p>
+						<p id="errorPin"></p>
 						<table id="tableMessage">
 							<tr>
 								<td><div id="success"></div></td>
