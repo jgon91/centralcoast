@@ -1070,6 +1070,7 @@ def login(request):
 		if request.is_ajax(): #check if the request came from a ajax request
 			if form.is_valid():	#checking if the form with the login information is valid and has all the information
 				username = form.cleaned_data['username']
+				username = username.lower()
 				password = form.cleaned_data['password']
 				user = authenticate(username=username, password=password)
 				if user is not None:
@@ -5624,6 +5625,7 @@ def employeeFormadd(request):
 		employform = employeeForm(request.POST, request.FILES)
 		if userform.is_valid() and employform.is_valid():	
 			new_user_username = userform.cleaned_data['username']
+			new_user_username = new_user_username.lower()
 			new_user_password = userform.cleaned_data['password']
 			new_user_first_name = userform.cleaned_data['first_name']
 			new_user_last_name = userform.cleaned_data['last_name']
