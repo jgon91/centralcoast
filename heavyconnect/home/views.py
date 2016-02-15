@@ -546,6 +546,7 @@ def stopShiftAuto(request, idUser):
 					ten_hours = datetime.timedelta(hours = 10)
 					fourteen_hours = datetime.timedelta(hours = 14)
 					twelve_hours = datetime.timedelta(hours = 12)
+					print 'start'
 					if total_hours > 18 :
 						#3 meals, 5 breaks
 
@@ -676,6 +677,7 @@ def stopShiftAuto(request, idUser):
 						lunch1.save()
 						print '2, 1'
 					elif total_hours <= 6 and total_hours > 5:
+						print 'one lunch'
 						print '1,1'
 
 						#1 meals, 1 breaks
@@ -687,12 +689,13 @@ def stopShiftAuto(request, idUser):
 						lunch_ended = lunch_started + one_lunch
 						lunch_started = now + lunch_started
 						lunch_ended = now + lunch_ended
-						break1 = Break(attendance__id = attendance.id, lunch = False, start = break_started.time(), end = break_ended.time())
-						lunch1 = Break(attendance__id = attendance.id, lunch = True, start = lunch_started.time(), end = lunch_ended.time())
+						break1 = Break(attendance = attendance, lunch = False, start = break_started.time(), end = break_ended.time())
+						lunch1 = Break(attendance = attendance, lunch = True, start = lunch_started.time(), end = lunch_ended.time())
 						break1.save()
 						lunch1.save()
 						print '1, 1'
 					elif total_hours <= 5 and total_hours >= 3.5:
+						print 'no lunch'
 						#0 meals, 1 breaks
 						break_started = hour_started + two_hours
 						break_ended = break_started + one_break
@@ -721,6 +724,7 @@ def stopShiftAuto(request, idUser):
 	except Employee.DoesNotExist:
 		result['code'] = 4 #This user is not authorized to use the system
 	return result
+
 
 @login_required
 def stopShiftGroup(request):
