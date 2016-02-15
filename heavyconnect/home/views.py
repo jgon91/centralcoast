@@ -4391,17 +4391,23 @@ def getCsv(request):
 
 			employee_name = attendance.employee.user.last_name + ", " + attendance.employee.user.first_name
 			data_row.extend((attendance_id, employee_id, employee_name, leader_name, crew, date, hour_started, hour_ended, hours_today,declined))
-
+			actual_tasks = []
 			for task in tasks:
 				print task
 				empTask = EmployeeTask.objects.filter(task= task).first()
+
 				print 'emp'
 
 				print empTask
 				if empTask is not None:
 					data_row.extend((task.code, task.hours_spent, task.field))
+					actual_tasks.append(empTask)
 				else:
 					print 'none'
+			need_to_add = len(actual_tasks)
+			while need_to_add < 3:
+				data_row.extend(("", "", ""))
+				need_to_add += 1
 			breaks = Break.objects.filter(attendance__id = attendance.id).order_by('start')
 			jobs = Task.objects.filter(attendance_id = attendance.id).order_by('-id')
 			i = 1
@@ -4444,7 +4450,6 @@ def getCsv(request):
 								total = 'N/A'
 						else:
 							total = 'N/A'
-						# writer.writerow(['', '', num_break, item.start, item.end, total])
 						data_row.extend((num_break, item.start, item.end, total))
 					else:
 						data_row.extend(('', '', '', ''))
