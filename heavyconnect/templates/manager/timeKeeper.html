@@ -365,7 +365,7 @@
 							employee_name = first_name + " " + last_name;
 
 							<!--$("#items").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onclick="clockInOut('+data.employees[i].qr_code+','+data.employees[i].user_id+',\''+employee_name+'\')" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +'</label>');-->
-							$("#items").append('<li style="font-size: 18px; z-index:99; position:relative;margin-top: 20px; margin-left:10px;" ><input style="float: left;" name="nameSelected" id="'+data.employees[i].qr_code+'"  type="checkbox" />'+data.employees[i].first_name + ' '+ data.employees[i].last_name+'</li>');
+							$("#items").append('<li style="font-size: 18px; z-index:200; position:relative;margin-top: 20px; margin-left:10px;" ><input style="float: left;" name="nameSelected" id="'+data.employees[i].qr_code+'"  type="checkbox" />'+data.employees[i].first_name + ' '+ data.employees[i].last_name+'</li>');
 
 						}
 
@@ -520,15 +520,16 @@
 						{% trans 'HC TIMEKEEPER REPORT' %}</h3>
 					</div>
 					<div class="panel-body">
-					<div class="input-daterange input-group" id="datepicker">
+						<div align="left" style="font-weight:600;">Select Dates:</div>
+					<div style="width: 70%;float: left;" class="input-daterange input-group" id="datepicker">
 						<input type="text" id="start" class="input-sm form-control" name="start" />
 						<span class="input-group-addon">to</span>
 						<input type="text" id="stop" class="input-sm form-control" name="end" />
 
 					</div>
-					<div id="list1" style="margin-top: 30px;" class="dropdown-check-list" tabindex="100">
-						<span style="float: left;" class="anchor">Select Employees</span>
-						<ul id="items" class="items">
+					<div style="width: 30%;float: right;" id="list1" style="margin-top: 30px;" class="dropdown-check-list" tabindex="100">
+						<span style="margin-left:10px;width: 100%;border-radius: 4px;" class="anchor">Select Employees</span>
+						<ul style="border-radius: 4px;position:absolute; background: white;width: 100%;float:center;" id="items" class="items">
 						</ul>
 					</div>
 
@@ -556,14 +557,12 @@
 				</script>
 
 						<!--<div class="form-group pull-right"><input type="text" class="search form-control " placeholder="Search"/>-->
-
-					<button style="float: right;margin-top: 15px; margin-bottom:10px;height:50px;font-size:15px;font-weight:600;background-color: #6DA8F5;" type="button" class="btn btn-default" onclick="updateReport()" ><span class="glyphicon glyphicon-refresh"></span>Update Report</button>
-<button id="remove" style="float:left; margin-top:30px;" class="btn btn-success" disabled>
+					<button style="float: right;margin-top: 15px; margin-left:80%;margin-bottom:10px;height:50px;font-size:15px;font-weight:600;background-color: #6DA8F5;" type="button" class="btn btn-default" onclick="updateReport()" >Update Report</button>
+					<button id="remove" style="float:left; margin-top:30px; margin-bottom: 15px;" class="btn btn-success" disabled>
 							<i class="glyphicon glyphicon-ok"></i> Accept Attendance(s)
 						</button>
 
-
-					<table data-show-pagination-switch="true" class="table table-condensed results table-bordered" id="report_table" style="border-collapse:collapse;">
+					<table class="table table-condensed results table-bordered" id="report_table" style="border-collapse:collapse;">
 
 						<thead>
 							<tr>
