@@ -58,17 +58,6 @@
 		var attendanceId = 418;
 		var lat = 0;
 		var long = 0;
-		<!--for doing location-->
-		<!--if ("geolocation" in navigator) {-->
-		  <!--/* geolocation is available */-->
-			 <!--navigator.geolocation.getCurrentPosition(function(position) {-->
-	  			<!--lat = position.coords.latitude;-->
-	  			<!--long = position.coords.longitude;-->
-			<!--});-->
-		<!--} else {-->
-		  <!--/* geolocation IS NOT available */-->
-		  <!--&lt;!&ndash;alert('no');&ndash;&gt;-->
-		<!--}-->
 		$(document).ready(function() {
 			$("#foot").load("{%url 'footer'%}");
 			$("#head").load("{%url 'headerDriver'%}");
@@ -201,8 +190,51 @@
 						var countOnline = 0;
 
 						if (data.hour_started != 'None') {
+						    $("#shiftOrStart").html('<input type="button" id="startSomething" value="START" class="btnsTimekeeper"/>');
+
+						    $("#endShift").html('<input type="button" id="shift" value="CLOCK OUT" class="btnsTimekeeper"/>');
+                             $("#shift").click(function() {
+                                $('#showTimekeeperModal').modal();
+                                if (shiftStarted == 0 ) {
+                                    $("#messageTimekeeper").html("Clock-in?");
+                                } else {
+                                    $("#messageTimekeeper").html("Clock-out?");
+                                }
+                                emptyDivs();
+                                $('#confirmShift').show();
+                                $("#confirmShift").append('<input type="button" value="{% trans 'CONFIRM' %}" class="btnsTimekeeper"/>');
+                            });
 							shiftStarted = 1;
 							countOnline++;
+						}else {
+						    $("#shiftOrStart").html('<input type="button" id="shift" value="CLOCK IN" class="btnsTimekeeper"/>');
+                            $("#shift").click(function() {
+                                $('#showTimekeeperModal').modal();
+                                if (shiftStarted == 0 ) {
+                                    $("#messageTimekeeper").html("Clock-in?");
+                                } else {
+                                    $("#messageTimekeeper").html("Clock-out?");
+                                }
+                                emptyDivs();
+                                $('#confirmShift').show();
+                                $("#confirmShift").append('<input type="button" value="{% trans 'CONFIRM' %}" class="btnsTimekeeper"/>');
+                            });
+						}
+
+						if(data.hour_ended != 'None') {
+						    $("#shiftOrStart").html('<input type="button" id="shift" value="CLOCK IN" class="btnsTimekeeper"/>');
+						    $("#endShift").html('');
+						    $("#shift").click(function() {
+                                $('#showTimekeeperModal').modal();
+                                if (shiftStarted == 0 ) {
+                                    $("#messageTimekeeper").html("Clock-in?");
+                                } else {
+                                    $("#messageTimekeeper").html("Clock-out?");
+                                }
+                                emptyDivs();
+                                $('#confirmShift').show();
+                                $("#confirmShift").append('<input type="button" value="{% trans 'CONFIRM' %}" class="btnsTimekeeper"/>');
+                            });
 						}
 						for(var i = 0; i < data.breaks.length; i++) {
 							if (data.breaks[i][1] == "None") {
@@ -241,6 +273,9 @@
 							if(data.hour_started != "None"){
 								saveAction(1, data.hour_started, false);
 								count.startShift = 1;
+							}else {
+							    $("#shiftOrStart").html('<input type="button" id="shift" value="SHIFT" class="btnsTimekeeper"/>');
+
 							}
 							for(var i = 0; i < data.breaks.length; i++) {
 								if (data.breaks[i][2] == 1) {
@@ -268,8 +303,7 @@
 						localStorage.setItem('count', JSON.stringify(count));
 
 					} else if (data.code == 1) {
-						$('#showTimekeeperModal').modal();
-						$("#messageTimekeeper").html("{% trans 'There is no shift records for this employee' %}.");
+						console.log('hi');
 					} else if (data.code == 2) {
 						$('#showTimekeeperModal').modal();
 						$("#messageTimekeeper").html("{% trans 'Error. Contact Suport' %}.");
@@ -469,6 +503,7 @@
 					if (data.Attendance_end == 'In Progress') {
 						$("#divTimelog").append("<table id='tableTimelog' ><tr><td colspan='2'>Start Shift: " + tConvert(data.Attendance_start) + "</td></tr>");
 						var n=1;
+						<!--breakDuration = data.tasks[n-1].duration;-->
 						breakDuration = "";
 						$("#tableTimelog").append("<tr id='data.tasks[n-1].jobId' ><td class='colBorderTimelog'>" + breakDuration + "</td><td class='job'> {% trans 'Job' %} " + n +"</td></tr>");
 
@@ -489,6 +524,7 @@
 					} else {
 						$("#divTimelog").append("<table id='tableTimelog' ><tr id='trStartShift'><td colspan='2'>Start Shift: " + tConvert(data.Attendance_start) + "</td><td><input id='" + data.attendanceId + "' type='button' class='editIcon' onclick='editStartShift(this.id, currentStart)'/></td></tr>");
 							var n=1;
+							<!--breakDuration = data.tasks[n-1].duration;-->
 							breakDuration = "";
 							$("#tableTimelog").append("<tr id='job" + data.tasks[n-1].jobId + "' ><td class='colBorderTimelog'>" + breakDuration + "</td><td class='job'> {% trans 'Job' %} " + n +"  "+ data.tasks[n-1].description + " </td><td><input id='job" + data.tasks[n-1].jobId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 30px !important;height: 30px !important;border: none !important;' onclick='editJob(this.id, `${breakDuration}`, `${breaks}`, `${idTimelog}`)'/></td></tr>");
 
@@ -672,7 +708,6 @@
 		</script>
 	</head>
 	<body>
-
 	<header id="head"></header>
 		<div id="wrapper">
 			<div id="content">
@@ -681,25 +716,25 @@
 					{% trans 'HC TIMEKEEPER' %}
 				</div>
 				<div class="row">
-					<div class="col-xs-12 col-md-12" style="margin-top: 10px;">
-						<input type="button" id="shift" value="{% trans 'SHIFT' %}" class="btnsTimekeeper"/>
+					<div id='shiftOrStart' class="col-xs-12 col-md-12" style="margin-top: 10px;">
+						<!--<input type="button" id="shift" value="{% trans 'SHIFT' %}" class="btnsTimekeeper"/>-->
+					</div>
+				</div>
+				<div class="row">
+					<div id='endShift' class="col-xs-12 col-md-12">
+						<!--<input type="button" id="break" value="{% trans 'BREAK' %}" class="btnsTimekeeper"/>-->
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" id="break" value="{% trans 'BREAK' %}" class="btnsTimekeeper"/>
+						<!--<input type="button" id="lunch" value="{% trans 'LUNCH' %}" class="btnsTimekeeper"/>-->
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" id="lunch" value="{% trans 'LUNCH' %}" class="btnsTimekeeper"/>
+						<!--<input type="button" id="timelog" value="{% trans 'SCHEDULE' %}" class="btnsTimekeeper"/>-->
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-xs-12 col-md-12">
-						<input type="button" id="timelog" value="{% trans 'SCHEDULE' %}" class="btnsTimekeeper"/>
-					</div>
-				</div>				
 			</div>
 		</div>
 		<footer id="footer">

@@ -21,6 +21,7 @@ from django.utils.translation import LANGUAGE_SESSION_KEY
 
 import json
 from datetime import datetime
+import calendar
 from datetime import date
 import time
 
@@ -2430,8 +2431,6 @@ def timeLogById(request):
 
 				else:
 					userId = request.POST['id']
-				print 'user id'
-				print userId
 				array_breaks = []
 				array_tasks = []
 				result['signature'] = True
@@ -2453,28 +2452,35 @@ def timeLogById(request):
 						breaks = Break.objects.filter(attendance__id = item.id).order_by('start')
 						tasks = Task.objects.filter(attendance__id = item.id)
 
-						if len(breaks) > 0:
-							req_num_tasks = len(breaks) + 1
-							if len(tasks) < req_num_tasks:
-								i=len(tasks)
-								while i < req_num_tasks:
-									job = Task(description = "N/A", hours_spent = 0, attendance = item)
-									job.save()
-									i += 1
-						elif len(tasks) == 0:
-							job = Task(description = "N/A", hours_spent = 0, attendance = item)
-							job.save()
-						tasks = Task.objects.filter(attendance = item).order_by('-id')
-						i = 0
-						for task in tasks:
-							aux = {}
-							aux['jobId'] = task.id
-							aux['description'] = task.description
-							aux['duration'] = task.hours_spent
-							aux['attendanceId'] = task.attendance.id
-							i += 1
+						if 'shop' in request.POST:
+							print 'shop'
+						else:
+							if len(breaks) > 0:
+								req_num_tasks = len(breaks) + 1
+								if len(tasks) < req_num_tasks:
+									i=len(tasks)
+									while i < req_num_tasks:
+										job = Task(description = "N/A", hours_spent = 0, attendance = item)
+										job.save()
+										emp_job = EmployeeTask(employee = employee, task = job, hours_spent = 0)
+										emp_job.save()
+										i += 1
+							elif len(tasks) == 0:
+								job = Task(description = "N/A", hours_spent = 0, attendance = item)
+								job.save()
+								emp_job = EmployeeTask(employee = employee, task = job, hours_spent = 0)
+								emp_job.save()
+							tasks = Task.objects.filter(attendance = item).order_by('-id')
+							i = 0
+							for task in tasks:
+								aux = {}
+								aux['jobId'] = task.id
+								aux['description'] = task.description
+								aux['duration'] = task.hours_spent
+								aux['attendanceId'] = task.attendance.id
+								i += 1
 
-							array_tasks.append(aux)
+								array_tasks.append(aux)
 
 						breakDuration = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #variable used to decrease time from the total when one break still going on
 						breakTime = datetime.timedelta(hours = item.hour_started.hour, minutes = item.hour_started.minute, seconds = item.hour_started.second) #help to calculate work time between breaks
@@ -3319,21 +3325,14 @@ def updateLightTaskFlow(request):
 			empTask2.save()
 
 			if len(task_data) > 6:
-				print 'here'
 				job3 = str(task_data[6])
 				ranch3 = str(task_data[7])
 				hours3 = float(task_data[8])
-				print job3
-				print ranch3
-				print hours3
 				task3 = Task(field= ranch3, attendance = attendance, code = job3, hours_spent = hours3, date_assigned = date)
-				print task3
 				task3.save()
 				#Creating association between Employee and Task
 				empTask3 = EmployeeTask(employee = employee, task = task3, hours_spent = hours3)
-				print empTask3
 				empTask3.save()
-				print "end"
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
@@ -3406,7 +3405,7 @@ def time_keeper(request):
 	elif employee.teamManager:
 		return render(request, 'driver/timeKeeperGroup.html')
 	else:
-		return render(request, 'driver/timeKeeper.html')
+		return render(request, 'driver/newTimeKeeper.html')
 	
 @login_required
 def time_keeper_test(request):
@@ -4458,6 +4457,164 @@ def getCsv(request):
 
 	return response
 
+@login_required
+def getTempCsvFormat(request):
+	result = {}
+	result['success'] = True
+
+	response = HttpResponse(content_type='text/csv')
+	response['Content-Disposition'] = 'attachment; filename="somefilename.csv"'
+
+	writer = csv.writer(response)
+	start = time.strptime(request.POST['start'], "%m/%d/%Y")
+	end = time.strptime(request.POST['end'], "%m/%d/%Y")
+	start = str(start.tm_year) +"-"+str(start.tm_mon)+"-"+str(start.tm_mday)
+	end = str(end.tm_year) +"-"+str(end.tm_mon)+"-"+str(end.tm_mday)
+	attendances = EmployeeAttendance.objects.all().order_by('-date').filter(date__range = (start, end))
+
+	if attendances.count > 0:
+		for attendance in attendances:
+			data_row = []
+
+			header = []
+			sub_header = []
+			data_row2 = []
+
+			employee_id = attendance.employee.qr_code
+			attendance_id = attendance.id
+			date = attendance.date
+			declined = attendance.declined
+			hour_started = attendance.hour_started
+			hour_ended = attendance.hour_ended
+			now = datetime.datetime.now().time()
+
+			if attendance.hour_started != None:
+				hour_started = datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
+			else:
+				hour_started = 'N/A'
+
+			if attendance.hour_ended != None:
+				hour_ended = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
+			else:
+				hour_ended = 'N/A'
+
+			if hour_ended == 'N/A' or hour_ended == None:
+				hour_ended = datetime.timedelta(hours = now.hour, minutes = now.minute, seconds = now.second)
+			if hour_ended != 'N/A' and hour_started != 'N/A':
+				if hour_ended > hour_started:
+					# hour_ended =  datetime.timedelta(hours = hour_ended.hours, minutes = hour_ended.minutes, seconds = hour_ended.seconds)
+					# hour_started =  datetime.timedelta(hours = hour_started.hours, minutes = hour_started.minutes, seconds = hour_started.seconds)
+					hours_today = hour_ended - hour_started
+					hours_today = str(round(hours_today.total_seconds()/60/60, 2))
+				else:
+					hours_today = 'N/A'
+			else:
+				hours_today = 'N/A'
+
+			tasks = Task.objects.filter(attendance = attendance).order_by('-id')
+
+			employee_name = attendance.employee.user.last_name + ", " + attendance.employee.user.first_name
+			employee_number = attendance.employee.qr_code
+			# data_row.extend((employee_id, employee_name, leader_name, crew, date, hour_started, hour_ended, hours_today,declined))
+			header.extend(('Attendance ID:', attendance_id,'Employee Name:', employee_name, 'Employee Number:', employee_number))
+			sub_header.extend(('DAY', 'WORK STARTS', '1ST BREAK 15 MIN START', '1ST BREAK 15 MIN END', '1ST MEAL BREAK START', '1ST MEAL BREAK END', '2ND BREAK 15 MIN START', '2ND BREAK 15 MIN END', '2ND MEAL BREAK START', '2ND MEAL BREAK END','3RD BREAK 15 MIN START', '3RD BREAK 15 MIN END', '3RD MEAL BREAK START', '3RD MEAL BREAK END', '4TH BREAK 15 MIN START', '4TH BREAK 15 MIN END','WORK ENDS', 'JOB CODE', 'COMMENTS', 'INITIALS'))
+
+			for task in tasks:
+				print task
+				empTask = EmployeeTask.objects.filter(task= task).first()
+				print 'emp'
+
+				print empTask
+				if empTask is not None:
+					print 'hi'
+					# data_row.extend((task.code, task.hours_spent, task.field))
+				else:
+					print 'none'
+			breaks = Break.objects.filter(attendance__id = attendance.id).order_by('start')
+			jobs = Task.objects.filter(attendance_id = attendance.id).order_by('-id')
+			i = 1
+			break_num = breaks.count()
+			m = 1
+			lunch_breaks = []
+			reg_breaks = []
+			combined_breaks = []
+			dayofweek = calendar.day_name[attendance.date.weekday()]
+			data_row.append(dayofweek)
+			data_row.append(hour_started)
+			if break_num > 0:
+				for item in breaks:
+					if item.lunch == True:
+
+						lunch_breaks.append(item)
+					else:
+						reg_breaks.append(item)
+				most_breaks = max(len(lunch_breaks), len(reg_breaks))
+				i=0
+				while most_breaks > i:
+					if(len(reg_breaks) > i):
+						combined_breaks.append(reg_breaks[i])
+					else:
+						combined_breaks.append("")
+					if(len(lunch_breaks) > i):
+						combined_breaks.append(lunch_breaks[i])
+					else:
+						combined_breaks.append("")
+					i += 1
+				i=1
+
+				for item in combined_breaks:
+					num_break = i
+					if(item != ""):
+						if item.start != None and item.end != None:
+							if item.end >= item.start:
+								start = datetime.timedelta(hours = item.start.hour, minutes = item.start.minute, seconds = item.start.second)
+								end = datetime.timedelta(hours = item.end.hour, minutes = item.end.minute, seconds = item.end.second)
+								total = end - start
+								total = str(round(total.total_seconds()/60/60, 2))
+							else:
+								total = 'N/A'
+						else:
+							total = 'N/A'
+						data_row.extend((item.start, item.end))
+					else:
+						data_row.extend(('', ''))
+					i += 1
+				leftover = 7 - len(combined_breaks)
+				while leftover > 0:
+					data_row.extend(('', ''))
+					leftover -= 1
+			else:
+				x=0
+				while x <7:
+					data_row.extend(('', ''))
+					x += 1
+			print 'hello'
+			data_row.extend((hour_ended, 'job code', 'comments', 'initials'))
+			writer.writerow(header)
+			writer.writerow(sub_header)
+			writer.writerow(data_row)
+			writer.writerow(('TOTAL HOURS:', hours_today))
+
+	return response
+
+def acceptAttendances(request):
+	result = {'success' : True}
+	if request.method == 'POST':
+		if request.is_ajax():
+			print request.POST.getlist('attendances[]')
+			ids = request.POST.getlist('attendnaces[]')
+			for id in ids:
+				attendance = EmployeeAttendance.objects.get(id = id)
+				attendance.managerApproved = True
+				attendance.save()
+				print attendance
+		else:
+			result['code'] = 2  #Use ajax to perform requests
+	else:
+		result['code'] = 3  #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
 def timeKeeperDailyReport(request):
 	result = {'success' : False}
 
@@ -4466,10 +4623,24 @@ def timeKeeperDailyReport(request):
 
 			start = time.strptime(request.POST['start'], "%m/%d/%Y")
 			end = time.strptime(request.POST['end'], "%m/%d/%Y")
+			qr_codes = request.POST.getlist('namesChecked[]')
+
+			parsed_codes = []
+
+			for code in qr_codes:
+				parsed_codes.append(int(code))
 
 			start = str(start.tm_year) +"-"+str(start.tm_mon)+"-"+str(start.tm_mday)
 			end = str(end.tm_year) +"-"+str(end.tm_mon)+"-"+str(end.tm_mday)
 			attendances = EmployeeAttendance.objects.all().order_by('-date').filter(date__range = (start, end))
+			some_attendances = []
+			if len(qr_codes) == 0:
+				some_attendances = attendances
+			else:
+				for attendance in attendances:
+					if int(attendance.employee.qr_code) in parsed_codes:
+						some_attendances.append(attendance)
+
 			total_times = []
 			all_names = []
 			group_leader = []
@@ -4477,8 +4648,10 @@ def timeKeeperDailyReport(request):
 			crews = []
 			job_codes = []
 			ranches = []
+			hours = []
 			declines = []
-			for attendance in attendances:
+			attend_id = []
+			for attendance in some_attendances:
 				declines.append(attendance.declined)
 				breaks = Break.objects.filter(attendance = attendance)
 				start =  datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
@@ -4493,36 +4666,31 @@ def timeKeeperDailyReport(request):
 					end =  datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
 					hours_today = end - start
 					hours_today = str(round(hours_today.total_seconds()/60/60, 2))
-				# if str(attendance.hour_ended) < str(attendance.hour_started):
-				# 	hours_today = 'N/A'
 				all_names.append(str(attendance.employee.user.last_name + ", " + attendance.employee.user.first_name))
 				if(attendance.group is None):
 					leader_name = 'N/A'
 					crew_name = 'N/A'
-					job_code = EmployeeAttendanceChecklist.objects.filter(attendance = attendance, question__description = "Job Code").first()
-					ranch = EmployeeAttendanceChecklist.objects.filter(attendance = attendance, question__description = "Ranch").first()
 				else:
 					leader_name = str(attendance.group.creator.user.first_name + ", " + attendance.group.creator.user.last_name)
 					crew_name = str(attendance.group.name)
-					job_code = EmployeeAttendanceChecklist.objects.filter(attendance = attendance, question__description = "Job Code").first()
-					ranch = EmployeeAttendanceChecklist.objects.filter(attendance = attendance, question__description = "Ranch").first()
+				task = Task.objects.filter(attendance = attendance).order_by('-id').first()
+				empTask = EmployeeTask.objects.filter(task= task).first()
+
+				if empTask is not None:
+					job_code = str(task.code)
+					ranch = str(task.field)
+					hour = str(task.hours_spent)
+					job_codes.append(job_code)
+					ranches.append(ranch)
+					hours.append(hour)
+
 				group_leader.append(leader_name)
 				crews.append(crew_name)
 				qr_code.append(str(attendance.employee.qr_code))
+				attend_id.append(str(attendance.id))
 				total_times.append(hours_today)
-				if job_code is None or job_code== "":
-					job_code = "N/A"
-				else:
-					job_code = str(job_code.answer)
-				if ranch is None or ranch== "":
-					ranch = "N/A"
-				else:
-					ranch = str(ranch.answer)
-				job_codes.append(job_code)
-				ranches.append(ranch)
 
-			all_attendances_ser = serializers.serialize("json", attendances)
-			# crews_ser = serializers.serialize("json", crews)
+			all_attendances_ser = serializers.serialize("json", some_attendances)
 
 			result['success'] = True
 			result['all_attendances']=all_attendances_ser
@@ -4534,6 +4702,8 @@ def timeKeeperDailyReport(request):
 			result['job_codes'] = job_codes
 			result['ranches'] = ranches
 			result['declines'] = declines
+			result['hours'] = hours
+			result['attend_ids'] = attend_id
 		else:
 			result['code'] = 2  #Use ajax to perform requests
 	else:

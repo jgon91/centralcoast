@@ -7,17 +7,68 @@
 		<script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
 		<script src="{% static 'js/script.js' %}"></script>
 		<link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.min.css' %}">
+		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.11/css/dataTables.bootstrap.min.css">
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+		<script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+		<script src="https://cdn.datatables.net/1.10.11/js/dataTables.bootstrap.min.js"></script>
+		<!--<script src="//code.jquery.com/jquery-1.12.0.min.js"></script>-->
 		<!-- Include Required Prerequisites -->
 		<!--<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>-->
 		<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+		<!--<link rel="stylesheet" href="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/css/bootstrap-editable.css">-->
 		<!--<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css" />-->
 		<!--<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap/css/bootstrap-table.css' %}">-->
         <!--<script src="{% static 'css/bootstrap/js/bootstrap-table.js' %}"></script>-->
         <!--<script src="{% static 'css/bootstrap/js/bootstrap.min.js' %}"></script>-->
 		<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/bootstrap-table.min.js"></script>
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/bootstrap-table.min.css">
-
+		<!--<script src="../assets/bootstrap-table/src/extensions/editable/bootstrap-table-editable.js"></script>-->
+		<!--<script src="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/js/bootstrap-editable.js"></script>-->
+		<style>
+		.dropdown-check-list {
+		  display: inline-block;
+			position: relative;
+		}
+		.dropdown-check-list .anchor {
+		  position: relative;
+		  cursor: pointer;
+		  display: inline-block;
+		  padding: 5px 50px 5px 10px;
+		  border: 1px solid #ccc;
+		}
+		.dropdown-check-list .anchor:after {
+		  position: absolute;
+		  content: "";
+		  border-left: 2px solid black;
+		  border-top: 2px solid black;
+		  padding: 5px;
+		  right: 10px;
+		  top: 20%;
+		  -moz-transform: rotate(-135deg);
+		  -ms-transform: rotate(-135deg);
+		  -o-transform: rotate(-135deg);
+		  -webkit-transform: rotate(-135deg);
+		  transform: rotate(-135deg);
+		}
+		.dropdown-check-list .anchor:active:after {
+		  right: 8px;
+		  top: 21%;
+		}
+		.dropdown-check-list ul.items {
+		  padding: 2px;
+		  display: none;
+		  margin: 0;
+		  border: 1px solid #ccc;
+		  border-top: none;
+		}
+		.dropdown-check-list ul.items li {
+		  list-style: none;
+			position: relative;
+		}
+		</style>
 		<script>
+		var id_checked = [];
+		var name_checked = [];
 			$(document).ready(function() {
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerManager' %}");
@@ -35,40 +86,117 @@
 				}
 
 				today = mm+'/'+dd+'/'+yyyy;
-				getReport("{{ csrf_token }}", "{% url 'timeKeeperDailyReport' %}", today, today);
 
+<!--if ($("input[id='"+this.id+"']").is(":checked")) {-->
+										<!--user_id = this.id;-->
+										<!--id_checked.push(user_id);-->
+									<!--} else {-->
+										<!--user_id = this.id;-->
+										<!--index = id_checked.indexOf(user_id);-->
+										<!--id_checked.splice(index, 1);-->
+									<!--}-->
+
+									<!--if(id_checked.length == 0){-->
+									<!--document.getElementById("remove").disabled = true;-->
+								<!--} else {-->
+									<!--document.getElementById("remove").disabled = false;-->
+								<!--}-->
+								<!--});-->
+
+				$("#report_table #checkall").click(function () {
+					if ($("#report_table #checkall").is(':checked')) {
+						$("#report_table input[type=checkbox]").each(function () {
+							$(this).prop("checked", true);
+							user_id = this.id;
+							if(user_id != "checkall"){
+								id_checked.push(user_id);
+							}
+						});
+
+					} else {
+						$("#report_table input[type=checkbox]").each(function () {
+							$(this).prop("checked", false);
+							user_id = this.id;
+							index = id_checked.indexOf(user_id);
+							id_checked.splice(index, 1);
+						});
+					}
+
+					if(id_checked.length == 0){
+						document.getElementById("remove").disabled = true;
+					} else {
+						document.getElementById("remove").disabled = false;
+					}
+				});
+
+
+				getAllEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}");
+				getReport("{{ csrf_token }}", "{% url 'timeKeeperDailyReport' %}", today, today, name_checked);
+
+
+				$("input[name='rowSelected']").change(function() {
+				   if ($("input[id='"+this.id+"']").is(":checked")) {
+						user_id = this.value;
+						id_checked.push(user_id);
+					} else {
+						user_id = this.value;
+						index = id_checked.indexOf(user_id);
+						id_checked.splice(index, 1);
+					}
+				});
+
+			$("input[name='nameSelected']").change(function() {
+								if ($("input[id='"+this.id+"']").is(":checked")) {
+										user_id = this.id;
+										name_checked.push(user_id);
+									} else {
+										user_id = this.id;
+										index = id_checked.indexOf(user_id);
+										name_checked.splice(index, 1);
+									}
+								});
 
 			$('.input-daterange').datepicker({
 				autoclose: true,
 				todayHighlight: true
 			});
 
-			<!--$(".search").keyup(function () {-->
-					<!--var searchTerm = $(".search").val();-->
-					<!--var listItem = $('.results tbody').children('tr');-->
-					<!--var searchSplit = searchTerm.replace(/ /g, "'):containsi('")-->
+			$(".search").keyup(function () {
 
-				  <!--$.extend($.expr[':'], {'containsi': function(elem, i, match, array){-->
-						<!--return (elem.textContent || elem.innerText || '').toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;-->
-					<!--}-->
-				  <!--});-->
+					var searchTerm = $(".search").val();
+					console.log(searchTerm);
+					var listItem = $('.results tbody').children('tr');
+					console.log(listItem);
+					var searchSplit = searchTerm.replace(/ /g, "'):containsi('")
 
-				  <!--$(".results tbody tr").not(":containsi('" + searchSplit + "')").each(function(e){-->
-					<!--$(this).attr('visible','false');-->
-				  <!--});-->
+				  $.extend($.expr[':'], {'containsi': function(elem, i, match, array){
+						return (elem.textContent || elem.innerText || '').toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+					}
+				  });
 
-				  <!--$(".results tbody tr:containsi('" + searchSplit + "')").each(function(e){-->
-					<!--$(this).attr('visible','true');-->
-				  <!--});-->
+				  $(".results tbody tr").not(":containsi('" + searchSplit + "')").each(function(e){
+				  	console.log('hi');
+				  	console.log($(this));
+					$(this).attr('visible','false');
+				  });
 
-				  <!--var jobCount = $('.results tbody tr[visible="true"]').length;-->
-					<!--$('.counter').text(jobCount + ' item');-->
+				  $(".results tbody tr:containsi('" + searchSplit + "')").each(function(e){
+				  	console.log('bye');
+					$(this).attr('visible','true');
+					console.log($(this));
+				  });
 
-				  <!--if(jobCount == '0') {$('.no-result').show();}-->
-					<!--else {$('.no-result').hide();}-->
-			<!--});-->
+				  var jobCount = $('.results tbody tr[visible="true"]').length;
+					$('.counter').text(jobCount + ' item');
+
+				  if(jobCount == '0') {$('.no-result').show();}
+					else {$('.no-result').hide();}
+			});
 
 			});
+			 var $table = $('#report_table'),
+			$remove = $('#remove'),
+			selections = [];
 			function today() {
 				var today = new Date();
 				var dd = today.getDate();
@@ -97,6 +225,19 @@
 				getCsv("{{ csrf_token }}", "{% url 'getCsv' %}", start_date, end_date);
 			}
 
+			function downloadNewCsv() {
+
+				var start_date = document.getElementById("start").value;
+				var end_date = document.getElementById("stop").value;
+				if (start_date == "" || end_date == "") {
+					start_date = today();
+					end_date = today();
+				}
+				getNewCsv("{{ csrf_token }}", "{% url 'getTempCsvFormat' %}", start_date, end_date);
+			}
+
+
+
 			function getCsv(token, url, start, end){
 				$.ajax({
 				method : "POST",
@@ -115,15 +256,41 @@
 					document.body.appendChild(downloadLink);
 					downloadLink.click();
 					document.body.removeChild(downloadLink);
-					<!--$(function (e) {-->
-						<!--window.open("data:text/csv;charset=utf-8," + data);-->
-						<!--e.preventDefault();-->
-					<!--});-->
 
 				}
 				});
 			}
 
+			function getNewCsv(token, url, start, end){
+				$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token, "start": start, "end":end},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					var downloadLink = document.createElement("a");
+					var blob = new Blob(["\ufeff", data]);
+					var url = URL.createObjectURL(blob);
+					downloadLink.href = url;
+					var currentTime = new Date();
+					downloadLink.download = "Timecards-"+currentTime+".csv";
+
+
+					document.body.appendChild(downloadLink);
+					downloadLink.click();
+					document.body.removeChild(downloadLink);
+
+				}
+				});
+			}
+
+
+			function getIdSelections() {
+				console.log('hello');
+				return $.map($table.bootstrapTable('getSelections'), function (row) {
+					return row.id
+				});
+			}
 
 			function getPdf(token, url){
 				$.ajax({
@@ -148,13 +315,107 @@
 			function updateReport(){
 				var start_date = document.getElementById("start").value;
 				var end_date = document.getElementById("stop").value;
-				getReport("{{ csrf_token }}", "{% url 'timeKeeperDailyReport' %}", start_date, end_date);
+				getReport("{{ csrf_token }}", "{% url 'timeKeeperDailyReport' %}", start_date, end_date, name_checked);
+				$("#remove").click(function() {
+					acceptAttendances("{{ csrf_token}}", "{% url 'acceptAttendances' %}", id_checked);
+				}
+				);
+
 			}
-			function getReport(token, url, start, end) {
+
+			$('.dropdown-menu a').click(function(){
+				<!--alert($(this));-->
+				//Show table
+			});
+
+			$table.on('check.bs.table uncheck.bs.table ' +
+                'check-all.bs.table uncheck-all.bs.table', function () {
+            $remove.prop('disabled', !$table.bootstrapTable('getSelections').length);
+            // save your data, here just save the current page
+            selections = getIdSelections();
+            // push or splice the selections if you want to save all data selections
+        	});
+
+        	$remove.click(function () {
+            var ids = getIdSelections();
+            $table.bootstrapTable('remove', {
+                field: 'id',
+                values: ids
+            });
+            $remove.prop('disabled', true);
+        	});
+
+        	function getAllEmployees(token, url) {
+			$.ajax({
+				method: "POST",
+				url: url,
+				data: {"csrfmiddlewaretoken": token },
+				datatype: "json",
+
+				success: function(data, status, xhr){
+						for(var i = 0; i < data.employees.length; i++){
+							first_name = data.employees[i].first_name.toString();
+							last_name = data.employees[i].last_name.toString();
+							employee_name = first_name + " " + last_name;
+
+							<!--$("#items").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onclick="clockInOut('+data.employees[i].qr_code+','+data.employees[i].user_id+',\''+employee_name+'\')" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +'</label>');-->
+							$("#items").append('<li style="font-size: 18px; z-index:99; position:relative;margin-top: 20px; margin-left:10px;" ><input style="float: left;" name="nameSelected" id="'+data.employees[i].qr_code+'"  type="checkbox" />'+data.employees[i].first_name + ' '+ data.employees[i].last_name+'</li>');
+
+						}
+
+						var checkList = document.getElementById('list1');
+						var items = document.getElementById('items');
+						checkList.getElementsByClassName('anchor')[0].onclick = function (evt) {
+							if (items.classList.contains('visible')){
+								items.classList.remove('visible');
+								items.style.display = "none";
+							}
+
+							else{
+								items.classList.add('visible');
+								items.style.display = "block";
+							}
+
+
+						}
+
+						items.onblur = function(evt) {
+							items.classList.remove('visible');
+						}
+
+						$("input[name='nameSelected']").change(function() {
+
+								if ($("input[id='"+this.id+"']").is(":checked")) {
+										user_id = this.id;
+										name_checked.push(user_id);
+									} else {
+										user_id = this.id;
+										index = name_checked.indexOf(user_id);
+										name_checked.splice(index, 1);
+									}
+								});
+
+
+				}
+			});
+		}
+			function acceptAttendances(token, url, attendances) {
+				$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token, "attendances": attendances},
+				datatype : "json",
+				success : function(data, status, xhr) {
+
+				}
+				});
+			}
+
+			function getReport(token, url, start, end, names) {
 			$.ajax({
 				method : "POST",
 				url : url,
-				data : {"csrfmiddlewaretoken" : token, "start": start, "end":end},
+				data : {"csrfmiddlewaretoken" : token, "start": start, "end":end, "namesChecked": names},
 				datatype : "json",
 				success : function(data, status, xhr) {
 					if (data) {
@@ -168,6 +429,7 @@
 								var start_hour = item.fields.hour_started;
 								var end_hour = item.fields.hour_ended;
 								var total_time = data.total_times[i];
+								var attend_id = data.attend_ids[i];
 
 								if(! start_hour){
 									start_hour = 'N/A';
@@ -187,20 +449,38 @@
 
 								var demo = "demo" + i;
 								if(data.declines[i] == false){
-									$('#results').append('<tr data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle"> <td>' +
-									data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>' + data.group_leader[i] + '</td><td>'+ data.crews[i]+'</td><td>' + data.job_codes[i] +'</td><td>' + data.ranches[i] +'</td><td>' + item.fields.date +'</td><td>' +
-									start_hour + '</td><td>' + end_hour + '</td><td>' + total_time+'</td></tr>');
+									$('#results').append('<tr id="'+attend_id+'" data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle"><td><input id="'+attend_id+'" name="rowSelected" type="checkbox" class="checkthis" /></td> <td>' +
+									data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>'+ data.crews[i]+'</td><td>' + data.job_codes[i] +'</td><td>' + data.ranches[i] +'</td><td>' + item.fields.date +'</td><td data-editable="true">' +
+									start_hour + '</td><td data-editable="true">' + end_hour + '</td><td>' + total_time+'</td></tr>');
 								} else {
-									$('#results').append('<tr style="background:red;" data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle"> <td>' +
-									data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>' + data.group_leader[i] + '</td><td>'+ data.crews[i]+'</td><td>' + data.job_codes[i] +'</td><td>' + data.ranches[i] +'</td><td>' + item.fields.date +'</td><td>' +
-									start_hour + '</td><td>' + end_hour + '</td><td>' + total_time+'</td></tr>');
+									$('#results').append('<tr id="'+attend_id+'" style="background:red;" data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle"><td><input id="'+attend_id+'" name="rowSelected" type="checkbox" class="checkthis" /></td> <td>' +
+									data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>'+ data.crews[i]+'</td><td>' + data.job_codes[i] +'</td><td>' + data.ranches[i] +'</td><td>' + item.fields.date +'</td><td data-editable="true">' +
+									start_hour + '</td><td data-editable="true">' + end_hour + '</td><td>' + total_time+'</td></tr>');
 								}
-
 
 								i = i+1;
 
 							});
 						});
+
+						$("input[name='rowSelected']").change(function() {
+
+
+								if ($("input[id='"+this.id+"']").is(":checked")) {
+										user_id = this.id;
+										id_checked.push(user_id);
+									} else {
+										user_id = this.id;
+										index = id_checked.indexOf(user_id);
+										id_checked.splice(index, 1);
+									}
+
+									if(id_checked.length == 0){
+									document.getElementById("remove").disabled = true;
+								} else {
+									document.getElementById("remove").disabled = false;
+								}
+								});
 
 
 					}
@@ -211,6 +491,7 @@
 		</script>
 	</head>
 	<body>
+
 		<header id="head"></header>
 			<div id="wrapper">
 				<div id="content">
@@ -230,22 +511,55 @@
 						<input type="text" id="stop" class="input-sm form-control" name="end" />
 
 					</div>
+					<div id="list1" style="margin-top: 30px;" class="dropdown-check-list" tabindex="100">
+						<span style="float: left;" class="anchor">Select Employees</span>
+						<ul id="items" class="items">
+						</ul>
+					</div>
+
+				<script type="text/javascript">
+
+				var checkList = document.getElementById('list1');
+				var items = document.getElementById('items');
+						checkList.getElementsByClassName('anchor')[0].onclick = function (evt) {
+							if (items.classList.contains('visible')){
+								items.classList.remove('visible');
+								items.style.display = "none";
+							}
+
+							else{
+								items.classList.add('visible');
+								items.style.display = "block";
+							}
+
+
+						}
+
+						items.onblur = function(evt) {
+							items.classList.remove('visible');
+						}
+				</script>
+
 						<!--<div class="form-group pull-right"><input type="text" class="search form-control " placeholder="Search"/>-->
 
 					<button style="float: right;margin-top: 15px; margin-bottom:10px;height:50px;font-size:15px;font-weight:600;background-color: #6DA8F5;" type="button" class="btn btn-default" onclick="updateReport()" ><span class="glyphicon glyphicon-refresh"></span>Update Report</button>
+<button id="remove" style="float:left; margin-top:30px;" class="btn btn-success" disabled>
+							<i class="glyphicon glyphicon-ok"></i> Accept Attendance(s)
+						</button>
 
 
+					<table data-show-pagination-switch="true" class="table table-condensed results table-striped table-bordered" id="report_table" style="border-collapse:collapse;">
 
-					<table class="table table-condensed results" id="report_table" style="border-collapse:collapse;">
 						<thead>
 							<tr>
+								<th><input type="checkbox" id="checkall" /></th>
 								<th>ID</th>
 								<th>Name</th>
-								<th>Team Lead</th>
+								<!--<th>Team Lead</th>-->
 								<th>Team Name</th>
 								<!--<th>Location</th>-->
 								<th>Job Code</th>
-								<th>Ranch</th>
+								<th>Location</th>
 								<th>Date</th>
 								<th>Clock-In</th>
 								<th>Clock-Out</th>
@@ -266,6 +580,7 @@
 
 				<a href="{% url 'timecard_excel' %}"><button style="float: right;margin-right: 15px;height: 50px; font-weight: 600;font-size: 15px;" type="button" class="btn btn-default" ><span class="glyphicon glyphicon-download"></span>Download .xls</button></a>
 				<button style="float: right;margin-right: 15px;height: 50px; font-weight: 600;font-size: 15px;" type="button" class="btn btn-success" id="btnExport" onclick="downloadCsv()"><span style="font-size: 15px;" class="glyphicon glyphicon-download"></span>Download .csv</button>
+				<!--<button style="float: right;margin-right: 15px;height: 50px; font-weight: 600;font-size: 15px;" type="button" class="btn btn-success" id="btnExport2" onclick="downloadNewCsv()"><span style="font-size: 15px;" class="glyphicon glyphicon-download"></span>Download new .csv</button>-->
 
 
 			</div>

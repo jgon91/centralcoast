@@ -334,7 +334,6 @@
 				emptyDivs();
 				checkboxList = true;
 				getAllEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}");
-				<!--$("#next").append("<input type='button' id='nextButton' value='NEXT' class='btnsTimekeeperShop' disabled/>");-->
 			});
 
 			$("#timelogBack2").click(function() {
@@ -1074,7 +1073,7 @@ function addRemove() {
 			$.ajax({
 				method : "POST",
 				url : url,
-				data : {"csrfmiddlewaretoken" : token, "qr_code": idTimelog, "id":idTimelog},
+				data : {"csrfmiddlewaretoken" : token, "qr_code": idTimelog, "id":idTimelog, "shop":"true",},
 				datatype : "json",
 				beforeSend: function() {
 					var target = document.getElementById('divTimelog');
