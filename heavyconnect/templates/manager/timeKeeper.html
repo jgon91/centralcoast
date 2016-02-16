@@ -73,6 +73,7 @@
 		var id_checked = [];
 		var name_checked = [];
 			$(document).ready(function() {
+
 				$("#foot").load("{% url 'footer' %}");
 				$("#head").load("{% url 'headerManager' %}");
 				var today = new Date();
@@ -131,7 +132,11 @@
 						document.getElementById("remove").disabled = false;
 					}
 				});
-
+				$(function(){
+					$('a, button').click(function() {
+						$(this).toggleClass('active');
+					});
+				});
 
 				getAllEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}");
 				getReport("{{ csrf_token }}", "{% url 'timeKeeperDailyReport' %}", today, today, name_checked);
@@ -228,7 +233,18 @@
 					start_date = today();
 					end_date = today();
 				}
-				getCsv("{{ csrf_token }}", "{% url 'getCsv' %}", start_date, end_date);
+				getCsv("{{ csrf_token }}", "{% url 'getCsv' %}", start_date, end_date, name_checked);
+			}
+
+			function downloadExcel() {
+
+				var start_date = document.getElementById("start").value;
+				var end_date = document.getElementById("stop").value;
+				if (start_date == "" || end_date == "") {
+					start_date = today();
+					end_date = today();
+				}
+				getExcel("{{ csrf_token }}", "{% url 'getCsv' %}", start_date, end_date, name_checked);
 			}
 
 			function downloadNewCsv() {
@@ -244,11 +260,11 @@
 
 
 
-			function getCsv(token, url, start, end){
+			function getCsv(token, url, start, end, names){
 				$.ajax({
 				method : "POST",
 				url : url,
-				data : {"csrfmiddlewaretoken" : token, "start": start, "end":end},
+				data : {"csrfmiddlewaretoken" : token, "start": start, "end":end, "namesChecked": names},
 				datatype : "json",
 				success : function(data, status, xhr) {
 					var downloadLink = document.createElement("a");
@@ -257,6 +273,38 @@
 					downloadLink.href = url;
 					var currentTime = new Date();
 					downloadLink.download = "Timecards-"+currentTime+".csv";
+
+
+					document.body.appendChild(downloadLink);
+					downloadLink.click();
+					document.body.removeChild(downloadLink);
+
+				}
+				});
+			}
+
+			function getExcel(token, url, start, end, names){
+				$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token, "start": start, "end":end, "namesChecked":names},
+				datatype : "blob",
+
+				success : function(data, status, xhr) {
+					<!--var blob = new Blob(["\ufeff", data], {type: 'application/vnd.ms-excel'});-->
+					<!--var downloadUrl = URL.createObjectURL(blob);-->
+					<!--var a = document.createElement("a");-->
+					<!--var currentTime = new Date();-->
+					<!--a.href = downloadUrl;-->
+					<!--a.download = "Timecards-"+currentTime+".xls";-->
+					<!--document.body.appendChild(a);-->
+					<!--a.click();-->
+					var downloadLink = document.createElement("a");
+					var blob = new Blob(["\ufeff", data]);
+					var url = URL.createObjectURL(blob);
+					downloadLink.href = url;
+					var currentTime = new Date();
+					downloadLink.download = "Timecards-"+currentTime+".xls";
 
 
 					document.body.appendChild(downloadLink);
@@ -513,7 +561,7 @@
 					<div class="namePage">
 
 					</div>
-					<div id="report" style="margin: 10px; margin-top: 45px;">
+					<div id="report" style="margin: 10px; margin-top: 60px;">
 					<!--<div class="col-lg-6">-->
 					<div class="panel panel-default">
 					<div class="panel-heading"><h3><img src="{% static 'imgSmall/iconTimekeeper.png' %}"/>
@@ -557,7 +605,7 @@
 				</script>
 
 						<!--<div class="form-group pull-right"><input type="text" class="search form-control " placeholder="Search"/>-->
-					<button style="float: right;margin-top: 15px; margin-left:80%;margin-bottom:10px;height:50px;font-size:15px;font-weight:600;background-color: #6DA8F5;" type="button" class="btn btn-default" onclick="updateReport()" >Update Report</button>
+					<button style="float: right;margin-top: 15px; margin-left:60%;margin-bottom:10px;height:50px;font-size:15px;font-weight:600;background-color: #6DA8F5;" type="button" class="btn btn-default" onclick="updateReport()" >Update Report</button>
 					<button id="remove" style="float:left; margin-top:30px; margin-bottom: 15px;" class="btn btn-success" disabled>
 							<i class="glyphicon glyphicon-ok"></i> Accept Attendance(s)
 						</button>
@@ -592,7 +640,7 @@
 
 				</div>
 
-				<a href="{% url 'timecard_excel' %}"><button style="float: right;margin-right: 15px;height: 50px; font-weight: 600;font-size: 15px;" type="button" class="btn btn-default" ><span class="glyphicon glyphicon-download"></span>Download .xls</button></a>
+				<button has-spinner style="float: right;margin-right: 15px;height: 50px; font-weight: 600;font-size: 15px;" type="button" onclick="downloadExcel()" class="btn btn-default" ><span class="spinner"><i class="icon-spin icon-refresh"></i></span>Download .xls</button>
 				<button style="float: right;margin-right: 15px;height: 50px; font-weight: 600;font-size: 15px;" type="button" class="btn btn-success" id="btnExport" onclick="downloadCsv()"><span style="font-size: 15px;" class="glyphicon glyphicon-download"></span>Download .csv</button>
 				<!--<button style="float: right;margin-right: 15px;height: 50px; font-weight: 600;font-size: 15px;" type="button" class="btn btn-success" id="btnExport2" onclick="downloadNewCsv()"><span style="font-size: 15px;" class="glyphicon glyphicon-download"></span>Download new .csv</button>-->
 

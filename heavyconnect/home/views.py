@@ -4311,7 +4311,22 @@ def getCsv(request):
 	end = time.strptime(request.POST['end'], "%m/%d/%Y")
 	start = str(start.tm_year) +"-"+str(start.tm_mon)+"-"+str(start.tm_mday)
 	end = str(end.tm_year) +"-"+str(end.tm_mon)+"-"+str(end.tm_mday)
+	qr_codes = request.POST.getlist('namesChecked[]')
+
+	parsed_codes = []
+
+	for code in qr_codes:
+		parsed_codes.append(int(code))
+
 	attendances = EmployeeAttendance.objects.all().order_by('-date').filter(date__range = (start, end))
+	some_attendances = []
+	if len(qr_codes) == 0:
+		some_attendances = attendances
+	else:
+		for attendance in attendances:
+			if int(attendance.employee.qr_code) in parsed_codes:
+				some_attendances.append(attendance)
+	# attendances = EmployeeAttendance.objects.all().order_by('-date').filter(date__range = (start, end))
 
 	header = []
 	header.extend(('Attendance ID', 'ID', 'Name', 'Team Lead', 'Team Name', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked(w/ breaks)','Declined'))
@@ -4332,8 +4347,8 @@ def getCsv(request):
 	header.extend(('Break 4', 'Hour Started', 'Hour Ended', 'Break Time'))
 
 	writer.writerow(header)
-	if attendances.count > 0:
-		for attendance in attendances:
+	if some_attendances.count > 0:
+		for attendance in some_attendances:
 			data_row = []
 
 			employee_id = attendance.employee.qr_code
