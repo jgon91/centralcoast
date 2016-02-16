@@ -4601,13 +4601,12 @@ def acceptAttendances(request):
 	result = {'success' : True}
 	if request.method == 'POST':
 		if request.is_ajax():
-			print request.POST.getlist('attendances[]')
-			ids = request.POST.getlist('attendnaces[]')
+			ids = request.POST.getlist('attendances[]')
 			for id in ids:
 				attendance = EmployeeAttendance.objects.get(id = id)
 				attendance.managerApproved = True
 				attendance.save()
-				print attendance
+
 		else:
 			result['code'] = 2  #Use ajax to perform requests
 	else:
@@ -4650,9 +4649,12 @@ def timeKeeperDailyReport(request):
 			ranches = []
 			hours = []
 			declines = []
+			managerAccepts = []
 			attend_id = []
 			for attendance in some_attendances:
 				declines.append(attendance.declined)
+				managerAccepts.append(attendance.managerApproved)
+				print managerAccepts
 				breaks = Break.objects.filter(attendance = attendance)
 				start =  datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
 
@@ -4702,6 +4704,7 @@ def timeKeeperDailyReport(request):
 			result['job_codes'] = job_codes
 			result['ranches'] = ranches
 			result['declines'] = declines
+			result['managerAccepts'] = managerAccepts
 			result['hours'] = hours
 			result['attend_ids'] = attend_id
 		else:

@@ -65,6 +65,9 @@
 		  list-style: none;
 			position: relative;
 		}
+		.highlight{
+			background-color:yellow;
+		}
 		</style>
 		<script>
 		var id_checked = [];
@@ -132,7 +135,10 @@
 
 				getAllEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}");
 				getReport("{{ csrf_token }}", "{% url 'timeKeeperDailyReport' %}", today, today, name_checked);
-
+				$("#remove").click(function() {
+					acceptAttendances("{{ csrf_token}}", "{% url 'acceptAttendances' %}", id_checked);
+				}
+				);
 
 				$("input[name='rowSelected']").change(function() {
 				   if ($("input[id='"+this.id+"']").is(":checked")) {
@@ -406,6 +412,9 @@
 				data : {"csrfmiddlewaretoken" : token, "attendances": attendances},
 				datatype : "json",
 				success : function(data, status, xhr) {
+					attendances.forEach(function(entry) {
+						document.getElementById(entry).style.backgroundColor = "lightgrey";
+					});
 
 				}
 				});
@@ -448,14 +457,20 @@
 								}
 
 								var demo = "demo" + i;
-								if(data.declines[i] == false){
-									$('#results').append('<tr id="'+attend_id+'" data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle"><td><input id="'+attend_id+'" name="rowSelected" type="checkbox" class="checkthis" /></td> <td>' +
-									data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>'+ data.crews[i]+'</td><td>' + data.job_codes[i] +'</td><td>' + data.ranches[i] +'</td><td>' + item.fields.date +'</td><td data-editable="true">' +
-									start_hour + '</td><td data-editable="true">' + end_hour + '</td><td>' + total_time+'</td></tr>');
+								if(data.managerAccepts[i] == false){
+									if(data.declines[i] == false){
+										$('#results').append('<tr id="'+attend_id+'" data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle"><td><input id="'+attend_id+'" name="rowSelected" type="checkbox" class="checkthis" /></td> <td>' +
+										data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>'+ data.crews[i]+'</td><td>' + data.job_codes[i] +'</td><td>' + data.ranches[i] +'</td><td>' + item.fields.date +'</td><td data-editable="true">' +
+										start_hour + '</td><td data-editable="true">' + end_hour + '</td><td>' + total_time+'</td></tr>');
+									} else {
+										$('#results').append('<tr id="'+attend_id+'" style="background:red;" data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle"><td><input id="'+attend_id+'" name="rowSelected" type="checkbox" class="checkthis" /></td> <td>' +
+										data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>'+ data.crews[i]+'</td><td>' + data.job_codes[i] +'</td><td>' + data.ranches[i] +'</td><td>' + item.fields.date +'</td><td data-editable="true">' +
+										start_hour + '</td><td data-editable="true">' + end_hour + '</td><td>' + total_time+'</td></tr>');
+									}
 								} else {
-									$('#results').append('<tr id="'+attend_id+'" style="background:red;" data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle"><td><input id="'+attend_id+'" name="rowSelected" type="checkbox" class="checkthis" /></td> <td>' +
-									data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>'+ data.crews[i]+'</td><td>' + data.job_codes[i] +'</td><td>' + data.ranches[i] +'</td><td>' + item.fields.date +'</td><td data-editable="true">' +
-									start_hour + '</td><td data-editable="true">' + end_hour + '</td><td>' + total_time+'</td></tr>');
+									$('#results').append('<tr id="'+attend_id+'" style="background:lightgrey;" data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle"><td><input id="'+attend_id+'" name="rowSelected" type="checkbox" class="checkthis" /></td> <td>' +
+										data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>'+ data.crews[i]+'</td><td>' + data.job_codes[i] +'</td><td>' + data.ranches[i] +'</td><td>' + item.fields.date +'</td><td data-editable="true">' +
+										start_hour + '</td><td data-editable="true">' + end_hour + '</td><td>' + total_time+'</td></tr>');
 								}
 
 								i = i+1;
@@ -548,7 +563,7 @@
 						</button>
 
 
-					<table data-show-pagination-switch="true" class="table table-condensed results table-striped table-bordered" id="report_table" style="border-collapse:collapse;">
+					<table data-show-pagination-switch="true" class="table table-condensed results table-bordered" id="report_table" style="border-collapse:collapse;">
 
 						<thead>
 							<tr>
