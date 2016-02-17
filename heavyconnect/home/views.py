@@ -4699,7 +4699,9 @@ def timeKeeperDailyReport(request):
 					start_time = datetime.timedelta(hours = item.start.hour, minutes = item.start.minute, seconds = item.start.second)
 					end_time = datetime.timedelta(hours = item.end.hour, minutes = item.end.minute, seconds = item.end.second)
 					total = end_time - start_time
+
 					total = round(total.total_seconds()/60/60, 2)
+
 					total_time_breaks += total
 				total_break_time.append(total_time_breaks)
 
@@ -4722,17 +4724,23 @@ def timeKeeperDailyReport(request):
 				else:
 					leader_name = str(attendance.group.creator.user.first_name + ", " + attendance.group.creator.user.last_name)
 					crew_name = str(attendance.group.name)
-				task = Task.objects.filter(attendance = attendance).order_by('-id').first()
-				empTask = EmployeeTask.objects.filter(task= task).first()
+				tasks = Task.objects.filter(attendance = attendance).order_by('-id')
+				str_job_code = ""
+				str_ranch = ""
+				str_hour = ""
+				for item in tasks:
+					empTask = EmployeeTask.objects.filter(task= item).first()
+					if empTask is not None:
+						job_code = str(item.code)
+						ranch = str(item.field)
+						hour = str(item.hours_spent)
+						str_job_code = str_job_code  + job_code +"; "
+						str_ranch = str_ranch + ranch +"; "
+						str_hour = str_hour + hour +"; "
 
-				if empTask is not None:
-					job_code = str(task.code)
-					ranch = str(task.field)
-					hour = str(task.hours_spent)
-					job_codes.append(job_code)
-					ranches.append(ranch)
-					hours.append(hour)
-
+				job_codes.append(str_job_code)
+				ranches.append(str_ranch)
+				hours.append(str_hour)
 				group_leader.append(leader_name)
 				crews.append(crew_name)
 				qr_code.append(str(attendance.employee.qr_code))

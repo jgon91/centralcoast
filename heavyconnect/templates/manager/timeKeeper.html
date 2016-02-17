@@ -236,6 +236,17 @@
 				getCsv("{{ csrf_token }}", "{% url 'getCsv' %}", start_date, end_date, name_checked);
 			}
 
+			function downloadPdf() {
+
+				var start_date = document.getElementById("start").value;
+				var end_date = document.getElementById("stop").value;
+				if (start_date == "" || end_date == "") {
+					start_date = today();
+					end_date = today();
+				}
+				getPdf("{{ csrf_token }}", "{% url 'timecard_pdf' %}");
+			}
+
 			function downloadExcel() {
 
 				var start_date = document.getElementById("start").value;
@@ -255,7 +266,7 @@
 					start_date = today();
 					end_date = today();
 				}
-				getNewCsv("{{ csrf_token }}", "{% url 'getTempCsvFormat' %}", start_date, end_date);
+				getNewCsv("{{ csrf_token }}", "{% url 'getTempCsvFormat' %}", start_date, end_date, name_checked);
 			}
 
 
@@ -283,6 +294,8 @@
 				});
 			}
 
+
+
 			function getExcel(token, url, start, end, names){
 				$.ajax({
 				method : "POST",
@@ -291,14 +304,7 @@
 				datatype : "blob",
 
 				success : function(data, status, xhr) {
-					<!--var blob = new Blob(["\ufeff", data], {type: 'application/vnd.ms-excel'});-->
-					<!--var downloadUrl = URL.createObjectURL(blob);-->
-					<!--var a = document.createElement("a");-->
-					<!--var currentTime = new Date();-->
-					<!--a.href = downloadUrl;-->
-					<!--a.download = "Timecards-"+currentTime+".xls";-->
-					<!--document.body.appendChild(a);-->
-					<!--a.click();-->
+
 					var downloadLink = document.createElement("a");
 					var blob = new Blob(["\ufeff", data]);
 					var url = URL.createObjectURL(blob);
@@ -315,11 +321,11 @@
 				});
 			}
 
-			function getNewCsv(token, url, start, end){
+			function getNewCsv(token, url, start, end, name){
 				$.ajax({
 				method : "POST",
 				url : url,
-				data : {"csrfmiddlewaretoken" : token, "start": start, "end":end},
+				data : {"csrfmiddlewaretoken" : token, "start": start, "end":end, "namesChecked":name},
 				datatype : "json",
 				success : function(data, status, xhr) {
 					var downloadLink = document.createElement("a");
@@ -327,7 +333,7 @@
 					var url = URL.createObjectURL(blob);
 					downloadLink.href = url;
 					var currentTime = new Date();
-					downloadLink.download = "Timecards-"+currentTime+".csv";
+					downloadLink.download = "Timecards-"+currentTime+".xls";
 
 
 					document.body.appendChild(downloadLink);
@@ -353,15 +359,15 @@
 				data : {"csrfmiddlewaretoken" : token},
 				datatype : "json",
 				success : function(data, status, xhr) {
-					var downloadLink = document.createElement("a");
-					var blob = new Blob(["\ufeff", data]);
-					var url = URL.createObjectURL(blob);
-					downloadLink.href = url;
-					downloadLink.download = "timecard.pdf";
+					<!--var downloadLink = document.createElement("a");-->
+					<!--var blob = new Blob(["\ufeff", data]);-->
+					<!--var url = URL.createObjectURL(blob);-->
+					<!--downloadLink.href = url;-->
+					<!--downloadLink.download = "timecard.pdf";-->
 
-					document.body.appendChild(downloadLink);
-					downloadLink.click();
-					document.body.removeChild(downloadLink);
+					<!--document.body.appendChild(downloadLink);-->
+					<!--downloadLink.click();-->
+					<!--document.body.removeChild(downloadLink);-->
 
 				}
 				});
@@ -508,17 +514,22 @@
 								if(data.managerAccepts[i] == false){
 									if(data.declines[i] == false){
 										$('#results').append('<tr id="'+attend_id+'" data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle"><td><input id="'+attend_id+'" name="rowSelected" type="checkbox" class="checkthis" /></td> <td>' +
-										data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>'+ data.crews[i]+'</td><td>' + data.job_codes[i] +'</td><td>' + data.ranches[i] +'</td><td>' + item.fields.date +'</td><td data-editable="true">' +
+										data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>'+ data.crews[i]+'</td><td>' + item.fields.date +'</td><td data-editable="true">' +
 										start_hour + '</td><td data-editable="true">' + end_hour + '</td><td>' + total_time+'</td></tr>');
+										$('#results').append('<tr><td colspan="12" class="hiddenRow"><div class="accordian-body collapse" id='+demo+'> <table class="table table-striped"><thead><tr><th>Job Codes</th><th>Locations</th><th># Breaks </th><th> Total Break Time</th></tr></thead><tbody><tr><td>' + data.job_codes[i] +'</td><td>' + data.ranches[i] +'</td><td>' + data.num_breaks[i] +'</td><td>' + data.total_break_time[i] +'</td></tr></tbody></table></div> </td></tr>');
 									} else {
 										$('#results').append('<tr id="'+attend_id+'" style="background:red;" data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle"><td><input id="'+attend_id+'" name="rowSelected" type="checkbox" class="checkthis" /></td> <td>' +
-										data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>'+ data.crews[i]+'</td><td>' + data.job_codes[i] +'</td><td>' + data.ranches[i] +'</td><td>' + item.fields.date +'</td><td data-editable="true">' +
+										data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>'+ data.crews[i]+'</td><td>' + item.fields.date +'</td><td data-editable="true">' +
 										start_hour + '</td><td data-editable="true">' + end_hour + '</td><td>' + total_time+'</td></tr>');
+										$('#results').append('<tr><td colspan="12" class="hiddenRow"><div class="accordian-body collapse" id='+demo+'> <table class="table table-striped"><thead><tr><th>Job Codes</th><th>Locations</th><th># Breaks </th><th> Total Break Time</th></tr></thead><tbody><tr><td>' + data.job_codes[i] +'</td><td>' + data.ranches[i] +'</td><td>' + data.num_breaks[i] +'</td><td>' + data.total_break_time[i] +'</td></tr></tbody></table></div> </td></tr>');
+
 									}
 								} else {
 									$('#results').append('<tr id="'+attend_id+'" style="background:lightgrey;" data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle"><td><input id="'+attend_id+'" name="rowSelected" type="checkbox" class="checkthis" /></td> <td>' +
-										data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>'+ data.crews[i]+'</td><td>' + data.job_codes[i] +'</td><td>' + data.ranches[i] +'</td><td>' + item.fields.date +'</td><td data-editable="true">' +
+										data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>'+ data.crews[i]+'</td><td>' + item.fields.date +'</td><td data-editable="true">' +
 										start_hour + '</td><td data-editable="true">' + end_hour + '</td><td>' + total_time+'</td></tr>');
+										$('#results').append('<tr><td colspan="12" class="hiddenRow"><div class="accordian-body collapse" id='+demo+'> <table class="table table-striped"><thead><tr><th>Job Codes</th><th>Locations</th><th># Breaks </th><th> Total Break Time</th></tr></thead><tbody><tr><td>' + data.job_codes[i] +'</td><td>' + data.ranches[i] +'</td><td>' + data.num_breaks[i] +'</td><td>' + data.total_break_time[i] +'</td></tr></tbody></table></div> </td></tr>');
+
 								}
 
 								i = i+1;
@@ -568,7 +579,7 @@
 						{% trans 'HC TIMEKEEPER REPORT' %}</h3>
 					</div>
 					<div class="panel-body">
-						<div align="left" style="font-weight:600;">Select Dates:</div>
+						<div align="left" style="font-weight:600;font-size:18px;">Select Dates:</div>
 					<div style="width: 70%;float: left;" class="input-daterange input-group" id="datepicker">
 						<input type="text" id="start" class="input-sm form-control" name="start" />
 						<span class="input-group-addon">to</span>
@@ -576,7 +587,7 @@
 
 					</div>
 					<div style="width: 30%;float: right;" id="list1" style="margin-top: 30px;" class="dropdown-check-list" tabindex="100">
-						<span style="margin-left:10px;width: 100%;border-radius: 4px;" class="anchor">Select Employees</span>
+						<span style="margin-left:10px;width: 100%;border-radius: 4px; font-size: 18px;font-weight: 600;" class="anchor">Select Employees</span>
 						<ul style="border-radius: 4px;position:absolute; background: white;width: 100%;float:center;" id="items" class="items">
 						</ul>
 					</div>
@@ -620,8 +631,8 @@
 								<!--<th>Team Lead</th>-->
 								<th>Team Name</th>
 								<!--<th>Location</th>-->
-								<th>Job Code</th>
-								<th>Location</th>
+								<!--<th>Job Code</th>-->
+								<!--<th>Location</th>-->
 								<th>Date</th>
 								<th>Clock-In</th>
 								<th>Clock-Out</th>
@@ -642,7 +653,8 @@
 
 				<button has-spinner style="float: right;margin-right: 15px;height: 50px; font-weight: 600;font-size: 15px;" type="button" onclick="downloadExcel()" class="btn btn-default" ><span class="spinner"><i class="icon-spin icon-refresh"></i></span>Download .xls</button>
 				<button style="float: right;margin-right: 15px;height: 50px; font-weight: 600;font-size: 15px;" type="button" class="btn btn-success" id="btnExport" onclick="downloadCsv()"><span style="font-size: 15px;" class="glyphicon glyphicon-download"></span>Download .csv</button>
-				<!--<button style="float: right;margin-right: 15px;height: 50px; font-weight: 600;font-size: 15px;" type="button" class="btn btn-success" id="btnExport2" onclick="downloadNewCsv()"><span style="font-size: 15px;" class="glyphicon glyphicon-download"></span>Download new .csv</button>-->
+				<!--<a href="{% url 'timecard_pdf' %}"><button style="float: right;margin-right: 15px;height: 50px; font-weight: 600;font-size: 15px;" type="button" class="btn btn-success" id="btnExportPdf"><span style="font-size: 15px;" class="glyphicon glyphicon-download"></span>Download .pdf</button></a>-->
+				<button style="float: right;margin-right: 15px;height: 50px; font-weight: 600;font-size: 15px;" type="button" class="btn btn-success" id="btnExport2" onclick="downloadNewCsv()"><span style="font-size: 15px;" class="glyphicon glyphicon-download"></span>Download WEEKLY formatted .xls</button>
 
 
 			</div>
