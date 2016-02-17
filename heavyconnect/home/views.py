@@ -71,8 +71,6 @@ def timecard_pdf(request):
 def empty(request):
 	return redirect('home')
 
-
-
 def home(request):
 	# lang = request.GET['lang']
 	# if lang != None:
@@ -547,7 +545,6 @@ def stopShiftAuto(request, idUser):
 					ten_hours = datetime.timedelta(hours = 10)
 					fourteen_hours = datetime.timedelta(hours = 14)
 					twelve_hours = datetime.timedelta(hours = 12)
-					print 'start'
 					if total_hours > 18 :
 						#3 meals, 5 breaks
 
@@ -678,7 +675,6 @@ def stopShiftAuto(request, idUser):
 						lunch1.save()
 						print '2, 1'
 					elif total_hours <= 6 and total_hours > 5:
-						print 'one lunch'
 						print '1,1'
 
 						#1 meals, 1 breaks
@@ -3405,7 +3401,7 @@ def time_keeper(request):
 	elif employee.teamManager:
 		return render(request, 'driver/timeKeeperGroup.html')
 	else:
-		return render(request, 'driver/newTimeKeeper.html')
+		return render(request, 'driver/timeKeeper.html')
 	
 @login_required
 def time_keeper_test(request):
@@ -3945,7 +3941,6 @@ def getAllEmployees(request):
 			try:
 				all_employee = Employee.objects.all().exclude(permission_level = 3)
 				all_employee = all_employee.exclude(permission_level = 2)
-				print all_employee
 				employees = []
 				for each in all_employee:
 					each_result['first_name'] = each.user.first_name
@@ -4329,7 +4324,7 @@ def getCsv(request):
 	# attendances = EmployeeAttendance.objects.all().order_by('-date').filter(date__range = (start, end))
 
 	header = []
-	header.extend(('Attendance ID', 'ID', 'Name', 'Team Lead', 'Team Name', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked(w/ breaks)','Declined'))
+	header.extend(('Attendance ID', 'ID', 'Name', 'Team Lead', 'Team Name', 'Date', 'Clock-In', 'Clock-Out', 'Hours Worked(w/ breaks)','Employee Declined', 'Manager Approved'))
 	header.extend(('Job 1', 'Total Time', 'Location'))
 	header.extend(('Job 2',  'Total Time', 'Location'))
 	header.extend(('Job 3', 'Total Time', 'Location'))
@@ -4355,6 +4350,7 @@ def getCsv(request):
 			attendance_id = attendance.id
 			date = attendance.date
 			declined = attendance.declined
+			manager_approved = attendance.managerApproved
 			hour_started = attendance.hour_started
 			hour_ended = attendance.hour_ended
 			now = datetime.datetime.now().time()
@@ -4388,9 +4384,7 @@ def getCsv(request):
 					hours_today = 'N/A'
 			else:
 				hours_today = 'N/A'
-			print 'tasks'
 			tasks = Task.objects.filter(attendance = attendance).order_by('-id')
-			print tasks
 
 			# job_code = EmployeeAttendanceChecklist.objects.filter(attendance = attendance, question__description = 'Job Code').first()
 			# ranch = EmployeeAttendanceChecklist.objects.filter(attendance = attendance, question__description = 'Ranch').first()
@@ -4404,21 +4398,18 @@ def getCsv(request):
 			# 	ranch = ranch.answer
 
 			employee_name = attendance.employee.user.last_name + ", " + attendance.employee.user.first_name
-			data_row.extend((attendance_id, employee_id, employee_name, leader_name, crew, date, hour_started, hour_ended, hours_today,declined))
+			data_row.extend((attendance_id, employee_id, employee_name, leader_name, crew, date, hour_started, hour_ended, hours_today,declined, manager_approved))
 			actual_tasks = []
 			for task in tasks:
-				print task
 				empTask = EmployeeTask.objects.filter(task= task).first()
 
-				print 'emp'
-
-				print empTask
 				if empTask is not None:
 					data_row.extend((task.code, task.hours_spent, task.field))
 					actual_tasks.append(empTask)
 				else:
 					print 'none'
 			need_to_add = len(actual_tasks)
+
 			while need_to_add < 3:
 				data_row.extend(("", "", ""))
 				need_to_add += 1
@@ -4485,130 +4476,159 @@ def getTempCsvFormat(request):
 	end = time.strptime(request.POST['end'], "%m/%d/%Y")
 	start = str(start.tm_year) +"-"+str(start.tm_mon)+"-"+str(start.tm_mday)
 	end = str(end.tm_year) +"-"+str(end.tm_mon)+"-"+str(end.tm_mday)
+	qr_codes = request.POST.getlist('namesChecked[]')
+
+	parsed_codes = []
+
+	for code in qr_codes:
+		parsed_codes.append(int(code))
+
 	attendances = EmployeeAttendance.objects.all().order_by('-date').filter(date__range = (start, end))
+	some_attendances = []
+	# if len(qr_codes) == 0:
+	# 	some_attendances = attendances
+	# else:
+	# 	for attendance in attendances:
+	# 		if int(attendance.employee.qr_code) in parsed_codes:
+	# 			some_attendances.append(attendance)
+	for code in qr_codes:
 
-	if attendances.count > 0:
-		for attendance in attendances:
-			data_row = []
+		some_attendances = []
+		some_attendances = EmployeeAttendance.objects.all().order_by('-date').filter(date__range = (start, end))
+		employee = Employee.objects.get(qr_code = code)
+		employee_name = employee.user.last_name + ", " + employee.user.first_name
+		employee_number = employee.qr_code
+		header = []
+		sub_header = []
+		total_hours = 0.0
+		header.extend(('Attendance ID:', '','Employee Name:', employee_name, 'Employee Number:', employee_number))
+		sub_header.extend(('DATE','DAY', 'WORK STARTS', '1ST BREAK 15 MIN START', '1ST BREAK 15 MIN END', '1ST MEAL BREAK START', '1ST MEAL BREAK END', '2ND BREAK 15 MIN START', '2ND BREAK 15 MIN END', '2ND MEAL BREAK START', '2ND MEAL BREAK END','3RD BREAK 15 MIN START', '3RD BREAK 15 MIN END', '3RD MEAL BREAK START', '3RD MEAL BREAK END', '4TH BREAK 15 MIN START', '4TH BREAK 15 MIN END','WORK ENDS', 'JOB CODE', 'COMMENTS', 'INITIALS'))
 
-			header = []
-			sub_header = []
-			data_row2 = []
+		if len(some_attendances) > 0:
+			print code
+			print 'code'
+			some_attendances = some_attendances.filter(employee__qr_code = code)
+		else:
+			some_attendances = []
 
-			employee_id = attendance.employee.qr_code
-			attendance_id = attendance.id
-			date = attendance.date
-			declined = attendance.declined
-			hour_started = attendance.hour_started
-			hour_ended = attendance.hour_ended
-			now = datetime.datetime.now().time()
-
-			if attendance.hour_started != None:
-				hour_started = datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
-			else:
-				hour_started = 'N/A'
-
-			if attendance.hour_ended != None:
-				hour_ended = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
-			else:
-				hour_ended = 'N/A'
-
-			if hour_ended == 'N/A' or hour_ended == None:
-				hour_ended = datetime.timedelta(hours = now.hour, minutes = now.minute, seconds = now.second)
-			if hour_ended != 'N/A' and hour_started != 'N/A':
-				if hour_ended > hour_started:
-					# hour_ended =  datetime.timedelta(hours = hour_ended.hours, minutes = hour_ended.minutes, seconds = hour_ended.seconds)
-					# hour_started =  datetime.timedelta(hours = hour_started.hours, minutes = hour_started.minutes, seconds = hour_started.seconds)
-					hours_today = hour_ended - hour_started
-					hours_today = str(round(hours_today.total_seconds()/60/60, 2))
-				else:
-					hours_today = 'N/A'
-			else:
-				hours_today = 'N/A'
-
-			tasks = Task.objects.filter(attendance = attendance).order_by('-id')
-
-			employee_name = attendance.employee.user.last_name + ", " + attendance.employee.user.first_name
-			employee_number = attendance.employee.qr_code
-			# data_row.extend((employee_id, employee_name, leader_name, crew, date, hour_started, hour_ended, hours_today,declined))
-			header.extend(('Attendance ID:', attendance_id,'Employee Name:', employee_name, 'Employee Number:', employee_number))
-			sub_header.extend(('DAY', 'WORK STARTS', '1ST BREAK 15 MIN START', '1ST BREAK 15 MIN END', '1ST MEAL BREAK START', '1ST MEAL BREAK END', '2ND BREAK 15 MIN START', '2ND BREAK 15 MIN END', '2ND MEAL BREAK START', '2ND MEAL BREAK END','3RD BREAK 15 MIN START', '3RD BREAK 15 MIN END', '3RD MEAL BREAK START', '3RD MEAL BREAK END', '4TH BREAK 15 MIN START', '4TH BREAK 15 MIN END','WORK ENDS', 'JOB CODE', 'COMMENTS', 'INITIALS'))
-
-			for task in tasks:
-				print task
-				empTask = EmployeeTask.objects.filter(task= task).first()
-				print 'emp'
-
-				print empTask
-				if empTask is not None:
-					print 'hi'
-					# data_row.extend((task.code, task.hours_spent, task.field))
-				else:
-					print 'none'
-			breaks = Break.objects.filter(attendance__id = attendance.id).order_by('start')
-			jobs = Task.objects.filter(attendance_id = attendance.id).order_by('-id')
-			i = 1
-			break_num = breaks.count()
-			m = 1
-			lunch_breaks = []
-			reg_breaks = []
-			combined_breaks = []
-			dayofweek = calendar.day_name[attendance.date.weekday()]
-			data_row.append(dayofweek)
-			data_row.append(hour_started)
-			if break_num > 0:
-				for item in breaks:
-					if item.lunch == True:
-
-						lunch_breaks.append(item)
-					else:
-						reg_breaks.append(item)
-				most_breaks = max(len(lunch_breaks), len(reg_breaks))
-				i=0
-				while most_breaks > i:
-					if(len(reg_breaks) > i):
-						combined_breaks.append(reg_breaks[i])
-					else:
-						combined_breaks.append("")
-					if(len(lunch_breaks) > i):
-						combined_breaks.append(lunch_breaks[i])
-					else:
-						combined_breaks.append("")
-					i += 1
-				i=1
-
-				for item in combined_breaks:
-					num_break = i
-					if(item != ""):
-						if item.start != None and item.end != None:
-							if item.end >= item.start:
-								start = datetime.timedelta(hours = item.start.hour, minutes = item.start.minute, seconds = item.start.second)
-								end = datetime.timedelta(hours = item.end.hour, minutes = item.end.minute, seconds = item.end.second)
-								total = end - start
-								total = str(round(total.total_seconds()/60/60, 2))
-							else:
-								total = 'N/A'
-						else:
-							total = 'N/A'
-						data_row.extend((item.start, item.end))
-					else:
-						data_row.extend(('', ''))
-					i += 1
-				leftover = 7 - len(combined_breaks)
-				while leftover > 0:
-					data_row.extend(('', ''))
-					leftover -= 1
-			else:
-				x=0
-				while x <7:
-					data_row.extend(('', ''))
-					x += 1
-			print 'hello'
-			data_row.extend((hour_ended, 'job code', 'comments', 'initials'))
+		if len(some_attendances) > 0:
 			writer.writerow(header)
 			writer.writerow(sub_header)
-			writer.writerow(data_row)
-			writer.writerow(('TOTAL HOURS:', hours_today))
+			for attendance in some_attendances:
+
+				data_row = []
+				data_row2 = []
+				hours_today = 0
+				all_job_codes = ""
+				all_locations = ""
+
+				employee_id = attendance.employee.qr_code
+				attendance_id = attendance.id
+				date = attendance.date
+				declined = attendance.declined
+				hour_started = attendance.hour_started
+				hour_ended = attendance.hour_ended
+				signature = attendance.signature
+				now = datetime.datetime.now().time()
+
+				if attendance.hour_started != None:
+					hour_started = datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
+				else:
+					hour_started = 'N/A'
+
+				if attendance.hour_ended != None:
+					hour_ended = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
+				else:
+					hour_ended = 'N/A'
+
+				if hour_ended == 'N/A' or hour_ended == None:
+					hour_ended = datetime.timedelta(hours = now.hour, minutes = now.minute, seconds = now.second)
+				if hour_ended != 'N/A' and hour_started != 'N/A':
+					if hour_ended > hour_started:
+						hours_today = hour_ended - hour_started
+						temp = round(hours_today.total_seconds()/60/60, 2)
+						total_hours += temp
+						hours_today = str(round(hours_today.total_seconds()/60/60, 2))
+					else:
+						hours_today = 'N/A'
+				else:
+					hours_today = 'N/A'
+
+				tasks = Task.objects.filter(attendance = attendance).order_by('-id')
+
+				for task in tasks:
+					empTask = EmployeeTask.objects.filter(task= task).first()
+
+					if empTask is not None:
+						all_job_codes = all_job_codes + str(task.code) + "; "
+						all_locations = all_locations + " "+ str(task.field) + "("+str(task.hours_spent)+"HRS); "
+
+						# data_row.extend((task.code, task.hours_spent, task.field))
+					else:
+						print 'none'
+				breaks = Break.objects.filter(attendance__id = attendance.id).order_by('start')
+				jobs = Task.objects.filter(attendance_id = attendance.id).order_by('-id')
+				i = 1
+				break_num = breaks.count()
+				m = 1
+				lunch_breaks = []
+				reg_breaks = []
+				combined_breaks = []
+				dayofweek = calendar.day_name[attendance.date.weekday()]
+
+				data_row.append(attendance.date)
+				data_row.append(dayofweek)
+				data_row.append(hour_started)
+				if break_num > 0:
+					for item in breaks:
+						if item.lunch == True:
+
+							lunch_breaks.append(item)
+						else:
+							reg_breaks.append(item)
+					most_breaks = max(len(lunch_breaks), len(reg_breaks))
+					i=0
+					while most_breaks > i:
+						if(len(reg_breaks) > i):
+							combined_breaks.append(reg_breaks[i])
+						else:
+							combined_breaks.append("")
+						if(len(lunch_breaks) > i):
+							combined_breaks.append(lunch_breaks[i])
+						else:
+							combined_breaks.append("")
+						i += 1
+					i=1
+					for item in combined_breaks:
+						num_break = i
+						if(item != ""):
+							if item.start != None and item.end != None:
+								if item.end >= item.start:
+									start_time = datetime.timedelta(hours = item.start.hour, minutes = item.start.minute, seconds = item.start.second)
+									end_time = datetime.timedelta(hours = item.end.hour, minutes = item.end.minute, seconds = item.end.second)
+									total = end_time - start_time
+									total = str(round(total.total_seconds()/60/60, 2))
+								else:
+									total = 'N/A'
+							else:
+								total = 'N/A'
+							data_row.extend((item.start, item.end))
+						else:
+							data_row.extend(('', ''))
+						i += 1
+					leftover = 7 - len(combined_breaks)
+					while leftover > 0:
+						data_row.extend(('', ''))
+						leftover -= 1
+				else:
+					x=0
+					while x <7:
+						data_row.extend(('', ''))
+						x += 1
+				data_row.extend((hour_ended, all_job_codes, all_locations, signature))
+
+				writer.writerow(data_row)
+			writer.writerow(('TOTAL HOURS:', round(total_hours,2)))
 
 	return response
 
@@ -4666,11 +4686,23 @@ def timeKeeperDailyReport(request):
 			declines = []
 			managerAccepts = []
 			attend_id = []
+			num_breaks = []
+			total_break_time = []
 			for attendance in some_attendances:
 				declines.append(attendance.declined)
 				managerAccepts.append(attendance.managerApproved)
-				print managerAccepts
+
 				breaks = Break.objects.filter(attendance = attendance)
+				num_breaks.append(len(breaks))
+				total_time_breaks = 0.0
+				for item in breaks:
+					start_time = datetime.timedelta(hours = item.start.hour, minutes = item.start.minute, seconds = item.start.second)
+					end_time = datetime.timedelta(hours = item.end.hour, minutes = item.end.minute, seconds = item.end.second)
+					total = end_time - start_time
+					total = round(total.total_seconds()/60/60, 2)
+					total_time_breaks += total
+				total_break_time.append(total_time_breaks)
+
 				start =  datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
 
 				if attendance.hour_ended is None:
@@ -4716,6 +4748,8 @@ def timeKeeperDailyReport(request):
 			result['qr_code'] = qr_code
 			result['group_leader'] = group_leader
 			result['crews'] = crews
+			result['num_breaks'] = num_breaks
+			result['total_break_time'] = total_break_time
 			result['job_codes'] = job_codes
 			result['ranches'] = ranches
 			result['declines'] = declines
@@ -5254,7 +5288,6 @@ def checkEmployeePassword(request):
 
 			employee = Employee.objects.get(qr_code = qr_code)
 			attendance = EmployeeAttendance.objects.filter(employee = employee, date__range = (start_date,end_date)).order_by('-hour_started')[:1].first()
-			print attendance
 			# attendance = EmployeeAttendance.objects.filter(employee = employee).order_by('-date', '-hour_started').first()
 
 			if employee is not None:
@@ -5266,7 +5299,6 @@ def checkEmployeePassword(request):
 					if attendance.hour_started is None:
 						result['clockedin'] = "in"
 					elif attendance.hour_ended is not None and attendance.signature is None:
-						print attendance
 						result['clockedin'] = 'sign'
 					elif attendance.hour_ended is None:
 						result["clockedin"] = "out"
