@@ -917,7 +917,7 @@ function addRemove() {
 				success: function(data, status, xhr){
 					if (data.success) {
 						var attendanceId = $("#attendanceId").val();
-						emptyDivs();
+
 						$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + attendanceId + "'>");
     					$("#questions").css("text-align", "left");
     					$("#questions").css("font-size", "20px");
@@ -1093,26 +1093,26 @@ function addRemove() {
 					lun = [];
 					currentStart = data.Attendance_start;
 					currentEnd = data.Attendance_end;
-					if(data.no_attendance == 'false'){
-					if (data.Attendance_end == 'In Progress') {
-						$("#divTimelog").append("<table id='tableTimelog' ><tr><td colspan='2'>Start Shift: " + tConvert(data.Attendance_start) + "</td></tr>");
-						var n=1;
-						breakDuration = "";
+					<!--if(data.no_attendance == 'false'){-->
+					<!--if (data.Attendance_end == 'In Progress') {-->
+						<!--$("#divTimelog").append("<table id='tableTimelog' ><tr><td colspan='2'>Start Shift: " + tConvert(data.Attendance_start) + "</td></tr>");-->
+						<!--var n=1;-->
+						<!--breakDuration = "";-->
 
-						for (i = 0; i < data.breaks.length; i++) {
-							n=n+1;
-							if (data.breaks[i].lunch == 0){
-								$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + breaks + " Break " + tConvert(data.breaks[i].breakStart) + " - " + tConvert(data.breaks[i].breakStop) + "</td></tr>");
-								breaks++;
-							} else {
-								$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + lunchs + " Lunch " + tConvert(data.breaks[i].breakStart) + " - " + tConvert(data.breaks[i].breakStop) + "</td></tr>");
-								lunchs++;
-							}
-							breakDuration = "";
+						<!--for (i = 0; i < data.breaks.length; i++) {-->
+							<!--n=n+1;-->
+							<!--if (data.breaks[i].lunch == 0){-->
+								<!--$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + breaks + " Break " + tConvert(data.breaks[i].breakStart) + " - " + tConvert(data.breaks[i].breakStop) + "</td></tr>");-->
+								<!--breaks++;-->
+							<!--} else {-->
+								<!--$("#tableTimelog").append("<tr><td id='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + lunchs + " Lunch " + tConvert(data.breaks[i].breakStart) + " - " + tConvert(data.breaks[i].breakStop) + "</td></tr>");-->
+								<!--lunchs++;-->
+							<!--}-->
+							<!--breakDuration = "";-->
 
-						}
-						$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + tConvert(data.Attendance_end) + "</td></tr>");
-					} else {
+						<!--}-->
+						<!--$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + tConvert(data.Attendance_end) + "</td></tr>");-->
+					<!--} else {-->
 						$("#divTimelog").append("<table id='tableTimelog' ><tr id='trStartShift'><td colspan='2'>Start Shift: " + tConvert(data.Attendance_start) + "</td></tr>");
 							var n=1;
 							breakDuration = "";
@@ -1142,10 +1142,10 @@ function addRemove() {
 							$("#btnDeclineCheckList").click(function(){
 								declineShift("{{ csrf_token }}", "{% url 'declineShift' %}", data.attendanceId);
 							});
-						}
-					} else {
-						$("#divTimelog").append("No Attendances Today <p>Please start a shift to see your schedule.</p>");
-					}
+						<!--}-->
+					<!--} else {-->
+						<!--$("#divTimelog").append("No Attendances Today <p>Please start a shift to see your schedule.</p>");-->
+					<!--}-->
 					$("#tableTimelog").append("<tr><td colspan='3'>Total: " + data.Total + " hours</td></tr>");
 				}
 			});
