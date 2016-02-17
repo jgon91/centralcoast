@@ -4734,9 +4734,9 @@ def timeKeeperDailyReport(request):
 						job_code = str(item.code)
 						ranch = str(item.field)
 						hour = str(item.hours_spent)
-						str_job_code = str_job_code  + job_code +"; "
-						str_ranch = str_ranch + ranch +"; "
-						str_hour = str_hour + hour +"; "
+						str_job_code = str_job_code  + job_code +", "
+						str_ranch = str_ranch + ranch +", "
+						str_hour = str_hour + hour +", "
 
 				job_codes.append(str_job_code)
 				ranches.append(str_ranch)
