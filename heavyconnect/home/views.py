@@ -2434,7 +2434,7 @@ def timeLogById(request):
 				start_date = datetime.datetime.combine(date, datetime.time.min) #today date at 0:00 AM
 				end_date = datetime.datetime.combine(date, datetime.time.max) # date at 11:59 PM
 				employeeAttendance = EmployeeAttendance.objects.filter(employee__user__id = userId, date__range = (start_date,end_date)).order_by('-hour_started')[:1]
-				employee = Employee.objects.filter(user__id = userId)
+				employee = Employee.objects.filter(user__id = userId).first()
 				count = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #counter to keep all the worked hours
 				keeper = datetime.timedelta(hours = 0, minutes = 0, seconds = 0) #this variable will keep the last break. It is useful when the shift is not done
 				keeper2 =  datetime.timedelta(hours = 23, minutes = 59, seconds = 59) # when the break is on another day
