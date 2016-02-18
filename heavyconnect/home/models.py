@@ -292,7 +292,7 @@ class EmployeeAttendance(models.Model):
 	hours_worked = models.TimeField(null = True, blank = True)
 	declined = models.BooleanField(default = False)
 	managerApproved = models.BooleanField(default = False)
-	manager = models.CharField(default = "", max_length = 5000)
+	manager = models.CharField(default = "", max_length = 5000, blank=True, null=True)
 	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	modified = models.DateTimeField(auto_now=True, blank=True, null=True)
 
