@@ -162,28 +162,6 @@
 			});
 		}); 
 
-		function getTimeWorked (currentTime, initialW) {
-			var hour = 0;
-			var min = 0;
-			var newHour = 0;
-			var newMin = 0;
-			var finalW = 0;
-			var partialW = 0;
-			var workTime = 0;
-			hour = currentTime.substring(0,2);
-			min = currentTime.substring(3,5);
-			finalW = new Date(1, 1, 1, hour, min);
-			partialW = (finalW - initialW) / 1000;
-			partialW = partialW / 60;
-			newMin = partialW % 60;
-			newHour = (partialW - newMin) / 60;
-			workTime = newHour.toString() + ":" + (newMin < 10 ? "0" : "") + newMin.toString();
-			totalHour = totalHour + parseInt(newHour);
-			totalMin = totalMin + parseInt(newMin);
-			totalWorked = totalHour.toString() + ":" + (totalMin < 10 ? "0" : "") + totalMin.toString();
-			return workTime;
-		}
-
 
 		function getEmployeeShifts(token, url) {
 			$.ajax({
