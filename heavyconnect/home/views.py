@@ -525,6 +525,7 @@ def stopShiftAuto(request, idUser):
 						attendance.hour_ended = datetime.datetime.now()
 
 					# attendance.signature = signature
+
 					attendance.save() #in order to deal with time zone problem for now
 					hour_ended = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
 					hour_started = datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
@@ -545,14 +546,12 @@ def stopShiftAuto(request, idUser):
 					ten_hours = datetime.timedelta(hours = 10)
 					fourteen_hours = datetime.timedelta(hours = 14)
 					twelve_hours = datetime.timedelta(hours = 12)
+					today = datetime.datetime.today()
 					if total_hours > 18 :
-						#3 meals, 5 breaks
+						#3 meals, 5 breaks,
+						#need to fix number of breaks,lunches
 
 						print '3, 5'
-
-					elif total_hours <= 18 and total_hours > 14:
-						#2 meals, 4 breaks
-						print '2, 4'
 						break_started = hour_started + two_hours
 						break_ended = break_started + one_break
 						lunch_started = hour_started + five_hours
@@ -583,8 +582,61 @@ def stopShiftAuto(request, idUser):
 
 						break4_started = now + break4_started
 						break4_ended = now + break4_ended
-						break4 = Break(attendance= attendance, lunch = False, start = break4_started.time(), end = break4_ended.time(), edited=False)
-						break4.save()
+						hour_ended = attendance.hour_ended
+						if hour_ended > break4_started and hour_ended > break4_ended:
+							break4 = Break(attendance= attendance, lunch = False, start = break4_started.time(), end = break4_ended.time(), edited=False)
+							break4.save()
+
+						lunch_started = now + lunch_started
+						lunch_ended = now + lunch_ended
+
+						lunch1 = Break(attendance = attendance, lunch = True, start = lunch_started.time(), end = lunch_ended.time(), edited=False)
+						lunch2_started = now + lunch2_started
+						lunch2_ended = now + lunch2_ended
+
+						lunch2 = Break(attendance = attendance, lunch = True, start = lunch2_started.time(), end = lunch2_ended.time(), edited=False)
+
+						lunch1.save()
+						lunch2.save()
+
+					elif total_hours <= 18 and total_hours > 14:
+						#2 meals, 4 breaks
+						print '2, 4'
+						break_started = hour_started + two_hours
+						break_ended = break_started + one_break
+						lunch_started = hour_started + five_hours
+						lunch_ended = lunch_started + one_lunch
+						break2_started = hour_started + six_hours
+						break2_ended = break2_started + one_break
+						break3_started = hour_started + ten_hours
+						break3_ended = break3_started + one_break
+						lunch2_started = hour_started + twelve_hours
+						lunch2_ended = lunch2_started + one_lunch
+						break4_started = hour_started + fourteen_hours
+						break4_ended = break4_started + one_break
+
+
+						break1_started = now + break_started
+						break1_ended = now + break_ended
+						break1 = Break(attendance = attendance, lunch = False, start = break1_started.time(), end = break1_ended.time(), edited=False)
+						break1.save()
+
+						break2_started = now + break2_started
+						break2_ended = now + break2_ended
+						break2 = Break(attendance= attendance, lunch = False, start = break2_started.time(), end = break2_ended.time(), edited=False)
+						break2.save()
+
+						break3_started = now + break3_started
+						break3_ended = now + break3_ended
+						break3 = Break(attendance= attendance, lunch = False, start = break3_started.time(), end = break3_ended.time(), edited=False)
+						break3.save()
+
+						break4_started = now + break4_started
+						break4_ended = now + break4_ended
+						hour_ended =  attendance.hour_ended
+						if hour_ended > break4_started and hour_ended > break4_ended:
+							break4 = Break(attendance= attendance, lunch = False, start = break4_started.time(), end = break4_ended.time(), edited=False)
+							break4.save()
 
 						lunch_started = now + lunch_started
 						lunch_ended = now + lunch_ended
@@ -624,8 +676,10 @@ def stopShiftAuto(request, idUser):
 
 						break3_started = now + break3_started
 						break3_ended = now + break3_ended
-						break3 = Break(attendance= attendance, lunch = False, start = break3_started.time(), end = break3_ended.time(), edited=False)
-						break3.save()
+						hour_ended = attendance.hour_ended
+						if hour_ended > break3_started and hour_ended > break3_ended:
+							break3 = Break(attendance= attendance, lunch = False, start = break3_started.time(), end = break3_ended.time(), edited=False)
+							break3.save()
 
 						lunch_started = now+ lunch_started
 						lunch_ended = now + lunch_ended
@@ -662,12 +716,19 @@ def stopShiftAuto(request, idUser):
 
 						break1.save()
 
+
 						break2_started = now + break2_started#datetime.datetime(hour = break2_started.hours, minute = break2_started.minutes, second = break2_started.seconds)
 
 						break2_ended = now + break2_ended#datetime.datetime(hour = break2_ended.hours, minute = break2_ended.minutes, second = break2_ended.seconds)
+						hour_ended = attendance.hour_ended
+						print 'comparing lunch and hour ended'
+						print break2_started
+						print break2_ended
+						print hour_ended
+						if hour_ended > break2_started and hour_ended > break2_ended:
+							break2 = Break(attendance= attendance, lunch = False, start = break2_started.time(), end = break2_ended.time(), edited=False)
+							break2.save()
 
-						break2 = Break(attendance= attendance, lunch = False, start = break2_started.time(), end = break2_ended.time(), edited=False)
-						break2.save()
 						lunch_started = now + lunch_started #datetime.datetime(hour = lunch_started.hours, minute = lunch_started.minutes, second = lunch_started.seconds)
 						lunch_ended = now + lunch_ended #datetime.datetime(hour = lunch_ended.hours, minute = lunch_ended.minutes, second = lunch_ended.seconds)
 						lunch1 = Break(attendance = attendance, lunch = True, start = lunch_started.time(), end = lunch_ended.time(), edited=False)
@@ -686,21 +747,30 @@ def stopShiftAuto(request, idUser):
 						lunch_ended = lunch_started + one_lunch
 						lunch_started = now + lunch_started
 						lunch_ended = now + lunch_ended
+						hour_ended = attendance.hour_ended
+
 						break1 = Break(attendance = attendance, lunch = False, start = break_started.time(), end = break_ended.time())
-						lunch1 = Break(attendance = attendance, lunch = True, start = lunch_started.time(), end = lunch_ended.time())
 						break1.save()
-						lunch1.save()
+
+
+						if hour_ended > lunch_started and hour_ended > lunch_ended:
+							lunch1 = Break(attendance = attendance, lunch = True, start = lunch_started.time(), end = lunch_ended.time())
+							lunch1.save()
 						print '1, 1'
 					elif total_hours <= 5 and total_hours >= 3.5:
 						print 'no lunch'
 						#0 meals, 1 breaks
+
+
 						break_started = hour_started + two_hours
 						break_ended = break_started + one_break
 						break_started = now + break_started
 						break_ended = now + break_ended
+						hour_ended = attendance.hour_ended
 
-						break1 = Break(attendance = attendance, lunch = False, start = break_started.time(), end = break_ended.time())
-						break1.save()
+						if hour_ended > break_started and hour_ended > break_ended:
+							break1 = Break(attendance = attendance, lunch = False, start = break_started.time(), end = break_ended.time())
+							break1.save()
 						print '1, 0'
 
 
