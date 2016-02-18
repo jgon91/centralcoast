@@ -67,7 +67,7 @@ ADMINS = [('Jessica', 'jgon91@gmail.com')]
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'jgon91@gmail.com'
-# EMAIL_HOST_PASSWORD = os.environ['EMAIL_PASS']
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_PASS']
 SERVER_EMAIL = 'jgon91@gmail.com'
 MANAGERS = ADMINS
 EMAIL_USE_TLS = True
@@ -111,27 +111,27 @@ TEMPLATES = [
 WSGI_APPLICATION = 'heavyconnect.wsgi.application'
 
 
-DATABASES = {
-         'default': {
-             'ENGINE': 'tenant_schemas.postgresql_backend', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-             'NAME': 'dev',                      # Or path to database file if using sqlite3.
-             'USER': '',                      # Not used with sqlite3.
-             'PASSWORD': '',                  # Not used with sqlite3.
-             'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
-             'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
-
-         }
-     }
 # DATABASES = {
-#     'default': {
-#         'ENGINE': 'tenant_schemas.postgresql_backend',
-#         'NAME': os.environ['DB_NAME'],                      # Or path to database file if using sqlite3.
-#         'USER': os.environ['DB_USER'],                      # Not used with sqlite3.
-#         'PASSWORD': os.environ['DB_PASS'],                  # Not used with sqlite3.
-#         'HOST': os.environ['DB_HOST'],                      # Set to empty string for localhost. Not used with sqlite3.
-#         'PORT': os.environ['DB_PORT'],
-#     }
-# }
+#          'default': {
+#              'ENGINE': 'tenant_schemas.postgresql_backend', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+#              'NAME': 'dev',                      # Or path to database file if using sqlite3.
+#              'USER': '',                      # Not used with sqlite3.
+#              'PASSWORD': '',                  # Not used with sqlite3.
+#              'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
+#              'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
+#
+#          }
+#      }
+DATABASES = {
+    'default': {
+        'ENGINE': 'tenant_schemas.postgresql_backend',
+        'NAME': os.environ['DB_NAME'],                      # Or path to database file if using sqlite3.
+        'USER': os.environ['DB_USER'],                      # Not used with sqlite3.
+        'PASSWORD': os.environ['DB_PASS'],                  # Not used with sqlite3.
+        'HOST': os.environ['DB_HOST'],                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': os.environ['DB_PORT'],
+    }
+}
 
 
 DATABASE_ROUTERS = (
