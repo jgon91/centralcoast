@@ -283,6 +283,8 @@
 			});
 
 			$("#clock-in").click(function() {
+
+				$("#clock-in").css("margin-top", "30px");	//green
 				$("#messageTimekeeper").css("color", "#1F3801");	//green
 				$("#messageTimekeeper").html("{% trans 'Starting Shift' %}...");
 				emptyDivs();
@@ -1410,8 +1412,8 @@ function addRemove() {
     padding: 0px;"></button>
 						<button type="button" class="closeTimekeeper" data-dismiss="modal"></button>
 						<span id="messageTimekeeper"></span>
-						<p id="employeeName"></p>
-						<p id="errorPin"></p>
+						<div id="employeeName"></div>
+						<div id="errorPin"></div>
 						<table id="tableMessage">
 							<tr>
 								<td><div id="success"></div></td>
@@ -1423,7 +1425,7 @@ function addRemove() {
 							</tr>
 						</table>
 
-						<div style="margin-top: 30px;" id="clock-in"></div>
+						<div id="clock-in"></div>
 						<div id="clock-out"></div>
 						<div id="divTimelog"></div>
 						<div id="scheduleButton"></div>
