@@ -11,6 +11,7 @@
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 		<script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
 		<script src="https://cdn.datatables.net/1.10.11/js/dataTables.bootstrap.min.js"></script>
+		<script src="{% static 'js/timeKeeper.js'%}"></script>
 		<!--<script src="//code.jquery.com/jquery-1.12.0.min.js"></script>-->
 		<!-- Include Required Prerequisites -->
 		<!--<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>-->
@@ -270,6 +271,23 @@
 				getExcel("{{ csrf_token }}", "{% url 'getCsv' %}", start_date, end_date, name_checked);
 			}
 
+			function tConvert (time) {
+				if (time != null || time != undefined){
+
+				var time = time.split(':');
+
+				var hours = Number(time[0]);
+				var minutes = Number(time[1]);
+				var seconds = Number(time[2]);
+
+				var timeValue = "" + ((hours >12) ? hours - 12 : hours);  // get hours
+				timeValue += (minutes < 10) ? ":0" + minutes : ":" + minutes;  // get minutes
+				timeValue += (seconds < 10) ? ":0" + seconds : ":" + seconds;  // get seconds
+				timeValue += (hours >= 12) ? " P.M." : " A.M.";  // get AM/PM
+			  	return timeValue; // return adjusted time or original string
+			  	}
+			}
+
 			function downloadNewCsv() {
 
 				var start_date = document.getElementById("start").value;
@@ -501,11 +519,21 @@
 							var i = 1;
 							$.each(parsed_result, function (i, item) {
 
-								var start_hour = item.fields.hour_started;
-								var end_hour = item.fields.hour_ended;
+								var start_hour = tConvert(item.fields.hour_started);
+								var end_hour = tConvert(item.fields.hour_ended);
 								var total_time = data.total_times[i];
 								var attend_id = data.attend_ids[i];
 								var attend_action_id = "action" + data.attend_ids[i];
+								var jobs = data.job_codes[i];
+								var locations = data.ranches[i];
+
+								if(jobs == ""){
+									jobs = "--";
+								}
+
+								if(locations == ""){
+									locations = "--";
+								}
 
 								if(! start_hour){
 									start_hour = 'N/A';
@@ -529,19 +557,19 @@
 										$('#results').append('<tr id="'+attend_id+'" data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle"><td><input id="'+attend_id+'" name="rowSelected" type="checkbox" class="checkthis" /></td> <td>' +
 										data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>'+ data.crews[i]+'</td><td>' + item.fields.date +'</td><td data-editable="true">' +
 										start_hour + '</td><td data-editable="true">' + end_hour + '</td><td>' + total_time+'</td></tr>');
-										$('#results').append('<tr><td colspan="12" class="hiddenRow"><div class="accordian-body collapse" id='+demo+'> <table class="table table-striped"><thead><tr><th>Job Codes</th><th>Locations</th><th># Breaks </th><th> Total Break Time</th><th>Actions</th></tr></thead><tbody><tr><td>' + data.job_codes[i] +'</td><td>' + data.ranches[i] +'</td><td>' + data.num_breaks[i] +'</td><td>' + data.total_break_time[i] +'</td><td><a href="#" data-id="'+attend_action_id+'" class="action btn btn-default btn-sm"><i class=" glyphicon glyphicon-cog"></i></a></td></tr></tbody></table></div> </td></tr>');
+										$('#results').append('<tr><td colspan="12" class="hiddenRow"><div class="accordian-body collapse" id='+demo+'> <table class="table table-striped"><thead><tr><th>Job Codes</th><th>Locations</th><th># Breaks </th><th> Total Break Time</th></tr></thead><tbody><tr><td>' + jobs +'</td><td>' + locations +'</td><td>' + data.num_breaks[i] +'</td><td>' + data.total_break_time[i] +'</td></tr></tbody></table></div> </td></tr>');
 									} else {
 										$('#results').append('<tr id="'+attend_id+'" style="background:red;" data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle"><td><input id="'+attend_id+'" name="rowSelected" type="checkbox" class="checkthis" /></td> <td>' +
 										data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>'+ data.crews[i]+'</td><td>' + item.fields.date +'</td><td data-editable="true">' +
 										start_hour + '</td><td data-editable="true">' + end_hour + '</td><td>' + total_time+'</td></tr>');
-										$('#results').append('<tr><td colspan="12" class="hiddenRow"><div class="accordian-body collapse" id='+demo+'> <table class="table table-striped"><thead><tr><th>Job Codes</th><th>Locations</th><th># Breaks </th><th> Total Break Time</th><th>Actions</th></tr></thead><tbody><tr><td>' + data.job_codes[i] +'</td><td>' + data.ranches[i] +'</td><td>' + data.num_breaks[i] +'</td><td>' + data.total_break_time[i] +'</td><td><a href="#" data-id="'+attend_action_id+'" class=" action btn btn-default btn-sm"><i class=" glyphicon glyphicon-cog"></i></a></td></tr></tbody></table></div> </td></tr>');
+										$('#results').append('<tr><td colspan="12" class="hiddenRow"><div class="accordian-body collapse" id='+demo+'> <table class="table table-striped"><thead><tr><th>Job Codes</th><th>Locations</th><th># Breaks </th><th> Total Break Time</th></tr></thead><tbody><tr><td>' + jobs +'</td><td>' + locations +'</td><td>' + data.num_breaks[i] +'</td><td>' + data.total_break_time[i] +'</td></tr></tbody></table></div> </td></tr>');
 
 									}
 								} else {
 									$('#results').append('<tr id="'+attend_id+'" style="background:lightgrey;" data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle"><td><input id="'+attend_id+'" name="rowSelected" type="checkbox" class="checkthis" /></td> <td>' +
 										data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>'+ data.crews[i]+'</td><td>' + item.fields.date +'</td><td data-editable="true">' +
 										start_hour + '</td><td data-editable="true">' + end_hour + '</td><td>' + total_time+'</td></tr>');
-										$('#results').append('<tr><td colspan="12" class="hiddenRow"><div class="accordian-body collapse" id='+demo+'> <table class="table table-striped"><thead><tr><th>Job Codes</th><th>Locations</th><th># Breaks </th><th> Total Break Time</th><th>Actions</th></tr></thead><tbody><tr><td>' + data.job_codes[i] +'</td><td>' + data.ranches[i] +'</td><td>' + data.num_breaks[i] +'</td><td>' + data.total_break_time[i] +'</td><td><a href="#" data-id="'+attend_action_id+'" class=" action btn btn-default btn-sm"><i class=" glyphicon glyphicon-cog"></i></a></td></tr></tbody></table></div> </td></tr>');
+										$('#results').append('<tr><td colspan="12" class="hiddenRow"><div class="accordian-body collapse" id='+demo+'> <table class="table table-striped"><thead><tr><th>Job Codes</th><th>Locations</th><th># Breaks </th><th> Total Break Time</th></tr></thead><tbody><tr><td>' + jobs +'</td><td>' + locations +'</td><td>' + data.num_breaks[i] +'</td><td>' + data.total_break_time[i] +'</td></tr></tbody></table></div> </td></tr>');
 
 								}
 								$('#myModal').on('show', function() {
