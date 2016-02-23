@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'dgaaxm0o4)7max48$chs1im)av623&qw^t*e4evk8m*@48al3^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 
 ALLOWED_HOSTS = [
@@ -38,12 +38,14 @@ SHARED_APPS = (
     'tenant_schemas',  # mandatory
     'home', # you must list the app where your tenant model resides in
     'django.contrib.contenttypes',
+    'django.contrib.auth',
 
 )
 
 TENANT_APPS = (
     # The following Django contrib apps must be in TENANT_APPS
     'django.contrib.contenttypes',
+    'django.contrib.auth',
     # your tenant-specific apps
     # 'home',
 )
@@ -53,15 +55,15 @@ TENANT_MODEL = "home.Client"
 
 INSTALLED_APPS = list(SHARED_APPS) + [
     'django.contrib.admin',
-    'django.contrib.auth',
+    # 'django.contrib.auth',
     # 'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 'home',
     'easy_pdf',
-    'import_export'
 ]
+
 
 ADMINS = [('Jessica', 'jgon91@gmail.com')]
 EMAIL_HOST = 'smtp.gmail.com'
@@ -111,17 +113,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'heavyconnect.wsgi.application'
 
 
-# DATABASES = {
-#          'default': {
-#              'ENGINE': 'tenant_schemas.postgresql_backend', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-#              'NAME': 'dev',                      # Or path to database file if using sqlite3.
-#              'USER': '',                      # Not used with sqlite3.
-#              'PASSWORD': '',                  # Not used with sqlite3.
-#              'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
-#              'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
-#
-#          }
-#      }
 DATABASES = {
     'default': {
         'ENGINE': 'tenant_schemas.postgresql_backend',
