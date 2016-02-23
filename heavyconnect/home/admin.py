@@ -1,6 +1,5 @@
 from django.contrib import admin
 from models import *
-from import_export import resources
 
 admin.site.register(Manufacturer)
 admin.site.register(ManufacturerModel)
@@ -49,8 +48,3 @@ admin.site.register(AttendanceChecklist)
 admin.site.register(ConfirmationCheck)
 admin.site.register(CompanyStatus)
 # Register your models here.)
-
-class EmployeeResource(resources.ModelResource):
-    class Meta:
-        model = Employee
-        exclude = ('photoEmployee', 'created', 'modified' )
