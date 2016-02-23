@@ -347,8 +347,8 @@
 				getAllEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}");
 			});
 			$("#btnSignature").click(function(){
-				$("#messageTimekeeper").css("color", "#1F3801");	//green
-				retrieveQuestions("{{ csrf_token }}", "{% url 'getChecklistAttendance' %}", document.getElementById("attendanceId").value);
+				<!--$("#messageTimekeeper").css("color", "#1F3801");	//green-->
+				<!--retrieveQuestions("{{ csrf_token }}", "{% url 'getChecklistAttendance' %}", document.getElementById("attendanceId").value);-->
 
 			});
 
@@ -638,13 +638,14 @@ function addRemove() {
 
 		}
 
-		function retrieveQuestions(token, url, id){
+		function retrieveQuestions(token, url, id, hours){
 			$.ajax({
 					method: "POST",
 					url: url,
 					async: false,
 					data: {"csrfmiddlewaretoken": token,
-						   "category": 1
+						   "category": 1,
+						   "attendId": id,
 					},
 					datatype: "json",
 					success: function(data, status, xhr){
@@ -653,8 +654,9 @@ function addRemove() {
 							questions = data.questions;
 							emptyDivs();
 							$("#btnSignature").append("<input type='hidden' id='attendanceId' value='" + attendanceId + "'>");
-							$("#messageTimekeeper").css("margin-left", "7.5%");
+							$("#messageTimekeeper").css("font-weight", "500");
 							$("#messageTimekeeper").html("{% trans 'Please Fill in' %}:");
+							$("#messageTimekeeper").append("<div style='font-size: 24px;font-weight: 600;'>Total Hours:" + hours + "</div>");
 							$("#attendanceCheckList").css("display", "block");
 							$("#attendanceCheckList").css("text-align", "center");
 							$("#attendanceCheckList").css("font-size", "28px");
@@ -936,7 +938,7 @@ function addRemove() {
 			});
 		}
 
-		function declineShift(token, url, attendanceid) {
+		function declineShift(token, url, attendanceid, hours) {
 			$.ajax({
 				method: "POST",
 				url: url,
@@ -954,7 +956,7 @@ function addRemove() {
 					if (data.success) {
 						<!--emptyDivs();-->
 						$("#messageTimekeeper").css("color", "#1F3801");	//green
-						retrieveQuestions("{{ csrf_token }}", "{% url 'getChecklistAttendance' %}", document.getElementById("attendanceId").value);
+						retrieveQuestions("{{ csrf_token }}", "{% url 'getChecklistAttendance' %}", document.getElementById("attendanceId").value, hours);
 
 						<!--$("#messageTimekeeper").html("{% trans 'Shift Declined' %}");-->
 						<!--hideModal();-->
@@ -1070,6 +1072,12 @@ function addRemove() {
 			});
 		}
 
+		function acceptAttendance(hours){
+				$("#messageTimekeeper").css("color", "#1F3801");	//green
+				retrieveQuestions("{{ csrf_token }}", "{% url 'getChecklistAttendance' %}", document.getElementById("attendanceId").value, hours);
+
+		}
+
 
 		function timelog(token, url) {
 			$.ajax({
@@ -1118,7 +1126,7 @@ function addRemove() {
 								}
 							}
 							$("#tableTimelog").append("<tr id='trStopShift'><td colspan='2'>End Shift: " + tConvert(data.Attendance_end) + "</td></tr>");
-							$("#btnSignature").append("<button type='button' id='attendanceId'  style='background:green;' value='"+data.attendanceId+"' class='btnsTimekeeperShop'>ACCEPT</button>");
+							$("#btnSignature").append("<button type='button' onclick='acceptAttendance("+data.Total+")' id='attendanceId'  style='background:green;' value='"+data.attendanceId+"' class='btnsTimekeeperShop'>ACCEPT</button>");
 							$("#btnSignature").append("<input type='button' id='btnDeclineCheckList' style='background:#BB1818;margin-left 35px;' value='DECLINE' class='btnsTimekeeperShop'/>");
 							$("#btnDeclineCheckList").css("background-color", "#B83419");
 							$("#btnDeclineCheckList").css("margin-left", "35px");
