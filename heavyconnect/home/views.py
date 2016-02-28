@@ -2714,6 +2714,9 @@ def getEmployeeShifts(request):
 				result['contact_number'] = employee. contact_number
 				result['permission_level'] = employee.permission_level
 				attendance = EmployeeAttendance.objects.filter(employee = employee).order_by('-date').first()
+				attendance = EmployeeAttendance.objects.filter(employee = employee).order_by('-date')
+				attendance = attendance.order_by('-hour_started').first()
+				print attendance
 
 				if attendance is not None:
 					time_delta = (datetime.datetime.now() - datetime.datetime.combine(attendance.date,attendance.hour_started))
