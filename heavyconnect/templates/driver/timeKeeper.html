@@ -177,6 +177,8 @@
 						var countOffline = 0;
 						countOffline = count.startShift + count.startBreak + count.stopBreak + count.startLunch + count.stopLunch + count.endShift;
 						var countOnline = 0;
+						console.log(data.hour_started);
+						console.log(data.hour_ended);
 
 						if (data.hour_started != 'None') {
 							shiftStarted = 1;
