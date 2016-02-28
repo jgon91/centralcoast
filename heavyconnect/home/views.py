@@ -2713,10 +2713,11 @@ def getEmployeeShifts(request):
 				result['qr_code'] = employee.qr_code
 				result['contact_number'] = employee. contact_number
 				result['permission_level'] = employee.permission_level
-				attendance = EmployeeAttendance.objects.filter(employee = employee).order_by('-date').first()
-				attendance = EmployeeAttendance.objects.filter(employee = employee).order_by('-date')
-				attendance = attendance.order_by('-hour_started').first()
-				print attendance
+				date = datetime.datetime.now() #today date
+				start_date = datetime.datetime.combine(date, datetime.time.min) #today date at 0:00 AM
+				end_date = datetime.datetime.combine(date, datetime.time.max) # date at 11:59 PM
+				attendance = EmployeeAttendance.objects.filter(employee = employee, date__range = (start_date,end_date)).order_by('-hour_started')[:1].first()
+				
 
 				if attendance is not None:
 					time_delta = (datetime.datetime.now() - datetime.datetime.combine(attendance.date,attendance.hour_started))
