@@ -2634,10 +2634,21 @@ def timeLogById(request):
 					minutes, seconds = divmod(remainder, 60)
 					hours = checkHours(hours)
 					minutes = checkMinutes(minutes)
+					total_lunch_time = 0.0
+					all_lunches = Break.objects.filter(attendance__id = item.id).order_by('start')
+					all_lunches = all_lunches.filter(lunch = True)
+					for item in all_lunches:
+						if item.start != 'None' and item.end != 'None':
+							start_lunch = datetime.timedelta(hours = item.start.hour, minutes = item.start.minute)
+							end_lunch = datetime.timedelta(hours = item.end.hour, minutes = item.end.minute)
+							total_lunch = end_lunch - start_lunch
+							total_lunch = round(total_lunch.total_seconds()/60/60, 2)
+							total_lunch_time += total_lunch
 
 					total_time = end - atten_start
-					total_time = str(round(total_time.total_seconds()/60/60,2))
-					result['Total'] = total_time
+					total_time = round(total_time.total_seconds()/60/60,2)
+					total_time = total_time - total_lunch_time
+					result['Total'] = str(total_time)
 					hours, remainder = divmod(atten_start.seconds, 3600)
 					minutes, seconds = divmod(remainder, 60)
 					hours = checkHours(hours)
@@ -4291,30 +4302,6 @@ def getExcel(request):
 			reg_breaks = []
 			combined_breaks = []
 
-			# while m <=8:
-			# 	if m <= jobs.count() and breaks.count() > 0:
-			# 		job_code = jobs[m-1].description
-			# 		if m ==1:
-			# 			startJob =  hour_started
-			# 			endJob = breaks[0].start
-			# 			endJob = datetime.timedelta(hours = endJob.hour, minutes = endJob.minute, seconds = endJob.second)
-			# 		elif m == jobs.count():
-			# 			startJob = breaks[m-2].end
-			# 			startJob =  datetime.timedelta(hours = startJob.hour, minutes = startJob.minute, seconds = startJob.second)
-			# 			endJob = hour_ended
-			# 		else:
-			# 			startJob = breaks[m-2].end
-			# 			startJob =  datetime.timedelta(hours = startJob.hour, minutes = startJob.minute, seconds = startJob.second)
-			# 			endJob = breaks[m-1].start
-			# 			endJob = datetime.timedelta(hours = endJob.hour, minutes = endJob.minute, seconds = endJob.second)
-            #
-			# 		hours_spent = endJob - startJob
-            #
-			# 		data_row.extend((str(job_code), str(hours_spent)))
-			# 	else:
-			# 		data_row.extend(('', ''))
-			# 	m += 1
-
 			if break_num > 0:
 				for item in breaks:
 					if item.lunch == True:
@@ -4340,8 +4327,8 @@ def getExcel(request):
 					if(item != ""):
 						if item.start != None and item.end != None:
 							if item.end >= item.start:
-								start = datetime.timedelta(hours = item.start.hour, minutes = item.start.minute, seconds = item.start.second)
-								end = datetime.timedelta(hours = item.end.hour, minutes = item.end.minute, seconds = item.end.second)
+								start = datetime.timedelta(hours = item.start.hour, minutes = item.start.minute)
+								end = datetime.timedelta(hours = item.end.hour, minutes = item.end.minute)
 								total = end - start
 								total = str(round(total.total_seconds()/60/60, 2))
 							else:
@@ -4434,17 +4421,17 @@ def getCsv(request):
 				crew = attendance.group.name
 
 			if attendance.hour_started != None:
-				hour_started = datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
+				hour_started = datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute)
 			else:
 				hour_started = 'N/A'
 
 			if attendance.hour_ended != None:
-				hour_ended = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute, seconds = attendance.hour_ended.second)
+				hour_ended = datetime.timedelta(hours = attendance.hour_ended.hour, minutes = attendance.hour_ended.minute)
 			else:
 				hour_ended = 'N/A'
 
 			if hour_ended == 'N/A' or hour_ended == None:
-				hour_ended = datetime.timedelta(hours = now.hour, minutes = now.minute, seconds = now.second)
+				hour_ended = datetime.timedelta(hours = now.hour, minutes = now.minute)
 			if hour_ended != 'N/A' and hour_started != 'N/A':
 				if hour_ended > hour_started:
 					# hour_ended =  datetime.timedelta(hours = hour_ended.hours, minutes = hour_ended.minutes, seconds = hour_ended.seconds)
@@ -4493,8 +4480,8 @@ def getCsv(request):
 				i=0
 				total_lunch_time = 0.0
 				for item in lunch_breaks:
-					start = datetime.timedelta(hours = item.start.hour, minutes = item.start.minute, seconds = item.start.second)
-					end = datetime.timedelta(hours = item.end.hour, minutes = item.end.minute, seconds = item.end.second)
+					start = datetime.timedelta(hours = item.start.hour, minutes = item.start.minute)
+					end = datetime.timedelta(hours = item.end.hour, minutes = item.end.minute)
 					total_lunch = end - start
 					total_lunch = round(total_lunch.total_seconds()/60/60, 2)
 					total_lunch_time += total_lunch
@@ -4514,17 +4501,20 @@ def getCsv(request):
 				for item in combined_breaks:
 					num_break = i
 					if(item != ""):
+						start = item.start
+						end = item.end
 						if item.start != None and item.end != None:
+							start = datetime.timedelta(hours = item.start.hour, minutes = item.start.minute)
+							end = datetime.timedelta(hours = item.end.hour, minutes = item.end.minute)
 							if item.end >= item.start:
-								start = datetime.timedelta(hours = item.start.hour, minutes = item.start.minute, seconds = item.start.second)
-								end = datetime.timedelta(hours = item.end.hour, minutes = item.end.minute, seconds = item.end.second)
 								total = end - start
 								total = str(round(total.total_seconds()/60/60, 2))
 							else:
+
 								total = 'N/A'
 						else:
 							total = 'N/A'
-						data_row.extend((num_break, item.start, item.end, total))
+						data_row.extend((num_break, start, end, total))
 					else:
 						data_row.extend(('', '', '', ''))
 					i += 1
