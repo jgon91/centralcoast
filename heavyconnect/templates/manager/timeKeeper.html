@@ -5,6 +5,7 @@
 		{% load i18n %}
 		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
 		<script src="{% static 'js/bootstrap-datepicker.min.js' %}"></script>
+		<script src="{% static 'css/bootstrap/js/tooltip.js' %}"></script>
 		<script src="{% static 'js/script.js' %}"></script>
 		<link rel="stylesheet" href="{% static 'css/bootstrap-datepicker.min.css' %}">
 		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.11/css/dataTables.bootstrap.min.css">
@@ -12,19 +13,10 @@
 		<script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
 		<script src="https://cdn.datatables.net/1.10.11/js/dataTables.bootstrap.min.js"></script>
 		<script src="{% static 'js/timeKeeper.js'%}"></script>
-		<!--<script src="//code.jquery.com/jquery-1.12.0.min.js"></script>-->
-		<!-- Include Required Prerequisites -->
-		<!--<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>-->
 		<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-		<!--<link rel="stylesheet" href="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/css/bootstrap-editable.css">-->
-		<!--<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css" />-->
-		<!--<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap/css/bootstrap-table.css' %}">-->
-        <!--<script src="{% static 'css/bootstrap/js/bootstrap-table.js' %}"></script>-->
-        <!--<script src="{% static 'css/bootstrap/js/bootstrap.min.js' %}"></script>-->
 		<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/bootstrap-table.min.js"></script>
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/bootstrap-table.min.css">
-		<!--<script src="../assets/bootstrap-table/src/extensions/editable/bootstrap-table-editable.js"></script>-->
-		<!--<script src="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/js/bootstrap-editable.js"></script>-->
+
 		<style>
 		.dropdown-check-list {
 		  display: inline-block;
@@ -73,6 +65,7 @@
 		<script>
 		var id_checked = [];
 		var name_checked = [];
+		var correct_index = 0;
 			$(document).ready(function() {
 
 				$("#foot").load("{% url 'footer' %}");
@@ -91,6 +84,15 @@
 				}
 
 				today = mm+'/'+dd+'/'+yyyy;
+
+				$('#list1').click( function(event){
+					event.stopPropagation();
+					<!--$('#items').toggle();-->
+				});
+
+				$(document).click( function(){
+					$('#items').hide();
+				});
 
 				$("#report_table #checkall").click(function () {
 					if ($("#report_table #checkall").is(':checked')) {
@@ -137,9 +139,18 @@
 				getAllEmployees("{{ csrf_token }}", "{% url 'getAllEmployees' %}");
 				getReport("{{ csrf_token }}", "{% url 'timeKeeperDailyReport' %}", today, today, name_checked);
 				$("#remove").click(function() {
-					acceptAttendances("{{ csrf_token}}", "{% url 'acceptAttendances' %}", id_checked);
+					console.log('hi');
+					ids = id_checked;
+					total = ids.length;
+					current_step = correct_index+1;
+					string_step = "("+current_step+"/"+total+")";
+					$('#step').html(string_step);
+					getNextAttendanceInList(ids[0]);
+
 				}
 				);
+
+				$('#status').tooltip();
 
 				$("input[name='rowSelected']").change(function() {
 				   if ($("input[id='"+this.id+"']").is(":checked")) {
@@ -169,28 +180,45 @@
 				todayHighlight: true
 			});
 
-			$('.action').on('click', function(e) {
+
+
+			$('.confirm-delete').on('click', function(e) {
 									e.preventDefault();
-									alert('hello');
 
 									var id = $(this).data('id');
-									$('#myModal').data('id', id).modal('show');
-								});
-								$('#myModal').on('show', function() {
-									<!--var tit = $('.action').data('title');-->
-									alert('hello');
+									$('#deleteModal').data('id', id).data('name', all_names).data('attend_date', attend_date).modal('show');
 
-									$('#myModal .modal-body p').html("Desea eliminar al usuario " + '<b>' + 'hello' +'</b>' + ' ?');
-									var id = $(this).data('id'),
-									removeBtn = $(this).find('.danger');
+								});
+
+								$('#deleteModal').on('shown.bs.modal', function() {
+									var id = $(this).data('id');
+									var name = $('#deleteModal').data('name');
+									var thisDate = $('#deleteModal').data('attend_date');
+									$('#employee_name').html(name);
+									$('#attend_date').html(thisDate);
+
+								});
+
+
+
+								$('#btnYes').click(function() {
+									// handle deletion here
+									var id = $('#deleteModal').data('id');
+									console.log(id);
+
+									<!--$('[data-id='+id+']').parents('tr').remove();-->
+									var rowIndex = document.getElementById(id);
+									<!--rowIndex.remove();-->
+									rejectAttendance("{{ csrf_token }}", "{% url 'rejectAttendance' %}", id);
+
+									$('#deleteModal').modal('hide');
+
 								});
 
 			$(".search").keyup(function () {
 
 					var searchTerm = $(".search").val();
-					console.log(searchTerm);
 					var listItem = $('.results tbody').children('tr');
-					console.log(listItem);
 					var searchSplit = searchTerm.replace(/ /g, "'):containsi('")
 
 				  $.extend($.expr[':'], {'containsi': function(elem, i, match, array){
@@ -199,15 +227,11 @@
 				  });
 
 				  $(".results tbody tr").not(":containsi('" + searchSplit + "')").each(function(e){
-				  	console.log('hi');
-				  	console.log($(this));
 					$(this).attr('visible','false');
 				  });
 
 				  $(".results tbody tr:containsi('" + searchSplit + "')").each(function(e){
-				  	console.log('bye');
 					$(this).attr('visible','true');
-					console.log($(this));
 				  });
 
 				  var jobCount = $('.results tbody tr[visible="true"]').length;
@@ -282,7 +306,6 @@
 
 				var timeValue = "" + ((hours >12) ? hours - 12 : hours);  // get hours
 				timeValue += (minutes < 10) ? ":0" + minutes : ":" + minutes;  // get minutes
-				timeValue += (seconds < 10) ? ":0" + seconds : ":" + seconds;  // get seconds
 				timeValue += (hours >= 12) ? " P.M." : " A.M.";  // get AM/PM
 			  	return timeValue; // return adjusted time or original string
 			  	}
@@ -373,14 +396,122 @@
 				}
 				});
 			}
+			function goRight(){
+				document.getElementById('goLeft').disabled = false;
 
+				ids = id_checked;
+
+					//need to only get the current id
+					total = ids.length;
+					correct_index += 1;
+
+					getNextAttendanceInList(ids[correct_index]);
+					current_step = correct_index+1;
+					string_step = "("+current_step+"/"+total+")";
+					$('#step').html(string_step);
+					console.log(current_step);
+					console.log(total);
+					if(current_step == total){
+						console.log(total);
+						document.getElementById('goRight').disabled = true;
+					}
+			}
+
+			function goLeft(){
+				document.getElementById('goRight').disabled = false;
+
+				ids = id_checked;
+
+					//need to only get the current id
+					total = ids.length;
+					correct_index -= 1;
+
+					getNextAttendanceInList(ids[correct_index]);
+					current_step = correct_index+1;
+					string_step = "("+current_step+"/"+total+")";
+					$('#step').html(string_step);
+					console.log(current_step);
+					console.log(total);
+					if(current_step == 1){
+						console.log(total);
+						document.getElementById('goLeft').disabled = true;
+					}
+			}
+
+
+			function nextOrClose() {
+
+				ids = id_checked;
+
+
+				if(correct_index+1 >= ids.length){
+
+					acceptAttendances("{{ csrf_token}}", "{% url 'acceptAttendances' %}", ids[correct_index]);
+					updateAttendanceChanges("{{ csrf_token}}", "{% url 'updateAttendanceChanges' %}");
+					$('#edit').modal('hide');
+
+					correct_index = 0;
+				}else {
+					//need to only get the current id
+					total = ids.length;
+
+
+					current_step = correct_index+2;
+					string_step = "("+current_step+"/"+total+")";
+					$('#step').html(string_step);
+					acceptAttendances("{{ csrf_token}}", "{% url 'acceptAttendances' %}", ids[correct_index]);
+					updateAttendanceChanges("{{ csrf_token}}", "{% url 'updateAttendanceChanges' %}");
+					correct_index += 1;
+
+					getNextAttendanceInList(ids[correct_index]);
+
+
+
+				}
+			}
+
+			function nextOrRejectorClose() {
+
+				ids = id_checked;
+
+				if(correct_index+1 >= ids.length){
+					rejectAttendance("{{ csrf_token}}", "{% url 'rejectAttendance' %}", ids[correct_index]);
+					$('#edit').modal('hide');
+
+					correct_index = 0;
+				}else {
+					//need to only get the current id
+					total = ids.length;
+
+					current_step = correct_index+2;
+					string_step = "("+current_step+"/"+total+")";
+					$('#step').html(string_step);
+					rejectAttendance("{{ csrf_token}}", "{% url 'rejectAttendance' %}", ids[correct_index]);
+					correct_index += 1;
+					getNextAttendanceInList(ids[correct_index]);
+
+				}
+			}
 
 			function getIdSelections() {
-				console.log('hello');
 				return $.map($table.bootstrapTable('getSelections'), function (row) {
 					return row.id
 				});
 			}
+
+			function updateAttendanceChanges(token, url){
+				$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token, "shift_id": ids[correct_index], "new_shift_time": document.getElementById('clockin').value, "new_stop_time":document.getElementById('clockout').value},
+				datatype : "json",
+				success : function(data, status, xhr) {
+
+
+				}
+				});
+			}
+
 
 			function getPdf(token, url){
 				$.ajax({
@@ -389,15 +520,7 @@
 				data : {"csrfmiddlewaretoken" : token},
 				datatype : "json",
 				success : function(data, status, xhr) {
-					<!--var downloadLink = document.createElement("a");-->
-					<!--var blob = new Blob(["\ufeff", data]);-->
-					<!--var url = URL.createObjectURL(blob);-->
-					<!--downloadLink.href = url;-->
-					<!--downloadLink.download = "timecard.pdf";-->
 
-					<!--document.body.appendChild(downloadLink);-->
-					<!--downloadLink.click();-->
-					<!--document.body.removeChild(downloadLink);-->
 
 				}
 				});
@@ -406,17 +529,10 @@
 				var start_date = document.getElementById("start").value;
 				var end_date = document.getElementById("stop").value;
 				getReport("{{ csrf_token }}", "{% url 'timeKeeperDailyReport' %}", start_date, end_date, name_checked);
-				$("#remove").click(function() {
-					acceptAttendances("{{ csrf_token}}", "{% url 'acceptAttendances' %}", id_checked);
-				}
-				);
+				id_checked = [];
+
 
 			}
-
-			$('.dropdown-menu a').click(function(){
-				<!--alert($(this));-->
-				//Show table
-			});
 
 			$table.on('check.bs.table uncheck.bs.table ' +
                 'check-all.bs.table uncheck-all.bs.table', function () {
@@ -448,7 +564,6 @@
 							last_name = data.employees[i].last_name.toString();
 							employee_name = first_name + " " + last_name;
 
-							<!--$("#items").append('<label  id="teamName'+i+'" style="font-size: 28px;text-align: left;box-shadow: 1px 1px 3px gray;margin-bottom: 20px;height: 65px;background:#DDD; width:100%;border-radius: .25em;"><input class="teamName" style="opacity:0" type="checkbox" onclick="clockInOut('+data.employees[i].qr_code+','+data.employees[i].user_id+',\''+employee_name+'\')" name="teamRadio" value="' + data.employees[i].qr_code + '" id="team' + i +'"/> ' + data.employees[i].first_name + ' '+ data.employees[i].last_name +'</label>');-->
 							$("#items").append('<li style="font-size: 18px; z-index:200; position:relative;margin-top: 20px; margin-left:10px;" ><input style="float: left;" name="nameSelected" id="'+data.employees[i].qr_code+'"  type="checkbox" />'+data.employees[i].first_name + ' '+ data.employees[i].last_name+'</li>');
 
 						}
@@ -496,13 +611,86 @@
 				data : {"csrfmiddlewaretoken" : token, "attendances": attendances},
 				datatype : "json",
 				success : function(data, status, xhr) {
-					attendances.forEach(function(entry) {
-						document.getElementById(entry).style.backgroundColor = "lightgrey";
-					});
+					$("#status"+attendances).html('<span style="font-size: 15px;color:blue;" class="glyphicon glyphicon-ok">');
 
+					document.getElementById(attendances).style.backgroundColor = "white";
 				}
 				});
 			}
+
+			function rejectAttendance(token, url, attendance) {
+				$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token, "attendance": attendance},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					console.log(attendance);
+					$("#status"+attendance).html('<span style="font-size: 15px;color:red;" class="glyphicon glyphicon-remove">');
+					document.getElementById(attendance).style.backgroundColor = "white";
+				}
+				});
+			}
+
+			function getNextAttendanceInList(attend_id){
+				getNextAttendance("{{ csrf_token }}", "{% url 'getNextAttendance' %}", attend_id);
+
+			}
+
+			function getNextAttendance(token, url, attendanceid) {
+				$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token, "attendanceid": attendanceid},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					$('#allBreaks').html('');
+					$('#attend_name').html(data.attend_name);
+					$('#attend_date_modal').html(data.attend_date);
+
+					breaks = JSON.parse(data.breaks);
+
+					attendance = JSON.parse(data.attendances);
+
+					parsed_result = $.parseJSON(data.breaks);
+					parsed_attend = $.parseJSON(data.attendances);
+					$(function () {
+						var i = 1;
+						var breaks = 1;
+						var lunch = 1;
+						$.each(parsed_attend, function (i, item) {
+							document.getElementById('clockin').value = item.fields.hour_started;
+							document.getElementById('clockout').value = item.fields.hour_ended;
+
+						});
+					});
+
+					$(function () {
+						var i = 1;
+						var breaks = 1;
+						var lunch = 1;
+						$.each(parsed_result, function (i, item) {
+
+							if(item.fields.lunch == true){
+								$('#allBreaks').append('<label>Lunch'+lunch+'</label>');
+								$('#allBreaks').append('<div class="form-group"><label >Start:</label><input class="form-control" type="time" value="'+ item.fields.start +'"><label >Stop:</label><input class="form-control" type="time" value="'+item.fields.end+'"></div>');
+								lunch += 1;
+							}else {
+								$('#allBreaks').append('<label>Break'+breaks+'</label>');
+								$('#allBreaks').append('<div class="form-group"><label >Start:</label><input class="form-control" type="time" value="'+ item.fields.start +'"><label>Stop:</label><input class="form-control" type="time" value="'+ item.fields.end +'"></div>');
+
+								breaks += 1;
+							}
+						});
+
+					});
+					$('#modalFooter').html('<button type="button" id="update" onclick="nextOrClose()" class="btn btn-success btn-lg" style="width: 100%;"><span class="glyphicon glyphicon-ok-sign"></span> Approve</button>');
+					$('#modalFooter').append('<button type="button" id="reject" onclick="nextOrRejectorClose()" class="btn btn-danger btn-lg" style="width: 100%;margin-top: 20px;margin-left:0px;"><span class="glyphicon glyphicon-remove-sign"></span> Reject</button>');
+				}
+				});
+			}
+
+
 
 			function getReport(token, url, start, end, names) {
 			$.ajax({
@@ -523,9 +711,13 @@
 								var end_hour = tConvert(item.fields.hour_ended);
 								var total_time = data.total_times[i];
 								var attend_id = data.attend_ids[i];
+
 								var attend_action_id = "action" + data.attend_ids[i];
 								var jobs = data.job_codes[i];
 								var locations = data.ranches[i];
+								var all_names = data.all_names[i];
+								var attend_date = item.fields.date;
+								var id_date = all_names + ": " + attend_date;
 
 								if(jobs == ""){
 									jobs = "--";
@@ -543,7 +735,7 @@
 									end_hour = 'N/A';
 								}
 
-								if(end_hour < start_hour) {
+								if(item.fields.hour_ended < item.fields.hour_started) {
 									total_time = 'N/A';
 								}
 
@@ -552,44 +744,65 @@
 								}
 
 								var demo = "demo" + i;
+								$('#results').append('<tr id="'+attend_id+'"  class="accordion-toggle"><td><input id="'+attend_id+'" name="rowSelected" type="checkbox" class="checkthis" /></td> <td data-toggle="collapse" data-target=#'+demo+'>' +
+								data.qr_code[i] + '</td><td data-toggle="collapse" data-target=#'+demo+'>' + all_names + '</td><td data-toggle="collapse" data-target=#'+demo+'>' + attend_date +'</td><td data-toggle="collapse" data-target=#'+demo+' data-editable="true">' +
+								start_hour + '</td><td data-toggle="collapse" data-target=#'+demo+' data-editable="true">' + end_hour + '</td><td data-toggle="collapse" data-target=#'+demo+'>' + total_time+'</td><td id="status'+attend_id+'"></td></tr>');
+								$('#results').append('<tr><td colspan="12" class="hiddenRow"><div class="accordian-body collapse" id='+demo+'> <table class="table table-striped"><thead><tr><th>Job Codes</th><th>Locations</th><th># Breaks </th><th> Total Break Time</th><th># Lunches</th><th> Total Lunch Time</th></tr></thead><tbody><tr><td>' + jobs +'</td><td>' + locations +'</td><td>' + data.num_breaks[i] +'</td><td>' + data.total_break_time[i] +'</td><td>' + data.num_lunches[i] +'</td><td>' + data.total_lunch_time[i] +'</td><td><a href="#" class="confirm-delete btn mini red-stripe" style="color: red;" role="button" data-title="'+id_date+'" data-id="'+attend_id+'">Reject</a></td></tr></tbody></table></div> </td></tr>');
 								if(data.managerAccepts[i] == false){
-									if(data.declines[i] == false){
-										$('#results').append('<tr id="'+attend_id+'" data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle"><td><input id="'+attend_id+'" name="rowSelected" type="checkbox" class="checkthis" /></td> <td>' +
-										data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>'+ data.crews[i]+'</td><td>' + item.fields.date +'</td><td data-editable="true">' +
-										start_hour + '</td><td data-editable="true">' + end_hour + '</td><td>' + total_time+'</td></tr>');
-										$('#results').append('<tr><td colspan="12" class="hiddenRow"><div class="accordian-body collapse" id='+demo+'> <table class="table table-striped"><thead><tr><th>Job Codes</th><th>Locations</th><th># Breaks </th><th> Total Break Time</th></tr></thead><tbody><tr><td>' + jobs +'</td><td>' + locations +'</td><td>' + data.num_breaks[i] +'</td><td>' + data.total_break_time[i] +'</td></tr></tbody></table></div> </td></tr>');
-									} else {
-										$('#results').append('<tr id="'+attend_id+'" style="background:red;" data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle"><td><input id="'+attend_id+'" name="rowSelected" type="checkbox" class="checkthis" /></td> <td>' +
-										data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>'+ data.crews[i]+'</td><td>' + item.fields.date +'</td><td data-editable="true">' +
-										start_hour + '</td><td data-editable="true">' + end_hour + '</td><td>' + total_time+'</td></tr>');
-										$('#results').append('<tr><td colspan="12" class="hiddenRow"><div class="accordian-body collapse" id='+demo+'> <table class="table table-striped"><thead><tr><th>Job Codes</th><th>Locations</th><th># Breaks </th><th> Total Break Time</th></tr></thead><tbody><tr><td>' + jobs +'</td><td>' + locations +'</td><td>' + data.num_breaks[i] +'</td><td>' + data.total_break_time[i] +'</td></tr></tbody></table></div> </td></tr>');
+									if(data.managerRejects[i] == true){
+										<!--row = document.getElementById(attend_id);-->
+										<!--row.style.backgroundColor = "#F7A6A4";-->
+										$("#status"+attend_id).html('<span style="font-size: 15px;color:red;" class="glyphicon glyphicon-remove">');
 
+									}else {
+										if(data.declines[i] == true){
+											row = document.getElementById(attend_id);
+											row.style.backgroundColor = "red";
+										}else{
+											row = document.getElementById(attend_id);
+											row.style.backgroundColor = "#F3F3F3";
+										}
 									}
 								} else {
-									$('#results').append('<tr id="'+attend_id+'" style="background:lightgrey;" data-toggle="collapse" data-target=#'+demo+' class="accordion-toggle"><td><input id="'+attend_id+'" name="rowSelected" type="checkbox" class="checkthis" /></td> <td>' +
-										data.qr_code[i] + '</td><td>' + data.all_names[i] + '</td><td>'+ data.crews[i]+'</td><td>' + item.fields.date +'</td><td data-editable="true">' +
-										start_hour + '</td><td data-editable="true">' + end_hour + '</td><td>' + total_time+'</td></tr>');
-										$('#results').append('<tr><td colspan="12" class="hiddenRow"><div class="accordian-body collapse" id='+demo+'> <table class="table table-striped"><thead><tr><th>Job Codes</th><th>Locations</th><th># Breaks </th><th> Total Break Time</th></tr></thead><tbody><tr><td>' + jobs +'</td><td>' + locations +'</td><td>' + data.num_breaks[i] +'</td><td>' + data.total_break_time[i] +'</td></tr></tbody></table></div> </td></tr>');
-
+									<!--row = document.getElementById(attend_id);-->
+									<!--row.style.backgroundColor = "#E4E4E4";-->
+									$("#status"+attend_id).html('<span style="font-size: 15px;color:blue;" class="glyphicon glyphicon-ok">');
 								}
-								$('#myModal').on('show', function() {
-									<!--var tit = $('.action').data('title');-->
-									console.log('hello');
-
-									$('#myModal .modal-body p').html("Desea eliminar al usuario " + '<b>' + 'hello' +'</b>' + ' ?');
-									var id = $(this).data('id'),
-									removeBtn = $(this).find('.danger');
-								});
-
-								$('.action').on('click', function(e) {
+								$('.confirm-delete').on('click', function(e) {
 									e.preventDefault();
 
 									var id = $(this).data('id');
-									console.log(id);
+									var name = $(this).data('title');
+									$('#deleteModal').data('id', id).data('name', name).modal('show');
 
-									$('#myModal').data('id', id).modal('show');
-									console.log('hi');
 								});
+
+
+								$('#deleteModal').on('shown.bs.modal', function() {
+									var id = $(this).data('id');
+									var name = $('#deleteModal').data('name');
+									var thisDate = $('#deleteModal').data('attend_date');
+									$('#employee_name').html(name);
+									$('#attend_date').html(thisDate);
+
+								});
+
+
+								$('#btnYes').click(function() {
+									// handle deletion here
+									var id = $('#deleteModal').data('id');
+
+									<!--$('[data-id='+id+']').parents('tr').remove();-->
+									var rowIndex = document.getElementById(id);
+									<!--rowIndex.remove();-->
+									rejectAttendance("{{ csrf_token }}", "{% url 'rejectAttendance' %}", id);
+
+									$('#deleteModal').modal('hide');
+
+								});
+
+
+
 
 								i = i+1;
 
@@ -676,8 +889,8 @@
 
 						<!--<div class="form-group pull-right"><input type="text" class="search form-control " placeholder="Search"/>-->
 					<button style="float: right;margin-top: 15px; margin-left:60%;margin-bottom:10px;height:50px;font-size:15px;font-weight:600;background-color: #6DA8F5;" type="button" class="btn btn-default" onclick="updateReport()" >Update Report</button>
-					<button id="remove" style="float:left; margin-top:30px; margin-bottom: 15px;" class="btn btn-success" disabled>
-							<i class="glyphicon glyphicon-ok"></i> Accept Attendance(s)
+					<button id="remove" data-title="Edit" data-toggle="modal" data-target="#edit" style="float:left; margin-top:30px; margin-bottom: 15px;" class="btn btn-warning" disabled>
+							<i class="glyphicon glyphicon-ok-sign"></i> Review Attendance(s)
 						</button>
 
 					<table class="table table-condensed results table-bordered" id="report_table" style="border-collapse:collapse;">
@@ -688,7 +901,7 @@
 								<th>ID</th>
 								<th>Name</th>
 								<!--<th>Team Lead</th>-->
-								<th>Team Name</th>
+								<!--<th>Team Name</th>-->
 								<!--<th>Location</th>-->
 								<!--<th>Job Code</th>-->
 								<!--<th>Location</th>-->
@@ -696,6 +909,7 @@
 								<th>Clock-In</th>
 								<th>Clock-Out</th>
 								<th>Hours Worked(w/ breaks)</th>
+								<th ><a href="#" id="status" class="white-tooltip" data-toggle="tooltip" data-html="true" title="<p><span style='font-size: 15px;color:blue;' class='glyphicon glyphicon-ok'> Approved</p><p><span style='font-size: 15px;color:red;' class='glyphicon glyphicon-remove'> Rejected</p> ">Status   <i style="font-size:18px" class="glyphicon glyphicon-info-sign"></i></a></th>
 							</tr>
 						</thead>
 						<tbody id="results">
@@ -718,19 +932,62 @@
 
 			</div>
 		<footer style="margin-top:60px" id="foot"></footer>
-	<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                            <h3 id="myModalLabel">Delete</h3>
-                        </div>
-                        <div class="modal-body">
-                            <p></p>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-                            <button data-dismiss="modal" class="btn red" id="btnYes">Confirm</button>
-                        </div>
+	<div id="deleteModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Are you sure you want to delete:</h4>
+            </div>
+
+            <div class="modal-body">
+                <p style="font-weight:600;font-size:24px;" id="employee_name"></p>
+                <p style="font-size:20px;" id="attend_date"></p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <a id="btnYes" class="btn btn-danger btn-ok">REJECT</a>
+            </div>
+        </div>
+    </div>
    </div>
+
+	<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+      <div class="modal-dialog">
+    <div class="modal-content">
+          <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+        <h4 class="modal-title custom_align" id="Heading">Edit Timecard <span id="step"></span></h4>
+      </div>
+          <div class="modal-body">
+			  <div style="margin-bottom:30px;">
+			  <button id="goLeft" onclick="goLeft()" type="button" style="float:left;" class="left close" aria-hidden="true" disabled="true">
+						  <i class="glyphicon glyphicon-chevron-left" aria-hidden="true"></i>
+			  </button>
+			  <button id="goRight" onclick="goRight()" type="button" style="float:right;" class="close" aria-hidden="true"><i class="glyphicon glyphicon-chevron-right" aria-hidden="true"></i></button>
+				</div>
+			  <div class="form-group ">
+				  <p>
+				  <label>Name:</label>
+				  <span id="attend_name">Name:</span>
+				  <label>Date:</label>
+				  <span id="attend_date_modal">Date:</span>
+				  </p>
+					<label for="clockin">Clock-in:</label>
+					<input id="clockin" class="form-control" type="time" placeholder="">
+					<label for="clockout">Clock-out:</label>
+					<input id="clockout"  class="form-control" type="time" placeholder="">
+			  </div>
+			  <div id="allBreaks"></div>
+      </div>
+          <div id="modalFooter" class="modal-footer">
+      </div>
+        </div>
+    <!-- /.modal-content -->
+  </div>
+      <!-- /.modal-dialog -->
+    </div>
 	</body>
 
 </html>

@@ -26,7 +26,6 @@ body {
 	margin-left: 4px;
 }
 #userImg {
-	background: url('../img/userPicture.png') no-repeat top left;
 	background-size: 100% 100%;
 	width: 105px;
 	height: 90px;
