@@ -292,9 +292,9 @@ input[type=button]{
 	background-size: 100% 100%;
 }
 #btnTimerkeeper {
+	background: url('../imgSmall/buttons/timekeeper.png') no-repeat top left;
 	background-size: 100% 100%;
 	position: relative;
-	background-color:#629C49;
     top: 50%;
     left: 43%;
 }
