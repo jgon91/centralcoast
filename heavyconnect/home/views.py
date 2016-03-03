@@ -2655,6 +2655,7 @@ def timeLogById(request):
 
 					minutes = checkMinutes(minutes)
 					result['Attendance_start'] = str(hours) + ':' + str(minutes)
+					print result['Attendance_start']
 					if(Attendance_end != 'In Progress'):
 						hours, remainder = divmod(Attendance_end.seconds, 3600)
 						minutes, seconds = divmod(remainder, 60)
@@ -2662,6 +2663,7 @@ def timeLogById(request):
 						result['Attendance_end'] = str(hours) + ':' + str(minutes)
 					else:
 						result['Attendance_end'] = Attendance_end
+					print result['Attendance_end']
 					result['breaks'] = array_breaks
 					result['tasks'] = array_tasks
 		else:
@@ -5427,12 +5429,27 @@ def updateAttendanceChanges(request):
 	if request.method == "POST":
 		if request.is_ajax():
 			try:
-				print 'update changes'
-				print 'shift id'
+
 				new_time = request.POST['new_shift_time']
 				new_stop_time = request.POST['new_stop_time']
-				print new_stop_time
-				print new_time
+				breaks = request.POST['breaks']
+				breaks = json.loads(breaks)
+				for item in breaks:
+					break_id = int(item[0])
+					new_start = str(item[1])
+					new_end = str(item[2])
+					new_start = new_start.split(":")[:2]
+					new_start = ":".join(new_start)
+					new_end = new_end.split(":")[:2]
+					new_end = ":".join(new_end)
+
+					updated_break = Break.objects.get(id=break_id)
+					new_start = datetime.datetime.strptime(new_start, '%H:%M').time()
+
+					new_end = datetime.datetime.strptime(new_end, '%H:%M').time()
+					updated_break.start = new_start
+					updated_break.end = new_end
+					updated_break.save()
 
 				shift_id = request.POST['shift_id']
 
@@ -5447,10 +5464,8 @@ def updateAttendanceChanges(request):
 				stop_time['minute'] = int(new_stop_time[1])
 				new_hour_started = datetime.timedelta(hours = time['hour'], minutes = time['minute'], seconds = time['second'])
 				new_hour_stopped = datetime.timedelta(hours = stop_time['hour'], minutes = stop_time['minute'], seconds = stop_time['second'])
-				print new_hour_started
 				attendance.hour_started = str(new_hour_started)
 				attendance.hour_ended = str(new_hour_stopped)
-				print attendance.hour_started
 				attendance.edited = True
 				attendance.manager_approved = True
 				attendance.save()

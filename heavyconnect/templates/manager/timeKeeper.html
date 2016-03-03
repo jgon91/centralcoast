@@ -447,20 +447,45 @@
 				if(correct_index+1 >= ids.length){
 
 					acceptAttendances("{{ csrf_token}}", "{% url 'acceptAttendances' %}", ids[correct_index]);
-					updateAttendanceChanges("{{ csrf_token}}", "{% url 'updateAttendanceChanges' %}");
+					var allBreaks = [];
+					$('.break').each(function(i){
+						values = [];
+						values.push(this.id);
+						$(this).find('input').each(function(){
+							var data = $(this).val();
+							values.push(data);
+
+						});
+						allBreaks.push(values);
+					});
+					allBreaks = JSON.stringify(allBreaks);
+					updateAttendanceChanges("{{ csrf_token}}", "{% url 'updateAttendanceChanges' %}", allBreaks);
 					$('#edit').modal('hide');
 
 					correct_index = 0;
 				}else {
 					//need to only get the current id
 					total = ids.length;
+					var allBreaks = [];
+					$('.break').each(function(i){
+						values = [];
+						values.push(this.id);
+						$(this).find('input').each(function(){
+							var data = $(this).val();
+							values.push(data);
+
+						});
+						allBreaks.push(values);
+					});
+					console.log(allBreaks);
 
 
 					current_step = correct_index+2;
 					string_step = "("+current_step+"/"+total+")";
 					$('#step').html(string_step);
 					acceptAttendances("{{ csrf_token}}", "{% url 'acceptAttendances' %}", ids[correct_index]);
-					updateAttendanceChanges("{{ csrf_token}}", "{% url 'updateAttendanceChanges' %}");
+					allBreaks = JSON.stringify(allBreaks);
+					updateAttendanceChanges("{{ csrf_token}}", "{% url 'updateAttendanceChanges' %}", allBreaks);
 					correct_index += 1;
 
 					getNextAttendanceInList(ids[correct_index]);
@@ -499,14 +524,13 @@
 				});
 			}
 
-			function updateAttendanceChanges(token, url){
+			function updateAttendanceChanges(token, url, breaks){
 				$.ajax({
 				method : "POST",
 				url : url,
-				data : {"csrfmiddlewaretoken" : token, "shift_id": ids[correct_index], "new_shift_time": document.getElementById('clockin').value, "new_stop_time":document.getElementById('clockout').value},
+				data : {"csrfmiddlewaretoken" : token, "shift_id": ids[correct_index], "new_shift_time": document.getElementById('clockin').value, "new_stop_time":document.getElementById('clockout').value, "breaks": breaks},
 				datatype : "json",
 				success : function(data, status, xhr) {
-
 
 				}
 				});
@@ -670,17 +694,17 @@
 						var breaks = 1;
 						var lunch = 1;
 						$.each(parsed_result, function (i, item) {
+							console.log(item);
 
 							if(item.fields.lunch == true){
 								$('#allBreaks').append('<label>Lunch'+lunch+'</label>');
-								$('#allBreaks').append('<div class="form-group"><label >Start:</label><input class="form-control" type="time" value="'+ item.fields.start +'"><label >Stop:</label><input class="form-control" type="time" value="'+item.fields.end+'"></div>');
 								lunch += 1;
 							}else {
 								$('#allBreaks').append('<label>Break'+breaks+'</label>');
-								$('#allBreaks').append('<div class="form-group"><label >Start:</label><input class="form-control" type="time" value="'+ item.fields.start +'"><label>Stop:</label><input class="form-control" type="time" value="'+ item.fields.end +'"></div>');
-
 								breaks += 1;
 							}
+							$('#allBreaks').append('<div id="'+item.pk+'" class="form-group break"><label >Start:</label><input class="form-control" type="time" value="'+ item.fields.start +'"><label >Stop:</label><input class="form-control" type="time" value="'+item.fields.end+'"></div>');
+
 						});
 
 					});
