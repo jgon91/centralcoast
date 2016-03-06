@@ -87,7 +87,6 @@ input[type=button]{
 	margin-bottom: 10px;
 }
 #btn_login {
-	background: url('../imgSmall/buttons/loginBtn.png') no-repeat top left;
     background-size: 100% 100%;
     width: 287px;
     height: 50px;
@@ -96,6 +95,15 @@ input[type=button]{
     border-radius: 7px;
     box-shadow: 2px 2px 5px gray;
     margin-top: 10px;
+    font-weight:600;
+    font-size:22px;
+    background-color: #3C763D;
+    color:white;
+}
+
+.login-icon{
+	float:left;
+	margin-left:10px;
 }
 .input_login[type=text] {
 	padding: 7px;
@@ -133,7 +141,7 @@ input[type=button]{
 
 /*** Header Home Begin ***/
 #top {
-	background-color: #1F3801;
+	background-color: #173118;
 	height: 60.5px;
 	width: 100%;
 	min-width: 360px;
@@ -165,8 +173,17 @@ input[type=button]{
 }
 
 #btnManageHome {
-	background: url('../imgSmall/buttons/checklist.png') no-repeat top left;
 	background-size: 100% 100%;
+	font-size: 14px;
+	padding-top:10px;
+	background-color: #3C763D;
+}
+#addEmployees{
+	font-size:70px;
+}
+
+#timeReport{
+	font-size:70px;
 }
 
 #needToChange {
@@ -181,8 +198,8 @@ input[type=button]{
 }
 
 #logOff {
-	background: url('../imgSmall/buttons/exit.png') no-repeat top left;
 	background-size: 100% 100%;
+	background-color: #E00101;
 	width: 75px;
 	height: 40px;
 	margin-right: 2.5px;
@@ -192,6 +209,7 @@ input[type=button]{
 	border-radius: 7px;
 	color: white;
 	font-size: 20px;
+	box-shadow: 2px 2px 5px #5F5B5B;
 }
 /*** Header Home End ***/
 
@@ -204,8 +222,14 @@ input[type=button]{
 	border-radius: 5px;
 }
 #btnHomeUp {
-	background: url('../imgSmall/buttons/btnHomeTop.png') no-repeat top left;
 	background-size: 100% 100%;
+	background-color: #589258;;
+	color:white;
+}
+
+.header-icon {
+	font-size:35px;
+	font-color:white;
 }
 #btnEquipmentUp {
 	background: url('../imgSmall/buttons/btnEquipmentTop.png') no-repeat top left;
@@ -271,6 +295,8 @@ input[type=button]{
 	padding-top: 82px;
 	font-size: 14px;
 	font-weight: 600;
+	padding-top:0px;
+    background-color: #3C763D;
 }
 #driverMenu{
 	min-width: 360px;
@@ -292,11 +318,15 @@ input[type=button]{
 	background-size: 100% 100%;
 }
 #btnTimerkeeper {
-	background: url('../imgSmall/buttons/timekeeper.png') no-repeat top left;
 	background-size: 100% 100%;
 	position: relative;
     top: 50%;
     left: 43%;
+}
+
+#btnTimerkeeperUp{
+    background-color: #589258;
+    color: white;
 }
 #btnChecklist {
 	background: url('../imgSmall/buttons/checklist.png') no-repeat top left;
@@ -450,7 +480,6 @@ input[type='time'] {
 	/* MODAL TIMEKEEPER BEGIN */
 
 .btnsTimekeeper {
-	background: url('../imgSmall/buttons/btnGreen.png') no-repeat top left;
 	background-size: 100% 100%;
 	border-radius: 7px;
 	border: none;
@@ -461,10 +490,10 @@ input[type='time'] {
 	margin-bottom: 25px;
 	font-size: 25px;
 	font-weight: 700;
+	background-color:#236023;
 }
 
 .btnsTimekeeperShop {
-	background: url('../imgSmall/buttons/btnGreen.png') no-repeat top left;
 	background-size: 100% 100%;
 	border-radius: 7px;
 	border: none;
@@ -475,6 +504,7 @@ input[type='time'] {
 	margin-bottom: 25px;
 	font-size: 25px;
 	font-weight: 700;
+	background-color:#236023;
 }
 
 .modal-body {
@@ -490,7 +520,7 @@ input[type='time'] {
 /* MODAL SGNATURE BEGIN */
 /* MODAL TIMEKEEPER BEGIN */
 .modalTimekeeper {
-    font-size: 35px;
+    font-size: 30px;
     font-weight: 600;
     border-radius: 10px;
     width: 100%;
@@ -498,6 +528,14 @@ input[type='time'] {
     margin-top: 10px;
     color: #1F3801;
     text-align: center;
+}
+
+.trStartShift{
+	font-style: italic;
+}
+
+.trStopShift{
+	font-style: italic;
 }
 
 #employeeList {
@@ -1587,7 +1625,7 @@ input[type=button] {
 
 /*** Header Home Begin ***/
 #top {
-    background-color: #1F3801;
+    background-color: #173118;
     height: 60.5px;
     width: 100%;
     min-width: 640px;
@@ -1616,19 +1654,7 @@ input[type=button] {
     border: solid 1px white;
     border-radius: 7px;
 }
-#logOff {
-    background: url('../imgSmall/buttons/exit.png') no-repeat top left;
-    background-size: 100% 100%;
-    width: 55px;
-    height: 40px;
-    margin-right: 2.5px;
-    margin-top: 10px;
-    float: right;
-    border: none;
-    border-radius: 7px;
-    color: white;
-    font-size: 20px;
-}
+
 /*** Header Home End ***/
 
 /*** Header Driver Begin ***/
@@ -1655,10 +1681,7 @@ input[type=button] {
     background: url('../imgSmall/buttons/btnScheduleTop.png') no-repeat top left;
     background-size: 100% 100%;
 }
-##btnManageHome {
-    background: url('../imgSmall/buttons/btnTimekeeperTop.png') no-repeat top left;
-    background-size: 100% 100%;
-}
+
 #btnChecklistUp {
     background: url('../imgSmall/buttons/btnChecklistTop.png') no-repeat top left;
     background-size: 100% 100%;
@@ -1666,17 +1689,7 @@ input[type=button] {
 /*** Header Driver End ***/
 
 /*** Home Page Begin ***/
-.btnMain {
-    width: 105px;
-    height: 105px;
-    border: none;
-    border-radius: 10px;
-    box-shadow: 2px 2px 5px gray;
-    color: white;
-    padding-top: 82px;
-    font-size: 14.5px;
-    font-weight: 600;
-}
+
 #driverMenu {
     min-width: 640px;
     margin: auto;

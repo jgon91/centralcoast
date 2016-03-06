@@ -70,9 +70,9 @@
 	<body>
 		<div id="top">
 			<div id="menuTop">
-				<a href="{% url 'home' %}"><input type="button" class="btnTop" id="btnHomeUp" /></a>
+				<a href="{% url 'home' %}"><button type="button" class="btnTop" id="btnHomeUp" ><i class="header-icon glyphicon glyphicon-home"></i></button></a>
 
-<a href="{% url 'time_keeper'%}"><input style="background: url('/static/imgSmall/buttons/btnTimekeeperTop.png') no-repeat top left;background-size: 100% 100%;" type="button" class="btnTop" id="btnTimerkeeperUp" /></a>
+<a href="{% url 'time_keeper'%}"><button type="button" class="btnTop" id="btnTimerkeeperUp"><i class="header-icon glyphicon glyphicon-time"></i></button></a>
 				<a href="{% url 'logout' %}"><input type="button" value="{% trans 'EXIT' %}" id="logOff"/></a>
 				<a  href="{% url 'profile' %}"><input type="button" id="userImg"/></a>
 

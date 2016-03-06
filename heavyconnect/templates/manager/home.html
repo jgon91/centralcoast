@@ -28,12 +28,12 @@
 		<div class="row" id="driverMenu">
 			<div class="col-xs-6 col-md-3 driverMenu">
 				<a href="{% url 'time_keeper_records'%}">
-				<input type="button" class="btnMain" value="TIMEKEEPER" id="btnTimerkeeper" />
+				<button type="button" class="btnMain" value="TIMEKEEPER" id="btnTimerkeeper" ><i id="timeReport" class=" glyphicon glyphicon-folder-open"></i>REPORTS</button>
 				</a>
 			</div>
 			<div class="col-xs-6 col-md-3 driverMenu">
 				<a href="{% url 'listEmployee'%}">
-				<input type="button" class="btnMain" id="btnManageHome" value="MANAGE"/>
+				<button type="button" class="btnMain" id="btnManageHome" value="MANAGE"><i id="addEmployees" class=" glyphicon glyphicon-user"></i>ADD</button>
 				</a>
 			</div>
 

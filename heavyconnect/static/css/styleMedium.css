@@ -60,29 +60,35 @@
 }
 
 #btnTimerkeeper {
-	background: url('../imgSmall/buttons/timekeeper.png') no-repeat top left;
 	background-size: 100% 100%;
 	position: relative;
     top: 50%;
     left: 43%;
 	width: 212px;
     height: 196px;
-    padding-top: 150px;
     font-size: 24px;
     margin-top:50px;
 }
 
 #btnManageHome {
-	background: url('../imgSmall/buttons/checklist.png') no-repeat top left;
 	background-size: 100% 100%;
 	width: 212px;
     height: 196px;
-    padding-top: 150px;
     font-size: 24px;
     margin-top:50px;
     top: 50%;
     left: 43%;
     margin-left: 100px;
+    padding-top:10px;
+    background-color: #3C763D;
+}
+#addEmployees{
+	font-size:125px;
+	width:100%;
+}
+
+#timeReport{
+	font-size:125px;
 }
 /*** Header Home End ***/
 /*** Header Driver Begin ***/
@@ -99,6 +105,11 @@
     font-size: 35px;
     background-color: white;
     border: none;
+}
+
+.header-icon {
+	font-size:60px;
+	font-color:white;
 }
 
 body {
@@ -118,6 +129,14 @@ body {
     -webkit-text-security: disc;
 }
 
+.trStartShift{
+	font-style: italic;
+}
+
+.trStopShift{
+	font-style: italic;
+}
+
 #employee_pin input[type=number] {
     -webkit-text-security: disc;
 }
@@ -128,7 +147,6 @@ body {
 }
 
 .btnsTimekeeper {
-	background: url('../imgSmall/buttons/btnGreen.png') no-repeat top left;
 	background-size: 100% 100%;
 	border-radius: 7px;
 	border: none;
@@ -139,10 +157,10 @@ body {
 	margin-bottom: 25px;
 	font-size: 35px;
 	font-weight: 700;
+	background-color:#236023;
 }
 
 .btnsTimekeeperShop {
-	background: url('../imgSmall/buttons/btnGreen.png') no-repeat top left;
 	background-size: 100% 100%;
 	border-radius: 7px;
 	border: none;
@@ -154,6 +172,7 @@ body {
     font-size: 45px;
     font-weight: 700;
     margin-top: 50px;
+    background-color:#236023;
 }
 
 #employee-table td

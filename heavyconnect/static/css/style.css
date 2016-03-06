@@ -234,7 +234,6 @@ input[type="button"] {
 	background-size: 100% 100%;
 }
 #btnTimerkeeper {
-	background: url('../img/buttons/timekeeper.jpg') no-repeat top left;
 	background-size: 100% 100%;
 }
 #btnTimerkeeper:hover {

@@ -40,7 +40,6 @@ body {
 }
 
 #logOff {
-	background: url('../img/buttons/exit.png') no-repeat top left;
 	background-size: 100% 100%;
 	width: 60px;
 	height: 50px;
@@ -187,7 +186,6 @@ input[type="button"] {
 	background-size: 100% 100%;
 }
 #btnTimerkeeper {
-	background: url('../imgSmall/buttons/timekeeper.png') no-repeat top left;
 	background-size: 100% 100%;
 }
 #btnEmployee {
@@ -208,8 +206,9 @@ input[type="button"] {
 }
 
 #btnHomeUp {
-	background: url('../img/buttons/btnHomeUp.jpg') no-repeat top left;
 	background-size: 100% 100%;
+	background-color: #3C763D;;
+	color:white;
 }
 
 #btnEquipmentUp {
@@ -223,8 +222,9 @@ input[type="button"] {
 }
 
 #btnTimerkeeperUp {
-	background: url('../imgSmall/buttons/btnTimekeeperTop.png') no-repeat top left;
 	background-size: 100% 100%;
+	background-color: #3C763D;;
+	color:white;
 }
 
 #btnSchedulerUp {
@@ -248,8 +248,9 @@ input[type="button"] {
 }
 
 #btnManageUp {
-	background: url('../img/buttons/checklist.png') no-repeat top left;
 	background-size: 100% 100%;
+	background-color: #589258;;
+	color:white;
 }
 
 /*Begin EQUIPMENT MANAGER page*/

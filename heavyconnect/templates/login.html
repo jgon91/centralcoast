@@ -89,12 +89,14 @@
 					<form id="login-form">
 						{% csrf_token %}
 						<tr>
-							<td><img class="icnLogin" style="height: 45px;" src="{% static 'imgSmall/userIcn.png' %}"/></td><td>
+							<!--<td><img class="icnLogin" style="height: 45px;" src="{% static 'imgSmall/userIcn.png' %}"/></td>-->
+							<td>
 							<input  type="text" class="input_login" id="username" name="username" placeholder="Enter your username"/>
 							</td>
 						</tr>
 						<tr>
-							<td><img class="icnLogin" style="height: 45px;" src="{% static 'imgSmall/passwordIcn.png' %}" /></td><td>
+							<!--<td><img class="icnLogin" style="height: 45px;" src="{% static 'imgSmall/passwordIcn.png' %}" /></td>-->
+							<td>
 							<input  type="password" class="input_login" id="password" name="password" placeholder="Enter your password" onkeypress="enter()"/>
 							</td>
 						</tr>
@@ -107,7 +109,7 @@
 						</tr>
 						<tr>
 							<td colspan="2">
-							<input id="btn_login" class="blue_label" type="button" onclick="process_login()"/>
+							<button id="btn_login" class="blue_label" type="button" onclick="process_login()"><i class="login-icon glyphicon glyphicon-lock"></i> LOGIN</button>
 							</td>
 						</tr>
 						<tr>
