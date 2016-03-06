@@ -4762,14 +4762,57 @@ def getNextAttendance(request):
 			attendance = EmployeeAttendance.objects.filter(id=id)
 			breaks = Break.objects.filter(attendance__id = id)
 			jobs = Task.objects.filter(attendance__id = id)
+			print jobs
+			breaks = Break.objects.filter(attendance__id = id).order_by('start')
+			break_num = breaks.count()
+			lunch_breaks = []
+			now = datetime.datetime.now().time()
+			print attendance.first().hour_started
+			print attendance.first().hour_ended
+			if attendance.first().hour_started != None:
+				hour_started = datetime.timedelta(hours = attendance.first().hour_started.hour, minutes = attendance.first().hour_started.minute)
+			else:
+				hour_started = 'N/A'
+
+			if attendance.first().hour_ended != None:
+				hour_ended = datetime.timedelta(hours = attendance.first().hour_ended.hour, minutes = attendance.first().hour_ended.minute)
+			else:
+				hour_ended = 'N/A'
+
+			if hour_ended == 'N/A' or hour_ended == None:
+				hour_ended = datetime.timedelta(hours = now.hour, minutes = now.minute)
+			if hour_ended != 'N/A' and hour_started != 'N/A':
+				if hour_ended >= hour_started:
+					hours_today = hour_ended - hour_started
+					hours_today = round(hours_today.total_seconds()/60/60, 2)
+				else:
+					hours_today = 'N/A'
+			else:
+				hours_today = 'N/A'
+
+			if break_num > 0:
+				for item in breaks:
+					if item.lunch == True:
+						lunch_breaks.append(item)
+
+				total_lunch_time = 0.0
+				for item in lunch_breaks:
+					start = datetime.timedelta(hours = item.start.hour, minutes = item.start.minute)
+					end = datetime.timedelta(hours = item.end.hour, minutes = item.end.minute)
+					total_lunch = end - start
+					total_lunch = round(total_lunch.total_seconds()/60/60, 2)
+					total_lunch_time += total_lunch
+				if hours_today != 'N/A':
+					hours_today -= total_lunch_time
+
 			result['attendances'] = serializers.serialize("json", attendance)
 			result['breaks'] = serializers.serialize("json",breaks)
 			result['jobs'] = serializers.serialize("json",jobs)
-
-
+			# result['jobs'] = jobs
 			result['attend_date'] = str(attendance.first().date)
 			name = attendance.first().employee.user.first_name #+ " " + attendance.employee.user.last_name
 			result['attend_name'] = str(name)
+			result['total_hours'] = str(hours_today)
 
 			# data = serializers.serialize("json", result)
 			# result['attendance']=attendance
@@ -5433,7 +5476,12 @@ def updateAttendanceChanges(request):
 				new_time = request.POST['new_shift_time']
 				new_stop_time = request.POST['new_stop_time']
 				breaks = request.POST['breaks']
+				jobs = request.POST['jobs']
+				print jobs
+				print 'jobs'
 				breaks = json.loads(breaks)
+				jobs = json.loads(jobs)
+				print jobs
 				for item in breaks:
 					break_id = int(item[0])
 					new_start = str(item[1])
@@ -5450,7 +5498,25 @@ def updateAttendanceChanges(request):
 					updated_break.start = new_start
 					updated_break.end = new_end
 					updated_break.save()
-
+				for item in jobs:
+					job_id = int(item[0])
+					print job_id
+					job_code = int(item[1])
+					print job_code
+					location = str(item[2])
+					print location
+					hours = int(item[3])
+					print hours
+					updated_job = Task.objects.get(id=job_id)
+					print updated_job
+					updated_emp_job = EmployeeTask.objects.get(task=updated_job)
+					print updated_emp_job
+					updated_job.hours_spend = hours
+					updated_job.code = job_code
+					updated_job.field = location
+					updated_emp_job.hours_spent =hours
+					updated_emp_job.save()
+					updated_job.save()
 				shift_id = request.POST['shift_id']
 
 				attendance = EmployeeAttendance.objects.get(id = shift_id)
@@ -5468,6 +5534,8 @@ def updateAttendanceChanges(request):
 				attendance.hour_ended = str(new_hour_stopped)
 				attendance.edited = True
 				attendance.manager_approved = True
+				emplo = Employee.objects.get(user_id = request.user.id)
+				attendance.manager = str(emplo.id)
 				attendance.save()
 				result['success'] = True
 

@@ -145,7 +145,7 @@
 			$("#confirmLunch").click(function() {
 				emptyDivs();
 				lunch = 1;
-				$("#messageTimekeeper").html("{% trans 'Starting lunch' %}...");
+				$("#messageTimekeeper").html("{% trans 'Starting Meal' %}...");
 				startBreak("{{ csrf_token }}", "{% url 'startBreakGroup' %}", item_count, lunch);
 			});
 			$("#timelog").click(function() {
@@ -177,8 +177,6 @@
 						var countOffline = 0;
 						countOffline = count.startShift + count.startBreak + count.stopBreak + count.startLunch + count.stopLunch + count.endShift;
 						var countOnline = 0;
-						console.log(data.hour_started);
-						console.log(data.hour_ended);
 
 						if (data.hour_started != 'None') {
 							shiftStarted = 1;
@@ -302,7 +300,7 @@
 								breakStarted = 1;
 							}
 							if (lunch == 1) {
-								$("#messageTimekeeper").html("{% trans 'Success! 30-minute lunch started' %}");
+								$("#messageTimekeeper").html("{% trans 'Success! 30-minute meal started' %}");
 								lunchStarted = 1;
 							}
 
@@ -418,9 +416,8 @@
 			});
 		}
 		function tConvert (time) {
-		  // Check correct time format and split into components
+		    // Check correct time format and split into components
 		  time = time.toString ().match (/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
-
 		  if (time.length > 1) { // If time format correct
 			time = time.slice (1);  // Remove full string match value
 			time[5] = +time[0] < 12 ? 'AM' : 'PM'; // Set AM/PM
@@ -486,7 +483,7 @@
 									breaks++;
 								} else {
 									lun[data.breaks[i].breakId] = 1;
-									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>" + lunchs + " Lunch " + tConvert(data.breaks[i].breakStart) + " - " + tConvert(data.breaks[i].breakStop) + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>" + lunchs + " Meal " + tConvert(data.breaks[i].breakStart) + " - " + tConvert(data.breaks[i].breakStop) + "</td><td><input id='" + data.breaks[i].breakId + "' type='button' class='editIcon' onclick='editBreak(this.id, workBreak[this.id], breakN[this.id], breakBeg[this.id], breakEnd[this.id], lun[this.id])'/></td></tr>");
 									lunchs++;
 								}
 								$("#tableTimelog").append("<tr id='job" + data.tasks[n-1].jobId + "'><td class='colBorderTimelog'>" + breakDuration + "</td><td class='job'> {% trans 'Job' %} " + n +"  "+ data.tasks[n-1].description + " </td><td><input id='job" + data.tasks[n-1].jobId + "' type='button' class='editIcon' style='background: url(\"/static/imgSmall/editIcon.png\") no-repeat top left !important;background-size: 100% 100% !important;width: 30px !important;height: 30px !important;border: none !important;' onclick='editJob(this.id, `${breakDuration}`, `${breaks}`, `${idTimelog}`)'/></td></tr>");
@@ -578,7 +575,7 @@
 				$("#newBreakEnd" + breakId).val(breakEnd);
 			}
 			if (lun == 1) {
-				$("#" + breakId).html("<td class='colBorderTimelog'>" + workBreak + "</td><td>#" + breakN + " Lunch <input id='newBreakBeg" + breakId + "' type='time'/> - <input id='newBreakEnd" + breakId + "' type='time'/></td><td><input type='button' class='editedIcon' onclick='callEditBreak(breakId)'/></td>");
+				$("#" + breakId).html("<td class='colBorderTimelog'>" + workBreak + "</td><td>#" + breakN + " Meal <input id='newBreakBeg" + breakId + "' type='time'/> - <input id='newBreakEnd" + breakId + "' type='time'/></td><td><input type='button' class='editedIcon' onclick='callEditBreak(breakId)'/></td>");
 				$("#newBreakBeg" + breakId).val(breakBeg);
 				$("#newBreakEnd" + breakId).val(breakEnd);
 			}
@@ -672,7 +669,7 @@
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-md-12">
-						<input type="button" id="lunch" value="{% trans 'LUNCH' %}" class="btnsTimekeeper"/>
+						<input type="button" id="lunch" value="{% trans 'MEAL' %}" class="btnsTimekeeper"/>
 					</div>
 				</div>
 				<div class="row">

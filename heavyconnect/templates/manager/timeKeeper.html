@@ -16,6 +16,8 @@
 		<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/bootstrap-table.min.js"></script>
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.8.1/bootstrap-table.min.css">
+		<script type="text/javascript" src="{% static 'js/spin.min.js' %}"></script>
+
 
 		<style>
 		.dropdown-check-list {
@@ -66,6 +68,30 @@
 		var id_checked = [];
 		var name_checked = [];
 		var correct_index = 0;
+		var opts = {
+		  lines: 10 // The number of lines to draw
+		, length: 15 // The length of each line
+		, width: 8 // The line thickness
+		, radius: 15 // The radius of the inner circle
+		, scale: 1 // Scales overall size of the spinner
+		, corners: 1 // Corner roundness (0..1)
+		, color: '#000' // #rgb or #rrggbb or array of colors
+		, opacity: 0.25 // Opacity of the lines
+		, rotate: 0 // The rotation offset
+		, direction: 1 // 1: clockwise, -1: counterclockwise
+		, speed: 1 // Rounds per second
+		, trail: 60 // Afterglow percentage
+		, fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
+		, zIndex: 2e9 // The z-index (defaults to 2000000000)
+		, className: 'spinner' // The CSS class to assign to the spinner
+		, top: '50%' // Top position relative to parent
+		, left: '50%' // Left position relative to parent
+		, shadow: false // Whether to render a shadow
+		, hwaccel: false // Whether to use hardware acceleration
+		, position: 'absolute' // Element positioning
+		}
+		var target = document.getElementById('messageTimekeeper');
+		var spinner = 0;
 			$(document).ready(function() {
 
 				$("#foot").load("{% url 'footer' %}");
@@ -214,32 +240,6 @@
 									$('#deleteModal').modal('hide');
 
 								});
-
-			$(".search").keyup(function () {
-
-					var searchTerm = $(".search").val();
-					var listItem = $('.results tbody').children('tr');
-					var searchSplit = searchTerm.replace(/ /g, "'):containsi('")
-
-				  $.extend($.expr[':'], {'containsi': function(elem, i, match, array){
-						return (elem.textContent || elem.innerText || '').toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
-					}
-				  });
-
-				  $(".results tbody tr").not(":containsi('" + searchSplit + "')").each(function(e){
-					$(this).attr('visible','false');
-				  });
-
-				  $(".results tbody tr:containsi('" + searchSplit + "')").each(function(e){
-					$(this).attr('visible','true');
-				  });
-
-				  var jobCount = $('.results tbody tr[visible="true"]').length;
-					$('.counter').text(jobCount + ' item');
-
-				  if(jobCount == '0') {$('.no-result').show();}
-					else {$('.no-result').hide();}
-			});
 
 			});
 			 var $table = $('#report_table'),
@@ -448,6 +448,7 @@
 
 					acceptAttendances("{{ csrf_token}}", "{% url 'acceptAttendances' %}", ids[correct_index]);
 					var allBreaks = [];
+					var allJobs = [];
 					$('.break').each(function(i){
 						values = [];
 						values.push(this.id);
@@ -458,8 +459,20 @@
 						});
 						allBreaks.push(values);
 					});
+
+					$('.job').each(function(i){
+						values = [];
+						values.push(this.id);
+						$(this).find('input').each(function(){
+							var data = $(this).val();
+							values.push(data);
+
+						});
+						allJobs.push(values);
+					});
 					allBreaks = JSON.stringify(allBreaks);
-					updateAttendanceChanges("{{ csrf_token}}", "{% url 'updateAttendanceChanges' %}", allBreaks);
+					allJobs = JSON.stringify(allJobs);
+					updateAttendanceChanges("{{ csrf_token}}", "{% url 'updateAttendanceChanges' %}", allBreaks, allJobs);
 					$('#edit').modal('hide');
 
 					correct_index = 0;
@@ -477,7 +490,17 @@
 						});
 						allBreaks.push(values);
 					});
-					console.log(allBreaks);
+					$('.job').each(function(i){
+						values = [];
+						values.push(this.id);
+						$(this).find('input').each(function(){
+							var data = $(this).val();
+							values.push(data);
+
+						});
+						allJobs.push(values);
+						console.log(allJobs);
+					});
 
 
 					current_step = correct_index+2;
@@ -485,7 +508,8 @@
 					$('#step').html(string_step);
 					acceptAttendances("{{ csrf_token}}", "{% url 'acceptAttendances' %}", ids[correct_index]);
 					allBreaks = JSON.stringify(allBreaks);
-					updateAttendanceChanges("{{ csrf_token}}", "{% url 'updateAttendanceChanges' %}", allBreaks);
+					allJobs = JSON.stringify(allJobs);
+					updateAttendanceChanges("{{ csrf_token}}", "{% url 'updateAttendanceChanges' %}", allBreaks, allJobs);
 					correct_index += 1;
 
 					getNextAttendanceInList(ids[correct_index]);
@@ -524,11 +548,11 @@
 				});
 			}
 
-			function updateAttendanceChanges(token, url, breaks){
+			function updateAttendanceChanges(token, url, breaks, jobs){
 				$.ajax({
 				method : "POST",
 				url : url,
-				data : {"csrfmiddlewaretoken" : token, "shift_id": ids[correct_index], "new_shift_time": document.getElementById('clockin').value, "new_stop_time":document.getElementById('clockout').value, "breaks": breaks},
+				data : {"csrfmiddlewaretoken" : token, "shift_id": ids[correct_index], "new_shift_time": document.getElementById('clockin').value, "new_stop_time":document.getElementById('clockout').value, "breaks": breaks, "jobs":jobs},
 				datatype : "json",
 				success : function(data, status, xhr) {
 
@@ -669,8 +693,10 @@
 				datatype : "json",
 				success : function(data, status, xhr) {
 					$('#allBreaks').html('');
+					$('#allJobs').html('');
 					$('#attend_name').html(data.attend_name);
 					$('#attend_date_modal').html(data.attend_date);
+					$('#attend_hours').html(data.total_hours);
 
 					breaks = JSON.parse(data.breaks);
 
@@ -678,6 +704,8 @@
 
 					parsed_result = $.parseJSON(data.breaks);
 					parsed_attend = $.parseJSON(data.attendances);
+					parsed_jobs = $.parseJSON(data.jobs);
+					console.log(parsed_jobs);
 					$(function () {
 						var i = 1;
 						var breaks = 1;
@@ -694,16 +722,27 @@
 						var breaks = 1;
 						var lunch = 1;
 						$.each(parsed_result, function (i, item) {
-							console.log(item);
-
 							if(item.fields.lunch == true){
-								$('#allBreaks').append('<label>Lunch'+lunch+'</label>');
+								$('#allBreaks').append('<label>Meal'+lunch+'</label>');
 								lunch += 1;
 							}else {
 								$('#allBreaks').append('<label>Break'+breaks+'</label>');
 								breaks += 1;
 							}
+
 							$('#allBreaks').append('<div id="'+item.pk+'" class="form-group break"><label >Start:</label><input class="form-control" type="time" value="'+ item.fields.start +'"><label >Stop:</label><input class="form-control" type="time" value="'+item.fields.end+'"></div>');
+
+						});
+
+					});
+					$(function () {
+						var i = 1;
+						var jobs = 1;
+						$.each(parsed_jobs, function (i, item) {
+
+							$('#allJobs').append('<label>Job '+jobs+'</label>');
+							jobs += 1;
+							$('#allJobs').append('<div id="'+item.pk+'" class="form-group job"><label>Job Code:</label><input class="form-control"  type="text" value="'+ item.fields.code +'"><label >Location:</label><input class="form-control" type="text" value="'+item.fields.field+'"><label >Hours:</label><input class="form-control" type="text" value="'+item.fields.hours_spent+'"></div>');
 
 						});
 
@@ -722,6 +761,14 @@
 				url : url,
 				data : {"csrfmiddlewaretoken" : token, "start": start, "end":end, "namesChecked": names},
 				datatype : "json",
+				beforeSend: function() {
+					var target = document.getElementById('report_table');
+
+					spinner = new Spinner(opts).spin(target);
+				},
+				complete: function() {
+					spinner.stop();
+				},
 				success : function(data, status, xhr) {
 					if (data) {
 						$('#results').html("");
@@ -771,7 +818,7 @@
 								$('#results').append('<tr id="'+attend_id+'"  class="accordion-toggle"><td><input id="'+attend_id+'" name="rowSelected" type="checkbox" class="checkthis" /></td> <td data-toggle="collapse" data-target=#'+demo+'>' +
 								data.qr_code[i] + '</td><td data-toggle="collapse" data-target=#'+demo+'>' + all_names + '</td><td data-toggle="collapse" data-target=#'+demo+'>' + attend_date +'</td><td data-toggle="collapse" data-target=#'+demo+' data-editable="true">' +
 								start_hour + '</td><td data-toggle="collapse" data-target=#'+demo+' data-editable="true">' + end_hour + '</td><td data-toggle="collapse" data-target=#'+demo+'>' + total_time+'</td><td id="status'+attend_id+'"></td></tr>');
-								$('#results').append('<tr><td colspan="12" class="hiddenRow"><div class="accordian-body collapse" id='+demo+'> <table class="table table-striped"><thead><tr><th>Job Codes</th><th>Locations</th><th># Breaks </th><th> Total Break Time</th><th># Lunches</th><th> Total Lunch Time</th></tr></thead><tbody><tr><td>' + jobs +'</td><td>' + locations +'</td><td>' + data.num_breaks[i] +'</td><td>' + data.total_break_time[i] +'</td><td>' + data.num_lunches[i] +'</td><td>' + data.total_lunch_time[i] +'</td><td><a href="#" class="confirm-delete btn mini red-stripe" style="color: red;" role="button" data-title="'+id_date+'" data-id="'+attend_id+'">Reject</a></td></tr></tbody></table></div> </td></tr>');
+								$('#results').append('<tr><td colspan="12" class="hiddenRow"><div class="accordian-body collapse" id='+demo+'> <table class="table table-striped"><thead><tr><th>Job Codes</th><th>Locations</th><th># Breaks </th><th> Total Break Time</th><th># Meals</th><th> Total Meal Time</th></tr></thead><tbody><tr><td>' + jobs +'</td><td>' + locations +'</td><td>' + data.num_breaks[i] +'</td><td>' + data.total_break_time[i] +'</td><td>' + data.num_lunches[i] +'</td><td>' + data.total_lunch_time[i] +'</td><td><a href="#" class="confirm-delete btn mini red-stripe" style="color: red;" role="button" data-title="'+id_date+'" data-id="'+attend_id+'">Reject</a></td></tr></tbody></table></div> </td></tr>');
 								if(data.managerAccepts[i] == false){
 									if(data.managerRejects[i] == true){
 										<!--row = document.getElementById(attend_id);-->
@@ -875,18 +922,23 @@
 						{% trans 'HC TIMEKEEPER REPORT' %}</h3>
 					</div>
 					<div class="panel-body">
-						<div align="left" style="font-weight:600;font-size:18px;">Select Dates:</div>
-					<div style="width: 70%;float: left;" class="input-daterange input-group" id="datepicker">
-						<input type="text" id="start" class="input-sm form-control" name="start" />
+						<div align="left" style="font-weight:600;font-size:18px;">1. Select Dates <i class=" glyphicon glyphicon-calendar"></i></div>
+						<div  style="height:50px;"class="input-daterange input-group" id="datepicker">
+						<input style="font-size:20px;height:50px;" type="text" id="start" class="input-sm form-control" name="start" />
 						<span class="input-group-addon">to</span>
-						<input type="text" id="stop" class="input-sm form-control" name="end" />
+						<input style="font-size:20px;height:50px;" type="text" id="stop" class="input-sm form-control" name="end" />
+						</div>
 
 					</div>
-					<div style="width: 30%;float: right;" id="list1" style="margin-top: 30px;" class="dropdown-check-list" tabindex="100">
-						<span style="margin-left:10px;width: 100%;border-radius: 4px; font-size: 18px;font-weight: 600;" class="anchor">Select Employees</span>
-						<ul style="border-radius: 4px;position:absolute; background: white;width: 100%;float:center;" id="items" class="items">
+					<div style="height:50px;width: 100%;" id="list1" style="margin-top: 30px;" class="dropdown-check-list" tabindex="100">
+						<span style="height:50px;width: 97%;border-radius: 4px; font-size: 18px;font-weight: 600;text-align:left;padding-top:10px;" class="anchor">2. Select Employees <i class=" glyphicon glyphicon-user"></i></span>
+						<ul style="z-index: 100;border-radius: 4px;position:absolute; background: #EFEFEF;width: 100%;float:center;" id="items" class="items">
 						</ul>
 					</div>
+						<button style="margin-top:10px;height:50px;width:97%;font-size:18px;font-weight:600;background-color: #6DA8F5;text-align:left;" type="button" class="btn btn-default" onclick="updateReport()" >3. Update <i class=" glyphicon glyphicon-list-alt"></i> <i style="float:right;" class=" glyphicon glyphicon-refresh"></i></button>
+					<button id="remove" data-title="Edit" data-toggle="modal" data-target="#edit" style="float:left; margin-top:30px; margin-bottom: 15px;margin-left:10px;" class="btn btn-warning" disabled>
+							<i class="glyphicon glyphicon-ok-sign"></i> Review Attendance(s)
+						</button>
 
 				<script type="text/javascript">
 
@@ -910,12 +962,6 @@
 							items.classList.remove('visible');
 						}
 				</script>
-
-						<!--<div class="form-group pull-right"><input type="text" class="search form-control " placeholder="Search"/>-->
-					<button style="float: right;margin-top: 15px; margin-left:60%;margin-bottom:10px;height:50px;font-size:15px;font-weight:600;background-color: #6DA8F5;" type="button" class="btn btn-default" onclick="updateReport()" >Update Report</button>
-					<button id="remove" data-title="Edit" data-toggle="modal" data-target="#edit" style="float:left; margin-top:30px; margin-bottom: 15px;" class="btn btn-warning" disabled>
-							<i class="glyphicon glyphicon-ok-sign"></i> Review Attendance(s)
-						</button>
 
 					<table class="table table-condensed results table-bordered" id="report_table" style="border-collapse:collapse;">
 
@@ -994,9 +1040,11 @@
 			  <div class="form-group ">
 				  <p>
 				  <label>Name:</label>
-				  <span id="attend_name">Name:</span>
+				  <span id="attend_name"></span>
 				  <label>Date:</label>
-				  <span id="attend_date_modal">Date:</span>
+				  <span id="attend_date_modal"></span>
+				  <label>Hours:</label>
+				  <span id="attend_hours"></span>
 				  </p>
 					<label for="clockin">Clock-in:</label>
 					<input id="clockin" class="form-control" type="time" placeholder="">
@@ -1004,6 +1052,7 @@
 					<input id="clockout"  class="form-control" type="time" placeholder="">
 			  </div>
 			  <div id="allBreaks"></div>
+			  <div id="allJobs"></div>
       </div>
           <div id="modalFooter" class="modal-footer">
       </div>

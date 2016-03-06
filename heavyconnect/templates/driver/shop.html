@@ -770,7 +770,6 @@ function addRemove() {
 				},
 				datatype : "json",
 				success : function(data, status, xhr) {
-					console.log(data.success);
 				}
 			});
 
@@ -864,7 +863,7 @@ function addRemove() {
 							$("#messageTimekeeper").html("{% trans 'Break Started' %}:");
 						}
 						if (lunch == 1) {
-							$("#messageTimekeeper").html("{% trans 'Lunch Started' %}:");
+							$("#messageTimekeeper").html("{% trans 'Meal Started' %}:");
 						}
 					}
 				}
@@ -1038,7 +1037,6 @@ function addRemove() {
 					    <!--}-->
 
 					    $('#showTimekeeperModal').modal('hide');
-					    console.log('should');
 
 						$('#signModal').modal({show: true});
 
@@ -1121,7 +1119,7 @@ function addRemove() {
 									breaks++;
 								} else {
 									lun[data.breaks[i].breakId] = 1;
-									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + lunchs + " Lunch " + tConvert(data.breaks[i].breakStart) + " - " + tConvert(data.breaks[i].breakStop) + "</td></tr>");
+									$("#tableTimelog").append("<tr id='" + data.breaks[i].breakId + "'><td class='colBorderTimelog'>" + data.breaks[i].breakDuration + "</td><td>#" + lunchs + " Meal " + tConvert(data.breaks[i].breakStart) + " - " + tConvert(data.breaks[i].breakStop) + "</td></tr>");
 									lunchs++;
 								}
 							}
