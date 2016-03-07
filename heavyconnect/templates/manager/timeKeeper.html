@@ -719,8 +719,8 @@
 				data : {"csrfmiddlewaretoken" : token, "attendanceid": attendanceid},
 				datatype : "json",
 				success : function(data, status, xhr) {
-					$('#allBreaks').html('<label class="modalLabel" >Breaks and Lunches</label><button style="float:right;" class="close" data-title="Add" data-toggle="modal" data-target="#addBreakModal" ><i class="glyphicon glyphicon-plus-sign" aria-hidden="true"></oi></button>');
-					$('#allJobs').html('<label class="modalLabel">Jobs</label><button style="float:right;" data-title="Add" class="close" data-toggle="modal" data-target="#addJobModal" ><i class="glyphicon glyphicon-plus-sign" aria-hidden="true"></i></button>');
+					$('#allBreaks').html('<label class="modalLabel" >Breaks and Lunches</label><button style="float:right;" class="close" data-title="Add" data-toggle="modal" data-target="#addBreakModal" ><i class="addMore glyphicon glyphicon-plus-sign" aria-hidden="true"></oi></button>');
+					$('#allJobs').html('<label class="modalLabel">Jobs</label><button style="float:right;" data-title="Add" class="close" data-toggle="modal" data-target="#addJobModal" ><i class="addMore glyphicon glyphicon-plus-sign" aria-hidden="true"></i></button>');
 					$('#attend_name').html(data.attend_name);
 					$('#attend_date_modal').html(data.attend_date);
 					$('#attend_hours').html(data.total_hours);

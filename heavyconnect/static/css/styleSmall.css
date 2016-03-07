@@ -513,12 +513,12 @@ input[type='time'] {
     border: 1px solid #999;
     padding: 10px;
     border-radius: .4em;
+    background-color:white;
 }
 
 #allBreaks{
     background-color: #F7F7F7;
     border-radius: .4em;
-    height: 40px;
     vertical-align: middle;
     padding: 10px;
     margin-top:20px;
@@ -527,11 +527,16 @@ input[type='time'] {
 #allJobs{
     background-color: #F7F7F7;
     border-radius: .4em;
-    height: 40px;
     vertical-align: middle;
     padding: 10px;
     margin-top:20px;
 }
+
+.addMore{
+	color: green;
+    font-size: 30px;
+}
+
 .modalLabel{
 	font-size:20px;
 }
