@@ -724,7 +724,7 @@
 				data : {"csrfmiddlewaretoken" : token, "attendanceid": attendanceid},
 				datatype : "json",
 				success : function(data, status, xhr) {
-					$('#allBreaks').html('<label class="modalLabel" >Breaks and Lunches</label><button style="float:right;" class="close" data-title="Add" data-toggle="modal" data-target="#addBreakModal" ><i class="addMore glyphicon glyphicon-plus-sign" aria-hidden="true"></oi></button>');
+					$('#allBreaks').html('<label class="modalLabel" >Breaks and Lunches</label><button style="float:right;" class="close" data-title="Add" data-toggle="modal" data-target="#addBreakModal" ><i class="addMore glyphicon glyphicon-plus-sign" aria-hidden="true"></i></button>');
 					$('#allJobs').html('<label class="modalLabel">Jobs</label><button style="float:right;" data-title="Add" class="close" data-toggle="modal" data-target="#addJobModal" ><i class="addMore glyphicon glyphicon-plus-sign" aria-hidden="true"></i></button>');
 					$('#attend_name').html(data.attend_name);
 					$('#attend_date_modal').html(data.attend_date);
@@ -876,7 +876,7 @@
 				success : function(data, status, xhr) {
 
 					$('#addBreakModal').hide();
-					$('#allBreaks').html('<label class="modalLabel" >Breaks and Lunches</label><button class="addMore" style="float:right;" data-title="Add" data-toggle="modal" data-target="#addBreakModal" >+</button>');
+					$('#allBreaks').html('<label class="modalLabel" >Breaks and Lunches</label><button class="close" style="float:right;" data-title="Add" data-toggle="modal" data-target="#addBreakModal" ><i class="addMore glyphicon glyphicon-plus-sign" aria-hidden="true"></i></button>');
 
 
 					parsed_result = $.parseJSON(data.breaks);
@@ -946,7 +946,7 @@
 				success : function(data, status, xhr) {
 
 					$('#addJobModal').hide();
-					$('#allJobs').html('<label class="modalLabel">Jobs</label><button class="addMore" style="float:right;" data-title="Add" data-toggle="modal" data-target="#addJobModal" >+</button>');
+					$('#allJobs').html('<label class="modalLabel">Jobs</label><button class="close" style="float:right;" data-title="Add" data-toggle="modal" data-target="#addJobModal" ><i class="addMore glyphicon glyphicon-plus-sign" aria-hidden="true"></i></button>');
 
 
 					parsed_jobs = $.parseJSON(data.jobs);
