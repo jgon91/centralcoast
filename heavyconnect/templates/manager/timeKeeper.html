@@ -206,6 +206,9 @@
 				todayHighlight: true
 			});
 
+			$("#start").datepicker('setDate', new Date());
+			$("#stop").datepicker('setDate', new Date());
+
 
 
 			$('.confirm-delete').on('click', function(e) {
@@ -474,6 +477,7 @@
 					allJobs = JSON.stringify(allJobs);
 					updateAttendanceChanges("{{ csrf_token}}", "{% url 'updateAttendanceChanges' %}", allBreaks, allJobs);
 					$('#edit').modal('hide');
+					updateReport();
 
 					correct_index = 0;
 				}else {
@@ -526,6 +530,7 @@
 				if(correct_index+1 >= ids.length){
 					rejectAttendance("{{ csrf_token}}", "{% url 'rejectAttendance' %}", ids[correct_index]);
 					$('#edit').modal('hide');
+					updateReport();
 
 					correct_index = 0;
 				}else {
@@ -871,7 +876,7 @@
 				success : function(data, status, xhr) {
 
 					$('#addBreakModal').hide();
-					$('#allBreaks').html('<label>Breaks:</label><button style="float:right;" data-title="Add" data-toggle="modal" data-target="#addBreakModal" >+</button>');
+					$('#allBreaks').html('<label class="modalLabel" >Breaks and Lunches</label><button class="addMore" style="float:right;" data-title="Add" data-toggle="modal" data-target="#addBreakModal" >+</button>');
 
 
 					parsed_result = $.parseJSON(data.breaks);
@@ -941,7 +946,7 @@
 				success : function(data, status, xhr) {
 
 					$('#addJobModal').hide();
-					$('#allJobs').html('<label>Jobs:</label><button style="float:right;" data-title="Add" data-toggle="modal" data-target="#addJobModal" >+</button>');
+					$('#allJobs').html('<label class="modalLabel">Jobs</label><button class="addMore" style="float:right;" data-title="Add" data-toggle="modal" data-target="#addJobModal" >+</button>');
 
 
 					parsed_jobs = $.parseJSON(data.jobs);
