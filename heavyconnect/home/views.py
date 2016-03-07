@@ -4739,6 +4739,119 @@ def rejectAttendance(request):
 
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
+def deleteBreak(request):
+	result = {'success' : True}
+	if request.method == 'POST':
+		if request.is_ajax():
+			id = request.POST['id']
+			breaks = Break.objects.get(id = id)
+			# attendance.manager_rejected = True
+			# attendance.manager_approved = False
+			breaks.delete()
+
+		else:
+			result['code'] = 2  #Use ajax to perform requests
+	else:
+		result['code'] = 3  #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+def deleteJob(request):
+	result = {'success' : True}
+	if request.method == 'POST':
+		if request.is_ajax():
+			id = request.POST['id']
+			job = Task.objects.get(id = id)
+			empJob = EmployeeTask.objects.get(task = job)
+			# attendance.manager_rejected = True
+			# attendance.manager_approved = False
+			job.delete()
+			empJob.delete()
+
+		else:
+			result['code'] = 2  #Use ajax to perform requests
+	else:
+		result['code'] = 3  #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
+def createBreakLunch(request):
+	result = {'success' : True}
+	if request.method == 'POST':
+		if request.is_ajax():
+			time_start = {'hour': 0, 'minute' : 0, 'second' : 0}
+			time_end = {'hour': 0, 'minute' : 0, 'second' : 0}
+			breakOrLunch = request.POST['breakLunch']
+			startBreak = request.POST['startBreak']
+			stopBreak = request.POST['stopBreak']
+			id = request.POST['id']
+			id = int(id)
+			attendance = EmployeeAttendance.objects.get(id=id)
+			new_time_start = request.POST['startBreak']
+
+			new_time_start = new_time_start.split(":")
+			new_time_end = request.POST['stopBreak']
+			new_time_end = new_time_end.split(":")
+
+			time_start['hour'] = int(new_time_start[0])
+			time_start['minute'] = int(new_time_start[1])
+			if (new_time_start) != 3:
+				time_start['second'] = 0
+			else:
+				time_start['second'] = int(new_time_start[2])
+			time_end['hour'] = int(new_time_end[0])
+			time_end['minute'] = int(new_time_end[1])
+			if len(new_time_end) != 3:
+				time_end['second'] = 0
+			else:
+				time_end['second'] = int(new_time_end[2])
+
+			new_hour_started = datetime.time(hour = time_start['hour'], minute = time_start['minute'], second = time_start['second'])
+			new_hour_stopped = datetime.time(hour = time_end['hour'], minute = time_end['minute'], second = time_end['second'])
+
+			if breakOrLunch == "break":
+				isLunch = False
+			else:
+				isLunch = True
+			newBreakOrLunch = Break(attendance=attendance, lunch = isLunch, start = new_hour_started, end = new_hour_stopped)
+			newBreakOrLunch.save()
+			breaks = Break.objects.filter(attendance__id = id).order_by('start')
+
+			result['breaks'] = serializers.serialize("json",breaks)
+
+		else:
+			result['code'] = 2  #Use ajax to perform requests
+	else:
+		result['code'] = 3  #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+def createJob(request):
+	result = {'success' : True}
+	if request.method == 'POST':
+		if request.is_ajax():
+
+			jobCode = str(request.POST['jobCode'])
+			id = request.POST['id']
+			location = str(request.POST['location'])
+			hours = float(request.POST['hours'])
+			id = int(id)
+			attendance = EmployeeAttendance.objects.get(id=id)
+			employee = attendance.employee
+
+			newJob = Task(attendance = attendance, hours_spent = hours, field = location, code = jobCode)
+			newJob.save()
+			newEmpJob = EmployeeTask(task = newJob, employee = employee, hours_spent = hours)
+			newEmpJob.save()
+			jobs = Task.objects.filter(attendance__id = id)
+
+			result['jobs'] = serializers.serialize("json",jobs)
+		else:
+			result['code'] = 2  #Use ajax to perform requests
+	else:
+		result['code'] = 3  #Request was not POST
+
+	return HttpResponse(json.dumps(result),content_type='application/json')
+
 def deleteAttendance(request):
 	result = {'success' : True}
 	if request.method == 'POST':
@@ -4762,13 +4875,10 @@ def getNextAttendance(request):
 			attendance = EmployeeAttendance.objects.filter(id=id)
 			breaks = Break.objects.filter(attendance__id = id)
 			jobs = Task.objects.filter(attendance__id = id)
-			print jobs
 			breaks = Break.objects.filter(attendance__id = id).order_by('start')
 			break_num = breaks.count()
 			lunch_breaks = []
 			now = datetime.datetime.now().time()
-			print attendance.first().hour_started
-			print attendance.first().hour_ended
 			if attendance.first().hour_started != None:
 				hour_started = datetime.timedelta(hours = attendance.first().hour_started.hour, minutes = attendance.first().hour_started.minute)
 			else:

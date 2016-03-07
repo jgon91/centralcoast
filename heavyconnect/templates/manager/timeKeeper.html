@@ -209,37 +209,37 @@
 
 
 			$('.confirm-delete').on('click', function(e) {
-									e.preventDefault();
+				e.preventDefault();
 
-									var id = $(this).data('id');
-									$('#deleteModal').data('id', id).data('name', all_names).data('attend_date', attend_date).modal('show');
+				var id = $(this).data('id');
+				$('#deleteModal').data('id', id).data('name', all_names).data('attend_date', attend_date).modal('show');
 
-								});
+			});
 
-								$('#deleteModal').on('shown.bs.modal', function() {
-									var id = $(this).data('id');
-									var name = $('#deleteModal').data('name');
-									var thisDate = $('#deleteModal').data('attend_date');
-									$('#employee_name').html(name);
-									$('#attend_date').html(thisDate);
+			$('#deleteModal').on('shown.bs.modal', function() {
+				var id = $(this).data('id');
+				var name = $('#deleteModal').data('name');
+				var thisDate = $('#deleteModal').data('attend_date');
+				$('#employee_name').html(name);
+				$('#attend_date').html(thisDate);
 
-								});
+			});
 
 
 
-								$('#btnYes').click(function() {
-									// handle deletion here
-									var id = $('#deleteModal').data('id');
-									console.log(id);
+			$('#btnYes').click(function() {
+				// handle deletion here
+				var id = $('#deleteModal').data('id');
+				console.log(id);
 
-									<!--$('[data-id='+id+']').parents('tr').remove();-->
-									var rowIndex = document.getElementById(id);
-									<!--rowIndex.remove();-->
-									rejectAttendance("{{ csrf_token }}", "{% url 'rejectAttendance' %}", id);
+				<!--$('[data-id='+id+']').parents('tr').remove();-->
+				var rowIndex = document.getElementById(id);
+				<!--rowIndex.remove();-->
+				rejectAttendance("{{ csrf_token }}", "{% url 'rejectAttendance' %}", id);
 
-									$('#deleteModal').modal('hide');
+				$('#deleteModal').modal('hide');
 
-								});
+			});
 
 			});
 			 var $table = $('#report_table'),
@@ -680,9 +680,36 @@
 				});
 			}
 
+			function deleteBreak(token, url, id) {
+				$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token, "id": id},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					<!--console.log(attendance);-->
+					<!--$("#status"+attendance).html('<span style="font-size: 15px;color:red;" class="glyphicon glyphicon-remove">');-->
+					<!--document.getElementById(attendance).style.backgroundColor = "white";-->
+				}
+				});
+			}
+
+			function deleteJob(token, url, id) {
+				$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token, "id": id},
+				datatype : "json",
+				success : function(data, status, xhr) {
+					<!--console.log(attendance);-->
+					<!--$("#status"+attendance).html('<span style="font-size: 15px;color:red;" class="glyphicon glyphicon-remove">');-->
+					<!--document.getElementById(attendance).style.backgroundColor = "white";-->
+				}
+				});
+			}
+
 			function getNextAttendanceInList(attend_id){
 				getNextAttendance("{{ csrf_token }}", "{% url 'getNextAttendance' %}", attend_id);
-
 			}
 
 			function getNextAttendance(token, url, attendanceid) {
@@ -692,8 +719,8 @@
 				data : {"csrfmiddlewaretoken" : token, "attendanceid": attendanceid},
 				datatype : "json",
 				success : function(data, status, xhr) {
-					$('#allBreaks').html('');
-					$('#allJobs').html('');
+					$('#allBreaks').html('<label class="modalLabel" >Breaks and Lunches</label><button style="float:right;" class="close" data-title="Add" data-toggle="modal" data-target="#addBreakModal" ><i class="glyphicon glyphicon-plus-sign" aria-hidden="true"></oi></button>');
+					$('#allJobs').html('<label class="modalLabel">Jobs</label><button style="float:right;" data-title="Add" class="close" data-toggle="modal" data-target="#addJobModal" ><i class="glyphicon glyphicon-plus-sign" aria-hidden="true"></i></button>');
 					$('#attend_name').html(data.attend_name);
 					$('#attend_date_modal').html(data.attend_date);
 					$('#attend_hours').html(data.total_hours);
@@ -723,39 +750,249 @@
 						var lunch = 1;
 						$.each(parsed_result, function (i, item) {
 							if(item.fields.lunch == true){
-								$('#allBreaks').append('<label>Meal'+lunch+'</label>');
+								$('#allBreaks').append('<div id="all'+item.pk+'" class="border-close"><label>Meal '+lunch+'</label><button type="button" data-title="Meal '+lunch+'" data-id="'+item.pk+'" class="close close-break" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button><div id="'+item.pk+'" class="form-group break"><label >Start:</label><input class="form-control" type="time" value="'+ item.fields.start +'"><label >Stop:</label><input class="form-control" type="time" value="'+item.fields.end+'"></div></div>');
 								lunch += 1;
 							}else {
-								$('#allBreaks').append('<label>Break'+breaks+'</label>');
+								$('#allBreaks').append('<div id="all'+item.pk+'" class="border-close"><label>Break '+breaks+'</label> <button type="button" data-title="Break '+breaks+'" data-id="'+item.pk+'" class="close close-break" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button><div id="'+item.pk+'" class="form-group break"><label >Start:</label><input class="form-control" type="time" value="'+ item.fields.start +'"><label >Stop:</label><input class="form-control" type="time" value="'+item.fields.end+'"></div></div>');
 								breaks += 1;
 							}
-
-							$('#allBreaks').append('<div id="'+item.pk+'" class="form-group break"><label >Start:</label><input class="form-control" type="time" value="'+ item.fields.start +'"><label >Stop:</label><input class="form-control" type="time" value="'+item.fields.end+'"></div>');
-
 						});
 
 					});
+
+					$('.close-break').on('click', function(e) {
+									e.preventDefault();
+
+									var id = $(this).data('id');
+									var name = $(this).data('title');
+									$('#deleteBreakModal').data('id', id).data('name', name).modal('show');
+
+								});
+
+
+
+								$('#deleteBreakModal').on('shown.bs.modal', function() {
+									var id = $(this).data('id');
+									var name = $('#deleteBreakModal').data('name');
+									<!--var thisDate = $('#deleteBreakModal').data('attend_date');-->
+									$('#break_name').html(name);
+									<!--$('#attend_date').html(thisDate);-->
+
+								});
+
+
+
+
+								$('#btnDeleteBreak').click(function() {
+									<!--handle deletion here, add function to call delete-->
+									var id = $('#deleteBreakModal').data('id');
+
+									<!--$('[data-id='+id+']').parents('label').remove();-->
+									$('#all'+id).remove();
+									<!--var rowIndex = document.getElementById(id);-->
+									<!--rowIndex.remove();-->
+									deleteBreak("{{ csrf_token }}", "{% url 'deleteBreak' %}", id);
+
+									$('#deleteBreakModal').modal('hide');
+
+								});
+
+
 					$(function () {
 						var i = 1;
 						var jobs = 1;
 						$.each(parsed_jobs, function (i, item) {
 
-							$('#allJobs').append('<label>Job '+jobs+'</label>');
+							$('#allJobs').append('<div id="all'+item.pk+'" class="border-close"><label>Job '+jobs+'</label><button type="button" data-title="Job '+jobs+'" data-id="'+item.pk+'" class="close close-job" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button><div id="'+item.pk+'" class="form-group job"><label>Job Code:</label><input class="form-control"  type="text" value="'+ item.fields.code +'"><label >Location:</label><input class="form-control" type="text" value="'+item.fields.field+'"><label >Hours:</label><input class="form-control" type="text" value="'+item.fields.hours_spent+'"></div></div>');
 							jobs += 1;
-							$('#allJobs').append('<div id="'+item.pk+'" class="form-group job"><label>Job Code:</label><input class="form-control"  type="text" value="'+ item.fields.code +'"><label >Location:</label><input class="form-control" type="text" value="'+item.fields.field+'"><label >Hours:</label><input class="form-control" type="text" value="'+item.fields.hours_spent+'"></div>');
 
 						});
 
 					});
+
+					$('.close-job').on('click', function(e) {
+									e.preventDefault();
+
+									var id = $(this).data('id');
+									var name = $(this).data('title');
+									$('#deleteJobModal').data('id', id).data('name', name).modal('show');
+
+					});
+
+					$('#deleteJobModal').on('shown.bs.modal', function() {
+						var id = $(this).data('id');
+						var name = $('#deleteJobModal').data('name');
+						<!--var thisDate = $('#deleteJobModal').data('attend_date');-->
+						$('#job_name').html(name);
+						<!--$('#attend_date').html(thisDate);-->
+
+					});
+
+					$('#btnDeleteJob').click(function() {
+									<!--handle deletion here, add function to call delete-->
+									var id = $('#deleteJobModal').data('id');
+
+									<!--$('[data-id='+id+']').parents('label').remove();-->
+									$('#all'+id).remove();
+									<!--var rowIndex = document.getElementById(id);-->
+									<!--rowIndex.remove();-->
+									deleteJob("{{ csrf_token }}", "{% url 'deleteJob' %}", id);
+
+									$('#deleteJobModal').modal('hide');
+
+								});
 					$('#modalFooter').html('<button type="button" id="update" onclick="nextOrClose()" class="btn btn-success btn-lg" style="width: 100%;"><span class="glyphicon glyphicon-ok-sign"></span> Approve</button>');
 					$('#modalFooter').append('<button type="button" id="reject" onclick="nextOrRejectorClose()" class="btn btn-danger btn-lg" style="width: 100%;margin-top: 20px;margin-left:0px;"><span class="glyphicon glyphicon-remove-sign"></span> Reject</button>');
 				}
 				});
 			}
+			function addBreakorLunch(){
+				var breakOrLunch = $('input[name=options]:checked', '#getLunchBreak').val();
+				var startBreak = document.getElementById('startBreak').value;
+				var stopBreak = document.getElementById('stopBreak').value;
+				createBreakLunch("{{ csrf_token }}", "{% url 'createBreakLunch' %}", ids[correct_index], breakOrLunch, startBreak, stopBreak);
+
+			}
+
+			function addJob(){
+				var jobCode = document.getElementById('jobCode').value;
+				var location = document.getElementById('location').value;
+				var hours = document.getElementById('hours').value;
+				createJob("{{ csrf_token }}", "{% url 'createJob' %}", ids[correct_index], jobCode, location, hours);
+
+			}
+
+			function createBreakLunch(token, url, attendanceId, breakOrLunch, startBreak, stopBreak) {
+				$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token, "id": attendanceId, "breakLunch": breakOrLunch, "startBreak":startBreak, "stopBreak":stopBreak},
+				datatype : "json",
+				success : function(data, status, xhr) {
+
+					$('#addBreakModal').hide();
+					$('#allBreaks').html('<label>Breaks:</label><button style="float:right;" data-title="Add" data-toggle="modal" data-target="#addBreakModal" >+</button>');
+
+
+					parsed_result = $.parseJSON(data.breaks);
+
+					$(function () {
+						var i = 1;
+						var breaks = 1;
+						var lunch = 1;
+						$.each(parsed_result, function (i, item) {
+							if(item.fields.lunch == true){
+								$('#allBreaks').append('<div id="all'+item.pk+'" class="border-close"><label>Meal '+lunch+'</label><button type="button" data-title="Meal '+lunch+'" data-id="'+item.pk+'" class="close" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button><div id="'+item.pk+'" class="form-group break"><label >Start:</label><input class="form-control" type="time" value="'+ item.fields.start +'"><label >Stop:</label><input class="form-control" type="time" value="'+item.fields.end+'"></div></div>');
+								lunch += 1;
+							}else {
+								$('#allBreaks').append('<div id="all'+item.pk+'" class="border-close"><label>Break '+breaks+'</label> <button type="button" data-title="Break '+breaks+'" data-id="'+item.pk+'" class="close" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button><div id="'+item.pk+'" class="form-group break"><label >Start:</label><input class="form-control" type="time" value="'+ item.fields.start +'"><label >Stop:</label><input class="form-control" type="time" value="'+item.fields.end+'"></div></div>');
+								breaks += 1;
+							}
+						});
+
+					});
+
+					$('.close-break').on('click', function(e) {
+									e.preventDefault();
+
+									var id = $(this).data('id');
+									var name = $(this).data('title');
+									$('#deleteBreakModal').data('id', id).data('name', name).modal('show');
+
+								});
 
 
 
-			function getReport(token, url, start, end, names) {
+								$('#deleteBreakModal').on('shown.bs.modal', function() {
+									var id = $(this).data('id');
+									var name = $('#deleteBreakModal').data('name');
+									<!--var thisDate = $('#deleteBreakModal').data('attend_date');-->
+									$('#break_name').html(name);
+									<!--$('#attend_date').html(thisDate);-->
+
+								});
+
+
+
+
+								$('#btnDeleteBreak').click(function() {
+									<!--handle deletion here, add function to call delete-->
+									var id = $('#deleteBreakModal').data('id');
+
+									<!--$('[data-id='+id+']').parents('label').remove();-->
+									$('#all'+id).remove();
+									<!--var rowIndex = document.getElementById(id);-->
+									<!--rowIndex.remove();-->
+									deleteBreak("{{ csrf_token }}", "{% url 'deleteBreak' %}", id);
+
+									$('#deleteBreakModal').modal('hide');
+
+								});
+				}
+				});
+			}
+
+			function createJob(token, url, attendanceId, jobCode, location, hours) {
+				$.ajax({
+				method : "POST",
+				url : url,
+				data : {"csrfmiddlewaretoken" : token, "id": attendanceId, "jobCode": jobCode, "location":location, "hours":hours},
+				datatype : "json",
+				success : function(data, status, xhr) {
+
+					$('#addJobModal').hide();
+					$('#allJobs').html('<label>Jobs:</label><button style="float:right;" data-title="Add" data-toggle="modal" data-target="#addJobModal" >+</button>');
+
+
+					parsed_jobs = $.parseJSON(data.jobs);
+
+					$(function () {
+						var i = 1;
+						var jobs = 1;
+						$.each(parsed_jobs, function (i, item) {
+
+							$('#allJobs').append('<div id="all'+item.pk+'" class="border-close"><label>Job '+jobs+'</label><button type="button" data-title="Job '+jobs+'" data-id="'+item.pk+'" class="close close-job" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button><div id="'+item.pk+'" class="form-group job"><label>Job Code:</label><input class="form-control"  type="text" value="'+ item.fields.code +'"><label >Location:</label><input class="form-control" type="text" value="'+item.fields.field+'"><label >Hours:</label><input class="form-control" type="text" value="'+item.fields.hours_spent+'"></div></div>');
+							jobs += 1;
+
+						});
+
+					});
+					$('.close-job').on('click', function(e) {
+									e.preventDefault();
+
+									var id = $(this).data('id');
+									var name = $(this).data('title');
+									$('#deleteJobModal').data('id', id).data('name', name).modal('show');
+
+					});
+
+					$('#deleteJobModal').on('shown.bs.modal', function() {
+						var id = $(this).data('id');
+						var name = $('#deleteJobModal').data('name');
+						<!--var thisDate = $('#deleteJobModal').data('attend_date');-->
+						$('#job_name').html(name);
+						<!--$('#attend_date').html(thisDate);-->
+
+					});
+
+					$('#btnDeleteJob').click(function() {
+									<!--handle deletion here, add function to call delete-->
+									var id = $('#deleteJobModal').data('id');
+
+									<!--$('[data-id='+id+']').parents('label').remove();-->
+									$('#all'+id).remove();
+									<!--var rowIndex = document.getElementById(id);-->
+									<!--rowIndex.remove();-->
+									deleteJob("{{ csrf_token }}", "{% url 'deleteJob' %}", id);
+
+									$('#deleteJobModal').modal('hide');
+
+								});
+				}
+				});
+			}
+
+		function getReport(token, url, start, end, names) {
 			$.ajax({
 				method : "POST",
 				url : url,
@@ -848,7 +1085,6 @@
 
 								});
 
-
 								$('#deleteModal').on('shown.bs.modal', function() {
 									var id = $(this).data('id');
 									var name = $('#deleteModal').data('name');
@@ -871,18 +1107,11 @@
 									$('#deleteModal').modal('hide');
 
 								});
-
-
-
-
 								i = i+1;
-
 							});
 						});
 
 						$("input[name='rowSelected']").change(function() {
-
-
 								if ($("input[id='"+this.id+"']").is(":checked")) {
 										user_id = this.id;
 										id_checked.push(user_id);
@@ -898,8 +1127,6 @@
 									document.getElementById("remove").disabled = false;
 								}
 								});
-
-
 					}
 				}
 			});
@@ -970,11 +1197,6 @@
 								<th><input type="checkbox" id="checkall" /></th>
 								<th>ID</th>
 								<th>Name</th>
-								<!--<th>Team Lead</th>-->
-								<!--<th>Team Name</th>-->
-								<!--<th>Location</th>-->
-								<!--<th>Job Code</th>-->
-								<!--<th>Location</th>-->
 								<th>Date</th>
 								<th>Clock-In</th>
 								<th>Clock-Out</th>
@@ -1023,6 +1245,105 @@
     </div>
    </div>
 
+		<div id="deleteBreakModal" style="z-index:1060" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myBreakModalLabel">Are you sure you want to delete:</h4>
+            </div>
+
+            <div class="modal-body">
+                <p style="font-weight:600;font-size:24px;" id="break_name"></p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <a id="btnDeleteBreak" class="btn btn-danger btn-ok">DELETE</a>
+            </div>
+        </div>
+    </div>
+   </div>
+
+		<div id="deleteJobModal" style="z-index:1060" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" >Are you sure you want to delete:</h4>
+            </div>
+
+            <div class="modal-body">
+                <p style="font-weight:600;font-size:24px;" id="job_name"></p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <a id="btnDeleteJob" class="btn btn-danger btn-ok">DELETE</a>
+            </div>
+        </div>
+    </div>
+   </div>
+		<div id="addBreakModal" style="z-index:1060" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" >Add New Break or Lunch:</h4>
+            </div>
+
+            <div class="modal-body">
+				<div id="getLunchBreak" class="btn-group" data-toggle="buttons">
+					<label class="btn btn-primary active">
+					<input type="radio" name="options" id="option1" value="break" autocomplete="off" checked> Break
+				  	</label>
+					<label class="btn btn-primary">
+					<input type="radio" name="options" id="option2" value="lunch" autocomplete="off" checked> Lunch
+				  	</label>
+				</div>
+				<div>
+					<label for="startBreak">Start:</label>
+					<input id="startBreak"  class="form-control" type="time" placeholder="">
+					<label for="stopBreak">Stop:</label>
+					<input id="stopBreak"  class="form-control" type="time" placeholder="">
+				</div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <a id="btnAddBreak" onclick="addBreakorLunch()" class="btn btn-success btn-ok">ADD</a>
+            </div>
+        </div>
+    </div>
+   </div>
+		<div id="addJobModal" style="z-index:1060" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" >Add New Break or Lunch:</h4>
+            </div>
+
+            <div class="modal-body">
+
+				<div>
+					<label for="jobCode">Job Code:</label>
+					<input id="jobCode"  class="form-control" type="text" placeholder="">
+					<label for="location">Location:</label>
+					<input id="location"  class="form-control" type="text" placeholder="">
+					<label for="hours">Hours:</label>
+					<input id="hours"  class="form-control" type="text" placeholder="">
+				</div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <a id="btnAddJob" onclick="addJob()" class="btn btn-success btn-ok">ADD</a>
+            </div>
+        </div>
+    </div>
+   </div>
+
 	<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
       <div class="modal-dialog">
     <div class="modal-content">
@@ -1038,7 +1359,7 @@
 			  <button id="goRight" onclick="goRight()" type="button" style="float:right;" class="close" aria-hidden="true"><i class="glyphicon glyphicon-chevron-right" aria-hidden="true"></i></button>
 				</div>
 			  <div class="form-group ">
-				  <p>
+				  <p class="modalLabel">
 				  <label>Name:</label>
 				  <span id="attend_name"></span>
 				  <label>Date:</label>
