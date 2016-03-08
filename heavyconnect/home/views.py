@@ -28,7 +28,6 @@ import time
 
 from home.forms import *
 from home.models import *
-from home.models import Client
 from home.models import EmployeeAttendanceChecklist
 
 
@@ -131,15 +130,15 @@ def createNewTask(request):
 			if form.is_valid():
 				try:
 					status = 1
-					#Getting the employee that are logged in or passed in the ajax call	        
+					#Getting the employee that are logged in or passed in the ajax call
 					if 'employeeId' not in request.POST:
 
 					    employee = Employee.objects.get(user_id = request.user.id)
 					else:
 						employee = Employee.objects.get(user_id = request.POST['employeeId'])
 						#need put this when employee is a manager
-						status = 1	
-					
+						status = 1
+
 					#Extracting the fields from the form
 					field = form.cleaned_data['field']
 					category = form.cleaned_data['category']
@@ -325,16 +324,16 @@ def retrieveMachine(request):
 
 
 def createShift(new_time, employee, result):
-	
+
 	now = datetime.datetime.now()
-	
+
 	if new_time is not None:
 		now = new_time
 
-	eAttendance = EmployeeAttendance(employee = employee, date = now, hour_started = now)	
-	eAttendance.save()	
-	shift_id = eAttendance.id		
-	
+	eAttendance = EmployeeAttendance(employee = employee, date = now, hour_started = now)
+	eAttendance.save()
+	shift_id = eAttendance.id
+
 	result['success'] = True
 	result['id'] = shift_id
 	# result['hour_started'] = str(eAttendance.hour_started)
@@ -347,7 +346,7 @@ def startShift(request, idUser):
 		employee = Employee.objects.get(user_id = idUser)
 		attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
 		result['Employee'] = employee.id
-		if attendance is not None:			
+		if attendance is not None:
 			#If more than 16 hours was passed since the last shift was started we can consider that now we are creating a new shift
 			time_delta = (datetime.datetime.now() - datetime.datetime.combine(attendance.date,attendance.hour_started))
 			new_time = datetime.datetime.now()
@@ -417,7 +416,7 @@ def startShiftGroup(request):
 				group_id = request.POST['group']
 				auxSuccess = []
 				auxError = []
-				for item in ids:					
+				for item in ids:
 					aux = startShift(request, item)
 					attendance =  EmployeeAttendance.objects.filter(employee__user__id = item).order_by('-date', '-hour_started').first()
 					group = Group.objects.filter(id = group_id).first()
@@ -439,7 +438,7 @@ def startShiftGroup(request):
 
 
 
-### This function will receive one attendance 
+### This function will receive one attendance
 ## and add the hours worked on it in the field hours_worked
 def attendanceHoursWorked(attendance):
 	aux = str(attendance.date) + ' ' + str(attendance.hour_started)
@@ -453,7 +452,7 @@ def stopShift(request, idUser):
 		employee = Employee.objects.get(user_id = idUser)
 		attendance = EmployeeAttendance.objects.filter(employee_id = employee.id).order_by('-date', '-hour_started').first()
 
-		if attendance is not None:	
+		if attendance is not None:
 
 			result['attendance-date'] = str(attendance.date)
 			result['attendance-time'] = str(attendance.hour_started)
@@ -996,24 +995,24 @@ def createGroup(request):
 					test = Group.objects.get(date = date, name = name, creator = creator)
 					result['code'] = 6 # there is one group with the same name in the same day by the same creator
 					return HttpResponse(json.dumps(result),content_type='application/json')
-				except:			
-					group, created = Group.objects.get_or_create(creator = creator, date = date, permanent = permanent, name = name) #if the group is already created just add members, it could be just a instance to save after.					
+				except:
+					group, created = Group.objects.get_or_create(creator = creator, date = date, permanent = permanent, name = name) #if the group is already created just add members, it could be just a instance to save after.
 					emploGroup = GroupParticipant.objects.filter(group__id = group.id).values_list('participant__qr_code')
 					aux1 = []
 					for item2 in emploGroup:
 					 	aux1.append(str(''.join(item2))) # convert tuple type which is deliveried by the query
 					for item in qr_codes:
 				 		if item in aux1: #check is the qr_code is already in the group
-				 			invalid.append(item)				 			
+				 			invalid.append(item)
 				 		else:
 
 							employee = Employee.objects.filter(qr_code = item['qr_code'])
 							for item3 in employee:
-								if item3 != None:							
+								if item3 != None:
 									aux = GroupParticipant(group = group, participant = item3)
-									aux.save()									
+									aux.save()
 								else:
-									invalid.append(item)									
+									invalid.append(item)
 								break
 					if len(invalid) > 0: # if there is one invalid the create was not totally sucessful
 						result['invalid'] = invalid
@@ -1246,7 +1245,7 @@ def getImageUser(request):
 	if request.method == 'POST':
 	 	if request.is_ajax():
 	 		try:
-				employee = Employee.objects.get(user_id = request.user.id)				
+				employee = Employee.objects.get(user_id = request.user.id)
 				result['imageUrl'] = employee.photoEmployee.name
 				result['success'] = True
 	 		except Employee.DoesNotExist:
@@ -1343,7 +1342,7 @@ def retrieveAllEquipmentInfoGPS(request):
 				aux = {}
 				if item.beacon != None:
 					beaconGPS = BeaconGPS.objects.filter(beacon__id = item.beacon.id).order_by('-timestamp')[:1]
-					for item2 in beaconGPS: 
+					for item2 in beaconGPS:
 						aux['latitude'] = item2.gps.latitude
 						aux['longitude'] = item2.gps.longitude
 						aux['Date'] = str(item2.timestamp)
@@ -1391,7 +1390,7 @@ def retrieveAllMachineInfoGPS(request):
 		aux = {}
 		if item.beacon != None:
 			beaconGPS = BeaconGPS.objects.filter(beacon__id = item.beacon.id).order_by('-timestamp')[:1]
-			for item2 in beaconGPS: 
+			for item2 in beaconGPS:
 				aux['latitude'] = item2.gps.latitude
 				aux['longitude'] = item2.gps.longitude
 				aux['Date'] = str(item2.timestamp)
@@ -2196,7 +2195,7 @@ def loadImplementsImage(request):
 
 
 
-# Return pending tasks, which are tasks that have "approved" status or "paused" 
+# Return pending tasks, which are tasks that have "approved" status or "paused"
 # status (not "pending" status. This would be waiting for Manager approval)
 @login_required
 def retrievePendingTask(request):
@@ -2246,7 +2245,7 @@ def retrievePendingTask(request):
 							aux2 = {}
 						aux['implement'] = aux_implement
 					except ImplementTask.DoesNotExist:
-						aux['implement'] = "NONE"					
+						aux['implement'] = "NONE"
 					each_task_info.append(aux)
 					aux = {}
 				result['each_task_info'] = each_task_info
@@ -2286,13 +2285,13 @@ def pastTaskList(request):
 													seconds=item.end_time.second - item.start_time.second)
 					# If work is overnight, is treats the "-1 day" that will appear in string "duration"
 					if "day" in str(duration):
-						duration = str(duration)[7:] 
+						duration = str(duration)[7:]
 					aux['duration'] = str(duration)
 					aux['task_id'] = item.task.id
 					aux['employee_id'] = item.employee.id
 					aux['employee_first_name'] = item.employee.user.first_name
 					aux['employee_last_name'] = item.employee.user.last_name
-	
+
 					try:
 						machineTask = MachineTask.objects.get(task__id = item.task.id)
 						aux['machine_model'] = machineTask.machine.manufacturer_model.model
@@ -2345,7 +2344,7 @@ def getEmployeeCurrentTaskInfo(request):
 				result['task_description'] = employeeTask.task.category.description
 				result['field'] = employeeTask.task.field.name
 				result['success'] = True
-				
+
 				try:
 					machineTask = MachineTask.objects.get(task__id = employeeTask.task.id)
 					result['machine_id'] = machineTask.machine.id
@@ -2354,7 +2353,7 @@ def getEmployeeCurrentTaskInfo(request):
 					result['machine_nickname'] = machineTask.machine.nickname
 				except MachineTask.DoesNotExist:
 					aux['machine_id'] = "NONE"
-				
+
 				try:
 					implementTask = ImplementTask.objects.get(task__id = employeeTask.task.id)
 					result['implement_id'] = implementTask.implement.id
@@ -2363,7 +2362,7 @@ def getEmployeeCurrentTaskInfo(request):
 					result['implement_nickname'] = implementTask.implement.nickname
 				except ImplementTask.DoesNotExist:
 					aux['implement_id'] = "NONE"
-			
+
 			except EmployeeTask.DoesNotExist:
 				result['code'] = 1#There is no Implement associated with this
 		else:
@@ -2676,7 +2675,7 @@ def timeLogById(request):
 def checkMinutes(minutes):
 	if minutes < 10:
 	    minutes = "0" + str(minutes)
-	return minutes 
+	return minutes
 
 #function to check minutes in timeLogById
 def checkHours(hours):
@@ -2717,7 +2716,7 @@ def getEmployeeShifts(request):
 
 			employee = Employee.objects.get(user_id = request.user.id)
 			try:
-				
+
 				result['first_name'] = employee.user.first_name
 				result['last_name'] = employee.user.last_name
 				result['qr_code'] = employee.qr_code
@@ -2823,9 +2822,9 @@ def getColor(number):
 	 '#8B0000', '#FF8C00', '#00FA9A', '#F0E68C', '#DAA520', '#808080', '#8A2BE2', '#191970', '#FF69B4', '#40E0D0', '#B22222', '#00FF7F', '#B8860B', '#000080', '#4B0082', '#C71585',
 	  '#48D1CC', '#A52A2A', '#90EE90', '#8B4513', '#9400D3', '#0000CD', '#F08080', '#20B2AA', '#FA8072', '#8FBC8F', '#A0522D', '#4169E1', '#800080', '#008B8B', '#E9967A', '#006400', '#CD853F',
 	   '#228B22', '#00FF00', '#8B008B', '#1E90FF', '#F08080', '#87CEFA', '#DC143C', '#4682B4', '#FF6347', '#556B2F', '#F4A460' ]
-	
+
 	value = number % 58
-	
+
 	return colors[value]
 
 
@@ -2900,7 +2899,7 @@ def validatePermission(request):
 		if request.is_ajax():
 			try:
 				employee = Employee.objects.get(user = request.user)
-				
+
 				if employee.permission_level == 2:
 					result['success'] = True
 			except Employee.DoesNotExist:
@@ -3007,7 +3006,7 @@ def getEmployeeScheduleManager(request):
 							aux['machine'] = []
 							aux['implement'] = []
 						result.append(aux)
-						
+
 		else:
 	 		result.append({'code' : 2}) #Use ajax to perform requests
 	else:
@@ -3094,14 +3093,14 @@ def getFieldTasksManager(request):
 			control = {} #this dicionary will keep all fields and it colors
 			taskStatus = 0;
 			aux = request.GET['start'] #get the date in the POST request
-			aux2 = request.GET['end']	
+			aux2 = request.GET['end']
 			date_start = datetime.datetime.strptime(aux, '%Y-%m-%d')
-			date_end = datetime.datetime.strptime(aux2, '%Y-%m-%d') + datetime.timedelta(days = 1)	
+			date_end = datetime.datetime.strptime(aux2, '%Y-%m-%d') + datetime.timedelta(days = 1)
 			date_end = datetime.datetime.combine(date_end, datetime.time.max)
 			condition = int(request.GET['condition'])
 			emplo = Employee.objects.filter(manager__user_id = request.user.id)
 			if(condition == 0): #It depends on the filter
-				for item in emplo: 
+				for item in emplo:
 					emploTask = EmployeeTask.objects.filter(employee__user__id = item.user.id, task__date_assigned__range = (date_start, date_end))
 					for taskEmplo in emploTask:
 						if taskEmplo.task.status != 6:
@@ -3131,7 +3130,7 @@ def getFieldTasksManager(request):
 								aux['implement'] = []
 							result.append(aux)
 			else:
-				for item in emplo: 
+				for item in emplo:
 					emploTask = EmployeeTask.objects.filter(employee__user__id = item.user.id, task__date_assigned__range = (date_start, date_end))
 					for taskEmplo in emploTask:
 						if taskEmplo.task.status == condition:
@@ -3180,7 +3179,7 @@ def getFieldTaskNameManager(request):
 			taskStatus = 0;
 			fields = request.GET.getlist('optionsSearch[]')
 			aux = request.GET['start'] #get the date in the POST request
-			aux1 = request.GET['end']	
+			aux1 = request.GET['end']
 			date_start = datetime.datetime.strptime(aux, '%Y-%m-%d')
 			date_end = datetime.datetime.strptime(aux1, '%Y-%m-%d') + datetime.timedelta(days = 1)
 			date_end = datetime.datetime.combine(date_end, datetime.time.max)
@@ -3436,7 +3435,7 @@ def updateTaskCalendar(request):
 	else:
 		result['code'] = 1 #The request is not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
-	
+
 
 def logout(request):
 	auth_logout(request)
@@ -3485,7 +3484,7 @@ def time_keeper(request):
 		return render(request, 'driver/timeKeeperGroup.html')
 	else:
 		return render(request, 'driver/timeKeeper.html')
-	
+
 @login_required
 def time_keeper_test(request):
 	return render(request, 'driver/timeKeeperTest.html')
@@ -3517,11 +3516,11 @@ def headerManager(request):
 @login_required
 def createTask(request):
     return render(request, 'driver/createTask.html')
-   
+
 @login_required
 def createTaskManager(request):
     return render(request, 'manager/createTaskManager.html')
-   
+
 @login_required
 def templateCreateTaskManager(request):
     return render(request, 'manager/templateCreateTaskManager.html')
@@ -3529,11 +3528,11 @@ def templateCreateTaskManager(request):
 @login_required
 def templateAddEquipmentManager(request):
     return render(request, 'manager/templateAddEquipment.html')
-   
+
 @login_required
 def scheduleManager(request):
     return render(request, 'manager/scheduleManager.html')
-   
+
 @login_required
 def timekeeperReport(request):
 	return render(request, 'manager/timekeeperReport.html')
@@ -3690,17 +3689,17 @@ def storeChecklistAnswers(request):
 				engine_hours = form.cleaned_data['engine_hours']
 				equipment = form.cleaned_data['qr_code']
 
-				if isinstance(equipment, Machine): #If we have a machine we need to account the 
-					equipment.engine_hours = engine_hours 
+				if isinstance(equipment, Machine): #If we have a machine we need to account the
+					equipment.engine_hours = engine_hours
 				elif isinstance(equipment, Implement):
-					equipment.engine_hours = engine_hours 
+					equipment.engine_hours = engine_hours
 				for r in responses:
 					r.employee = employee
 					if r.answer is False: #If one of the answers was no the machine will have they status changed to broken
 						equipment.status = Machine.STBR
 					r.save()
 
-				equipment.save()	
+				equipment.save()
 				result['success'] = True
 			else:
 				result['code'] = 1
@@ -4062,7 +4061,7 @@ def getAllEmployees(request):
 					employees.append(each_result)
 					each_result = {}
 				result['success'] = True
-				result['employees'] = employees				
+				result['employees'] = employees
 			except DoesNotExist: #There is no employee registered
 				result['code'] = 1
 				return HttpResponse(json.dumps(result), content_type='application/json')
@@ -4088,7 +4087,7 @@ def employeeManagerDelete(request):
 				result['success'] = True;
 
 				if result['success'] == True :
-					#return HttpResponse(json.dumps(result),content_type='application/json') 
+					#return HttpResponse(json.dumps(result),content_type='application/json')
 					return render(request, 'manager/formSuccess.html')
 				else:
 					return render(request, 'manager/formError.html')
@@ -4130,7 +4129,7 @@ def getAllImplements(request):
 		result['code'] = 3 #Request was not POST
 		return HttpResponse(json.dumps(result), content_type='application/json')
 
-	return HttpResponse(json.dumps(result), content_type='application/json')	
+	return HttpResponse(json.dumps(result), content_type='application/json')
 
 @login_required
 def implementManagerDelete(request):
@@ -4144,7 +4143,7 @@ def implementManagerDelete(request):
 				result['success'] = True;
 
 				if result['success'] == True :
-					#return HttpResponse(json.dumps(result),content_type='application/json') 
+					#return HttpResponse(json.dumps(result),content_type='application/json')
 					return render(request, 'manager/formSuccess.html')
 				else:
 					return render(request, 'manager/formError.html')
@@ -4186,7 +4185,7 @@ def getAllMachines(request):
 		result['code'] = 3 #Request was not POST
 		return HttpResponse(json.dumps(result), content_type='application/json')
 
-	return HttpResponse(json.dumps(result), content_type='application/json')	
+	return HttpResponse(json.dumps(result), content_type='application/json')
 
 @login_required
 def getPdf(request):
@@ -5164,7 +5163,7 @@ def machineManagerDelete(request):
 				result['success'] = True;
 
 				if result['success'] == True :
-					#return HttpResponse(json.dumps(result),content_type='application/json') 
+					#return HttpResponse(json.dumps(result),content_type='application/json')
 					return render(request, 'manager/formSuccess.html')
 				else:
 					return render(request, 'manager/formError.html')
@@ -5218,7 +5217,7 @@ def shopManagerDelete(request):
 				result['success'] = True;
 
 				if result['success'] == True :
-					#return HttpResponse(json.dumps(result),content_type='application/json') 
+					#return HttpResponse(json.dumps(result),content_type='application/json')
 					return render(request, 'manager/formSuccess.html')
 				else:
 					return render(request, 'manager/formError.html')
@@ -5272,7 +5271,7 @@ def repairShopManagerDelete(request):
 				result['success'] = True;
 
 				if result['success'] == True :
-					#return HttpResponse(json.dumps(result),content_type='application/json') 
+					#return HttpResponse(json.dumps(result),content_type='application/json')
 					return render(request, 'manager/formSuccess.html')
 				else:
 					return render(request, 'manager/formError.html')
@@ -5293,23 +5292,23 @@ def getAllManagerEmployees(request):
 	if request.method == "POST":
 		if request.is_ajax():
 			try:
-				manager = Employee.objects.get(user = request.user)								
-				all_manager_employee = Employee.objects.filter(manager = manager.id)	
+				manager = Employee.objects.get(user = request.user)
+				all_manager_employee = Employee.objects.filter(manager = manager.id)
 				employees = []
-				if manager != manager.manager:										
+				if manager != manager.manager:
 					each_result["first_name"] = manager.user.first_name
 					each_result["last_name"] = manager.user.last_name
 					each_result["user_id"] = manager.user.id
 					each_result['photo'] = manager.photoEmployee.name
 					employees.append(each_result)
-					each_result = {}	
-				for each in all_manager_employee:					
+					each_result = {}
+				for each in all_manager_employee:
 					each_result['first_name'] = each.user.first_name
 					each_result['last_name'] = each.user.last_name
-					each_result['user_id'] = each.user.id	
-					each_result['photo'] = each.photoEmployee.name				
+					each_result['user_id'] = each.user.id
+					each_result['photo'] = each.photoEmployee.name
 					employees.append(each_result)
-					each_result = {}				
+					each_result = {}
 				result['success'] = True
 				result['employees'] = employees
 			except DoesNotExist:
@@ -5471,7 +5470,7 @@ def updateBreak(request):
 	else:
 		result['code'] = 9 # Request method is not POST
 		return HttpResponse(json.dumps(result), content_type='application/json')
-		
+
 	return HttpResponse(json.dumps(result), content_type='application/json')
 
 
@@ -5484,16 +5483,16 @@ def updateStopShift(request):
 				shift_id = request.POST['shift_id']
 				attendance = EmployeeAttendance.objects.get(id = shift_id)
 				new_time = request.POST['new_time']
-				new_time = new_time.split(":")		
+				new_time = new_time.split(":")
 				time['hour'] = int(new_time[0])
 				time['minute'] = int(new_time[1])
-				new_hour_stopped = datetime.timedelta(hours = time['hour'], minutes = time['minute'], seconds = time['second'])				
-				if attendance is not None:					
-					start_shift = datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)					
-					if start_shift < new_hour_stopped:						
-						breaks = Break.objects.filter(attendance = shift_id)											
-						if breaks.first():			
-							last_break = Break.objects.filter(attendance = shift_id).order_by('-id')[0]										
+				new_hour_stopped = datetime.timedelta(hours = time['hour'], minutes = time['minute'], seconds = time['second'])
+				if attendance is not None:
+					start_shift = datetime.timedelta(hours = attendance.hour_started.hour, minutes = attendance.hour_started.minute, seconds = attendance.hour_started.second)
+					if start_shift < new_hour_stopped:
+						breaks = Break.objects.filter(attendance = shift_id)
+						if breaks.first():
+							last_break = Break.objects.filter(attendance = shift_id).order_by('-id')[0]
 							stop_last_break = datetime.timedelta(hours = last_break.end.hour, minutes = last_break.end.minute, seconds = last_break.end.second)
 							if stop_last_break < new_hour_stopped:
 								attendance.hour_ended = str(new_hour_stopped)
@@ -5501,9 +5500,9 @@ def updateStopShift(request):
 								attendance.save()
 								result['success'] = True
 							else:
-								result['code'] = 1 # Try to update shift between the breaks 
+								result['code'] = 1 # Try to update shift between the breaks
 								return HttpResponse(json.dumps(result), content_type='application/json')
-						else: # There is no breaks							
+						else: # There is no breaks
 							attendance.hour_ended = str(new_hour_stopped)
 							attendance.edited = True
 							attendance.save()
@@ -5521,7 +5520,7 @@ def updateStopShift(request):
 	else:
 		result['code'] = 5 # Request method is not POST
 		return HttpResponse(json.dumps(result), content_type='application/json')
-		
+
 	return HttpResponse(json.dumps(result), content_type='application/json')
 
 def updateStartShift(request):
@@ -5667,11 +5666,11 @@ def checkEmployeeQrCode(request):
  	if request.is_ajax():
 		qr_code = request.GET['qr_code']
 		try:
-			employee = Employee.objects.get(qr_code = qr_code)				
-			if employee is not None:		
-				result['success'] = True	
-				result['employee'] = employee.user.first_name + " " + employee.user.last_name				
-		except:			
+			employee = Employee.objects.get(qr_code = qr_code)
+			if employee is not None:
+				result['success'] = True
+				result['employee'] = employee.user.first_name + " " + employee.user.last_name
+		except:
 			result['code'] = 1 # Employee does not exist
 			return HttpResponse(json.dumps(result), content_type='application/json')
 	else:
@@ -5795,7 +5794,7 @@ def repairShopFormView(request):
 			result['success'] = True
 
 			if result['success'] == True :
-				#return HttpResponse(json.dumps(result),content_type='application/json') 
+				#return HttpResponse(json.dumps(result),content_type='application/json')
 				return render(request, 'manager/formSuccess.html')
 			else:
 				return render(request, 'manager/formError.html')
@@ -5858,7 +5857,7 @@ def shopFormView(request):
 			result['success'] = True
 
 			if result['success'] == True :
-				#return HttpResponse(json.dumps(result),content_type='application/json') 
+				#return HttpResponse(json.dumps(result),content_type='application/json')
 				return render(request, 'manager/formSuccess.html')
 			else:
 				return render(request, 'manager/formError.html')
@@ -6002,13 +6001,13 @@ def implementFormView(request):
 			new_implement_photo = implementform.cleaned_data['photo']
 			new_implement_photo1 = implementform.cleaned_data['photo1']
 			new_implement_photo2 = implementform.cleaned_data['photo2']
-			
+
 			implement = Implement(manufacturer_model = new_implement_manufacturer_model, repair_shop = new_implement_repair_shop, shop = new_implement_shop, nickname = new_implement_nickname, qr_code = new_implement_qr_code, asset_number = new_implement_asset_number, serial_number = new_implement_serial_number, horse_power_req = new_implement_horsepower_req, hitch_capacity_req = new_implement_hitch_capacity_req, hitch_category = new_implement_hitch_category, drawbar_category = new_implement_drawbar_category, speed_range_min = new_implement_speed_range_min, speed_range_max = new_implement_speed_range_max, year_purchased = new_implement_year_purchased, implement_hours = new_implement_implement_hours, service_interval = new_implement_service_interval, base_cost = new_implement_base_cost, status = new_implement_status, hour_cost = new_implement_hour_cost, photo = new_implement_photo, photo1 = new_implement_photo1, photo2 = new_implement_photo2, beacon = new_implement_beacon)
 			implement.save()
 			result['success'] = True
-		
+
 			if result['success'] == True :
-				#return HttpResponse(json.dumps(result),content_type='application/json') 
+				#return HttpResponse(json.dumps(result),content_type='application/json')
 				return render(request, 'manager/formSuccess.html')
 			else:
 				return render(request, 'manager/formError.html')
@@ -6057,13 +6056,13 @@ def machineFormView(request):
 			new_machine_photo = machineform.cleaned_data['photo']
 			new_machine_photo1 = machineform.cleaned_data['photo1']
 			new_machine_photo2 = machineform.cleaned_data['photo2']
-			
+
 			machine = Machine(manufacturer_model = new_machine_manufacturer_model, repair_shop = new_machine_repair_shop, shop = new_machine_shop, nickname = new_machine_nickname, qr_code = new_machine_qr_code, asset_number = new_machine_asset_number, serial_number = new_machine_serial_number, horsepower = new_machine_horsepower, hitch_capacity = new_machine_hitch_capacity, hitch_category = new_machine_hitch_category, drawbar_category = new_machine_drawbar_category, speed_range_min = new_machine_speed_range_min, speed_range_max = new_machine_speed_range_max, year_purchased = new_machine_year_purchased, engine_hours = new_machine_engine_hours, service_interval = new_machine_service_interval, base_cost = new_machine_base_cost, m_type = new_machine_m_type, front_tires = new_machine_front_tires, rear_tires = new_machine_rear_tires, steering = new_machine_steering, operator_station = new_machine_operator_station, status = new_machine_status, hour_cost = new_machine_hour_cost, photo = new_machine_photo, photo1 = new_machine_photo1, photo2 = new_machine_photo2, beacon = new_machine_beacon)
 			machine.save()
 			result['success'] = True
-		
+
 			if result['success'] == True :
-				#return HttpResponse(json.dumps(result),content_type='application/json') 
+				#return HttpResponse(json.dumps(result),content_type='application/json')
 				return render(request, 'manager/formSuccess.html')
 			else:
 				return render(request, 'manager/formError.html')
@@ -6080,7 +6079,7 @@ def machineFormView(request):
 @login_required
 def machineQuickFormAdd(request):
 	result = {'success' : False}
-	if request.method == "POST":		
+	if request.method == "POST":
 		machineform = machineForm(request.POST)
 		if machineform.is_valid():
 			new_machine_manufacturer_model = machineform.cleaned_data['manufacturer_model']
@@ -6089,21 +6088,21 @@ def machineQuickFormAdd(request):
 			new_machine_qr_code = machineform.cleaned_data['qr_code']
 			new_machine_asset_number = machineform.cleaned_data['asset_number']
 			new_machine_serial_number = machineform.cleaned_data['serial_number']
-			
+
 			machine = Machine(manufacturer_model = new_machine_manufacturer_model, nickname = new_machine_nickname, qr_code = new_machine_qr_code, asset_number = new_machine_asset_number, serial_number = new_machine_serial_number)
 			machine.save()
 			result['success'] = True
-		
-			if result['success'] == True :			
-				#return HttpResponse(json.dumps(result),content_type='application/json') 
+
+			if result['success'] == True :
+				#return HttpResponse(json.dumps(result),content_type='application/json')
 				return render(request, 'manager/formSuccess.html')
-			else:				
+			else:
 				return render(request, 'manager/formError.html')
-		else:			
+		else:
 			result['code'] = 3 #this form is not valid
 			return render(request, 'manager/formError.html')
 		return HttpResponse(json.dumps(result),content_type='application/json')
-	else:		
+	else:
 		machineform = machineForm(request.POST)
 	return render(request,'manager/templateAddEquipment.html', {'formMachine': machineform})
 ##End
@@ -6196,7 +6195,7 @@ def employeeManagerUpdateForm(request):
 					if number >= comp_status.employ_limit:
 						result['code'] = 5 #number of active employee reached
 						return render(request,'manager/formErrorEmployNumb.html')
-					else:		
+					else:
 						emplo.active = employform.cleaned_data['active']
 				else:
 					emplo.active = employform.cleaned_data['active']
@@ -6204,10 +6203,10 @@ def employeeManagerUpdateForm(request):
 				emplo.qr_code = employform.cleaned_data['qr_code']
 				emplo.hour_cost = employform.cleaned_data['hour_cost']
 				emplo.contact_number = employform.cleaned_data['contact_number']
-				emplo.permission_level = employform.cleaned_data['permission_level']				
+				emplo.permission_level = employform.cleaned_data['permission_level']
 				emplo.notes = employform.cleaned_data['notes']
 				emplo.teamManager = employform.cleaned_data['teamManager']
-				emplo.manager = employform.cleaned_data['manager']				
+				emplo.manager = employform.cleaned_data['manager']
 				if emplo.active == False:
 					 emplo.user.is_active = False
 				else:
@@ -6218,12 +6217,12 @@ def employeeManagerUpdateForm(request):
 
 				except:
 					image = "employee/no.jpg"
-								
-				emplo.photoEmployee = image				
+
+				emplo.photoEmployee = image
 				emplo.user.save()
 				emplo.save()
 				return render(request, 'manager/formSuccess.html')
-			except:				
+			except:
 				result['code'] = 2 #Employee does not exist
 				return HttpResponse(json.dumps(result),content_type='application/json')
 		else:
@@ -6260,7 +6259,7 @@ def employeeFormadd(request):
 	if request.method == "POST":
 		userform = UserForm(request.POST)
 		employform = employeeForm(request.POST, request.FILES)
-		if userform.is_valid() and employform.is_valid():	
+		if userform.is_valid() and employform.is_valid():
 			new_user_username = userform.cleaned_data['username']
 			new_user_username = new_user_username.lower()
 			new_user_password = userform.cleaned_data['password']
@@ -6269,32 +6268,32 @@ def employeeFormadd(request):
 			new_user, created = User.objects.get_or_create(username = new_user_username, defaults = {'first_name' : new_user_first_name, 'last_name' : new_user_last_name})
 			if created:
 				new_user.set_password(new_user_password)
-				new_user.save()				
+				new_user.save()
 				emplo_company = employform.cleaned_data['company_id']
 				emplo_language = employform.cleaned_data['language']
 				emplo_qr_code = employform.cleaned_data['qr_code']
 				emplo_start = employform.cleaned_data['start_date']
 				emplo_cost = employform.cleaned_data['hour_cost']
 				emplo_contact = employform.cleaned_data['contact_number']
-				emplo_permission = employform.cleaned_data['permission_level']				
+				emplo_permission = employform.cleaned_data['permission_level']
 				emplo_notes = employform.cleaned_data['notes']
 				emplo_teamManager = employform.cleaned_data['teamManager']
-				emplo_manager = employform.cleaned_data['manager']									
+				emplo_manager = employform.cleaned_data['manager']
 				try:
 					image = request.FILES['image']
 					image.name = new_user_username + ".jpg"
-				except:					
+				except:
 					image = "employee/no.jpg"
 
-				try:										
-					# last_employee = Employee.objects.latest('id')										
+				try:
+					# last_employee = Employee.objects.latest('id')
 					employee = Employee(user = new_user, language = emplo_language, permission_level = emplo_permission, active = '1', company_id = emplo_company, qr_code = emplo_qr_code, start_date = emplo_start, hour_cost = emplo_cost,contact_number = emplo_contact, notes = emplo_notes, manager = emplo_manager, photoEmployee = image)
-					employee.save()																												
+					employee.save()
 					result['success'] = True
 				except:
 					User.objects.get(username = new_user_username).delete()
 				if result['success'] == True :
-					#return HttpResponse(json.dumps(result),content_type='application/json') 
+					#return HttpResponse(json.dumps(result),content_type='application/json')
 					return render(request, 'manager/formSuccess.html')
 				else:
 					return render(request, 'manager/formError.html')
@@ -6352,7 +6351,7 @@ def employeeUpdateFormView(request):
 			emplo.user.last_name = userform.cleaned_data['last_name']
 			emplo.manager = employform.cleaned_data['manager']
 			emplo.language = employform.cleaned_data['language']
-			emplo.contact_number = employform.cleaned_data['contact_number']		
+			emplo.contact_number = employform.cleaned_data['contact_number']
 			emplo.notes = employform.cleaned_data['notes']
 			# emplo.active = employform.cleaned_data['active']
 			emplo.user.save()
@@ -6376,7 +6375,7 @@ def checkAttendanceBreaks(userID):
 	result = {}
 	count = 0
 	lunchCount = 0 #number of lunches
-	breakCount = 0 #number of breaks 
+	breakCount = 0 #number of breaks
 	lunchLimit = 0 #limit of lunches
 	breakLimit = 0 #limif of breaks
 	lunchEnforced = False #if one lunch is opcional
@@ -6596,13 +6595,13 @@ def breakFormView(request):
 	else:
 		return render(request, 'formTest.html', {'form': form})
 
-@login_required	
+@login_required
 def employeeWeekReport(request):
 	if request.method == 'POST':
 	 	if request.is_ajax():
 	 		result = {}
 			cols = []
-			
+
 			cols.append({'label': "Name", "type": "string"})
 			cols.append({'label': "Date", "type": "string"})
 			cols.append({'label': "Edited", "type": "boolean"})
@@ -6610,29 +6609,29 @@ def employeeWeekReport(request):
 			start_date = datetime.datetime.strptime("2015-11-01 00:00:00", '%Y-%m-%d %H:%M:%S')
 			end_date = datetime.datetime.now()
 			employeeAttendance = EmployeeAttendance.objects.filter(employee_id = 44, date__range = (start_date, end_date)).order_by('date')
-			
+
 			for item in employeeAttendance:
 				row = {}
 				row['c'] = [{"v": item.employee.user.first_name + " " + item.employee.user.last_name}, { "v": item.date.isoformat()}, {"v": item.edited}]
 				rows.append(row)
-				
+
 			result['cols'] = cols
 			result['rows'] = rows
-			
+
 		else:
 	 		result.append({'result' : 2}) #Use ajax to perform requests
 	else:
 	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
 
-@login_required	
+@login_required
 def employeeWeekReportGroupBy(request):
 	if request.method == 'POST':
 	 	if request.is_ajax():
 	 		result = {}
 	 		cols = []
 	 		rows = []
-			
+
 			cols.append({'label': "Date", "type": "string"})
 			cols.append({'label': "Edited", "type": "number"})
 
@@ -6642,10 +6641,10 @@ def employeeWeekReportGroupBy(request):
 			#result.append(['Day', 'Edited'])
 			for item in employeeAttendance:
 				row = {}
-				
+
 				row['c'] = [{ "v": item.date.isoformat()}, {"v": item.edited}]
 				rows.append(row)
-			
+
 			result['cols'] = cols
 			result['rows'] = rows
 		else:
@@ -6653,19 +6652,3 @@ def employeeWeekReportGroupBy(request):
 	else:
 	 	result.append({'result' : 3}) #Request was not POST
 	return HttpResponse(json.dumps(result),content_type='application/json')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

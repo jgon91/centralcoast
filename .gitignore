@@ -1,4 +1,5 @@
 venv/
+becca/
 *.pyc
 heavyconnect/db.sqlite3
 heavyconnect/heavyconnect/settings.py

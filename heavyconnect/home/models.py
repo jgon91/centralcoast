@@ -1,16 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 import base64
-from tenant_schemas.models import TenantMixin
-
-class Client(TenantMixin):
-    name = models.CharField(max_length=100)
-    paid_until =  models.DateField()
-    on_trial = models.BooleanField()
-    created_on = models.DateField(auto_now_add=True)
-
-    # default true, schema will be automatically created and synced when it is saved
-    auto_create_schema = True
 
 class Manufacturer(models.Model):
 	name = models.CharField(max_length = 20)
@@ -586,7 +576,7 @@ class Question(models.Model):
 
 class TranslatedQuestion(models.Model):
 	SPANISH  = 1
-	BRPORTUGUESE = 2 
+	BRPORTUGUESE = 2
 
 	IDIOMS = (
 		(SPANISH, 'es'),
@@ -653,8 +643,8 @@ class ImplementChecklist(models.Model):
 		return "Answer: " + str(self.answer) + ", Note: " + str(self.note)
 
 class TimeKeeperRules(models.Model):
-	hour = models.TimeField() 
-	breaks = models.IntegerField() 
+	hour = models.TimeField()
+	breaks = models.IntegerField()
 	lunchs = models.IntegerField()
 	lunchBool = models.BooleanField() #if ti is required to ask about the lunch
 	created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
