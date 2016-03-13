@@ -92,13 +92,13 @@ input[type=button]{
     height: 50px;
     border: none;
     padding: 0px;
-    border-radius: 7px;
+    border-radius: 2px;
     box-shadow: 2px 2px 5px gray;
     margin-top: 10px;
-    font-weight:600;
-    font-size:22px;
-    background-color: #3C763D;
-    color:white;
+    font-weight: 600;
+    font-size: 22px;
+    background-color: #337ab7;
+    color: #f5f5f5;
 }
 
 .login-icon{
@@ -107,23 +107,23 @@ input[type=button]{
 }
 .input_login[type=text] {
 	padding: 7px;
-	border: 2px solid #809256;
-	border-radius: 7px;
-	font-weight: bold;
-	color: black;
-	font-weight: bold;
-	font-size: 130%;
-	text-align: center;
+    border: 2px solid #31708f;
+    border-radius: 2px;
+    font-weight: bold;
+    color: black;
+    font-weight: bold;
+    font-size: 130%;
+    text-align: center;
 }
 .input_login[type=password] {
-	padding: 7px;
-	border: 2px solid #809256;
-	border-radius: 7px;
-	font-weight: bold;
-	color: black;
-	font-weight: bold;
-	font-size: 130%;
-	text-align: center;
+	    padding: 7px;
+    border: 2px solid #31708f;
+    border-radius: 2px;
+    font-weight: bold;
+    color: black;
+    font-weight: bold;
+    font-size: 130%;
+    text-align: center;
 }
 #errorMessage {
 	font-size: 12px;
@@ -141,7 +141,7 @@ input[type=button]{
 
 /*** Header Home Begin ***/
 #top {
-	background-color: #173118;
+	background-color: #428BCA;
 	height: 60.5px;
 	width: 100%;
 	min-width: 360px;
@@ -154,6 +154,7 @@ input[type=button]{
 	margin: 0px;
 	padding: 0px;
 	margin-left: 2.5px;
+	box-shadow: 2px 2px 5px gray;
 }
 
 #userImg {
@@ -289,14 +290,14 @@ input[type=button]{
 	width: 105px;
 	height: 105px;
 	border: none;
-	border-radius: 10px;
+	border-radius: 2px;
 	box-shadow: 2px 2px 5px gray;
 	color: white;
 	padding-top: 82px;
 	font-size: 14px;
 	font-weight: 600;
 	padding-top:0px;
-    background-color: #3C763D;
+    background-color: #31708f;
 }
 #driverMenu{
 	min-width: 360px;
@@ -1672,6 +1673,7 @@ input[type=button] {
     margin: 0px;
     padding: 0px;
     margin-left: 2.5px;
+    box-shadow: 2px 2px 5px gray;
 }
 #logoHome {
     width: 120px;

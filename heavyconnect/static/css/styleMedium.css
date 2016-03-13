@@ -7,6 +7,7 @@
     margin: 0px;
     padding: 0px;
     margin-left: 5px;
+    box-shadow: 2px 2px 5px gray;
 }
 #logoHome {
 	width: 150px;
