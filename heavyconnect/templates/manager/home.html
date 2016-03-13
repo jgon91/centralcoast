@@ -4,7 +4,6 @@
 		{% load staticfiles %}
 		{% load i18n %}
 		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
-
 		<meta charset="utf-8">
 		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
 		Remove this if you use the .htaccess -->
@@ -16,13 +15,25 @@
 		<!--IMPORTS-->
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-		<!--<link rel="stylesheet" type="text/css" href="{% static 'css/styleSmall.css' %}">-->
-		<!--<link rel="stylesheet" type="text/css" href="{% static 'css/styleMedium.css' %}" media="screen and (min-width: 801px) and (orientation: landscape)">-->
 
-		<script src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
 		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 		<script defer src="https://code.getmdl.io/1.1.2/material.min.js"></script>
 		<link rel="stylesheet" href="https://code.getmdl.io/1.1.2/material.indigo-blue.min.css" />
+		<link href="{% static 'fullcalendar/fullcalendar.css' %}" rel="stylesheet">
+		<link href="{% static 'fullcalendar/fullcalendar.print.css' %}" rel="stylesheet" media="print">
+		<script src="{% static 'fullcalendar/moment.min.js' %}"></script>
+		<script src="{% static 'fullcalendar/jquery.min.js' %}"></script>
+		<script src="{% static 'fullcalendar/fullcalendar.min.js' %}"></script>
+		<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.6.1/fullcalendar.min.css" />-->
+		<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.6.1/fullcalendar.print.css" />-->
+
+		<!--<script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.6.1/fullcalendar.min.js'></script>-->
+		<!--<script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.6.1/fullcalendar.min.css'></script>-->
+		<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.6.1/fullcalendar.print.css"></script>-->
+
+		<!--<script src='http://fullcalendar.io/js/fullcalendar-2.6.1/lib/moment.min.js'></script>-->
+<!--<script src="http://fullcalendar.io/js/fullcalendar-2.6.1/lib/jquery-ui.custom.min.js"></script>-->
+<!--<script src='http://fullcalendar.io/js/fullcalendar-2.6.1/fullcalendar.min.js'></script>-->
 		<script type="text/javascript">
       // Your Client ID can be retrieved from your project in the Google
       // Developer Console, https://console.developers.google.com
@@ -86,9 +97,201 @@
 			else
 				$("a:odd").attr("href", "#");
 		}
+		var globalStart = 0;
+		var globalEnd = 0;
 
 
 		$(document).ready(function() {
+		$("#btnFilter").click(function() {
+					$('#calendar').fullCalendar('refetchEvents');
+				});
+				 <!--$('#calendar').fullCalendar({-->
+        <!--// put your options and callbacks here-->
+    <!--});-->
+		<!--$('#calendar').fullCalendar({-->
+					<!--eventSources : [{-->
+						<!--events : function(start, end, timezone, callback) {-->
+							<!--$.ajax({-->
+								<!--url : "{% url 'switchTaskManager'%}",-->
+								<!--dataType : 'json',-->
+								<!--data : {-->
+									<!--start : start.format(),-->
+									<!--end : end.format(),-->
+									<!--search : $("#filter").val(),-->
+									<!--condition : $("#filterStatus").val(),-->
+									<!--optionsSearch : optionsSearch_id-->
+								<!--},-->
+								<!--success : function(doc) {-->
+									<!--callback(doc);-->
+								<!--}-->
+							<!--});-->
+						<!--}-->
+					<!--}],-->
+					<!--select : function(start, end, allDay) {-->
+						<!--//Set task day-->
+						<!--$('#date').val(start.format('YYYY-MM-DD'));-->
+						<!--//Set start time task-->
+						<!--$('#time').val(start.format('HH:mm:ss'));-->
+						<!--//Set duration-->
+						<!--$('#hours_prediction').val(moment.duration(end.diff(start)).asHours());-->
+						<!--$('#timeTab').addClass("tabSucess");-->
+
+						<!--$('#createTaskModal').modal();-->
+						<!--if (0) {-->
+							<!--$('#calendar').fullCalendar('renderEvent', {-->
+								<!--title : $("#employee option:selected").text(),-->
+								<!--start : start,-->
+								<!--end : end,-->
+							<!--}, true // make the event "stick"-->
+							<!--);-->
+							<!--/*$.ajax({-->
+							 <!--url: "",-->
+							 <!--dataType: 'json',-->
+							 <!--data: {-->
+							 <!--start: start.format(),-->
+							 <!--end: end.format(),-->
+							 <!--condition: $("#filter").val()-->
+							 <!--},-->
+							 <!--success: function(doc) {-->
+
+							 <!--var events = [];-->
+
+							 <!--callback(doc);-->
+							 <!--}-->
+							 <!--});*/-->
+						<!--}-->
+						<!--$('#calendar').fullCalendar('unselect');-->
+					<!--},-->
+					<!--selectable : true,-->
+					<!--selectHelper : true,-->
+
+					<!--header : {-->
+						<!--left : '',-->
+						<!--center : 'prev title next',-->
+						<!--right : 'month,agendaWeek,agendaDay'-->
+					<!--},-->
+					<!--defaultView : 'agendaWeek',-->
+					<!--height : 650,-->
+					<!--eventClick : function(event, jsEvent, view) {-->
+						<!--&lt;!&ndash;$('#modalTitle').html(event.category);&ndash;&gt;-->
+						<!--&lt;!&ndash;$('#modalDescription').html(event.description);&ndash;&gt;-->
+						<!--&lt;!&ndash;$('#modalField').html(event.field);&ndash;&gt;-->
+						<!--&lt;!&ndash;$('#modalMachine').html(event.machine);&ndash;&gt;-->
+						<!--&lt;!&ndash;$('#modalImplement').html(event.implement);&ndash;&gt;-->
+						<!--//$('#taskDuration').html(event.taskDuration);-->
+						<!--if (event.status == 2) {-->
+							<!--$('#btnStartTaskScheduler').html(' <a id="eventUrl" href="{% url "startTask" %}?task_id=' + event.task_id + '" >' + '<button class="btn btn-primary" id="btnAprove">' + '{% trans "Start" %}' + '</button> </a>');-->
+						<!--} else {-->
+							<!--$('#btnStartTaskScheduler').html(" ");-->
+						<!--}-->
+						<!--//$('#eventUrl').attr('href', );-->
+						<!--$('#fullCalModal').modal();-->
+						<!--return false;-->
+					<!--}-->
+				<!--});-->
+
+
+
+
+		$('#calendar').fullCalendar({
+			header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'month,agendaWeek,agendaDay'
+			},
+			defaultDate: '2016-03-13',
+			selectable: true,
+			selectHelper: true,
+			select: function(start, end) {
+				document.getElementById('addNewEventDialog').showModal();
+				<!--var title = prompt('Add Activity:');-->
+				globalStart = start;
+				globalEnd = end;
+
+
+
+				<!--addToCal-->
+				<!--var eventData;-->
+				<!--if (title) {-->
+					<!--eventData = {-->
+						<!--title: title,-->
+						<!--start: start,-->
+						<!--end: end-->
+					<!--};-->
+					<!--$('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true-->
+				<!--}-->
+				<!--$('#calendar').fullCalendar('unselect');-->
+			},
+			editable: true,
+			defaultView : 'agendaWeek',
+			eventLimit: true, // allow "more" link when too many events
+			events: [
+				{
+					title: 'Harvesting',
+					start: '2016-03-13',
+					backgroundColor: 'grey'
+				},
+				{
+					title: 'Harvesting',
+					start: '2016-03-15T02:00:00',
+					end: '2016-03-15T16:00:00',
+					backgroundColor: 'grey'
+				},
+				{
+					title: 'Harvesting',
+					start: '2016-03-13',
+					start: '2016-03-16',
+				},
+				{
+					id: 999,
+					title: 'Weeding',
+					start: '2016-03-15T06:00:00',
+					start: '2016-03-15T16:00:00'
+				},
+				{
+					id: 999,
+					title: 'Weeding',
+					start: '2016-03-13T16:00:00'
+				},
+				{
+					title: 'Harvest',
+					start: '2016-03-13',
+					start: '2016-03-16',
+					backgroundColor: 'grey'
+				},
+				{
+					title: 'Inspecting',
+					start: '2016-03-17T10:30:00',
+					end: '2016-01-16T12:30:00',
+					backgroundColor: 'grey'
+				},
+				{
+					title: 'Laying Plastic',
+					start: '2016-03-17T12:00:00'
+				},
+				{
+					title: 'Planting',
+					start: '2016-03-12T14:30:00',
+					backgroundColor: 'grey'
+				},
+				{
+					title: 'Weeding',
+					start: '2016-03-12T17:30:00',
+					backgroundColor: 'grey'
+				},
+				{
+					title: 'Weeding',
+					start: '2016-03-18T20:00:00'
+				},
+				{
+					title: 'Cooling',
+					start: '2016-03-18T07:00:00'
+				}
+			]
+	});
+
+
+
 		(function() {
     'use strict';
     var dialogButton = document.querySelector('.dialog-button');
@@ -104,12 +307,35 @@
       dialog.close();
     });
   }());
+  <!--(function() {-->
+    <!--'use strict';-->
+				<!--var addDialog = document.querySelector('#addDialog');-->
+				<!--$('.add-activity').click(function() {-->
+					<!--addDialog.showModal();-->
+				<!--});-->
+				<!--}());-->
+  <!--(function() {-->
+    <!--'use strict';-->
+    <!--var dialogButton = document.querySelector('.add-activity');-->
+    <!--var dialog = document.querySelector('#addDialog');-->
+    <!--if (! dialog.showModal) {-->
+      <!--dialogPolyfill.registerDialog(dialog);-->
+    <!--}-->
+    <!--dialogButton.addEventListener('click', function() {-->
+       <!--dialog.showModal();-->
+    <!--});-->
+    <!--dialog.querySelector('button:not([disabled])')-->
+    <!--.addEventListener('click', function() {-->
+      <!--dialog.close();-->
+    <!--});-->
+  <!--}());-->
 		$('#shareList').hide();
 		$('#shareLocation').hide();
 		$('#fieldDrop').hide();
 		$('#blockDrop').hide();
 		$('#countyDrop').hide();
 		$('#activityDrop').hide();
+		$('#setActivity').hide();
 
 		$('#people').click(function() {
 			$('#shareList').slideToggle();
@@ -129,6 +355,24 @@
 		$('#location').click(function() {
 			$('#shareLocation').slideToggle();
 		});
+		$('#activity').click(function() {
+			$('#setActivity').slideToggle();
+		});
+
+		$("#addToCal").click(function () {
+					var title = "harvest";
+					closeThis2();
+					var eventData;
+				if (title) {
+					eventData = {
+						title: title,
+						start: globalStart,
+						end: globalEnd
+					};
+					$('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
+				}
+				$('#calendar').fullCalendar('unselect');
+				});
 
 		});
 	</script>
@@ -140,6 +384,13 @@
 						'<i class="material-icons mdl-list__item-icon">person</i> '+ name +
 					'</span>'+
 					  '</li>');
+	}
+	function closeThis(){
+		var dialog = document.querySelector('#addDialog');
+		dialog.close();
+	}function closeThis2(){
+		var dialog = document.querySelector('#addNewEventDialog');
+		dialog.close();
 	}
 	function showmap(){
 		$('#map').css("visibility", "visible");
@@ -154,6 +405,11 @@
 		$('#calendar').css("visibility", "visible");
 		$('#calendar').css("display", "block");
 		hidemap();
+	}
+
+	function showDialog(){
+		var dialog = document.querySelector('#addDialog');
+		dialog.show();
 	}
 
 	function hidecalendar(){
@@ -243,15 +499,26 @@
         var contentString2 = '<p><b>Ranch A, Field B, Block 2</b></p>'+
         '<p><b>Organic</b></p>'+
         '<p><b>Broccoli</b></p>'+
-        '<p><b>1. Sprayed</b> 3/1/2016, 8:00am</p>';
+        '<p><b>1. Sprayed</b> 3/1/2016, 8:00am</p>'+
+        '<button onclick="showDialog()" class="add-activity mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">'+
+  		'<i class="material-icons">add</i>'+
+		'</button>';
+
         var contentString3 = '<p><b>Ranch A, Field B, Block 1</b></p>'+
         '<p><b>Organic</b></p>'+
         '<p><b>Broccoli</b></p>'+
-        '<p><b>1. Sprayed</b> 3/1/2016, 6:00am</p>';
+        '<p><b>1. Sprayed</b> 3/1/2016, 6:00am</p>'+
+        '<button onclick="showDialog()" class="add-activity mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">'+
+  		'<i class="material-icons">add</i>'+
+		'</button>';
+
  var contentString4 = '<p><b>Ranch A, Field B, Block 3</b></p>'+
         '<p><b>Organic</b></p>'+
         '<p><b>Broccoli</b></p>'+
-        '<p><b>1. Sprayed</b> 3/1/2016, 5:00am</p>';
+        '<p><b>1. Sprayed</b> 3/1/2016, 5:00am</p>'+
+        '<button onclick="showDialog()" class="add-activity mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">'+
+  		'<i class="material-icons">add</i>'+
+		'</button>';
 
 
         var image = '{% static 'imgSmall/2-in-circle-md.png' %}';
@@ -555,22 +822,17 @@
 				  <div class="page-content"></div>
 				</section>
 				<section class="mdl-layout__tab-panel" id="fixed-tab-3">
-				  <div class="page-content"><!-- Your content goes here --></div>
+				  <div class="page-content"></div>
 				</section>
+				  <div id="calendar"></div>
 			  </main>
-				<div id="calendar">
-				<iframe src="https://calendar.google.com/calendar/embed?showTitle=0&amp;showPrint=0&amp;showCalendars=0&amp;showTz=0&amp;mode=WEEK&amp;height=600&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;src=49bv3623uvaikrptcbvq0qvo1s%40group.calendar.google.com&amp;color=%231B887A&amp;ctz=America%2FLos_Angeles" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
-				</div>
+
+				<!--<div id="calendar">-->
+				<!--<iframe src="https://calendar.google.com/calendar/embed?showTitle=0&amp;showPrint=0&amp;showCalendars=0&amp;showTz=0&amp;mode=WEEK&amp;height=600&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;src=49bv3623uvaikrptcbvq0qvo1s%40group.calendar.google.com&amp;color=%231B887A&amp;ctz=America%2FLos_Angeles" style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>-->
+				<!--</div>-->
 					<div style="height:100%;visibility:hidden;display:none;" id="map" ></div>
 			</div>
-		<!--<div class="row" id="driverMenu">-->
-			<!--<div class="col-xs-12 driverMenu">-->
-				<!--<a href="{% url 'time_keeper_records'%}">-->
-				<!--<button type="button" class="btnMain" value="TIMEKEEPER" id="btnTimerkeeper" ><i id="timeReport" class=" glyphicon glyphicon-calendar"></i></button>-->
-				<!--</a>-->
-			<!--</div>-->
 
-		<!--</div>-->
 	<dialog id="dialog" class="mdl-dialog">
   <h3 class="mdl-dialog__title">SHARE</h3>
   <div class="mdl-dialog__content">
@@ -633,6 +895,223 @@
   <div class="mdl-dialog__actions">
     <button onclick="save()" type="button" class="mdl-button">SAVE</button>
   </div>
+</dialog>
+
+	<div class="modal fade" id="fullCalModal" role="dialog">
+					<div class="modal-dialog">
+						<div class="modal-content modalSchedule">
+							<button type="button" class="closeSchedule" data-dismiss="modal"></button>
+							<span class="modal-title" id="titleModalSchedule">{% trans 'TASK INFORMATION' %}</span>
+							<div class="modal-body infoSchedule">
+								{% trans 'TASK:' %} <span id="modalTitle" class="infoModalSchedule"></span>
+								<br>
+								{% trans 'DESCRIPTION:' %} <span id="modalDescription" class="infoModalSchedule"></span>
+								<br>
+								{% trans 'FIELD:' %} <span id="modalField" class="infoModalSchedule"></span>
+								<br>
+								{% trans 'MACHINE:' %} <span id="modalMachine" class="infoModalSchedule"></span>
+								<br>
+								{% trans 'IMPLEMENT:' %} <span id="modalImplement" class="infoModalSchedule"></span>
+								<br>
+							</div>
+
+							<span id="btnStartTaskScheduler"></span>
+
+							<div class="both"></div>
+						</div>
+					</div>
+				</div>
+
+	<dialog style="margin-top: 150px;" class="mdl-dialog" id="addDialog">
+    <div class="mdl-dialog__content">
+        <p>
+
+		<form action="#">
+		  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+			<input class="mdl-textfield__input" type="date" id="sample5">
+			<label class="mdl-textfield__label" for="sample5">Date</label>
+		  </div>
+		</form>
+		<form action="#">
+		  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+			<input class="mdl-textfield__input" type="time" id="sample6">
+			<label class="mdl-textfield__label" for="sample6">Time</label>
+		  </div>
+		</form>
+
+		<div style="margin-top:30px;" id="activity"><b>+ Activity</b>
+					  </div>
+
+				  <ul id="setActivity" class="demo-list-icon mdl-list">
+
+					  <li class="mdl-list__item">
+						 <span class="mdl-list__item-secondary-action">
+      <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-17">
+        <input type="checkbox" id="list-checkbox-17" class="mdl-checkbox__input" checked />
+      </label>
+    </span>
+						<span class="mdl-list__item-primary-content">
+						Spraying
+					</span>
+					  </li>
+					  <li class="mdl-list__item">
+						  <span class="mdl-list__item-secondary-action">
+      <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-18">
+        <input type="checkbox" id="list-checkbox-18" class="mdl-checkbox__input" checked />
+      </label>
+    </span>
+						<span class="mdl-list__item-primary-content">
+						Thinning
+					  </span>
+					  </li>
+					  <li class="mdl-list__item">
+						  <span class="mdl-list__item-secondary-action">
+      <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-19">
+        <input type="checkbox" id="list-checkbox-19" class="mdl-checkbox__input" checked />
+      </label>
+    </span>
+						<span class="mdl-list__item-primary-content">
+						Harvest
+					  </span>
+					  </li>
+					</ul>
+
+		</p>
+    </div>
+    <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+        <button type="button" class="mdl-button">Add</button>
+        <button onclick="closeThis()" type="button" class="mdl-button">Cancel</button>
+    </div>
+</dialog>
+
+	<dialog style="margin-top: 150px;" class="mdl-dialog" id="addNewEventDialog">
+    <div class="mdl-dialog__content">
+        <p>
+
+		<!--<form action="#">-->
+		  <!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label">-->
+			<!--<input class="mdl-textfield__input" type="date" id="sample7">-->
+			<!--<label class="mdl-textfield__label" for="sample5">Date</label>-->
+		  <!--</div>-->
+		<!--</form>-->
+		<!--<form action="#">-->
+		  <!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;floating-label">-->
+			<!--<input class="mdl-textfield__input" type="time" id="sample8">-->
+			<!--<label class="mdl-textfield__label" for="sample6">Time</label>-->
+		  <!--</div>-->
+		<!--</form>-->
+
+		<div style="margin-top:30px;" id="activity2"><b>+ Activity</b>
+					  </div>
+
+				  <ul id="setActivity2" class="demo-list-icon mdl-list">
+
+					  <li class="mdl-list__item">
+						 <span class="mdl-list__item-secondary-action">
+      <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-30">
+        <input type="checkbox" id="list-checkbox-30" class="mdl-checkbox__input"  />
+      </label>
+    </span>
+						<span class="mdl-list__item-primary-content">
+						Spraying
+					</span>
+					  </li>
+					  <li class="mdl-list__item">
+						  <span class="mdl-list__item-secondary-action">
+      <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-31">
+        <input type="checkbox" id="list-checkbox-31" class="mdl-checkbox__input"  />
+      </label>
+    </span>
+						<span class="mdl-list__item-primary-content">
+						Thinning
+					  </span>
+					  </li>
+					  <li class="mdl-list__item">
+						  <span class="mdl-list__item-secondary-action">
+      <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-32">
+        <input type="checkbox" id="list-checkbox-32" class="mdl-checkbox__input"  />
+      </label>
+    </span>
+						<span class="mdl-list__item-primary-content">
+						Harvest
+					  </span>
+					  </li>
+					  <li class="mdl-list__item">
+						  <span class="mdl-list__item-secondary-action">
+      <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-33">
+        <input type="checkbox" id="list-checkbox-33" class="mdl-checkbox__input"  />
+      </label>
+    </span>
+						<span class="mdl-list__item-primary-content">
+						Ground Prep
+					  </span>
+					  </li>
+					  <li class="mdl-list__item">
+						  <span class="mdl-list__item-secondary-action">
+      <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-34">
+        <input type="checkbox" id="list-checkbox-34" class="mdl-checkbox__input"  />
+      </label>
+    </span>
+						<span class="mdl-list__item-primary-content">
+						Planting
+					  </span>
+					  </li>
+					  <li class="mdl-list__item">
+						  <span class="mdl-list__item-secondary-action">
+      <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-35">
+        <input type="checkbox" id="list-checkbox-35" class="mdl-checkbox__input"  />
+      </label>
+    </span>
+						<span class="mdl-list__item-primary-content">
+						Weeding
+					  </span>
+					  </li>
+					  <li class="mdl-list__item">
+						  <span class="mdl-list__item-secondary-action">
+      <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-36">
+        <input type="checkbox" id="list-checkbox-36" class="mdl-checkbox__input"  />
+      </label>
+    </span>
+						<span class="mdl-list__item-primary-content">
+						Laying Plastic
+					  </span>
+					  </li>
+					  <li class="mdl-list__item">
+						  <span class="mdl-list__item-secondary-action">
+      <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-37">
+        <input type="checkbox" id="list-checkbox-37" class="mdl-checkbox__input"  />
+      </label>
+    </span>
+						<span class="mdl-list__item-primary-content">
+						Packing
+					  </span>
+					  </li><li class="mdl-list__item">
+						  <span class="mdl-list__item-secondary-action">
+      <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-38">
+        <input type="checkbox" id="list-checkbox-38" class="mdl-checkbox__input"  />
+      </label>
+    </span>
+						<span class="mdl-list__item-primary-content">
+						Cooling
+					  </span>
+					  </li><li class="mdl-list__item">
+						  <span class="mdl-list__item-secondary-action">
+      <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="list-checkbox-39">
+        <input type="checkbox" id="list-checkbox-39" class="mdl-checkbox__input"  />
+      </label>
+    </span>
+						<span class="mdl-list__item-primary-content">
+						Inspecting
+					  </span>
+					  </li>
+					</ul>
+
+		</p>
+    </div>
+    <div class="mdl-dialog__actions mdl-dialog__actions--full-width">
+        <button type="button" id="addToCal" class="mdl-button">Add</button>
+        <button onclick="closeThis2()" type="button" class="mdl-button">Cancel</button>
+    </div>
 </dialog>
 	</body>
 
