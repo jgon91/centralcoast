@@ -391,6 +391,8 @@
         '<p><b>Organic</b></p>'+
         '<p><b>Broccoli</b></p>'+
         '<p><b>1. Sprayed</b> 3/1/2016, 8:00am</p>'+
+        '<p><b>2. Thinned</b> 3/3/2016, 8:00am</p>'+
+        '<p><b>3. Inspected</b> 3/4/2016, 10:00am</p>'+
         '<button onclick="showDialog()" class="add-activity mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">'+
   		'<i class="material-icons">add</i>'+
 		'</button>';
@@ -399,6 +401,8 @@
         '<p><b>Organic</b></p>'+
         '<p><b>Broccoli</b></p>'+
         '<p><b>1. Sprayed</b> 3/1/2016, 6:00am</p>'+
+        '<p><b>2. Thinned</b> 3/3/2016, 8:00am</p>'+
+        '<p><b>3. Inspected</b> 3/4/2016, 10:00am</p>'+
         '<button onclick="showDialog()" class="add-activity mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">'+
   		'<i class="material-icons">add</i>'+
 		'</button>';
@@ -407,6 +411,8 @@
         '<p><b>Organic</b></p>'+
         '<p><b>Broccoli</b></p>'+
         '<p><b>1. Sprayed</b> 3/1/2016, 5:00am</p>'+
+        '<p><b>2. Thinned</b> 3/3/2016, 8:00am</p>'+
+        '<p><b>3. Inspected</b> 3/4/2016, 10:00am</p>'+
         '<button onclick="showDialog()" class="add-activity mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">'+
   		'<i class="material-icons">add</i>'+
 		'</button>';
@@ -414,6 +420,7 @@
 
         var image = '{% static 'imgSmall/2-in-circle-md.png' %}';
         var image2 = '{% static 'imgSmall/one-in-circle-md.png' %}';
+        var image3 = '{% static 'imgSmall/number-3-in-circle-md.png' %}';
         var infowindow = new google.maps.InfoWindow({
 			content: contentString,
 			maxWidth: 200
@@ -438,17 +445,17 @@
 	  var beachMarker2 = new google.maps.Marker({
 		position: {lat: 36.319971, lng: -121.272669},
 		map: map,
-		icon: image2
+		icon: image3
 	  });
 	  var beachMarker3 = new google.maps.Marker({
 		position: {lat: 36.321912, lng: -121.268939},
 		map: map,
-		icon: image2
+		icon: image3
 	  });
 	  var beachMarker4 = new google.maps.Marker({
 		position: {lat: 36.318871, lng: -121.266367},
 		map: map,
-		icon: image2
+		icon: image3
 	  });
 	   beachMarker.addListener('click', function() {
     infowindow.open(map, beachMarker);
