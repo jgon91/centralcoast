@@ -105,91 +105,6 @@
 		$("#btnFilter").click(function() {
 					$('#calendar').fullCalendar('refetchEvents');
 				});
-				 <!--$('#calendar').fullCalendar({-->
-        <!--// put your options and callbacks here-->
-    <!--});-->
-		<!--$('#calendar').fullCalendar({-->
-					<!--eventSources : [{-->
-						<!--events : function(start, end, timezone, callback) {-->
-							<!--$.ajax({-->
-								<!--url : "{% url 'switchTaskManager'%}",-->
-								<!--dataType : 'json',-->
-								<!--data : {-->
-									<!--start : start.format(),-->
-									<!--end : end.format(),-->
-									<!--search : $("#filter").val(),-->
-									<!--condition : $("#filterStatus").val(),-->
-									<!--optionsSearch : optionsSearch_id-->
-								<!--},-->
-								<!--success : function(doc) {-->
-									<!--callback(doc);-->
-								<!--}-->
-							<!--});-->
-						<!--}-->
-					<!--}],-->
-					<!--select : function(start, end, allDay) {-->
-						<!--//Set task day-->
-						<!--$('#date').val(start.format('YYYY-MM-DD'));-->
-						<!--//Set start time task-->
-						<!--$('#time').val(start.format('HH:mm:ss'));-->
-						<!--//Set duration-->
-						<!--$('#hours_prediction').val(moment.duration(end.diff(start)).asHours());-->
-						<!--$('#timeTab').addClass("tabSucess");-->
-
-						<!--$('#createTaskModal').modal();-->
-						<!--if (0) {-->
-							<!--$('#calendar').fullCalendar('renderEvent', {-->
-								<!--title : $("#employee option:selected").text(),-->
-								<!--start : start,-->
-								<!--end : end,-->
-							<!--}, true // make the event "stick"-->
-							<!--);-->
-							<!--/*$.ajax({-->
-							 <!--url: "",-->
-							 <!--dataType: 'json',-->
-							 <!--data: {-->
-							 <!--start: start.format(),-->
-							 <!--end: end.format(),-->
-							 <!--condition: $("#filter").val()-->
-							 <!--},-->
-							 <!--success: function(doc) {-->
-
-							 <!--var events = [];-->
-
-							 <!--callback(doc);-->
-							 <!--}-->
-							 <!--});*/-->
-						<!--}-->
-						<!--$('#calendar').fullCalendar('unselect');-->
-					<!--},-->
-					<!--selectable : true,-->
-					<!--selectHelper : true,-->
-
-					<!--header : {-->
-						<!--left : '',-->
-						<!--center : 'prev title next',-->
-						<!--right : 'month,agendaWeek,agendaDay'-->
-					<!--},-->
-					<!--defaultView : 'agendaWeek',-->
-					<!--height : 650,-->
-					<!--eventClick : function(event, jsEvent, view) {-->
-						<!--&lt;!&ndash;$('#modalTitle').html(event.category);&ndash;&gt;-->
-						<!--&lt;!&ndash;$('#modalDescription').html(event.description);&ndash;&gt;-->
-						<!--&lt;!&ndash;$('#modalField').html(event.field);&ndash;&gt;-->
-						<!--&lt;!&ndash;$('#modalMachine').html(event.machine);&ndash;&gt;-->
-						<!--&lt;!&ndash;$('#modalImplement').html(event.implement);&ndash;&gt;-->
-						<!--//$('#taskDuration').html(event.taskDuration);-->
-						<!--if (event.status == 2) {-->
-							<!--$('#btnStartTaskScheduler').html(' <a id="eventUrl" href="{% url "startTask" %}?task_id=' + event.task_id + '" >' + '<button class="btn btn-primary" id="btnAprove">' + '{% trans "Start" %}' + '</button> </a>');-->
-						<!--} else {-->
-							<!--$('#btnStartTaskScheduler').html(" ");-->
-						<!--}-->
-						<!--//$('#eventUrl').attr('href', );-->
-						<!--$('#fullCalModal').modal();-->
-						<!--return false;-->
-					<!--}-->
-				<!--});-->
-
 
 
 
@@ -207,8 +122,6 @@
 				<!--var title = prompt('Add Activity:');-->
 				globalStart = start;
 				globalEnd = end;
-
-
 
 				<!--addToCal-->
 				<!--var eventData;-->
@@ -290,7 +203,9 @@
 			]
 	});
 
-
+	$('.fc-center').html('March');
+	$('.fc-center').css('font-size', '32px');
+	$('.fc-center').css('margin-top', '10px');
 
 		(function() {
     'use strict';
@@ -576,6 +491,7 @@
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD8hP911Y1WH9Wkx2uCWvqdIo1qOMZdfk4&callback=initMap">
     </script>
 	<style>
+
 		#people{
 		    align-content: center;
 			text-align: center;
